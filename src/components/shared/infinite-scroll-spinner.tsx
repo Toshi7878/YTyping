@@ -1,5 +1,6 @@
 import type { UseInfiniteQueryResult } from "@tanstack/react-query";
-import { type IntersectionOptions, useOnInView } from "react-intersection-observer";
+import { useEffect } from "react";
+import { type IntersectionOptions, useInView } from "react-intersection-observer";
 import { Spinner } from "../ui/spinner";
 
 const ROOT_MARGIN_MAP = {
@@ -23,7 +24,10 @@ export const InfiniteScrollSpinner = ({
   className,
   ...pagination
 }: InfiniteScrollSpinnerProps & UseInfiniteScrollProps) => {
-  const ref = useInfiniteScroll({ ...pagination, ...ROOT_MARGIN_MAP[rootMarginVariant] });
+  const ref = useInfiniteScroll({
+    ...pagination,
+    ...ROOT_MARGIN_MAP[rootMarginVariant],
+  });
   if (!pagination.hasNextPage) return null;
 
   return <Spinner ref={ref} className={className} />;
@@ -32,11 +36,17 @@ export const InfiniteScrollSpinner = ({
 const useInfiniteScroll = ({
   isFetchingNextPage,
   fetchNextPage,
+  hasNextPage,
   ...options
-}: Omit<UseInfiniteScrollProps, "hasNextPage"> & IntersectionOptions) => {
-  return useOnInView((inView) => {
-    if (inView && !isFetchingNextPage) {
-      void fetchNextPage();
-    }
-  }, options);
+}: UseInfiniteScrollProps & IntersectionOptions) => {
+  const { ref, inView } = useInView(options);
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+    if (!inView) return;
+    if (isFetchingNextPage) return;
+    void fetchNextPage();
+  }, [hasNextPage, inView, isFetchingNextPage, fetchNextPage]);
+
+  return ref;
 };

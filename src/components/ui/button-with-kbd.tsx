@@ -16,7 +16,7 @@ export const ButtonWithKbd = (props: ButtonWithKbdProps) => {
       <Button
         onClick={props.onClick}
         onClickCapture={props.onClickCapture}
-        variant="outline-accent"
+        variant="outline"
         disabled={props.disabled}
         className="rounded-full font-bold text-4xl hover:scale-105 max-sm:p-9 md:text-xl"
       >
@@ -55,7 +55,7 @@ export const ButtonWithDoubleKbd = (props: ButtonWithDoubleKbdProps) => {
       <Button
         disabled={props.disabled}
         onClick={props.onClick}
-        variant="outline-accent"
+        variant="outline"
         className="rounded-full border font-bold text-4xl hover:scale-105 max-sm:p-9 md:text-xl"
       >
         {props.buttonLabel}

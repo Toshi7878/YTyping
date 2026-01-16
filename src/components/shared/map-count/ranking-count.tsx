@@ -9,9 +9,10 @@ interface RankingCountProps {
   myRank: number | null;
   rankingCount: number;
   myRankUpdatedAt: Date | null;
+  className?: string;
 }
 
-export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt }: RankingCountProps) => {
+export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt, className }: RankingCountProps) => {
   const { data: session } = useSession();
 
   const colorClass = buildColorClass(myRank, session);
@@ -32,7 +33,7 @@ export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt }: RankingC
       }
       disabled={!myRank || !session}
     >
-      <div className={cn("z-1 flex items-baseline", colorClass)}>
+      <div className={cn("z-1 flex items-baseline", colorClass, className)}>
         <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />
         </div>

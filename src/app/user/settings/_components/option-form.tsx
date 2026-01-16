@@ -9,7 +9,7 @@ import { Form } from "@/components/ui/form";
 import { SelectFormField } from "@/components/ui/select/select-form-field";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { CreateUserOptionSchema } from "@/validator/user-option";
+import { UpsertUserOptionSchema } from "@/validator/user-option";
 
 interface OptionFormProps {
   userOptions: RouterOutputs["user"]["option"]["getForSession"];
@@ -17,7 +17,7 @@ interface OptionFormProps {
 
 export const OptionForm = ({ userOptions }: OptionFormProps) => {
   const form = useForm({
-    resolver: zodResolver(CreateUserOptionSchema),
+    resolver: zodResolver(UpsertUserOptionSchema),
     defaultValues: {
       customUserActiveState: userOptions?.customUserActiveState ?? "ONLINE",
       hideUserStats: userOptions?.hideUserStats ?? false,
@@ -34,7 +34,7 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
     }),
   );
 
-  const onSubmit = (data: z.output<typeof CreateUserOptionSchema>) => {
+  const onSubmit = (data: z.output<typeof UpsertUserOptionSchema>) => {
     sendUserOption.mutate(data);
   };
 
@@ -51,7 +51,7 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
           ]}
           onValueChange={(value) => {
             onSubmit({
-              customUserActiveState: value as z.output<typeof CreateUserOptionSchema>["customUserActiveState"],
+              customUserActiveState: value as z.output<typeof UpsertUserOptionSchema>["customUserActiveState"],
               hideUserStats: form.getValues("hideUserStats"),
             });
           }}

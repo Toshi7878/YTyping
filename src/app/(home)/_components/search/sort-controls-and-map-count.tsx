@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { TfiLayoutGrid2Alt, TfiLayoutGrid3Alt } from "react-icons/tfi";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +21,10 @@ export const SortControlsAndMapCount = () => {
     <Card className="p-0">
       <CardContent className="flex flex-wrap items-center justify-between p-1.5">
         <SortControls />
-        <MapCountBadge />
+        <div className="flex items-center gap-2">
+          <ListLayoutButtonGroup />
+          <MapCountBadge />
+        </div>
       </CardContent>
     </Card>
   );
@@ -111,6 +115,60 @@ const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
   if (currentSort.value === value && !currentSort.desc) return <FaSortUp />;
   if (currentSort.value === value && currentSort.desc) return <FaSortDown />;
   return <FaSortDown className="invisible group-hover:visible" />;
+};
+
+const ListLayoutButtonGroup = () => {
+  const trpc = useTRPC();
+  const { data: listLayout } = useSuspenseQuery(
+    trpc.user.option.getForSession.queryOptions(undefined, {
+      select: (data) => data?.mapListLayout ?? "TWO_COLUMNS",
+    }),
+  );
+  const queryClient = useQueryClient();
+
+  const updateListLayout = useMutation(
+    trpc.user.option.upsert.mutationOptions({
+      onMutate: async (variables) => {
+        const userOptionFilter = trpc.user.option.getForSession.queryFilter();
+
+        await Promise.all([queryClient.cancelQueries(userOptionFilter)]);
+        const previous = [...queryClient.getQueriesData(userOptionFilter)];
+        queryClient.setQueryData(userOptionFilter.queryKey, (prev) => {
+          if (!prev) return null;
+          return { ...prev, mapListLayout: variables.mapListLayout ?? "TWO_COLUMNS" };
+        });
+        return { previous };
+      },
+      onError: (_error, _variables, context) => {
+        if (context?.previous) {
+          for (const [key, data] of context.previous) {
+            queryClient.setQueryData(key, data);
+          }
+        }
+      },
+      onSuccess: () => {
+        void queryClient.invalidateQueries(trpc.user.option.getForSession.queryOptions());
+      },
+    }),
+  );
+  return (
+    <div className="flex items-center gap-1">
+      <Button
+        variant={listLayout === "THREE_COLUMNS" ? "accent" : "ghost"}
+        className="size-8"
+        onClick={() => updateListLayout.mutate({ mapListLayout: "THREE_COLUMNS" })}
+      >
+        <TfiLayoutGrid3Alt />
+      </Button>
+      <Button
+        variant={listLayout === "TWO_COLUMNS" ? "accent" : "ghost"}
+        className="size-8"
+        onClick={() => updateListLayout.mutate({ mapListLayout: "TWO_COLUMNS" })}
+      >
+        <TfiLayoutGrid2Alt />
+      </Button>
+    </div>
+  );
 };
 
 const MapCountBadge = () => {

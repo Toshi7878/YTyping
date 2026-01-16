@@ -20,6 +20,8 @@ export const UserProfiles = pgTable("user_profiles", {
 });
 
 export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
+export const MAP_LIST_LAYOUT_TYPES = ["TWO_COLUMNS", "THREE_COLUMNS"] as const;
+export const mapListLayoutEnum = pgEnum("map_list_layout", MAP_LIST_LAYOUT_TYPES);
 export const UserOptions = pgTable("user_options", {
   userId: integer("user_id")
     .primaryKey()
@@ -28,6 +30,7 @@ export const UserOptions = pgTable("user_options", {
   overTakeNotify: integer("over_take_notify").notNull().default(5),
   customUserActiveState: customUserActiveStateEnum("custom_user_active_state").notNull().default("ONLINE"),
   hideUserStats: boolean("hide_user_stats").notNull().default(false),
+  mapListLayout: mapListLayoutEnum("map_list_layout").notNull().default("TWO_COLUMNS"),
 });
 
 export const nextDisplayEnum = pgEnum("next_display", ["LYRICS", "WORD"]);

@@ -1,7 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { UserOptions } from "@/server/drizzle/schema";
-import { CreateUserOptionSchema } from "@/validator/user-option";
+import { UpsertUserOptionSchema } from "@/validator/user-option";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const userOptionRouter = {
@@ -21,17 +21,17 @@ export const userOptionRouter = {
     return userOption ?? null;
   }),
 
-  upsert: protectedProcedure.input(CreateUserOptionSchema).mutation(async ({ input, ctx }) => {
+  upsert: protectedProcedure.input(UpsertUserOptionSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const { customUserActiveState, hideUserStats } = input;
 
     await db
       .insert(UserOptions)
-      .values({ userId: user.id, customUserActiveState, hideUserStats })
-      .onConflictDoUpdate({ target: [UserOptions.userId], set: { customUserActiveState, hideUserStats } })
+      .values({ userId: user.id, ...input })
+      .onConflictDoUpdate({ target: [UserOptions.userId], set: { ...input } })
       .returning({
         customUserActiveState: UserOptions.customUserActiveState,
         hideUserStats: UserOptions.hideUserStats,
+        mapListLayout: UserOptions.mapListLayout,
       });
   }),
 } satisfies TRPCRouterRecord;
