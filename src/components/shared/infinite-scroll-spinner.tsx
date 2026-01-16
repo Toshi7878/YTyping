@@ -1,13 +1,13 @@
 import type { UseInfiniteQueryResult } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { type IntersectionOptions, useInView } from "react-intersection-observer";
+import { type IntersectionOptions, useOnInView } from "react-intersection-observer";
 import { Spinner } from "../ui/spinner";
 
 const ROOT_MARGIN_MAP = {
   default: { rootMargin: "1500px 0px" },
+  threeColumnMapList: { rootMargin: "100px 0px" },
   resultListWithMap: { rootMargin: "2000px 0px" },
   notificationSheet: { threshold: 0.8 },
-} as const;
+} as const satisfies Record<string, IntersectionOptions>;
 
 type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
   UseInfiniteQueryResult<TData, TError>,
@@ -36,17 +36,11 @@ export const InfiniteScrollSpinner = ({
 const useInfiniteScroll = ({
   isFetchingNextPage,
   fetchNextPage,
-  hasNextPage,
   ...options
-}: UseInfiniteScrollProps & IntersectionOptions) => {
-  const { ref, inView } = useInView(options);
-
-  useEffect(() => {
-    if (!hasNextPage) return;
-    if (!inView) return;
-    if (isFetchingNextPage) return;
-    void fetchNextPage();
-  }, [hasNextPage, inView, isFetchingNextPage, fetchNextPage]);
-
-  return ref;
+}: Omit<UseInfiniteScrollProps, "hasNextPage"> & IntersectionOptions) => {
+  return useOnInView((inView) => {
+    if (inView && !isFetchingNextPage) {
+      void fetchNextPage();
+    }
+  }, options);
 };

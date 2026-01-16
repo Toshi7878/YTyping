@@ -52,7 +52,10 @@ export const MapList = () => {
           )}
         </div>
       )}
-      <InfiniteScrollSpinner {...pagination} />
+      <InfiniteScrollSpinner
+        rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
+        {...pagination}
+      />
     </section>
   );
 };
