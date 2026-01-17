@@ -51,42 +51,38 @@ export const MapList = () => {
   const imagePriority = !isFetchedAfterMount && !renderedFirstPage;
 
   return (
-    <>
-      <div className="fixed top-0 left-0 z-50 bg-black/50">{currentPage}</div>
-      <div className={cn("space-y-3", isSearching ? "opacity-20" : "")}>
-        {data.pages.map((page, pageIndex) => {
-          const isInView = Math.abs(pageIndex - currentPage) <= 1;
-          console.log(pageIndex, currentPage, isInView);
+    <div className={cn("space-y-3", isSearching ? "opacity-20" : "")}>
+      {data.pages.map((page, pageIndex) => {
+        const isInView = Math.abs(pageIndex - currentPage) <= 1;
 
-          return listLayout === "THREE_COLUMNS" ? (
-            <ThreeColumnMapList
-              // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
-              key={pageIndex}
-              items={page.items}
-              initialInView={isInView}
-              imagePriority={imagePriority && isInView}
-              onEnter={setCurrentPage}
-              pageIndex={pageIndex}
-            />
-          ) : (
-            <TwoColumnMapList
-              // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
-              key={pageIndex}
-              items={page.items}
-              initialInView={isInView}
-              imagePriority={imagePriority && isInView}
-              onEnter={setCurrentPage}
-              pageIndex={pageIndex}
-            />
-          );
-        })}
+        return listLayout === "THREE_COLUMNS" ? (
+          <ThreeColumnMapList
+            // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+            key={pageIndex}
+            items={page.items}
+            initialInView={isInView}
+            imagePriority={imagePriority && isInView}
+            onEnter={setCurrentPage}
+            pageIndex={pageIndex}
+          />
+        ) : (
+          <TwoColumnMapList
+            // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+            key={pageIndex}
+            items={page.items}
+            initialInView={isInView}
+            imagePriority={imagePriority && isInView}
+            onEnter={setCurrentPage}
+            pageIndex={pageIndex}
+          />
+        );
+      })}
 
-        <InfiniteScrollSpinner
-          rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
-          {...pagination}
-        />
-      </div>
-    </>
+      <InfiniteScrollSpinner
+        rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
+        {...pagination}
+      />
+    </div>
   );
 };
 
