@@ -1,12 +1,18 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
 import { ThreeColumnCompactMapCard } from "@/components/shared/map-card/three-column-compact-card";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/search-params/map-list";
+import { cn } from "@/lib/utils";
+import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import { setIsSearching, useIsSearchingState, useListLayoutTypeState } from "../_lib/atoms";
+
+const pageAtom = atom<number>(0);
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
@@ -28,6 +34,8 @@ export const MapList = () => {
     ),
   );
 
+  const [currentPage, setCurrentPage] = useAtom(pageAtom);
+
   useEffect(() => {
     if (data) {
       setIsSearching(false);
@@ -40,43 +48,104 @@ export const MapList = () => {
     }
   }, [data.pages.length]);
 
-  const imagePriority = !isFetchedAfterMount && !renderedFirstPage && data.pages.length === 1;
+  const imagePriority = !isFetchedAfterMount && !renderedFirstPage;
 
   return (
-    <section className={isSearching ? "opacity-20" : ""}>
-      {listLayout === "THREE_COLUMNS" ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {data.pages.map((page, pageIndex) =>
-            page.items.map((map) => (
-              <ThreeColumnCompactMapCard
-                key={map.id}
-                map={map}
-                initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={imagePriority}
-                feedIn={renderedFirstPage}
-              />
-            )),
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {data.pages.map((page, pageIndex) =>
-            page.items.map((map) => (
-              <MapCard
-                key={map.id}
-                map={map}
-                initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={imagePriority}
-                feedIn={renderedFirstPage}
-              />
-            )),
-          )}
-        </div>
-      )}
-      <InfiniteScrollSpinner
-        rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
-        {...pagination}
-      />
+    <>
+      <div className="fixed top-0 left-0 z-50 bg-black/50">{currentPage}</div>
+      <div className={cn("space-y-3", isSearching ? "opacity-20" : "")}>
+        {data.pages.map((page, pageIndex) => {
+          const isInView = Math.abs(pageIndex - currentPage) <= 1;
+          console.log(pageIndex, currentPage, isInView);
+
+          return listLayout === "THREE_COLUMNS" ? (
+            <ThreeColumnMapList
+              // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+              key={pageIndex}
+              items={page.items}
+              initialInView={isInView}
+              imagePriority={imagePriority && isInView}
+              onEnter={setCurrentPage}
+              pageIndex={pageIndex}
+            />
+          ) : (
+            <TwoColumnMapList
+              // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+              key={pageIndex}
+              items={page.items}
+              initialInView={isInView}
+              imagePriority={imagePriority && isInView}
+              onEnter={setCurrentPage}
+              pageIndex={pageIndex}
+            />
+          );
+        })}
+
+        <InfiniteScrollSpinner
+          rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
+          {...pagination}
+        />
+      </div>
+    </>
+  );
+};
+
+const ThreeColumnMapList = ({
+  items,
+  initialInView,
+  imagePriority,
+  onEnter,
+  pageIndex,
+}: {
+  items: MapListItem[];
+  initialInView: boolean;
+  imagePriority: boolean;
+  onEnter: (page: number) => void;
+  pageIndex: number;
+}) => {
+  const ref = usePageCounter({ onEnter, pageIndex });
+
+  return (
+    <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" ref={ref}>
+      {items.map((map) => (
+        <ThreeColumnCompactMapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+      ))}
     </section>
   );
+};
+
+const TwoColumnMapList = ({
+  items,
+  initialInView,
+  imagePriority,
+  onEnter,
+  pageIndex,
+}: {
+  items: MapListItem[];
+  initialInView: boolean;
+  imagePriority: boolean;
+  onEnter: (page: number) => void;
+  pageIndex: number;
+}) => {
+  const ref = usePageCounter({ onEnter, pageIndex });
+
+  return (
+    <section className="grid grid-cols-1 gap-3 md:grid-cols-2" ref={ref}>
+      {items.map((map) => (
+        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+      ))}
+    </section>
+  );
+};
+
+const usePageCounter = ({ onEnter, pageIndex }: { onEnter: (page: number) => void; pageIndex: number }) => {
+  const { ref, inView } = useInView({ threshold: 0 });
+
+  useEffect(() => {
+    if (inView) {
+      onEnter(pageIndex);
+    }
+  }, [inView, onEnter, pageIndex]);
+
+  return ref;
 };

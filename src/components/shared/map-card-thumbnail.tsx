@@ -35,15 +35,14 @@ interface MapLeftThumbnailPreviewCoverProps {
   className?: string;
   imageClassName?: string;
   priority?: boolean;
-  feedIn?: boolean;
 }
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, imageClassName, priority = false, feedIn = false, ...rest } = props;
+  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
-  const shouldFadeIn = !priority && feedIn;
+  const shouldFadeIn = !priority;
   const [isImageLoaded, setIsImageLoaded] = useState(!shouldFadeIn);
 
   return (

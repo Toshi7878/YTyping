@@ -24,10 +24,9 @@ interface MapCardProps {
   map: Map;
   initialInView?: boolean;
   imagePriority?: boolean;
-  feedIn?: boolean;
 }
 
-export const MapCard = ({ map, initialInView = false, imagePriority = false, feedIn = false }: MapCardProps) => {
+export const MapCard = ({ map, initialInView = false, imagePriority = false }: MapCardProps) => {
   const { ref, shouldRender } = useInViewRender({ initialInView });
 
   return (
@@ -38,7 +37,7 @@ export const MapCard = ({ map, initialInView = false, imagePriority = false, fee
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" priority={imagePriority} feedIn={feedIn} />
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" priority={imagePriority} />
       {shouldRender && <MapInfo map={map} />}
     </HoverExtractCard>
   );
