@@ -35,15 +35,16 @@ interface MapLeftThumbnailPreviewCoverProps {
   className?: string;
   imageClassName?: string;
   priority?: boolean;
+  feedIn?: boolean;
 }
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
+  const { alt = "", media, size, className, imageClassName, priority = false, feedIn = false, ...rest } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
-  const [isImageLoaded, setIsImageLoaded] = useState(priority);
-  const shouldFadeIn = !priority;
+  const shouldFadeIn = !priority && feedIn;
+  const [isImageLoaded, setIsImageLoaded] = useState(!shouldFadeIn);
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>

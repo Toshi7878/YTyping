@@ -53,6 +53,7 @@ export const MapList = () => {
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
                 imagePriority={imagePriority}
+                feedIn={renderedFirstPage}
               />
             )),
           )}
@@ -66,6 +67,7 @@ export const MapList = () => {
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
                 imagePriority={imagePriority}
+                feedIn={renderedFirstPage}
               />
             )),
           )}

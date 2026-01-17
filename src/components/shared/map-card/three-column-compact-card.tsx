@@ -21,12 +21,14 @@ interface ThreeColumnCompactMapCardProps {
   map: MapListItem;
   initialInView: boolean;
   imagePriority?: boolean;
+  feedIn?: boolean;
 }
 
 export const ThreeColumnCompactMapCard = ({
   map,
   initialInView,
   imagePriority = false,
+  feedIn = false,
 }: ThreeColumnCompactMapCardProps) => {
   const { ref, shouldRender } = useInViewRender({ initialInView });
   return (
@@ -39,7 +41,13 @@ export const ThreeColumnCompactMapCard = ({
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" priority={imagePriority} />
+      <MapLeftThumbnail
+        alt={map.info.title}
+        media={map.media}
+        size="notification"
+        priority={imagePriority}
+        feedIn={feedIn}
+      />
       {shouldRender && <CompactMapInfo map={map} />}
     </HoverExtractCard>
   );
