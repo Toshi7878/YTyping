@@ -28,7 +28,7 @@ export const SortControlsAndMapCount = () => {
       <CardContent className="flex flex-wrap items-center justify-between p-1.5">
         <SortControls />
         <div className="flex items-center gap-2">
-          {status === "authenticated" && <ListLayoutButtonGroup className="hidden lg:block" />}
+          {status === "authenticated" && <ListLayoutButtonGroup className="hidden lg:flex" />}
           <MapCountBadge />
         </div>
       </CardContent>
@@ -137,7 +137,7 @@ const ListLayoutButtonGroup = ({ className }: { className?: string }) => {
   );
   return (
     <RadioGroup
-      className={cn("flex items-center gap-1", className)}
+      className={cn("items-center gap-1", className)}
       value={listLayout}
       onValueChange={(value) => {
         setListLayoutType(value as (typeof MAP_LIST_LAYOUT_TYPES)[number]);

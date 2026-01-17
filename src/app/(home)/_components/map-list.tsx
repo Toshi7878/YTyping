@@ -27,7 +27,6 @@ export const MapList = () => {
       { ...filterParams, sort: sortParams },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        refetchOnWindowFocus: false,
         staleTime: Infinity,
         gcTime: Infinity,
       },
