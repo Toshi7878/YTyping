@@ -50,7 +50,7 @@ export const MapList = () => {
   const imagePriority = !isFetchedAfterMount && !renderedFirstPage;
 
   return (
-    <div className={cn("space-y-3", isSearching ? "opacity-20" : "")}>
+    <div className={cn("space-y-3", isSearching && "opacity-20")}>
       {data.pages.map((page, pageIndex) => {
         const isInView = Math.abs(pageIndex - currentPage) <= 1;
 
