@@ -42,7 +42,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(priority);
   const shouldFadeIn = !priority;
 
   return (
@@ -57,7 +57,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
               preload={priority}
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
-              onLoadingComplete={() => setIsImageLoaded(true)}
+              onLoad={() => setIsImageLoaded(true)}
               onError={() => setIsImageLoaded(true)}
               className={cn(
                 "rounded-md",
