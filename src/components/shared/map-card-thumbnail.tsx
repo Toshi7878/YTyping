@@ -43,6 +43,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const shouldFadeIn = !priority;
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
@@ -59,9 +60,10 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
               onLoadingComplete={() => setIsImageLoaded(true)}
               onError={() => setIsImageLoaded(true)}
               className={cn(
-                "rounded-md opacity-0 transition-opacity duration-200 will-change-opacity",
+                "rounded-md",
                 imageClassName,
-                isImageLoaded && "opacity-100",
+                shouldFadeIn && "opacity-0 transition-opacity duration-200 will-change-opacity",
+                shouldFadeIn && isImageLoaded && "opacity-100",
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
@@ -110,9 +112,10 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
   const isActive = videoId === mapVideoId;
 
   return (
-    <div
+    <button
+      type="button"
       className={cn(
-        "absolute inset-0 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none",
+        "absolute inset-0 z-1 inline-flex size-full items-center justify-center overflow-hidden rounded-md",
         isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
         props.className,
       )}
@@ -121,6 +124,6 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
       onTouchEnd={handleTouchEnd}
     >
       {isActive ? <FaPause color="white" size={35} /> : <FaPlay color="white" size={35} />}
-    </div>
+    </button>
   );
 };
