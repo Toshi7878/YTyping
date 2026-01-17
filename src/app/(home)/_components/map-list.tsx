@@ -43,7 +43,7 @@ export const MapList = () => {
                 key={map.id}
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={!isFetchedAfterMount}
+                imagePriority={!isFetchedAfterMount && data.pages.length === 1}
               />
             )),
           )}
@@ -56,7 +56,7 @@ export const MapList = () => {
                 key={map.id}
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={!isFetchedAfterMount}
+                imagePriority={!isFetchedAfterMount && data.pages.length === 1}
               />
             )),
           )}

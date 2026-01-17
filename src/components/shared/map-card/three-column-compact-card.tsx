@@ -9,6 +9,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
@@ -18,12 +19,19 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 
 interface ThreeColumnCompactMapCardProps {
   map: MapListItem;
+  initialInView: boolean;
   imagePriority?: boolean;
 }
 
-export const ThreeColumnCompactMapCard = ({ map, imagePriority = false }: ThreeColumnCompactMapCardProps) => {
+export const ThreeColumnCompactMapCard = ({
+  map,
+  initialInView,
+  imagePriority = false,
+}: ThreeColumnCompactMapCardProps) => {
+  const { ref, shouldRender } = useInViewRender({ initialInView });
   return (
     <HoverExtractCard
+      ref={ref}
       variant="map"
       cardContentClassName="h-full"
       cardHoverContentClassName="px-2"
@@ -32,7 +40,7 @@ export const ThreeColumnCompactMapCard = ({ map, imagePriority = false }: ThreeC
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
       <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" priority={imagePriority} />
-      <CompactMapInfo map={map} />
+      {shouldRender && <CompactMapInfo map={map} />}
     </HoverExtractCard>
   );
 };
