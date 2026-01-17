@@ -23,9 +23,10 @@ type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 interface MapCardProps {
   map: Map;
   initialInView?: boolean;
+  imagePriority?: boolean;
 }
 
-export const MapCard = ({ map, initialInView = false }: MapCardProps) => {
+export const MapCard = ({ map, initialInView = false, imagePriority = false }: MapCardProps) => {
   const { ref, shouldRender } = useInViewRender({ initialInView });
 
   return (
@@ -36,12 +37,7 @@ export const MapCard = ({ map, initialInView = false }: MapCardProps) => {
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
-        alt={shouldRender ? map.info.title : ""}
-        media={shouldRender ? map.media : undefined}
-        size="home"
-        priority={initialInView}
-      />
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" priority={imagePriority} />
       {shouldRender && <MapInfo map={map} />}
     </HoverExtractCard>
   );

@@ -1,6 +1,6 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
 import { ThreeColumnCompactMapCard } from "@/components/shared/map-card/three-column-compact-card";
@@ -14,6 +14,7 @@ export const MapList = () => {
   const listLayout = useListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
+  const [imagePriority, setImagePriority] = useState(true);
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
@@ -29,6 +30,7 @@ export const MapList = () => {
 
   useEffect(() => {
     if (data) {
+      setImagePriority(false);
       setIsSearching(false);
     }
   }, [data]);
@@ -39,7 +41,12 @@ export const MapList = () => {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {data.pages.map((page, pageIndex) =>
             page.items.map((map) => (
-              <ThreeColumnCompactMapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
+              <ThreeColumnCompactMapCard
+                key={map.id}
+                map={map}
+                initialInView={data.pages.length - 1 === pageIndex}
+                imagePriority={imagePriority}
+              />
             )),
           )}
         </div>
@@ -47,7 +54,12 @@ export const MapList = () => {
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {data.pages.map((page, pageIndex) =>
             page.items.map((map) => (
-              <MapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
+              <MapCard
+                key={map.id}
+                map={map}
+                initialInView={data.pages.length - 1 === pageIndex}
+                imagePriority={imagePriority}
+              />
             )),
           )}
         </div>

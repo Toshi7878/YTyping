@@ -20,9 +20,14 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 interface ThreeColumnCompactMapCardProps {
   map: MapListItem;
   initialInView: boolean;
+  imagePriority?: boolean;
 }
 
-export const ThreeColumnCompactMapCard = ({ map, initialInView }: ThreeColumnCompactMapCardProps) => {
+export const ThreeColumnCompactMapCard = ({
+  map,
+  initialInView,
+  imagePriority = false,
+}: ThreeColumnCompactMapCardProps) => {
   const { ref, shouldRender } = useInViewRender({ initialInView });
   return (
     <HoverExtractCard
@@ -34,12 +39,7 @@ export const ThreeColumnCompactMapCard = ({ map, initialInView }: ThreeColumnCom
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
-        alt={shouldRender ? map.info.title : ""}
-        media={shouldRender ? map.media : undefined}
-        size={"notification"}
-        priority={shouldRender}
-      />
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" priority={imagePriority} />
       {shouldRender && <CompactMapInfo map={map} />}
     </HoverExtractCard>
   );

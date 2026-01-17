@@ -53,8 +53,7 @@ const mapListFilterParsers = {
 const mapListSortParser = parseAsSort.withDefault({ value: "id", desc: true });
 
 export const useMapListFilterQueryStates = () => useQueryStates(mapListFilterParsers);
-export const useMapListSortQueryState = () =>
-  useQueryState("sort", parseAsSort.withDefault({ value: "id", desc: true }));
+export const useMapListSortQueryState = () => useQueryState("sort", mapListSortParser);
 
 export type MapListFilterSearchParams = inferParserType<typeof mapListFilterParsers>;
 export type MapListSortSearchParams = inferParserType<typeof mapListSortParser>;
