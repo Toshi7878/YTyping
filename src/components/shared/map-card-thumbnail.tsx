@@ -34,16 +34,14 @@ interface MapLeftThumbnailPreviewCoverProps {
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
   imageClassName?: string;
-  priority?: boolean;
 }
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
+  const { alt = "", media, size, className, imageClassName, ...rest } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const shouldFadeIn = !priority;
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
@@ -53,8 +51,6 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
               alt={alt}
-              loading={priority ? "eager" : "lazy"}
-              priority={priority}
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
               onLoadingComplete={() => setIsImageLoaded(true)}
@@ -62,8 +58,8 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
               className={cn(
                 "rounded-md",
                 imageClassName,
-                shouldFadeIn && "opacity-0 transition-opacity duration-200 will-change-opacity",
-                shouldFadeIn && isImageLoaded && "opacity-100",
+                "opacity-0 transition-opacity duration-200 will-change-opacity",
+                isImageLoaded && "opacity-100",
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
