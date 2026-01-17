@@ -115,7 +115,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
     <button
       type="button"
       className={cn(
-        "absolute inset-0 z-1 inline-flex size-full items-center justify-center overflow-hidden rounded-md",
+        "absolute inset-0 z-1 inline-flex size-full cursor-pointer items-center justify-center overflow-hidden rounded-md",
         isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
         props.className,
       )}
