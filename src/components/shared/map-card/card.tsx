@@ -80,11 +80,11 @@ const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
   return (
     <HoverExtractCardTrigger>
       <Link href={`/type/${map.id}`} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
-        <Badge variant="accent-light" size="xs" className="rounded-full">
+        <Badge variant="accent-light" className="rounded-full">
           <span>★</span>
           <span>{(map.difficulty.romaKpmMedian / 100).toFixed(1)}</span>
         </Badge>
-        <Badge variant="accent-light" size="xs" className="rounded-full max-lg:hidden">
+        <Badge variant="accent-light" className="rounded-full max-lg:hidden">
           {formatTime(map.info.duration)}
         </Badge>
       </Link>
