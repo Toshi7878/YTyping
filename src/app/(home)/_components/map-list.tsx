@@ -1,6 +1,6 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
 import { ThreeColumnCompactMapCard } from "@/components/shared/map-card/three-column-compact-card";
@@ -14,9 +14,8 @@ export const MapList = () => {
   const listLayout = useListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
-  const [imagePriority, setImagePriority] = useState(true);
 
-  const { data, ...pagination } = useSuspenseInfiniteQuery(
+  const { data, isFetchedAfterMount, ...pagination } = useSuspenseInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
       { ...filterParams, sort: sortParams },
       {
@@ -34,12 +33,6 @@ export const MapList = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    if (pagination.isFetchedAfterMount) {
-      setImagePriority(false);
-    }
-  }, [pagination.isFetchedAfterMount]);
-
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       {listLayout === "THREE_COLUMNS" ? (
@@ -50,7 +43,7 @@ export const MapList = () => {
                 key={map.id}
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={imagePriority}
+                imagePriority={!isFetchedAfterMount}
               />
             )),
           )}
@@ -63,7 +56,7 @@ export const MapList = () => {
                 key={map.id}
                 map={map}
                 initialInView={data.pages.length - 1 === pageIndex}
-                imagePriority={imagePriority}
+                imagePriority={!isFetchedAfterMount}
               />
             )),
           )}
