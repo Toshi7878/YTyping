@@ -42,6 +42,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
@@ -50,12 +51,18 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
-              loading={priority ? "eager" : "lazy"}
-              preload={priority}
               alt={alt}
+              loading={priority ? "eager" : "lazy"}
+              priority={priority}
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
-              className={cn("rounded-md", imageClassName)}
+              onLoadingComplete={() => setIsImageLoaded(true)}
+              onError={() => setIsImageLoaded(true)}
+              className={cn(
+                "rounded-md opacity-0 transition-opacity duration-200 will-change-opacity",
+                imageClassName,
+                isImageLoaded && "opacity-100",
+              )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
