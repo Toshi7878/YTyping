@@ -86,19 +86,15 @@ export const MapList = () => {
   );
 };
 
-const ThreeColumnMapList = ({
-  items,
-  initialInView,
-  imagePriority,
-  onEnter,
-  pageIndex,
-}: {
+interface ColumnMapListProps {
   items: MapListItem[];
   initialInView: boolean;
   imagePriority: boolean;
   onEnter: (page: number) => void;
   pageIndex: number;
-}) => {
+}
+
+const ThreeColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIndex }: ColumnMapListProps) => {
   const ref = usePageCounter({ onEnter, pageIndex });
 
   return (
@@ -110,19 +106,7 @@ const ThreeColumnMapList = ({
   );
 };
 
-const TwoColumnMapList = ({
-  items,
-  initialInView,
-  imagePriority,
-  onEnter,
-  pageIndex,
-}: {
-  items: MapListItem[];
-  initialInView: boolean;
-  imagePriority: boolean;
-  onEnter: (page: number) => void;
-  pageIndex: number;
-}) => {
+const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIndex }: ColumnMapListProps) => {
   const ref = usePageCounter({ onEnter, pageIndex });
 
   return (
