@@ -53,7 +53,7 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
-    <div className="flex size-full flex-col justify-between overflow-hidden rounded-md bg-card pt-0.5 pl-2 text-xs sm:text-sm md:text-base lg:text-lg">
+    <div className="relative flex size-full flex-col justify-between overflow-hidden rounded-md bg-card pt-0.5 pl-2 text-xs sm:text-sm md:text-base lg:text-lg">
       <Link className="absolute inset-0 flex size-full" href={`/type/${map.id}`} />
       <section className="flex flex-col">
         <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
