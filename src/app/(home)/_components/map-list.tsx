@@ -119,7 +119,7 @@ const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIn
 };
 
 const usePageCounter = ({ onEnter, pageIndex }: { onEnter: (page: number) => void; pageIndex: number }) => {
-  const { ref, inView } = useInView({ threshold: 0 });
+  const { ref, inView } = useInView();
 
   useEffect(() => {
     if (inView) {
