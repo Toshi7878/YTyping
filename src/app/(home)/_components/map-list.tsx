@@ -20,7 +20,7 @@ export const MapList = () => {
   const listLayout = useListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
-  const [renderedFirstPage, setRenderedFirstPage] = useState(false);
+  const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
 
   const { data, isFetchedAfterMount, ...pagination } = useSuspenseInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
@@ -43,11 +43,11 @@ export const MapList = () => {
 
   useEffect(() => {
     if (data.pages.length > 0) {
-      setRenderedFirstPage(true);
+      setIsInitialPageRendered(true);
     }
   }, [data.pages.length]);
 
-  const imagePriority = !isFetchedAfterMount && !renderedFirstPage;
+  const imagePriority = !isFetchedAfterMount && !isInitialPageRendered;
 
   return (
     <div className={cn("space-y-3", isSearching && "opacity-20")}>
