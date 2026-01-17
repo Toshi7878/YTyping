@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { ThreeColumnCompactMapCard } from "@/components/shared/map-card/three-column-compact-card";
+import { CompactMapCard } from "@/components/shared/map-card/compact-card";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
@@ -99,7 +99,7 @@ const ThreeColumnMapList = ({ items, initialInView, imagePriority, onEnter, page
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" ref={ref}>
       {items.map((map) => (
-        <ThreeColumnCompactMapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+        <CompactMapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
       ))}
     </section>
   );

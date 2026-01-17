@@ -54,7 +54,7 @@ const cardContentVariants = cva("px-6", {
   variants: {
     variant: {
       default: "",
-      map: "flex items-start rounded-md p-0",
+      map: "flex rounded-md p-0 items-stretch",
     },
   },
   defaultVariants: {

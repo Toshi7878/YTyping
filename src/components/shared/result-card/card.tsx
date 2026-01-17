@@ -67,7 +67,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
           <MapLeftThumbnail
             alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
-            size="timeline"
+            size="xs"
             priority={initialInView}
           />
           {shouldRender && <MapInfo map={result.map} className="flex-1" />}

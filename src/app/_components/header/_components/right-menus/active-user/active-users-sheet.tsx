@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { CompactMapCard } from "@/components/shared/map-card/compact-card";
+import { MinimumMapCard } from "@/components/shared/map-card/minimum-card";
 import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -74,12 +74,12 @@ const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
     const stateMsg = buildStateMessage(activeUser.state);
     return (
       <CardWithContent variant="map">
-        <MapLeftThumbnail size="activeUser" alt={stateMsg} />
+        <MapLeftThumbnail size="xs" alt={stateMsg} />
       </CardWithContent>
     );
   }
 
-  return <CompactMapCard map={map} thumbnailSize="activeUser" />;
+  return <MinimumMapCard map={map} />;
 };
 
 const buildStateMessage = (state: ActiveUserStatus["state"]) => {

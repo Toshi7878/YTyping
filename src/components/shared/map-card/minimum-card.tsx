@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
@@ -9,38 +8,26 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { useInViewRender } from "@/utils/hooks/intersection";
+import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
-import { DateDistanceText } from "../text/date-distance-text";
-import { UserNameLinkText } from "../text/user-name-link-text";
 
-interface ThreeColumnCompactMapCardProps {
+interface MinimumMapCardProps {
   map: MapListItem;
-  initialInView: boolean;
-  imagePriority?: boolean;
 }
 
-export const ThreeColumnCompactMapCard = ({
-  map,
-  initialInView,
-  imagePriority = false,
-}: ThreeColumnCompactMapCardProps) => {
-  const { ref, shouldRender } = useInViewRender({ initialInView });
+export const MinimumMapCard = ({ map }: MinimumMapCardProps) => {
   return (
     <HoverExtractCard
-      ref={ref}
       variant="map"
-      cardContentClassName="h-full"
-      cardHoverContentClassName="px-2"
+      cardHoverContentClassName="py-1"
       openDelay={50}
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" priority={imagePriority} />
-      {shouldRender && <CompactMapInfo map={map} />}
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="xs" />
+      <CompactMapInfo map={map} />
     </HoverExtractCard>
   );
 };
@@ -53,43 +40,21 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
-    <div className="relative flex size-full flex-col justify-between overflow-hidden rounded-md bg-card pt-0.5 pl-2 text-xs sm:text-sm md:text-base lg:text-lg">
-      <Link className="absolute inset-0 flex size-full" href={`/type/${map.id}`} />
-      <section className="flex flex-col">
+    <div className="relative flex h-auto w-full flex-col justify-between gap-1 overflow-hidden pt-0.5 pl-1.5">
+      <Link className="absolute inset-0 size-full" href={`/type/${map.id}`} />
+      <section>
         <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
-          <Link
-            href={`/type/${map.id}`}
-            className="z-1 overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary hover:no-underline"
-          >
+          <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary text-sm">
             {nolink(map.info.title)}
           </Link>
         </TooltipWrapper>
-        <div className="overflow-hidden truncate whitespace-nowrap font-bold text-secondary text-xs">
-          {nolink(map.info.artistName)}
-        </div>
-        <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} />
+        <div className="truncate font-semibold text-secondary text-xs">{nolink(map.info.artistName)}</div>
       </section>
-      <section className="flex w-[98%] items-center justify-between">
+      <section className="flex h-full w-[98%] items-center justify-between">
         <MapBadges map={map} />
         <MapIcons map={map} />
       </section>
     </div>
-  );
-};
-
-interface MapCreatorInfoProps {
-  creator: MapListItem["creator"];
-  updatedAt: Date;
-}
-
-export const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
-  return (
-    <small className="mt-1.5 truncate text-[0.6rem]">
-      <UserNameLinkText userId={creator.id} userName={creator.name} />
-      <span className="mx-1">
-        - <DateDistanceText date={updatedAt} />
-      </span>
-    </small>
   );
 };
 
@@ -103,7 +68,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
       <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
         <Badge variant="accent-light" className="h-5 rounded-full px-1 text-xs">
           <span>★</span>
-          {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
+          <span>{(map.difficulty.romaKpmMedian / 100).toFixed(1)}</span>
         </Badge>
       </Link>
     </HoverExtractCardTrigger>
@@ -115,17 +80,8 @@ interface MapCountIconsProps {
 }
 
 const MapIcons = ({ map }: MapCountIconsProps) => {
-  const { status } = useSession();
-
   return (
     <div className="absolute right-1 -bottom-px flex items-center space-x-1">
-      {status === "authenticated" ? (
-        <BookmarkListPopover
-          className="relative z-10 mr-1 size-8"
-          mapId={map.id}
-          hasBookmarked={map.bookmark.hasBookmarked}
-        />
-      ) : null}
       <RankingCount
         className="z-10"
         key={map.ranking.myRank}
@@ -146,8 +102,8 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
   return (
     <div className="flex flex-wrap items-center gap-x-2">
-      <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
-        {inputMode === "roma" ? "ローマ字" : "かな"}
+      <Badge variant="accent-light" size="xs" className="rounded-full">
+        {formatTime(map.info.duration)}
       </Badge>
       <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
       <div className="flex items-center gap-2 text-xs">

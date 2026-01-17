@@ -6,7 +6,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { buildBookmarkListUrl } from "@/app/user/[id]/_components/bookmark-lists";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
-import { NotificationMapCardContent } from "@/components/shared/map-card/compact-card";
+import { NotificationMapCard } from "@/components/shared/map-card/compact-card";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -107,7 +107,7 @@ type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
 const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
   const { map, visitor, myResult } = notification;
   return (
-    <NotificationMapCardContent
+    <NotificationMapCard
       map={map}
       user={{ id: visitor.id, name: visitor.name ?? "" }}
       className="bg-header-background"
@@ -120,7 +120,7 @@ type LikeNotification = Extract<Notification, { type: "LIKE" }>;
 const LikeNotificationMapCard = ({ notification }: { notification: LikeNotification }) => {
   const { map, liker } = notification;
   return (
-    <NotificationMapCardContent
+    <NotificationMapCard
       map={map}
       user={{ id: liker.id, name: liker.name ?? "" }}
       className="bg-like/85"
@@ -133,7 +133,7 @@ type ClapNotification = Extract<Notification, { type: "CLAP" }>;
 const ClapNotificationMapCard = ({ notification }: { notification: ClapNotification }) => {
   const { map, clapper } = notification;
   return (
-    <NotificationMapCardContent
+    <NotificationMapCard
       map={map}
       user={{ id: clapper.id, name: clapper.name ?? "" }}
       className="bg-perfect/65"
@@ -146,7 +146,7 @@ type BookMarkNotification = Extract<Notification, { type: "MAP_BOOKMARK" }>;
 const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkNotification }) => {
   const { map, bookmarker, mapBookmark } = notification;
   return (
-    <NotificationMapCardContent
+    <NotificationMapCard
       map={map}
       user={{ id: bookmarker.id, name: bookmarker.name ?? "" }}
       className="bg-secondary-dark/85"
