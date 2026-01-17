@@ -30,10 +30,15 @@ export const MapList = () => {
 
   useEffect(() => {
     if (data) {
-      setImagePriority(false);
       setIsSearching(false);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!pagination.isFetching) {
+      setImagePriority(false);
+    }
+  }, [pagination.isFetching]);
 
   return (
     <section className={isSearching ? "opacity-20" : ""}>
