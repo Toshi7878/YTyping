@@ -7,6 +7,7 @@ import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
+import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
@@ -51,63 +52,65 @@ const MapInfo = ({ map }: MapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
-    <div className="relative flex size-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
+    <div className="relative h-auto w-full overflow-hidden">
       <Link className="absolute size-full" href={`/type/${map.id}`} />
-      <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
-        <section className="flex flex-col gap-1">
+      <div className="flex h-full flex-col justify-between pt-0.5 pl-2.5 sm:pt-1.5">
+        <section className="flex flex-col sm:gap-0.5">
           <TooltipWrapper
             delayDuration={500}
             label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
           >
-            <Link
-              href={`/type/${map.id}`}
-              className="z-1 overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary hover:no-underline"
-            >
+            <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary sm:text-lg">
               {map.info.title}
             </Link>
           </TooltipWrapper>
-
-          <div className="overflow-hidden truncate whitespace-nowrap font-bold text-secondary text-xs sm:text-sm">
+          <div className="truncate font-bold text-secondary text-xs sm:text-sm">
             {nolink(map.info.artistName + musicSource)}
           </div>
+          <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} className="mt-2" />
         </section>
-        <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
-          <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} />
-
-          <MapInfoBottom map={map} />
-        </section>
+        <MapBadges map={map} className="mt-2 mb-0.5" />
+        <MapCountIcons map={map} />
       </div>
     </div>
   );
 };
 
-const MapInfoBottom = ({ map }: { map: Map }) => {
+const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
+  return (
+    <HoverExtractCardTrigger>
+      <Link href={`/type/${map.id}`} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
+        <Badge variant="accent-light" size="xs" className="rounded-full">
+          <span>★</span>
+          <span>{(map.difficulty.romaKpmMedian / 100).toFixed(1)}</span>
+        </Badge>
+        <Badge variant="accent-light" size="xs" className="rounded-full max-lg:hidden">
+          {formatTime(map.info.duration)}
+        </Badge>
+      </Link>
+    </HoverExtractCardTrigger>
+  );
+};
+
+const MapCountIcons = ({ map }: { map: Map }) => {
   const { status } = useSession();
 
   return (
-    <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
-      <HoverExtractCardTrigger>
-        <Link href={`/type/${map.id}`} className="z-10 mr-2 flex flex-1 items-center gap-2">
-          <Badge variant="accent-light" className="rounded-full px-2 text-sm">
-            <span className="hidden text-xs sm:inline-block">★</span>
-            {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
-          </Badge>
-          <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
-            {formatTime(map.info.duration)}
-          </Badge>
-        </Link>
-      </HoverExtractCardTrigger>
-      <div className="z-10 flex items-center space-x-1">
-        {status === "authenticated" ? (
-          <BookmarkListPopover className="relative mr-1.5" mapId={map.id} hasBookmarked={map.bookmark.hasBookmarked} />
-        ) : null}
-        <RankingCount
-          myRank={map.ranking.myRank}
-          rankingCount={map.ranking.count}
-          myRankUpdatedAt={map.ranking.myRankUpdatedAt}
+    <div className="absolute right-1 -bottom-px flex items-center space-x-1">
+      {status === "authenticated" ? (
+        <BookmarkListPopover
+          className="relative z-10 mr-1.5"
+          mapId={map.id}
+          hasBookmarked={map.bookmark.hasBookmarked}
         />
-        <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
-      </div>
+      ) : null}
+      <RankingCount
+        className="z-10"
+        myRank={map.ranking.myRank}
+        rankingCount={map.ranking.count}
+        myRankUpdatedAt={map.ranking.myRankUpdatedAt}
+      />
+      <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
     </div>
   );
 };
@@ -115,18 +118,25 @@ const MapInfoBottom = ({ map }: { map: Map }) => {
 interface MapCreatorInfoProps {
   creator: MapListItem["creator"];
   updatedAt: Date;
+  className?: string;
 }
 
-const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
+{
+  /* <div className={cn("truncate text-[0.6rem]", className)}>
+  <UserNameLinkText userId={creator.id} userName={creator.name} />
+  <span className="mx-1">
+    - <DateDistanceText date={updatedAt} />
+  </span>
+</div>; */
+}
+const MapCreatorInfo = ({ creator, updatedAt, className }: MapCreatorInfoProps) => {
   return (
-    <small className="mt-2 block truncate">
+    <div className={cn("truncate text-[0.6rem] sm:text-xs", className)}>
       <UserNameLinkText userId={creator.id} userName={creator.name} />
-      <span className="hidden text-xs md:inline-block">
-        <span className="mx-1">
-          - <DateDistanceText date={updatedAt} />
-        </span>
+      <span className="mx-1">
+        - <DateDistanceText date={updatedAt} />
       </span>
-    </small>
+    </div>
   );
 };
 

@@ -90,21 +90,24 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
-    <div className="-auto relative flex w-full flex-col justify-between overflow-hidden rounded-md pt-0.5 pl-2">
-      <Link className="absolute inset-0 size-full" href={`/type/${map.id}`} />
-      <section>
-        <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
-          <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary">
-            {nolink(map.info.title)}
-          </Link>
-        </TooltipWrapper>
-        <div className="truncate font-semibold text-secondary text-xs">{nolink(map.info.artistName)}</div>
-        <MapCreatorInfo className="mt-1.5" creator={map.creator} updatedAt={map.updatedAt} />
-      </section>
-      <section className="flex w-[98%] items-end justify-between">
+    <div className="relative h-auto w-full overflow-hidden rounded-md">
+      <Link className="absolute size-full" href={`/type/${map.id}`} />
+      <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
+        <section className="flex flex-col">
+          <TooltipWrapper
+            delayDuration={300}
+            label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
+          >
+            <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary">
+              {nolink(map.info.title)}
+            </Link>
+          </TooltipWrapper>
+          <div className="truncate font-semibold text-secondary text-xs">{nolink(map.info.artistName)}</div>
+          <MapCreatorInfo className="mt-1.5" creator={map.creator} updatedAt={map.updatedAt} />
+        </section>
         <MapBadges map={map} />
         <MapIcons map={map} />
-      </section>
+      </div>
     </div>
   );
 };
