@@ -35,10 +35,10 @@ export const MapList = () => {
   }, [data]);
 
   useEffect(() => {
-    if (!pagination.isFetching) {
+    if (pagination.isFetchedAfterMount) {
       setImagePriority(false);
     }
-  }, [pagination.isFetching]);
+  }, [pagination.isFetchedAfterMount]);
 
   return (
     <section className={isSearching ? "opacity-20" : ""}>
