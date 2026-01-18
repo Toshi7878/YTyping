@@ -121,14 +121,6 @@ interface MapCreatorInfoProps {
   className?: string;
 }
 
-{
-  /* <div className={cn("truncate text-[0.6rem]", className)}>
-  <UserNameLinkText userId={creator.id} userName={creator.name} />
-  <span className="mx-1">
-    - <DateDistanceText date={updatedAt} />
-  </span>
-</div>; */
-}
 const MapCreatorInfo = ({ creator, updatedAt, className }: MapCreatorInfoProps) => {
   return (
     <div className={cn("truncate text-[0.6rem] sm:text-xs", className)}>

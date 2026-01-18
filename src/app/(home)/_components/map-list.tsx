@@ -10,7 +10,6 @@ import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/sea
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setIsSearching, useIsSearchingState, useListLayoutTypeState } from "../_lib/atoms";
 
 const pageAtom = atom<number>(0);
@@ -108,17 +107,12 @@ const ThreeColumnMapList = ({ items, initialInView, imagePriority, onEnter, page
 
 const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIndex }: ColumnMapListProps) => {
   const ref = usePageCounter({ onEnter, pageIndex });
-  const { isLgScreen } = useBreakPoint();
 
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-2" ref={ref}>
-      {items.map((map) =>
-        isLgScreen ? (
-          <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
-        ) : (
-          <CompactMapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
-        ),
-      )}
+      {items.map((map) => (
+        <MapCard key={map.id} map={map} initialInView={initialInView} imagePriority={imagePriority} />
+      ))}
     </section>
   );
 };
