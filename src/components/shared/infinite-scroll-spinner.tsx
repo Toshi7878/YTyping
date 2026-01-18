@@ -11,7 +11,7 @@ const ROOT_MARGIN_MAP = {
 
 type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
   UseInfiniteQueryResult<TData, TError>,
-  "isFetchingNextPage" | "fetchNextPage" | "hasNextPage"
+  "fetchNextPage" | "hasNextPage"
 >;
 
 interface InfiniteScrollSpinnerProps {
@@ -34,12 +34,11 @@ export const InfiniteScrollSpinner = ({
 };
 
 const useInfiniteScroll = ({
-  isFetchingNextPage,
   fetchNextPage,
   ...options
 }: Omit<UseInfiniteScrollProps, "hasNextPage"> & IntersectionOptions) => {
   return useOnInView((inView) => {
-    if (inView && !isFetchingNextPage) {
+    if (inView) {
       void fetchNextPage();
     }
   }, options);
