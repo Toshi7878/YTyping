@@ -15,7 +15,10 @@ export const JotaiProvider = ({ children, userOptions }: JotaiProviderProps) => 
 
   return (
     <Provider store={store}>
-      <AtomsHydrator atomValues={[[listLayoutTypeAtom, userOptions?.mapListLayout ?? "TWO_COLUMNS"]]}>
+      <AtomsHydrator
+        atomValues={[[listLayoutTypeAtom, userOptions?.mapListLayout ?? "TWO_COLUMNS"]]}
+        dangerouslyForceHydrate
+      >
         {children}
       </AtomsHydrator>
     </Provider>
