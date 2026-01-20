@@ -94,7 +94,7 @@ const NotificationContent = () => {
           ) : (
             <div className="py-8 text-center text-muted-foreground">まだ通知はありません</div>
           )}
-          <InfiniteScrollSpinner className="py-4" rootMarginVariant="notificationSheet" {...pagination} />
+          <InfiniteScrollSpinner className="py-4" inViewPreset="notificationSheet" {...pagination} />
         </div>
       )}
     </div>

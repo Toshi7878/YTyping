@@ -30,7 +30,7 @@ export const UserResultList = ({ id }: { id: string }) => {
             <ResultCard key={result.id} result={result} initialInView={data.pages.length - 1 === pageIndex} />
           )),
         )}
-        <InfiniteScrollSpinner rootMarginVariant="resultListWithMap" {...pagination} />
+        <InfiniteScrollSpinner inViewPreset="resultListWithMap" {...pagination} />
       </section>
     </div>
   );

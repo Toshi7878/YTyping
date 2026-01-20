@@ -78,7 +78,7 @@ export const MapList = () => {
       })}
 
       <InfiniteScrollSpinner
-        rootMarginVariant={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
+        inViewPreset={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
         {...pagination}
       />
     </div>
