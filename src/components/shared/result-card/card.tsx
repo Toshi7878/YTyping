@@ -74,7 +74,12 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}
         </div>
         {shouldRender && (
-          <div className="absolute bottom-0 left-1 z-2 flex items-center space-x-1">
+          <div
+            className={cn(
+              "absolute bottom-0 left-2 z-2 flex items-center space-x-1",
+              status === "authenticated" && "left-0",
+            )}
+          >
             {status === "authenticated" ? (
               <BookmarkListPopover mapId={result.map.id} hasBookmarked={result.map.bookmark.hasBookmarked} />
             ) : null}{" "}
