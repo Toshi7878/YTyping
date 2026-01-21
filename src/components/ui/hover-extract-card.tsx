@@ -113,7 +113,7 @@ export const HoverExtractCard = ({
 
   return (
     <HoverExtractContext.Provider value={ctxValue}>
-      <Card ref={ref} variant={variant} className={cn(cardClassName, "relative", isOpen && "z-50")}>
+      <Card ref={ref} variant={variant} className={cn(cardClassName, "relative", isOpen && "z-10")}>
         {isOpen && (
           <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
         )}
@@ -130,7 +130,7 @@ export const HoverExtractCard = ({
                 side="bottom"
                 sideOffset={-2}
                 className={cn(
-                  "z-100 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
+                  "z-10 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
                   cardHoverContentClassName,
                 )}
                 style={{ width: cardWidth }}
