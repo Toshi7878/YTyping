@@ -21,22 +21,22 @@ export const MinimumMapCard = ({ map }: MinimumMapCardProps) => {
   return (
     <HoverExtractCard
       variant="map"
-      cardHoverContentClassName="py-1"
+      cardHoverContentClassName="py-1 z-50"
       openDelay={50}
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
       <MapLeftThumbnail alt={map.info.title} media={map.media} size="xs" />
-      <CompactMapInfo map={map} />
+      <MinumumMapInfo map={map} />
     </HoverExtractCard>
   );
 };
 
-interface CompactMapInfoProps {
+interface MinumumMapInfoProps {
   map: MapListItem;
 }
 
-const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
+const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (

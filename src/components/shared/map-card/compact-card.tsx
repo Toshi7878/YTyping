@@ -33,7 +33,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
     <HoverExtractCard
       variant="map"
       cardClassName="block"
-      cardHoverContentClassName="py-2"
+      cardHoverContentClassName="py-2 z-50"
       cardHeader={
         <CardHeader className={cn("flex flex-wrap items-center gap-1 rounded-t-md px-2 py-1.5 text-sm", className)}>
           <UserNameLinkText
