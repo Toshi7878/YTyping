@@ -19,18 +19,24 @@ export const UserProfiles = pgTable("user_profiles", {
   keyboard: varchar("keyboard", { length: MAX_MAXIMUM_LENGTH }).notNull().default(""),
 });
 
-export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
+export const PRESENCE_STATES = ["ONLINE", "ASK_ME", "HIDE_ONLINE"] as const;
 export const MAP_LIST_LAYOUT_TYPES = ["TWO_COLUMNS", "THREE_COLUMNS"] as const;
+export const presenceStateEnum = pgEnum("presence_state", PRESENCE_STATES);
 export const mapListLayoutEnum = pgEnum("map_list_layout", MAP_LIST_LAYOUT_TYPES);
+
+export const DEFAULT_USER_OPTIONS = {
+  presenceState: "ONLINE" as const,
+  hideUserStats: false,
+  mapListLayout: "TWO_COLUMNS" as const,
+};
+
 export const UserOptions = pgTable("user_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  mapLikeNotify: boolean("map_like_notify").notNull().default(true),
-  overTakeNotify: integer("over_take_notify").notNull().default(5),
-  customUserActiveState: customUserActiveStateEnum("custom_user_active_state").notNull().default("ONLINE"),
-  hideUserStats: boolean("hide_user_stats").notNull().default(false),
-  mapListLayout: mapListLayoutEnum("map_list_layout").notNull().default("TWO_COLUMNS"),
+  presenceState: presenceStateEnum("presence_state").notNull().default(DEFAULT_USER_OPTIONS.presenceState),
+  hideUserStats: boolean("hide_user_stats").notNull().default(DEFAULT_USER_OPTIONS.hideUserStats),
+  mapListLayout: mapListLayoutEnum("map_list_layout").notNull().default(DEFAULT_USER_OPTIONS.mapListLayout),
 });
 
 export const nextDisplayEnum = pgEnum("next_display", ["LYRICS", "WORD"]);

@@ -33,7 +33,7 @@ export const useActiveUsers = () => {
       const isEdit = pathname.match("/edit");
 
       const currentState =
-        userOptions?.customUserActiveState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
+        userOptions?.presenceState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
 
       const userStatus: ActiveUserStatus = {
         id: Number(session.user.id),
@@ -78,7 +78,7 @@ export const useActiveUsers = () => {
       // 初回 subscribe
       channel.subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) return;
-        if (userOptions?.customUserActiveState !== "HIDE_ONLINE") {
+        if (userOptions?.presenceState !== "HIDE_ONLINE") {
           await updateUserStatus(channel);
         }
       });
@@ -118,13 +118,5 @@ export const useActiveUsers = () => {
         void currentChannel.unsubscribe();
       }
     };
-  }, [
-    isPending,
-    pathname,
-    session?.user.name,
-    setOnlineUsers,
-    mapId,
-    session?.user.id,
-    userOptions?.customUserActiveState,
-  ]);
+  }, [isPending, pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, userOptions?.presenceState]);
 };

@@ -10,11 +10,7 @@ export const userOptionRouter = {
     if (!user) return null;
 
     const userOption = await db.query.UserOptions.findFirst({
-      columns: {
-        mapLikeNotify: false,
-        userId: false,
-        overTakeNotify: false,
-      },
+      columns: { userId: false },
       where: eq(UserOptions.userId, user.id),
     });
 
@@ -29,7 +25,7 @@ export const userOptionRouter = {
       .values({ userId: user.id, ...input })
       .onConflictDoUpdate({ target: [UserOptions.userId], set: { ...input } })
       .returning({
-        customUserActiveState: UserOptions.customUserActiveState,
+        userActiveState: UserOptions.presenceState,
         hideUserStats: UserOptions.hideUserStats,
         mapListLayout: UserOptions.mapListLayout,
       });

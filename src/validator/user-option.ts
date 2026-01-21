@@ -11,6 +11,4 @@ export const CreateUserImeTypingOptionSchema = createInsertSchema(UserImeTypingO
 
 export const UpsertUserOptionSchema = createUpdateSchema(UserOptions).omit({
   userId: true,
-  mapLikeNotify: true,
-  overTakeNotify: true,
 });
