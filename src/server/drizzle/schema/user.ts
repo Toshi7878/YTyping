@@ -25,9 +25,9 @@ export const presenceStateEnum = pgEnum("presence_state", PRESENCE_STATES);
 export const mapListLayoutEnum = pgEnum("map_list_layout", MAP_LIST_LAYOUT_TYPES);
 
 export const DEFAULT_USER_OPTIONS = {
-  presenceState: "ONLINE" as const,
+  presenceState: "ONLINE" as (typeof PRESENCE_STATES)[number],
   hideUserStats: false,
-  mapListLayout: "TWO_COLUMNS" as const,
+  mapListLayout: "TWO_COLUMNS" as (typeof MAP_LIST_LAYOUT_TYPES)[number],
 };
 
 export const UserOptions = pgTable("user_options", {

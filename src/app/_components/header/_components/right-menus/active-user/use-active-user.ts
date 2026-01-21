@@ -1,28 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import type { ActiveUserStatus } from "@/lib/atoms/global-atoms";
-import { useSetOnlineUsers } from "@/lib/atoms/global-atoms";
+import { usePresenceOptionState, useSetOnlineUsers } from "@/lib/atoms/global-atoms";
 import { createPresenceChannel } from "@/lib/supabase-client";
-import { useTRPC } from "@/trpc/provider";
 
 export const useActiveUsers = () => {
-  const trpc = useTRPC();
-  const { data: userOptions, isPending } = useQuery(
-    trpc.user.option.getForSession.queryOptions(undefined, {
-      gcTime: Infinity,
-      staleTime: Infinity,
-    }),
-  );
-
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsers();
   const pathname = usePathname();
   const { id: mapId } = useParams();
+  const presenceState = usePresenceOptionState();
 
   useEffect(() => {
-    if (!session?.user?.name || isPending) return;
+    if (!session?.user?.name) return;
 
     let inactivityTimer: number;
     let currentChannel: ReturnType<typeof createPresenceChannel> | null = null;
@@ -32,8 +23,7 @@ export const useActiveUsers = () => {
       const isType = pathname.match("/type/") || pathname.match("/ime/");
       const isEdit = pathname.match("/edit");
 
-      const currentState =
-        userOptions?.presenceState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
+      const currentState = presenceState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
 
       const userStatus: ActiveUserStatus = {
         id: Number(session.user.id),
@@ -78,7 +68,7 @@ export const useActiveUsers = () => {
       // 初回 subscribe
       channel.subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) return;
-        if (userOptions?.presenceState !== "HIDE_ONLINE") {
+        if (presenceState !== "HIDE_ONLINE") {
           await updateUserStatus(channel);
         }
       });
@@ -118,5 +108,5 @@ export const useActiveUsers = () => {
         void currentChannel.unsubscribe();
       }
     };
-  }, [isPending, pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, userOptions?.presenceState]);
+  }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, presenceState]);
 };

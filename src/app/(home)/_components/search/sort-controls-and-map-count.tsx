@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { setUserOptions, useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import {
   type MapListSortSearchParams,
   useMapListFilterQueryStates,
@@ -16,7 +17,6 @@ import { cn } from "@/lib/utils";
 import type { MAP_LIST_LAYOUT_TYPES } from "@/server/drizzle/schema/user";
 import { useTRPC } from "@/trpc/provider";
 import type { MAP_SORT_OPTIONS } from "@/validator/map-list";
-import { setListLayoutType, useListLayoutTypeState } from "../../_lib/atoms";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
@@ -28,7 +28,7 @@ export const SortControlsAndMapCount = () => {
       <CardContent className="flex flex-wrap items-center justify-between p-1.5">
         <SortControls />
         <div className="flex items-center gap-2">
-          {status === "authenticated" && <ListLayoutButtonGroup className="hidden lg:flex" />}
+          {status === "authenticated" && <ListLayoutRadioGroup className="hidden lg:flex" />}
           <MapCountBadge />
         </div>
       </CardContent>
@@ -123,35 +123,32 @@ const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
   return <FaSortDown className="invisible group-hover:visible" />;
 };
 
-const ListLayoutButtonGroup = ({ className }: { className?: string }) => {
+const ListLayoutRadioGroup = ({ className }: { className?: string }) => {
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const listLayout = useListLayoutTypeState();
+  const layoutType = useMapListLayoutTypeState();
 
   const updateListLayout = useMutation(
     trpc.user.option.upsert.mutationOptions({
-      onSuccess: () => {
-        void queryClient.invalidateQueries(trpc.user.option.getForSession.queryOptions());
-      },
+      onSuccess: (data) => setUserOptions(data),
     }),
   );
   return (
     <RadioGroup
       className={cn("items-center gap-1", className)}
-      value={listLayout}
-      onValueChange={(value) => {
-        setListLayoutType(value as (typeof MAP_LIST_LAYOUT_TYPES)[number]);
-        updateListLayout.mutate({ mapListLayout: value as (typeof MAP_LIST_LAYOUT_TYPES)[number] });
+      value={layoutType}
+      onValueChange={(value: (typeof MAP_LIST_LAYOUT_TYPES)[number]) => {
+        setUserOptions((prev) => ({ ...prev, mapListLayout: value }));
+        updateListLayout.mutate({ mapListLayout: value });
       }}
     >
       <RadioButton
         value="THREE_COLUMNS"
         className="size-8"
-        variant={listLayout === "THREE_COLUMNS" ? "accent" : "ghost"}
+        variant={layoutType === "THREE_COLUMNS" ? "accent" : "ghost"}
       >
         <TfiLayoutGrid3Alt />
       </RadioButton>
-      <RadioButton value="TWO_COLUMNS" className="size-8" variant={listLayout === "TWO_COLUMNS" ? "accent" : "ghost"}>
+      <RadioButton value="TWO_COLUMNS" className="size-8" variant={layoutType === "TWO_COLUMNS" ? "accent" : "ghost"}>
         <TfiLayoutGrid2Alt />
       </RadioButton>
     </RadioGroup>

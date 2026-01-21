@@ -6,18 +6,19 @@ import { useInView } from "react-intersection-observer";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
 import { CompactMapCard } from "@/components/shared/map-card/compact-card";
+import { useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { setIsSearching, useIsSearchingState, useListLayoutTypeState } from "../_lib/atoms";
+import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 const pageAtom = atom<number>(0);
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
   const trpc = useTRPC();
-  const listLayout = useListLayoutTypeState();
+  const layoutType = useMapListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
@@ -54,7 +55,7 @@ export const MapList = () => {
       {data.pages.map((page, pageIndex) => {
         const isInView = Math.abs(pageIndex - currentPage) <= 1;
 
-        return listLayout === "THREE_COLUMNS" ? (
+        return layoutType === "THREE_COLUMNS" ? (
           <ThreeColumnMapList
             // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
             key={pageIndex}
@@ -78,7 +79,7 @@ export const MapList = () => {
       })}
 
       <InfiniteScrollSpinner
-        inViewPreset={listLayout === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
+        inViewPreset={layoutType === "THREE_COLUMNS" ? "threeColumnMapList" : "default"}
         {...pagination}
       />
     </div>

@@ -1,4 +1,4 @@
-import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { UserOptions } from "@/server/drizzle/schema";
 import { UpsertUserOptionSchema } from "@/validator/user-option";
@@ -20,14 +20,20 @@ export const userOptionRouter = {
   upsert: protectedProcedure.input(UpsertUserOptionSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
-    await db
+    const [newUserOptions] = await db
       .insert(UserOptions)
       .values({ userId: user.id, ...input })
       .onConflictDoUpdate({ target: [UserOptions.userId], set: { ...input } })
       .returning({
-        userActiveState: UserOptions.presenceState,
+        presenceState: UserOptions.presenceState,
         hideUserStats: UserOptions.hideUserStats,
         mapListLayout: UserOptions.mapListLayout,
       });
+
+    if (!newUserOptions) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    return newUserOptions;
   }),
 } satisfies TRPCRouterRecord;

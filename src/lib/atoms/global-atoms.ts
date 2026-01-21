@@ -1,7 +1,10 @@
 import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
 import type { InputMode } from "lyrics-typing-engine";
 import type { ReactNode } from "react";
+import { DEFAULT_USER_OPTIONS } from "@/server/drizzle/schema";
+import type { Updater } from "@/utils/types";
 
 const store = getDefaultStore();
 
@@ -89,3 +92,11 @@ export const useGlobalLoadingOverlay = () => {
 
   return { showLoading, hideLoading };
 };
+
+export const userOptionsAtom = atom(DEFAULT_USER_OPTIONS);
+const presenceStateAtom = focusAtom(userOptionsAtom, (optic) => optic.prop("presenceState"));
+const mapListLayoutAtom = focusAtom(userOptionsAtom, (optic) => optic.prop("mapListLayout"));
+export const usePresenceOptionState = () => useAtomValue(presenceStateAtom, { store });
+export const useMapListLayoutTypeState = () => useAtomValue(mapListLayoutAtom, { store });
+export const setUserOptions = (update: Updater<ExtractAtomValue<typeof userOptionsAtom>>) =>
+  store.set(userOptionsAtom, update);
