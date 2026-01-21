@@ -1,12 +1,22 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import type { Cell, ColumnDef } from "@tanstack/react-table";
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import type { MouseEvent } from "react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Spinner } from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
+
+declare module "@tanstack/react-table" {
+  // biome-ignore lint/correctness/noUnusedVariables: TValue は react-table 本体との互換性のために宣言
+  interface ColumnMeta<TData, TValue> {
+    cellClassName?: (cell: Cell<TData, unknown>, index: number) => string;
+    headerClassName?: string;
+    onClick?: (event: MouseEvent<HTMLDivElement>, row: TData, index: number) => void;
+  }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

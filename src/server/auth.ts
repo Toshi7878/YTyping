@@ -4,6 +4,19 @@ import NextAuth from "next-auth";
 import authConfig from "@/config/auth.config";
 import { env } from "@/env";
 
+import type { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: "USER" | "ADMIN";
+      email_hash: string;
+    } & DefaultSession["user"];
+  }
+}
+
+
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
   secret: env.AUTH_SECRET,
