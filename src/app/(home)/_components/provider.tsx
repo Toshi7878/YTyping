@@ -1,7 +1,6 @@
 "use client";
 import { Provider } from "jotai";
 import type React from "react";
-import type { RouterOutputs } from "@/server/api/trpc";
 import { getHomeAtomStore } from "../_lib/atoms";
 
 interface JotaiProviderProps {
