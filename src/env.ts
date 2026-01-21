@@ -10,13 +10,13 @@ export const env = createEnv({
 
   shared: {
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    PORT: z.string().optional(),
   },
   /**
    * Specify your server-side environment variables schema here.
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
+    PORT: z.string().optional(),
     AUTH_GOOGLE_ID: isVercel ? z.string().min(1) : z.string().optional(),
     AUTH_GOOGLE_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
     AUTH_DISCORD_ID: isVercel ? z.string().min(1) : z.string().optional(),
@@ -57,7 +57,6 @@ export const env = createEnv({
     NEXT_PUBLIC_MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    PORT: process.env.PORT,
   },
 
   skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "lint",
