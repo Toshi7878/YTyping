@@ -5,10 +5,10 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "YTyping",
     short_name: "YTy",
-    description: "",
+    description: "Lyrics Typing Game",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
+    background_color: "#1f2427",
     theme_color: "#3b5a7d",
     icons: [
       {
