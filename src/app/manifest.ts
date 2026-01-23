@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "YTyping",
-    short_name: "YTy",
+    short_name: "YTyping",
     description: "Lyrics Typing Game",
     start_url: "/",
     display: "standalone",
