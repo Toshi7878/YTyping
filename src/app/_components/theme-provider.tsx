@@ -1,19 +1,21 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import type * as React from "react";
+import type React from "react";
 import { useFaviconTheme } from "@/utils/hooks/use-favicon-theme";
+import { useThemeColor } from "@/utils/hooks/use-theme-color";
 
 export function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
     <NextThemesProvider {...props}>
-      <FaviconTheme />
+      <ClientThemeSideEffects />
       {children}
     </NextThemesProvider>
   );
 }
 
-const FaviconTheme = () => {
+const ClientThemeSideEffects = () => {
   useFaviconTheme();
+  useThemeColor();
   return null;
 };
