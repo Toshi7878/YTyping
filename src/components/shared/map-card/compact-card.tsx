@@ -77,7 +77,13 @@ export const CompactMapCard = ({ map, initialInView, imagePriority = false }: Co
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="sm" priority={imagePriority} />
+      <MapLeftThumbnail
+        alt={map.info.title}
+        media={map.media}
+        size="sm"
+        priority={imagePriority}
+        isStyledMap={map.info.categories.includes("CSS")}
+      />
       {shouldRender && <CompactMapInfo map={map} />}
     </HoverExtractCard>
   );

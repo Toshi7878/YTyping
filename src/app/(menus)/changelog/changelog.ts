@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-1-25",
+    descriptions: ["装飾譜面バッジを追加"],
+  },
+  {
     date: "2026-1-17",
     descriptions: ["譜面一覧に3列 / 2列表示切り替えボタンを追加"],
   },
