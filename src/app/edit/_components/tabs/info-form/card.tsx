@@ -414,7 +414,7 @@ const useOnSubmit = (form: FormType) => {
         form.reset(form.getValues());
         context.client.setQueriesData<RawMapLine[]>(
           trpc.map.detail.getJson.queryFilter({ mapId: id }),
-          () => _variables.mapData,
+          () => _variables.rawMapJson,
         );
         await context.client.invalidateQueries(trpc.map.detail.get.queryOptions({ mapId: id }));
 
@@ -505,7 +505,7 @@ const useOnSubmit = (form: FormType) => {
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,
-      mapData: rawMapLines,
+      rawMapJson: rawMapLines,
       isMapDataEdited: isUpdateUpdatedAt,
       mapId,
     });

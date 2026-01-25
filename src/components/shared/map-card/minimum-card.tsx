@@ -26,7 +26,12 @@ export const MinimumMapCard = ({ map }: MinimumMapCardProps) => {
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="xs" />
+      <MapLeftThumbnail
+        alt={map.info.title}
+        media={map.media}
+        size="xs"
+        isStyledMap={map.info.categories.includes("CSS")}
+      />
       <MinumumMapInfo map={map} />
     </HoverExtractCard>
   );

@@ -125,6 +125,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       kanaKpmMax: MapDifficulties.kanaKpmMax,
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+      categories: Maps.category,
       hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
       hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
       myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
@@ -193,7 +194,13 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
           thumbnailQuality: map.thumbnailQuality,
           previewSpeed: rest.otherStatus.playSpeed,
         },
-        info: { title: map.title, artistName: map.artistName, source: map.musicSource, duration: map.duration },
+        info: {
+          title: map.title,
+          artistName: map.artistName,
+          source: map.musicSource,
+          duration: map.duration,
+          categories: map.categories,
+        },
         creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {
           romaKpmMedian: map.romaKpmMedian,

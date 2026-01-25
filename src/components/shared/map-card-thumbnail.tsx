@@ -1,5 +1,6 @@
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
+import { Palette } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { TooltipWrapper } from "../ui/tooltip";
 
 const mapLeftThumbnailVariants = cva("relative aspect-video", {
   variants: {
@@ -34,6 +36,7 @@ interface MapLeftThumbnailPreviewCoverProps {
   className?: string;
   imageClassName?: string;
   priority?: boolean;
+  isStyledMap?: boolean;
 }
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
@@ -49,6 +52,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
       {media ? (
         <>
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
+          {props.isStyledMap && <StyledMapBadge />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
               alt={alt}
@@ -74,6 +78,16 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
         </div>
       )}
     </div>
+  );
+};
+
+const StyledMapBadge = () => {
+  return (
+    <TooltipWrapper label="装飾譜面">
+      <div className="absolute top-2 left-2 z-10 inline-flex">
+        <Palette className="size-5 rounded-full bg-black/70 p-1" />
+      </div>
+    </TooltipWrapper>
   );
 };
 

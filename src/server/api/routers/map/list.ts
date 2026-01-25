@@ -92,6 +92,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       artistName: Maps.artistName,
       source: Maps.musicSource,
       duration: Maps.duration,
+      categories: Maps.category,
     },
     creator: {
       id: Creator.id,

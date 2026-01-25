@@ -2,8 +2,8 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
-import { db } from "@/server/drizzle/client";
-import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
+import type { TXType } from "@/server/drizzle/client";
+import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
@@ -85,14 +85,15 @@ export const mapDetailRouter = {
   }),
 
   upsert: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
-    const { mapId, isMapDataEdited, mapData, mapInfo, mapDifficulty } = input;
-    const userId = ctx.user.id;
-    const userRole = ctx.user.role;
+    const { db, user } = ctx;
+    const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
+    const userId = user.id;
+    const userRole = user.role;
 
     const hasUpsertPermission =
       mapId === null
         ? true
-        : await ctx.db.query.Maps.findFirst({
+        : await db.query.Maps.findFirst({
             columns: { creatorId: true },
             where: eq(Maps.id, mapId),
           }).then((row) => row?.creatorId === userId || userRole === "ADMIN");
@@ -108,26 +109,26 @@ export const mapDetailRouter = {
       let newId: number | undefined;
 
       if (mapId === null) {
-        const maxId = await tx
-          .select({ maxId: max(Maps.id) })
-          .from(Maps)
-          .then((rows) => rows[0]?.maxId ?? 0);
-
-        const nextId = maxId + 1;
+        const nextId = await getNextMapId(tx);
 
         newId = await tx
           .insert(Maps)
-          .values({ id: nextId, ...mapInfo, creatorId: userId })
+          .values({ id: nextId, ...mapInfo, creatorId: userId, category: getMapCategories(rawMapJson) })
           .returning({ id: Maps.id })
           .then((res) => res[0]?.id);
       } else {
         newId = await tx
           .update(Maps)
-          .set({ ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) })
+          .set({
+            ...mapInfo,
+            category: getMapCategories(rawMapJson),
+            ...(isMapDataEdited ? { updatedAt: new Date() } : {}),
+          })
           .where(eq(Maps.id, mapId))
           .returning({ id: Maps.id })
           .then((res) => res[0]?.id);
       }
+
       if (!newId) {
         throw new TRPCError({ code: "PRECONDITION_FAILED" });
       }
@@ -139,7 +140,7 @@ export const mapDetailRouter = {
 
       await uploadPublicFile({
         key: `map-json/${mapId === null ? newId : mapId}.json`,
-        body: JSON.stringify(mapData, null, 2),
+        body: JSON.stringify(rawMapJson, null, 2),
         contentType: "application/json",
       });
 
@@ -149,3 +150,39 @@ export const mapDetailRouter = {
     return { id: newMapId, creatorId: userId };
   }),
 } satisfies TRPCRouterRecord;
+
+const getNextMapId = async (db: TXType) => {
+  const maxId = await db
+    .select({ maxId: max(Maps.id) })
+    .from(Maps)
+    .then((rows) => rows[0]?.maxId ?? 0);
+
+  return maxId + 1;
+};
+
+type MapCategory = (typeof MAP_CATEGORIES)[number];
+
+const getMapCategories = (rawMap: z.output<typeof UpsertMapSchema>["rawMapJson"]): MapCategory[] => {
+  const categories = new Set<MapCategory>();
+
+  for (const line of rawMap) {
+    const options = line.options;
+    if (!options) continue;
+
+    const hasCss =
+      options.isChangeCSS === true ||
+      (typeof options.changeCSS === "string" && options.changeCSS.trim().length > 0) ||
+      (typeof options.eternalCSS === "string" && options.eternalCSS.trim().length > 0);
+    if (hasCss) categories.add("CSS");
+
+    const hasSpeedShift = typeof options.changeVideoSpeed === "number" && options.changeVideoSpeed !== 0;
+    if (hasSpeedShift) categories.add("SPEED_SHIFT");
+
+    const hasCaseSensitive = options.isCaseSensitive;
+    if (hasCaseSensitive) categories.add("CASE_SENSITIVE");
+
+    if (categories.size >= MAP_CATEGORIES.length) break;
+  }
+
+  return Array.from(categories);
+};

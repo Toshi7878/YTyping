@@ -24,7 +24,6 @@ export const notificationRouter = {
     const mapQuery = {
       columns: {
         creatorComment: false,
-        category: false,
         createdAt: false,
         creatorId: false,
         playCount: false,
@@ -123,7 +122,13 @@ export const notificationRouter = {
           thumbnailQuality: map.thumbnailQuality,
           previewSpeed,
         },
-        info: { title: map.title, artistName: map.artistName, source: map.musicSource, duration: map.duration },
+        info: {
+          title: map.title,
+          artistName: map.artistName,
+          source: map.musicSource,
+          duration: map.duration,
+          categories: map.category,
+        },
         creator: { id: map.creator.id, name: map.creator.name },
         difficulty: {
           romaKpmMedian: map.difficulty.romaKpmMedian,

@@ -47,6 +47,6 @@ export const UpsertMapSchema = z.object({
   mapId: z.number().nullable(),
   mapInfo: MapInfoApiSchema,
   mapDifficulty: CreateMapDifficultySchema,
-  mapData: RawMapSchema,
+  rawMapJson: RawMapSchema,
   isMapDataEdited: z.boolean(),
 });

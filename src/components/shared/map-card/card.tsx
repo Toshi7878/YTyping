@@ -38,7 +38,13 @@ export const MapCard = ({ map, initialInView = false, imagePriority = false }: M
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" priority={imagePriority} />
+      <MapLeftThumbnail
+        alt={map.info.title}
+        media={map.media}
+        size="home"
+        priority={imagePriority}
+        isStyledMap={map.info.categories.includes("CSS")}
+      />
       {shouldRender && <MapInfo map={map} />}
     </HoverExtractCard>
   );

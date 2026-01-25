@@ -14,7 +14,8 @@ import {
 import { MAX_MEDIUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 import { Users } from "./user";
 
-export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
+export const MAP_CATEGORIES = ["CSS", "SPEED_SHIFT", "CASE_SENSITIVE"] as const;
+export const categoryEnum = pgEnum("category", MAP_CATEGORIES);
 export const YOUTUBE_THUMBNAIL_QUALITIES = ["mqdefault", "maxresdefault"] as const;
 export const thumbnailQualityEnum = pgEnum("thumbnail_quality", YOUTUBE_THUMBNAIL_QUALITIES);
 export const Maps = pgTable("maps", {

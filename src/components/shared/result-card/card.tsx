@@ -69,6 +69,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
             media={shouldRender ? result?.map.media : undefined}
             size="xs"
             priority={initialInView}
+            isStyledMap={result.map.info.categories.includes("CSS")}
           />
           {shouldRender && <MapInfo map={result.map} className="flex-1" />}
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}

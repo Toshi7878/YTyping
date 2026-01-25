@@ -53,6 +53,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
         media={map.media}
         size="sm"
         imageClassName="rounded-t-none rounded-br-none"
+        isStyledMap={map.info.categories.includes("CSS")}
       />
       <CompactMapInfo map={map} />
     </HoverExtractCard>

@@ -47,12 +47,7 @@ export const resultDetailRouter = {
           .returning({ id: Results.id })
           .then((res) => res[0]?.id);
       } else {
-        const maxId = await tx
-          .select({ maxId: max(Results.id) })
-          .from(Results)
-          .then((rows) => rows[0]?.maxId ?? 0);
-
-        const nextId = maxId + 1;
+        const nextId = await getNextResultId(tx);
 
         resultId = await tx
           .insert(Results)
@@ -100,6 +95,15 @@ export const resultDetailRouter = {
     });
   }),
 } satisfies TRPCRouterRecord;
+
+const getNextResultId = async (db: TXType) => {
+  const maxId = await db
+    .select({ maxId: max(Results.id) })
+    .from(Results)
+    .then((rows) => rows[0]?.maxId ?? 0);
+
+  return maxId + 1;
+};
 
 const cleanupOutdatedOvertakeNotifications = async ({
   tx,
