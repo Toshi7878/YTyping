@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CreatedVideoMapList } from "@/components/shared/created-video-map-list";
+import { CreatedMapListByVideoId } from "@/components/shared/created-video-map-list";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
+import { SimilarMapListByVideoId } from "../_components/similar-map-list";
 import { searchParamsLoader } from "../_lib/search-params";
 
 export const metadata: Metadata = {
@@ -19,7 +20,8 @@ export default async function Page({ searchParams }: PageProps<"/edit">) {
   return (
     <JotaiProvider videoId={videoId}>
       <Content type="new" />
-      <CreatedVideoMapList videoId={videoId} disabledNotFoundText />
+      <CreatedMapListByVideoId videoId={videoId} disabledNotFoundText />
+      <SimilarMapListByVideoId videoId={videoId} />
     </JotaiProvider>
   );
 }

@@ -163,9 +163,6 @@ export const AddMapInfoFormCard = () => {
         enabled: hasUploadPermission,
         staleTime: Infinity,
         gcTime: Infinity,
-        retry: false,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
       },
     ),
   );

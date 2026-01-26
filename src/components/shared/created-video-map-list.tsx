@@ -5,12 +5,12 @@ import { useTRPC } from "@/trpc/provider";
 import { Spinner } from "../ui/spinner";
 import { MapCard } from "./map-card/card";
 
-interface CreatedVideoMapListProps {
+interface CreatedMapListByVideoIdProps {
   videoId: string;
   disabledNotFoundText?: boolean;
 }
 
-export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
+export const CreatedMapListByVideoId = ({ videoId, disabledNotFoundText = false }: CreatedMapListByVideoIdProps) => {
   const trpc = useTRPC();
   const { data, isPending } = useQuery(trpc.map.list.getByVideoId.queryOptions({ videoId }));
   if (isPending) return <Spinner />;

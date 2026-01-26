@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { CreatedVideoMapList } from "@/components/shared/created-video-map-list";
+import { CreatedMapListByVideoId } from "@/components/shared/created-video-map-list";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
@@ -92,7 +92,7 @@ export const NewMapPopover = () => {
 
         {extractedVideoId && (
           <div className="px-6 pb-6">
-            <CreatedVideoMapList videoId={extractedVideoId} />
+            <CreatedMapListByVideoId videoId={extractedVideoId} />
           </div>
         )}
       </PopoverContent>

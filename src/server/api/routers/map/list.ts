@@ -64,6 +64,15 @@ export const mapListRouter = {
       .orderBy(desc(Maps.id));
   }),
 
+  getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+    const { title } = input;
+
+    return await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
+      .where(eq(Maps.title, title))
+      .orderBy(desc(Maps.id));
+  }),
+
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
 

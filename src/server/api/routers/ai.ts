@@ -37,6 +37,7 @@ const parseMapInfoResponseText = (responseText: string) => {
     source: string;
     artistName: string;
     otherTags: string[];
+    originalTitle: string;
   };
 
   return {
@@ -44,5 +45,6 @@ const parseMapInfoResponseText = (responseText: string) => {
     source: parsed?.source ?? "",
     artistName: parsed?.artistName ?? "",
     otherTags: parsed?.otherTags ?? [],
+    originalTitle: parsed?.originalTitle ?? "",
   };
 };

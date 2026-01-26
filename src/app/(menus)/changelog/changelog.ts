@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-1-26",
+    descriptions: ["新規譜面作成ページで類似タイトルの譜面が存在する場合にページ下部に表示"],
+  },
+  {
     date: "2026-1-25",
     descriptions: ["装飾譜面バッジを追加"],
   },
