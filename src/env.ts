@@ -17,27 +17,30 @@ export const env = createEnv({
    */
   server: {
     PORT: z.string().optional(),
-    AUTH_GOOGLE_ID: isVercel ? z.string().min(1) : z.string().optional(),
-    AUTH_GOOGLE_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
-    AUTH_DISCORD_ID: isVercel ? z.string().min(1) : z.string().optional(),
-    AUTH_DISCORD_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
-    AUTH_SECRET: isVercel ? z.string().min(1) : z.string().optional().default("auth-secret"),
-
-    GCP_AUTH_KEY: z.string().min(1).optional(),
-
-    YAHOO_APP_ID: z.string().min(1).optional(),
-    SUDACHI_API_KEY: z.string().min(1).optional(),
-    SUDACHI_API_URL: z.url().optional(),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.url(),
-    SUPABASE_SECRET_KEY: z.string().optional(),
-    VERCEL_PROJECT_ID: isVercel ? z.string().min(1) : z.string().optional(),
-    VERCEL_API_TOKEN: isVercel ? z.string().min(1) : z.string().optional(),
-    R2_ACCOUNT_ID: z.string().optional(),
-    R2_ACCESS_KEY_ID: z.string().optional(),
-    R2_SECRET_ACCESS_KEY: z.string().optional(),
-    R2_BUCKET_NAME: z.string().optional(),
+
+    R2_ACCOUNT_ID: isVercel ? z.string() : z.string().optional(),
+    R2_ACCESS_KEY_ID: isVercel ? z.string() : z.string().optional(),
+    R2_SECRET_ACCESS_KEY: isVercel ? z.string() : z.string().optional(),
+    R2_BUCKET_NAME: isVercel ? z.string() : z.string().optional(),
+
+    AUTH_GOOGLE_ID: isVercel ? z.string() : z.string().optional(),
+    AUTH_GOOGLE_SECRET: isVercel ? z.string() : z.string().optional(),
+    AUTH_DISCORD_ID: isVercel ? z.string() : z.string().optional(),
+    AUTH_DISCORD_SECRET: isVercel ? z.string() : z.string().optional(),
+    AUTH_SECRET: isVercel ? z.string() : z.string().optional().default("auth-secret"),
+
+    GCP_AUTH_KEY: isVercel ? z.string() : z.string().optional(),
+    VERCEL_PROJECT_ID: isVercel ? z.string() : z.string().optional(),
+    VERCEL_API_TOKEN: isVercel ? z.string() : z.string().optional(),
+    SUDACHI_API_KEY: isVercel ? z.string() : z.string().optional(),
+    SUDACHI_API_URL: isVercel ? z.url() : z.url().optional(),
+
+    // 開発環境用
+    YAHOO_APP_ID: isVercel ? z.undefined() : z.string().optional(),
+    SUPABASE_SECRET_KEY: isVercel ? z.undefined() : z.string(),
   },
 
   /**
@@ -46,8 +49,8 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_MAINTENANCE_MODE: z.enum(["true", "false"]).optional().default("false"),
-    NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+    NEXT_PUBLIC_SUPABASE_URL: z.string(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
