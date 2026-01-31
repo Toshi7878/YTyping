@@ -12,100 +12,75 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, type buttonVariants } from "../button";
 
-// --- Types ---
-
-type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
-
-export interface ConfirmDialogOptions {
+interface ConfirmDialogOptions {
   title: string;
   description?: string;
   actionButton: string;
 }
 
-interface ConfirmDialogOptionsWithVariant extends ConfirmDialogOptions {
-  actionButtonVariant?: ButtonVariant;
-}
+// --- Store ---
 
-interface DialogState {
+let state: {
   open: boolean;
-  options: ConfirmDialogOptionsWithVariant | null;
-  resolve: ((value: boolean) => void) | null;
-}
+  options?: ConfirmDialogOptions;
+  variant?: VariantProps<typeof buttonVariants>["variant"];
+  resolve?: (value: boolean) => void;
+} = { open: false };
 
-// --- Store (外部ストア) ---
-
-const initialState: DialogState = {
-  open: false,
-  options: null,
-  resolve: null,
-};
-
-let state: DialogState = initialState;
-const listeners = new Set<() => void>();
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-function getSnapshot() {
-  return state;
-}
-
-function setState(newState: DialogState) {
-  state = newState;
-  for (const listener of listeners) {
-    listener();
-  }
-}
+let listener: (() => void) | null = null;
 
 // --- Public API ---
 
-function createConfirmDialog(variant: ButtonVariant) {
-  return (options: ConfirmDialogOptions): Promise<boolean> => {
-    return new Promise<boolean>((resolve) => {
-      setState({
-        open: true,
-        options: { ...options, actionButtonVariant: variant },
-        resolve,
-      });
-    });
-  };
-}
+const open = (options: ConfirmDialogOptions, variant: (typeof state)["variant"] = "warning") =>
+  new Promise<boolean>((resolve) => {
+    state = { open: true, options, variant, resolve };
+    listener?.();
+  });
 
-function baseConfirmDialog(options: ConfirmDialogOptions): Promise<boolean> {
-  return createConfirmDialog("warning")(options);
-}
-
-export const confirmDialog = Object.assign(baseConfirmDialog, {
-  warning: createConfirmDialog("warning"),
-  destructive: createConfirmDialog("destructive"),
+export const confirmDialog = Object.assign((options: ConfirmDialogOptions) => open(options), {
+  warning: (options: ConfirmDialogOptions) => open(options, "warning"),
+  destructive: (options: ConfirmDialogOptions) => open(options, "destructive"),
 });
 
 // --- Component ---
 
 export function ConfirmDialog() {
-  const { open, options, resolve } = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const {
+    open: isOpen,
+    options,
+    variant,
+    resolve,
+  } = useSyncExternalStore(
+    (fn) => {
+      listener = fn;
+      return () => {
+        listener = null;
+      };
+    },
+    () => state,
+    () => state,
+  );
 
-  const handleClose = (result: boolean) => {
+  const close = (result: boolean) => {
     resolve?.(result);
-    setState(initialState);
+    state = { open: false };
+    listener?.();
   };
 
   if (!options) return null;
 
   return (
-    <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose(false)}>
+    <AlertDialog open={isOpen} onOpenChange={(o) => !o && close(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button type="button" onClick={() => handleClose(false)} variant="outline">
+          <Button type="button" variant="outline" onClick={() => close(false)}>
             キャンセル
           </Button>
-          <Button type="button" onClick={() => handleClose(true)} variant={options.actionButtonVariant ?? "warning"}>
+          <Button type="button" variant={variant} onClick={() => close(true)}>
             {options.actionButton}
           </Button>
         </AlertDialogFooter>
