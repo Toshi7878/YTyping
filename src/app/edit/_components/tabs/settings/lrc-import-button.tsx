@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import { importMapFile } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/components/ui/button";
-import { loadingOverlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/loading-overlay";
 
 export const LrcImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -14,7 +14,7 @@ export const LrcImportButton = () => {
     if (!file) return;
 
     try {
-      loadingOverlay.show({ message: "lrcインポート中..." });
+      overlay.loading("lrcインポート中...");
 
       await importMapFile(file);
       toast.success("lrcインポート完了");
@@ -24,7 +24,7 @@ export const LrcImportButton = () => {
       });
     } finally {
       e.target.value = "";
-      loadingOverlay.hide();
+      overlay.hide();
     }
   };
   return (

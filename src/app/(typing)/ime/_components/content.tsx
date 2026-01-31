@@ -10,7 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { loadingOverlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/loading-overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/raw-map-json";
@@ -39,7 +39,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     trpc.map.detail.getJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const loadMap = async (mapData: RawMapLine[]) => {
-    loadingOverlay.show({ message: "ひらがな判定生成中..." });
+    overlay.loading("ひらがな判定生成中...");
 
     try {
       const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = readImeTypeOptions();
@@ -50,17 +50,14 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const flatWords = createFlatWords(words);
       const initWordResults = createInitWordResults(flatWords);
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
-      loadingOverlay.hide();
+      overlay.hide();
     } catch {
-      loadingOverlay.show({
-        message: (
-          <div className="flex h-full flex-col items-center justify-center gap-2">
-            ワード生成に失敗しました。
-            <Button onClick={() => loadMap(mapData)}>再試行</Button>
-          </div>
-        ),
-        hideSpinner: true,
-      });
+      overlay.message(
+        <div className="flex h-full flex-col items-center justify-center gap-2">
+          ワード生成に失敗しました。
+          <Button onClick={() => loadMap(mapData)}>再試行</Button>
+        </div>,
+      );
     }
   };
 
@@ -68,7 +65,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     if (mapJson) {
       void loadMap(mapJson);
     } else {
-      loadingOverlay.show({ message: "譜面読み込み中..." });
+      overlay.loading("譜面読み込み中...");
     }
   }, [mapJson, loadMap]);
 
@@ -76,7 +73,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     return () => {
       void mutateImeStats();
       pathChangeAtomReset();
-      loadingOverlay.hide();
+      overlay.hide();
     };
   }, [pathname]);
 

@@ -36,7 +36,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
 
   return (
     <div className="relative h-fit">
-      <LoadingOverlayProvider isLoading={!videoId} message="動画読込中..." asChild>
+      <LoadingOverlayProvider isLoading={!videoId} description="動画読込中..." asChild>
         <YouTube
           className={cn(className, !videoId && "invisible")}
           id="edit_youtube"

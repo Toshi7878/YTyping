@@ -8,28 +8,29 @@ import { Spinner } from "./spinner";
 
 // --- Store ---
 
-interface LoadingState {
-  message?: ReactNode;
-  hideSpinner?: boolean;
+interface OverlayState {
+  type: "loading" | "message";
+  description?: ReactNode;
 }
 
-const store: { state?: LoadingState; onStoreChange?: () => void } = {};
+const store: { state?: OverlayState; onStoreChange?: () => void } = {};
 
-const setState = (nextState: LoadingState | undefined) => {
+const setState = (nextState: OverlayState | undefined) => {
   store.state = nextState;
   store.onStoreChange?.();
 };
 
 // --- Public API ---
 
-export const loadingOverlay = {
-  show: ({ message, hideSpinner }: LoadingState = {}) => setState({ message, hideSpinner }),
+export const overlay = {
+  loading: (description: ReactNode) => setState({ type: "loading", description }),
+  message: (description: ReactNode) => setState({ type: "message", description }),
   hide: () => setState(undefined),
 };
 
 // --- Host Component (layout.tsx に配置) ---
 
-export function LoadingOverlayHost() {
+export function OverlayHost() {
   const state = useSyncExternalStore(
     (onStoreChange) => {
       store.onStoreChange = onStoreChange;
@@ -42,7 +43,7 @@ export function LoadingOverlayHost() {
   );
 
   return (
-    <LoadingOverlay isLoading={!!state} message={state?.message} hideSpinner={state?.hideSpinner} position="fixed" />
+    <Overlay show={!!state} showSpinner={state?.type === "loading"} description={state?.description} position="fixed" />
   );
 }
 
@@ -50,22 +51,13 @@ export function LoadingOverlayHost() {
 
 interface LoadingOverlayProviderProps {
   isLoading: boolean;
-  message?: ReactNode;
-  hideSpinner?: boolean;
+  description?: ReactNode;
   children?: ReactNode;
   asChild?: boolean;
 }
 
-export const LoadingOverlayProvider = ({
-  isLoading,
-  message,
-  hideSpinner,
-  children,
-  asChild,
-}: LoadingOverlayProviderProps) => {
-  const overlay = (
-    <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} position="absolute" />
-  );
+export const LoadingOverlayProvider = ({ isLoading, description, children, asChild }: LoadingOverlayProviderProps) => {
+  const overlay = <Overlay show={isLoading} showSpinner={true} description={description} position="absolute" />;
 
   return asChild ? (
     <>
@@ -82,16 +74,16 @@ export const LoadingOverlayProvider = ({
 
 // --- Shared UI ---
 
-interface LoadingOverlayProps {
-  isLoading: boolean;
-  message?: ReactNode;
-  hideSpinner?: boolean;
+interface OverlayProps {
+  show: boolean;
+  showSpinner: boolean;
+  description?: ReactNode;
   position: "fixed" | "absolute";
 }
 
-const LoadingOverlay = ({ isLoading, message, hideSpinner, position }: LoadingOverlayProps) => (
+const Overlay = ({ show, showSpinner, description, position }: OverlayProps) => (
   <AnimatePresence mode="wait">
-    {isLoading && (
+    {show && (
       <motion.div
         initial={{ opacity: 0.2 }}
         animate={{ opacity: 1 }}
@@ -101,8 +93,8 @@ const LoadingOverlay = ({ isLoading, message, hideSpinner, position }: LoadingOv
         aria-busy="true"
         aria-label="Loading"
       >
-        {!hideSpinner && <Spinner size="xl" />}
-        {message && <div className="mt-4 font-medium text-overlay-foreground">{message}</div>}
+        {showSpinner && <Spinner size="xl" />}
+        {description && <div className="mt-4 font-medium text-overlay-foreground">{description}</div>}
       </motion.div>
     )}
   </AnimatePresence>

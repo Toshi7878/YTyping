@@ -83,7 +83,7 @@ export const EditMapTable = () => {
   }, [mapData]);
 
   return (
-    <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
+    <LoadingOverlayProvider isLoading={isLoading} description="Loading...">
       <MapTable />
     </LoadingOverlayProvider>
   );

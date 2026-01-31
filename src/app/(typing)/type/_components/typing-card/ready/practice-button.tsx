@@ -6,7 +6,7 @@ import { iosActiveSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/update-status/recalc-from-results";
 import { queryResultJson } from "@/app/(typing)/type/_lib/query-result-json";
 import { Button } from "@/components/ui/button";
-import { loadingOverlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/loading-overlay";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();
@@ -16,7 +16,7 @@ export const ReadyPracticeButton = () => {
     if (map) {
       iosActiveSound();
       primeYTPlayerForMobilePlayback();
-      loadingOverlay.show({ message: "リザルトデータを読込中..." });
+      overlay.loading("リザルトデータを読込中...");
       setScene("practice");
       const resultId = getRankingMyResult(session)?.id;
 
@@ -25,7 +25,7 @@ export const ReadyPracticeButton = () => {
           await queryResultJson(resultId);
         }
       } finally {
-        loadingOverlay.hide();
+        overlay.hide();
         playYTPlayer();
         const map = readBuiltMap();
         const scene = readScene();
