@@ -67,7 +67,7 @@ importers:
         version: 1.6.1(next@16.1.5(@babel/core@7.28.6)(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@vercel/sdk':
         specifier: ^1.18.7
-        version: 1.18.7(hono@4.11.4)
+        version: 1.18.9(hono@4.11.4)
       ai:
         specifier: ^6.0.37
         version: 6.0.64(zod@4.3.5)
@@ -1124,8 +1124,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@modelcontextprotocol/sdk@1.25.2':
-    resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
+  '@modelcontextprotocol/sdk@1.25.3':
+    resolution: {integrity: sha512-vsAMBMERybvYgKbg/l4L1rhS7VXV1c0CtyJg72vwxONVX0l4ZfKVAnZEWTQixJGTzKnELjQ59e4NbdFDALRiAQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -2886,8 +2886,8 @@ packages:
     resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
     engines: {node: '>= 20'}
 
-  '@vercel/sdk@1.18.7':
-    resolution: {integrity: sha512-2PwPnlkOEj0H7ieSZW1CPYdqgWBhahlaDpwPLk5RtnAwjB3TqqzQIASBrl9Hj+uZrUeXJR2Lt8A+ONaaYMNAfA==}
+  '@vercel/sdk@1.18.9':
+    resolution: {integrity: sha512-wB1Mc4SP4I61FQN1flzY/4dIpu5jPX1sCDA/bzoOOYVDlJ3GPt11/iHyOO3KB+wDD9Bjv/h18jroMAf7Il3ccw==}
     hasBin: true
 
   '@webassemblyjs/ast@1.14.1':
@@ -3176,8 +3176,8 @@ packages:
     resolution: {integrity: sha512-7Vv6asjS4gMOuILabD3l739tsaxFQmC+a7pLZm02zyvs8p977bL3zEgq3yDk5rn9B0PbYgIv++jmHcuUab4RhA==}
     engines: {node: '>=18'}
 
-  cors@2.8.5:
-    resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
+  cors@2.8.6:
+    resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
 
   cross-spawn@7.0.6:
@@ -5898,13 +5898,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@modelcontextprotocol/sdk@1.25.2(hono@4.11.4)(zod@4.3.5)':
+  '@modelcontextprotocol/sdk@1.25.3(hono@4.11.4)(zod@4.3.5)':
     dependencies:
       '@hono/node-server': 1.19.9(hono@4.11.4)
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       content-type: 1.0.5
-      cors: 2.8.5
+      cors: 2.8.6
       cross-spawn: 7.0.6
       eventsource: 3.0.7
       eventsource-parser: 3.0.6
@@ -7846,9 +7846,9 @@ snapshots:
 
   '@vercel/oidc@3.1.0': {}
 
-  '@vercel/sdk@1.18.7(hono@4.11.4)':
+  '@vercel/sdk@1.18.9(hono@4.11.4)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.25.2(hono@4.11.4)(zod@4.3.5)
+      '@modelcontextprotocol/sdk': 1.25.3(hono@4.11.4)(zod@4.3.5)
       zod: 4.3.5
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -8154,7 +8154,7 @@ snapshots:
     dependencies:
       is-what: 5.5.0
 
-  cors@2.8.5:
+  cors@2.8.6:
     dependencies:
       object-assign: 4.1.1
       vary: 1.1.2
