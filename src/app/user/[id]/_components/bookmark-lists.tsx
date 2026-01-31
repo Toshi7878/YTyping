@@ -151,7 +151,7 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
     const isConfirmed = await confirmDialog.danger({
       title: "リストを削除",
       description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
-      actionButton: "削除する",
+      confirmLabel: "削除する",
     });
     if (!isConfirmed) return;
     deleteListMutation.mutate({ listId: list.id });

@@ -15,7 +15,7 @@ import {
 interface ConfirmDialogOptions {
   title: string;
   description?: string;
-  actionButton: string;
+  confirmLabel: string;
 }
 
 // --- Store ---
@@ -78,7 +78,7 @@ export function Confirmer() {
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => close(false)}>キャンセル</AlertDialogCancel>
           <AlertDialogAction variant={variant} onClick={() => close(true)}>
-            {options.actionButton}
+            {options.confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

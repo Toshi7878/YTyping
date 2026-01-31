@@ -80,7 +80,7 @@ export const SettingPopover = () => {
     const isConfirmed = await confirmDialog.warning({
       title: "設定をリセット",
       description: "すべての設定をデフォルトにリセットしますか？",
-      actionButton: "リセットする",
+      confirmLabel: "リセットする",
     });
 
     if (isConfirmed) {

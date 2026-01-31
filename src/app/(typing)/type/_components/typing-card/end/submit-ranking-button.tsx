@@ -50,7 +50,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     const isConfirmed = await confirmDialog.warning({
       title: "スコア未更新",
       description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
-      actionButton: "ランキングに登録",
+      confirmLabel: "ランキングに登録",
     });
 
     if (isConfirmed) {
