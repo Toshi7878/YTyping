@@ -10,7 +10,7 @@ import { Spinner } from "./spinner";
 
 interface OverlayState {
   type: "loading" | "message";
-  description?: ReactNode;
+  description: ReactNode;
 }
 
 const store: { state?: OverlayState; onStoreChange?: () => void } = {};
@@ -51,8 +51,8 @@ export function OverlayHost() {
 
 interface LoadingOverlayProviderProps {
   isLoading: boolean;
-  description?: ReactNode;
-  children?: ReactNode;
+  description: ReactNode;
+  children: ReactNode;
   asChild?: boolean;
 }
 
@@ -77,7 +77,7 @@ export const LoadingOverlayProvider = ({ isLoading, description, children, asChi
 interface OverlayProps {
   show: boolean;
   showSpinner: boolean;
-  description?: ReactNode;
+  description: ReactNode;
   position: "fixed" | "absolute";
 }
 
@@ -94,7 +94,7 @@ const Overlay = ({ show, showSpinner, description, position }: OverlayProps) => 
         aria-label="Loading"
       >
         {showSpinner && <Spinner size="xl" />}
-        {description && <div className="mt-4 font-medium text-overlay-foreground">{description}</div>}
+        <div className="mt-4 font-medium text-overlay-foreground">{description}</div>
       </motion.div>
     )}
   </AnimatePresence>
