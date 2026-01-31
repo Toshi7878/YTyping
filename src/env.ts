@@ -40,7 +40,7 @@ export const env = createEnv({
 
     // 開発環境用
     YAHOO_APP_ID: isVercel ? z.undefined() : z.string().optional(),
-    SUPABASE_SECRET_KEY: isVercel ? z.undefined() : z.string(),
+    SUPABASE_SECRET_KEY: isVercel ? z.undefined() : z.string().optional(),
   },
 
   /**
