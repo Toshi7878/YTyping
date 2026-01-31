@@ -20,27 +20,32 @@ interface ConfirmDialogOptions {
 
 // --- Store ---
 
-let state: {
+const store: {
   open: boolean;
   options?: ConfirmDialogOptions;
   variant?: VariantProps<typeof buttonVariants>["variant"];
   resolve?: (value: boolean) => void;
-} = { open: false };
-
-let listener: (() => void) | null = null;
+  listener?: () => void;
+  set: (patch: Partial<typeof store>) => void;
+} = {
+  open: false,
+  set(patch) {
+    Object.assign(this, patch);
+    this.listener?.();
+  },
+};
 
 // --- Public API ---
 
-const open = (options: ConfirmDialogOptions, variant: (typeof state)["variant"] = "warning") =>
-  new Promise<boolean>((resolve) => {
-    state = { open: true, options, variant, resolve };
-    listener?.();
-  });
-
-export const confirmDialog = Object.assign((options: ConfirmDialogOptions) => open(options), {
-  warning: (options: ConfirmDialogOptions) => open(options, "warning"),
-  destructive: (options: ConfirmDialogOptions) => open(options, "destructive"),
+export const confirmDialog = Object.assign((options: ConfirmDialogOptions) => showDialog(options), {
+  warning: (options: ConfirmDialogOptions) => showDialog(options, "warning"),
+  destructive: (options: ConfirmDialogOptions) => showDialog(options, "destructive"),
 });
+
+const showDialog = (options: ConfirmDialogOptions, variant: (typeof store)["variant"] = "warning") =>
+  new Promise<boolean>((resolve) => {
+    store.set({ open: true, options, variant, resolve });
+  });
 
 // --- Component ---
 
@@ -52,19 +57,18 @@ export function ConfirmDialog() {
     resolve,
   } = useSyncExternalStore(
     (fn) => {
-      listener = fn;
+      store.listener = fn;
       return () => {
-        listener = null;
+        store.listener = undefined;
       };
     },
-    () => state,
-    () => state,
+    () => store,
+    () => store,
   );
 
   const close = (result: boolean) => {
     resolve?.(result);
-    state = { open: false };
-    listener?.();
+    store.set({ open: false, options: undefined, resolve: undefined });
   };
 
   if (!options) return null;
