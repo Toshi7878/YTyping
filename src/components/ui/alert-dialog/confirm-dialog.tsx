@@ -77,7 +77,7 @@ export function ConfirmDialog() {
   };
 
   return (
-    <AlertDialog onOpenChange={(open) => !open && close(false)}>
+    <AlertDialog open={isOpen} onOpenChange={(open) => !open && close(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
