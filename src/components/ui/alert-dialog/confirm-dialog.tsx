@@ -1,7 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
-import { useSyncExternalStore } from "react";
+import { type ComponentProps, useSyncExternalStore } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-type ButtonVariant = ComponentProps<typeof AlertDialogAction>["variant"];
 
 interface ConfirmDialogOptions {
   title: string;
@@ -26,16 +23,20 @@ interface ConfirmDialogOptions {
 interface State {
   open: boolean;
   options?: ConfirmDialogOptions;
-  variant?: ButtonVariant;
+  variant?: ComponentProps<typeof AlertDialogAction>["variant"];
   resolve?: (value: boolean) => void;
 }
 
-let state: State = { open: false };
-let listener: (() => void) | undefined;
+const store: { state: State; listener: (() => void) | undefined } = {
+  state: { open: false },
+  listener: undefined,
+};
 
-const setState = (patch: Partial<State>) => {
-  state = { ...state, ...patch };
-  listener?.();
+const setState = (patch: State) => {
+  store.state = { ...store.state, ...patch };
+
+  // useSyncExternalStoreに変更を通知しConfirmDialog再レンダリング
+  store.listener?.();
 };
 
 // --- Public API ---
@@ -45,7 +46,7 @@ export const confirmDialog = {
   destructive: (options: ConfirmDialogOptions) => show(options, "destructive"),
 } as const;
 
-const show = (options: ConfirmDialogOptions, variant: ButtonVariant = "warning") =>
+const show = (options: ConfirmDialogOptions, variant: State["variant"] = "warning") =>
   new Promise<boolean>((resolve) => {
     setState({ open: true, options, variant, resolve });
   });
@@ -60,24 +61,23 @@ export function ConfirmDialog() {
     resolve,
   } = useSyncExternalStore(
     (fn) => {
-      listener = fn;
+      store.listener = fn;
       return () => {
-        listener = undefined;
+        store.listener = undefined;
       };
     },
-    () => state,
-    () => state,
+    () => store.state, // getSnapshot,
+    () => store.state, // getServerSnapshot,
   );
+  if (!isOpen || !options || !resolve) return null;
 
   const close = (result: boolean) => {
-    resolve?.(result);
+    resolve(result);
     setState({ open: false, options: undefined, resolve: undefined });
   };
 
-  if (!options) return null;
-
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && close(false)}>
+    <AlertDialog onOpenChange={(open) => !open && close(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
