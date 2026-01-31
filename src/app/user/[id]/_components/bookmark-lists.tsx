@@ -14,10 +14,10 @@ import type z from "zod";
 import { BookmarkListFormFields } from "@/components/shared/bookmark/bookmark-list-popover";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { confirmDialog } from "@/components/ui/confirmer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -148,10 +148,10 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   );
 
   const handleDelete = async () => {
-    const isConfirmed = await confirmDialog.destructive({
+    const isConfirmed = await confirmDialog.danger({
       title: "リストを削除",
       description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
-      actionButton: "削除する",
+      confirmLabel: "削除する",
     });
     if (!isConfirmed) return;
     deleteListMutation.mutate({ listId: list.id });

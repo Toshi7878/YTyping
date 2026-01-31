@@ -2,7 +2,7 @@
 
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useVideoIdState } from "../_lib/atoms/hydrate";
@@ -36,7 +36,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
 
   return (
     <div className="relative h-fit">
-      <LoadingOverlayProvider isLoading={!videoId} message="動画読込中..." asChild>
+      <LoadingOverlayProvider isLoading={!videoId} description="動画読込中..." asChild>
         <YouTube
           className={cn(className, !videoId && "invisible")}
           id="edit_youtube"

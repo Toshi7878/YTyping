@@ -10,7 +10,7 @@ import { type Options, useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { fetchBackupMap } from "@/lib/indexed-db";
@@ -83,7 +83,7 @@ export const EditMapTable = () => {
   }, [mapData]);
 
   return (
-    <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
+    <LoadingOverlayProvider isLoading={isLoading} description="Loading...">
       <MapTable />
     </LoadingOverlayProvider>
   );

@@ -5,8 +5,8 @@ import { setLineResultSheet, useMinMediaSpeedState, useSceneState } from "@/app/
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
-import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
+import { confirmDialog } from "@/components/ui/confirmer";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
@@ -83,7 +83,7 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
     const isConfirmed = await confirmDialog.warning({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
-      actionButton: "リトライ",
+      confirmLabel: "リトライ",
     });
 
     if (isConfirmed) {
@@ -128,7 +128,7 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
     const isConfirmed = await confirmDialog.warning({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
-      actionButton: "リトライ",
+      confirmLabel: "リトライ",
     });
 
     if (isConfirmed) {

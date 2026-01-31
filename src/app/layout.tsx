@@ -6,15 +6,17 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { ConfirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
+import { Confirmer } from "@/components/ui/confirmer";
+import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
+import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
+import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
-import { JotaiProvider, MainProvider } from "./_components/provider";
 import { ThemeProvider } from "./_components/theme-provider";
 
 const notoSansJP = Noto_Sans_JP({
@@ -52,13 +54,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <LinkProgressProvider>
                   <Header className="fixed z-50 h-10 w-full" />
                   <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                    <MainProvider>
-                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                        {children}
-                        <Analytics />
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </MainProvider>
+                    <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                      {children}
+                      <Analytics />
+                    </main>
+                    <PreviewYouTubePlayer />
                   </JotaiProvider>
                 </LinkProgressProvider>
               </TRPCProvider>
@@ -66,7 +66,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />
-        <ConfirmDialog />
+        <Confirmer />
+        <OverlayHost />
+        <ClearSelectionOnNavigate />
       </body>
     </html>
   );

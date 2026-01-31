@@ -11,8 +11,8 @@ import {
   useSceneGroupState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { Button } from "@/components/ui/button";
+import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
-import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
@@ -38,12 +38,11 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
   const { data: mapInfo } = useQuery(trpc.map.detail.get.queryOptions({ mapId: Number(mapId) }));
 
   const toggleClap = useToggleClapMutation();
-  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const handleReplayClick = async () => {
     iosActiveSound();
     primeYTPlayerForMobilePlayback();
-    showLoading({ message: "リザルトデータを読込中..." });
+    overlay.loading("リザルトデータを読込中...");
     setScene("replay");
     try {
       const resultData = await queryResultJson(resultId);
@@ -53,7 +52,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     } catch {
       toast.error("リザルトデータの読み込みに失敗しました");
     } finally {
-      hideLoading();
+      overlay.hide();
     }
 
     const mapUpdatedAt = mapInfo?.updatedAt;

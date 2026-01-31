@@ -10,7 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
+import { overlay } from "@/components/ui/overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/raw-map-json";
@@ -38,10 +38,8 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   const { data: mapJson } = useQuery(
     trpc.map.detail.getJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
-  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
-
   const loadMap = async (mapData: RawMapLine[]) => {
-    showLoading({ message: "ひらがな判定生成中..." });
+    overlay.loading("ひらがな判定生成中...");
 
     try {
       const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = readImeTypeOptions();
@@ -52,17 +50,14 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const flatWords = createFlatWords(words);
       const initWordResults = createInitWordResults(flatWords);
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
-      hideLoading();
+      overlay.hide();
     } catch {
-      showLoading({
-        message: (
-          <div className="flex h-full flex-col items-center justify-center gap-2">
-            ワード生成に失敗しました。
-            <Button onClick={() => loadMap(mapData)}>再試行</Button>
-          </div>
-        ),
-        hideSpinner: true,
-      });
+      overlay.message(
+        <div className="flex h-full flex-col items-center justify-center gap-2">
+          ワード生成に失敗しました。
+          <Button onClick={() => loadMap(mapData)}>再試行</Button>
+        </div>,
+      );
     }
   };
 
@@ -70,15 +65,15 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     if (mapJson) {
       void loadMap(mapJson);
     } else {
-      showLoading({ message: "譜面読み込み中..." });
+      overlay.loading("譜面読み込み中...");
     }
-  }, [mapJson, showLoading, loadMap]);
+  }, [mapJson, loadMap]);
 
   useEffect(() => {
     return () => {
       void mutateImeStats();
       pathChangeAtomReset();
-      hideLoading();
+      overlay.hide();
     };
   }, [pathname]);
 
