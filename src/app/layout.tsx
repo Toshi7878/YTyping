@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Confirmer } from "@/components/ui/confirmer";
+import { LoadingOverlayHost } from "@/components/ui/loading-overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
@@ -67,6 +68,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </NuqsAdapter>
         <Toaster />
         <Confirmer />
+        <LoadingOverlayHost />
       </body>
     </html>
   );

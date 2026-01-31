@@ -2,8 +2,7 @@
 import type { ReactNode } from "react";
 import { UAParser } from "ua-parser-js";
 import { AtomsHydrator } from "@/components/shared/jotai";
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { useGlobalLoadingState, userOptionsAtom } from "@/lib/atoms/global-atoms";
+import { userOptionsAtom } from "@/lib/atoms/global-atoms";
 import { userAgentAtom } from "@/lib/atoms/user-agent";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_USER_OPTIONS } from "@/server/drizzle/schema";
@@ -15,13 +14,8 @@ interface MainProviderProps {
 
 export const MainProvider = ({ children }: MainProviderProps) => {
   useClearSelectionOnNavigate();
-  const { message, isLoading, hideSpinner } = useGlobalLoadingState();
 
-  return (
-    <LoadingOverlayProvider message={message} isLoading={isLoading} hideSpinner={hideSpinner} asChild>
-      {children}
-    </LoadingOverlayProvider>
-  );
+  return <>{children}</>;
 };
 
 export const JotaiProvider = ({

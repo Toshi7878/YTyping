@@ -2,7 +2,6 @@ import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom 
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { InputMode } from "lyrics-typing-engine";
-import type { ReactNode } from "react";
 import { DEFAULT_USER_OPTIONS } from "@/server/drizzle/schema";
 import type { Updater } from "@/utils/types";
 
@@ -64,34 +63,6 @@ const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
 export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
 export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
-
-interface LoadingState {
-  isLoading: boolean;
-  message?: ReactNode;
-  hideSpinner?: boolean;
-}
-
-const globalLoadingAtom = atomWithReset<LoadingState>({
-  isLoading: false,
-  message: undefined,
-  hideSpinner: false,
-});
-
-export const useGlobalLoadingState = () => useAtomValue(globalLoadingAtom, { store });
-
-export const useGlobalLoadingOverlay = () => {
-  const setLoadingState = useSetAtom(globalLoadingAtom, { store });
-
-  const showLoading = ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
-    setLoadingState({ isLoading: true, message, hideSpinner });
-  };
-
-  const hideLoading = () => {
-    setLoadingState(RESET);
-  };
-
-  return { showLoading, hideLoading };
-};
 
 export const userOptionsAtom = atom(DEFAULT_USER_OPTIONS);
 const presenceStateAtom = focusAtom(userOptionsAtom, (optic) => optic.prop("presenceState"));
