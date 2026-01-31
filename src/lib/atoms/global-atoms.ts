@@ -25,8 +25,6 @@ const previewVideoInfoAtom = atomWithReset<{
 }>({ videoId: null, previewTime: null, previewSpeed: null });
 const previewYTPlayerAtom = atomWithReset<YT.Player | null>(null);
 
-// const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
-
 export const usePreviewVideoInfoState = () => useAtomValue(previewVideoInfoAtom, { store });
 export const readPreviewVideoInfo = () => store.get(previewVideoInfoAtom);
 export const setPreviewVideoInfo = (info: ExtractAtomValue<typeof previewVideoInfoAtom>) => {
