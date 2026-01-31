@@ -63,21 +63,21 @@ export function Confirmer() {
   if (!state) return null;
   const { options, variant, resolve } = state;
 
-  const close = (confirmed: boolean) => {
+  const resolveDialog = (confirmed: boolean) => {
     resolve(confirmed);
     setState(undefined);
   };
 
   return (
-    <AlertDialog open onOpenChange={(open) => !open && close(false)}>
+    <AlertDialog open onOpenChange={(open) => !open && resolveDialog(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => close(false)}>キャンセル</AlertDialogCancel>
-          <AlertDialogAction variant={variant} onClick={() => close(true)}>
+          <AlertDialogCancel onClick={() => resolveDialog(false)}>キャンセル</AlertDialogCancel>
+          <AlertDialogAction variant={variant} onClick={() => resolveDialog(true)}>
             {options.actionButton}
           </AlertDialogAction>
         </AlertDialogFooter>
