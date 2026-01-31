@@ -7,7 +7,7 @@ import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_l
 import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
 import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
 import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -102,10 +102,8 @@ interface FilterSymbolButtonProps {
 }
 
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
-  const confirm = useConfirm();
-
   const handleConfirm = async () => {
-    const isConfirmed = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "記号を削除",
       description:
         "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",

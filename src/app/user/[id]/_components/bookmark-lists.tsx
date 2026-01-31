@@ -14,7 +14,7 @@ import type z from "zod";
 import { BookmarkListFormFields } from "@/components/shared/bookmark/bookmark-list-popover";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -147,10 +147,8 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
     }),
   );
 
-  const confirm = useConfirm();
-
   const handleDelete = async () => {
-    const isConfirmed = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "リストを削除",
       description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
       actionButton: "削除する",

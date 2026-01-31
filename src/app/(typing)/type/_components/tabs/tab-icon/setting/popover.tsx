@@ -9,7 +9,7 @@ import {
   useTypingOptionsState,
 } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
@@ -31,7 +31,6 @@ export const SettingPopover = () => {
   const updateTypingOptions = useMutation(trpc.user.typingOption.upsert.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
-  const confirm = useConfirm();
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -77,14 +76,13 @@ export const SettingPopover = () => {
   ];
 
   const handleReset = async () => {
-    const result = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "設定をリセット",
       description: "すべての設定をデフォルトにリセットしますか？",
       actionButton: "リセットする",
-      actionButtonVariant: "warning",
     });
 
-    if (result) {
+    if (isConfirmed) {
       resetTypingOptions();
       toast.success("設定をリセットしました");
     }

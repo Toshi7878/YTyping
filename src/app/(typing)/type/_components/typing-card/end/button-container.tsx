@@ -5,7 +5,7 @@ import { setLineResultSheet, useMinMediaSpeedState, useSceneState } from "@/app/
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RegisterRankingButton } from "./submit-ranking-button";
@@ -64,7 +64,6 @@ interface RetryButtonProps {
 
 const RetryButton = ({ showAlert }: RetryButtonProps) => {
   const scene = useSceneState();
-  const confirm = useConfirm();
   const buttonRef = useRef<HTMLButtonElement>(null);
   useHotkeys("F4", () => buttonRef.current?.click(), { enableOnFormTags: false, preventDefault: true });
 
@@ -81,11 +80,10 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
       return;
     }
 
-    const isConfirmed = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
-      actionButtonVariant: "warning",
     });
 
     if (isConfirmed) {
@@ -117,7 +115,6 @@ interface ModeChangeButtonProps {
 
 const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
   const scene = useSceneState();
-  const confirm = useConfirm();
   const buttonRef = useRef<HTMLButtonElement>(null);
   useHotkeys("F7", () => buttonRef.current?.click(), { enableOnFormTags: false, preventDefault: true });
 
@@ -128,11 +125,10 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
       return;
     }
 
-    const isConfirmed = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
-      actionButtonVariant: "warning",
     });
 
     if (isConfirmed) {

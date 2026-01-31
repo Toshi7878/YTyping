@@ -6,7 +6,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { ConfirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
@@ -50,24 +50,23 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <SessionProvider session={session}>
               <TRPCProvider>
                 <LinkProgressProvider>
-                  <AlertDialogProvider>
-                    <Header className="fixed z-50 h-10 w-full" />
-                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                      <MainProvider>
-                        <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                          {children}
-                          <Analytics />
-                        </main>
-                        <PreviewYouTubePlayer />
-                      </MainProvider>
-                    </JotaiProvider>
-                  </AlertDialogProvider>
+                  <Header className="fixed z-50 h-10 w-full" />
+                  <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
+                    <MainProvider>
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        {children}
+                        <Analytics />
+                      </main>
+                      <PreviewYouTubePlayer />
+                    </MainProvider>
+                  </JotaiProvider>
                 </LinkProgressProvider>
               </TRPCProvider>
             </SessionProvider>
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />
+        <ConfirmDialog />
       </body>
     </html>
   );

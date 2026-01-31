@@ -7,7 +7,7 @@ import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
 import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readBuiltMap, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRegisterRankingMutation } from "@/app/(typing)/type/_lib/mutate/register-ranking";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
@@ -22,8 +22,6 @@ interface RegisterRankingButtonProps {
 }
 
 export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
-  const confirm = useConfirm();
-
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -49,7 +47,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       return;
     }
 
-    const isConfirmed = await confirm({
+    const isConfirmed = await confirmDialog({
       title: "スコア未更新",
       description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
       actionButton: "ランキングに登録",
