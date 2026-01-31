@@ -13,11 +13,11 @@ import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
+import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
+import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
-import { JotaiProvider } from "./_components/provider";
 import { ThemeProvider } from "./_components/theme-provider";
-import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
