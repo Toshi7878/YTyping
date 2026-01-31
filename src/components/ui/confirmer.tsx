@@ -43,7 +43,7 @@ const show = (options: ConfirmDialogOptions, variant: State["variant"] = "warnin
 
 export const confirmDialog = {
   warning: (options: ConfirmDialogOptions) => show(options, "warning"),
-  destructive: (options: ConfirmDialogOptions) => show(options, "destructive"),
+  danger: (options: ConfirmDialogOptions) => show(options, "destructive"),
 };
 
 // --- Component ---

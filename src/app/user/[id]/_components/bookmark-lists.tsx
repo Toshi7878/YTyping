@@ -148,7 +148,7 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   );
 
   const handleDelete = async () => {
-    const isConfirmed = await confirmDialog.destructive({
+    const isConfirmed = await confirmDialog.danger({
       title: "リストを削除",
       description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
       actionButton: "削除する",
