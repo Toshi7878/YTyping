@@ -50,8 +50,8 @@ export const confirmDialog = {
 
 export function Confirmer() {
   const state = useSyncExternalStore(
-    (fn) => {
-      store.onStoreChange = fn;
+    (onStoreChange) => {
+      store.onStoreChange = onStoreChange;
       return () => {
         store.onStoreChange = undefined;
       };
