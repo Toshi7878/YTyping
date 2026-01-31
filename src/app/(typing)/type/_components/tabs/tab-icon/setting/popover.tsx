@@ -26,6 +26,7 @@ import { SoundEffectFields } from "./options/sound-effect-fields";
 import { TimeOffsetCounter } from "./options/time-offset-conter";
 import { WordDisplayFields } from "./options/word-display-fields";
 import { WordScrollFields } from "./options/word-scroll-fields";
+
 export const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.user.typingOption.upsert.mutationOptions());
@@ -76,7 +77,7 @@ export const SettingPopover = () => {
   ];
 
   const handleReset = async () => {
-    const isConfirmed = await confirmDialog({
+    const isConfirmed = await confirmDialog.warning({
       title: "設定をリセット",
       description: "すべての設定をデフォルトにリセットしますか？",
       actionButton: "リセットする",
@@ -87,8 +88,9 @@ export const SettingPopover = () => {
       toast.success("設定をリセットしました");
     }
   };
+
   return (
-    <Popover open={isOpen} onOpenChange={handleOpenChange}>
+    <Popover open={isOpen} onOpenChange={handleOpenChange} modal>
       <PopoverTrigger>
         <SettingButton />
       </PopoverTrigger>
@@ -118,14 +120,7 @@ export const SettingPopover = () => {
           ))}
         </Tabs>
 
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleReset}
-          className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
-        >
-          設定をリセット
-        </Button>
+        <ResetButton onClick={handleReset} />
       </PopoverContent>
     </Popover>
   );
@@ -182,5 +177,18 @@ const NextDisplayRadioGroup = () => {
       labelClassName="text-lg font-semibold"
       items={items}
     />
+  );
+};
+
+const ResetButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      onClick={onClick}
+      className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
+    >
+      設定をリセット
+    </Button>
   );
 };

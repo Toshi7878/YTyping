@@ -103,7 +103,7 @@ interface FilterSymbolButtonProps {
 
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const handleConfirm = async () => {
-    const isConfirmed = await confirmDialog({
+    const isConfirmed = await confirmDialog.warning({
       title: "記号を削除",
       description:
         "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",

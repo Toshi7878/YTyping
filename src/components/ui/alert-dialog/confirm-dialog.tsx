@@ -1,16 +1,19 @@
 "use client";
 
-import type { VariantProps } from "class-variance-authority";
+import type { ComponentProps } from "react";
 import { useSyncExternalStore } from "react";
 import {
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button, type buttonVariants } from "../button";
+
+type ButtonVariant = ComponentProps<typeof AlertDialogAction>["variant"];
 
 interface ConfirmDialogOptions {
   title: string;
@@ -20,31 +23,31 @@ interface ConfirmDialogOptions {
 
 // --- Store ---
 
-const store: {
+interface State {
   open: boolean;
   options?: ConfirmDialogOptions;
-  variant?: VariantProps<typeof buttonVariants>["variant"];
+  variant?: ButtonVariant;
   resolve?: (value: boolean) => void;
-  listener?: () => void;
-  set: (patch: Partial<typeof store>) => void;
-} = {
-  open: false,
-  set(patch) {
-    Object.assign(this, patch);
-    this.listener?.();
-  },
+}
+
+let state: State = { open: false };
+let listener: (() => void) | undefined;
+
+const setState = (patch: Partial<State>) => {
+  state = { ...state, ...patch };
+  listener?.();
 };
 
 // --- Public API ---
 
-export const confirmDialog = Object.assign((options: ConfirmDialogOptions) => showDialog(options), {
-  warning: (options: ConfirmDialogOptions) => showDialog(options, "warning"),
-  destructive: (options: ConfirmDialogOptions) => showDialog(options, "destructive"),
-});
+export const confirmDialog = {
+  warning: (options: ConfirmDialogOptions) => show(options, "warning"),
+  destructive: (options: ConfirmDialogOptions) => show(options, "destructive"),
+} as const;
 
-const showDialog = (options: ConfirmDialogOptions, variant: (typeof store)["variant"] = "warning") =>
+const show = (options: ConfirmDialogOptions, variant: ButtonVariant = "warning") =>
   new Promise<boolean>((resolve) => {
-    store.set({ open: true, options, variant, resolve });
+    setState({ open: true, options, variant, resolve });
   });
 
 // --- Component ---
@@ -57,18 +60,18 @@ export function ConfirmDialog() {
     resolve,
   } = useSyncExternalStore(
     (fn) => {
-      store.listener = fn;
+      listener = fn;
       return () => {
-        store.listener = undefined;
+        listener = undefined;
       };
     },
-    () => store,
-    () => store,
+    () => state,
+    () => state,
   );
 
   const close = (result: boolean) => {
     resolve?.(result);
-    store.set({ open: false, options: undefined, resolve: undefined });
+    setState({ open: false, options: undefined, resolve: undefined });
   };
 
   if (!options) return null;
@@ -81,12 +84,8 @@ export function ConfirmDialog() {
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button type="button" variant="outline" onClick={() => close(false)}>
-            キャンセル
-          </Button>
-          <Button type="button" variant={variant} onClick={() => close(true)}>
-            {options.actionButton}
-          </Button>
+          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+          <AlertDialogAction variant={variant}>{options.actionButton}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

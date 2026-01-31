@@ -80,7 +80,7 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
       return;
     }
 
-    const isConfirmed = await confirmDialog({
+    const isConfirmed = await confirmDialog.warning({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
@@ -125,7 +125,7 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
       return;
     }
 
-    const isConfirmed = await confirmDialog({
+    const isConfirmed = await confirmDialog.warning({
       title: "リトライ確認",
       description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
