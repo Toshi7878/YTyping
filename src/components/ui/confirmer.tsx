@@ -28,8 +28,8 @@ interface State {
 
 const store: { state: State | undefined; listener?: () => void } = { state: undefined };
 
-const setState = (patch: State | undefined) => {
-  store.state = patch;
+const setState = (nextState: State | undefined) => {
+  store.state = nextState;
   // useSyncExternalStoreに変更を通知しConfirmer再レンダリング
   store.listener?.();
 };
