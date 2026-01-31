@@ -30,7 +30,7 @@ const store: { state: State | undefined; listener?: () => void } = { state: unde
 
 const setState = (patch: State | undefined) => {
   store.state = patch;
-  // useSyncExternalStoreに変更を通知しConfirmDialog再レンダリング
+  // useSyncExternalStoreに変更を通知しConfirmer再レンダリング
   store.listener?.();
 };
 
@@ -48,7 +48,7 @@ export const confirmDialog = {
 
 // --- Component ---
 
-export function ConfirmDialog() {
+export function Confirmer() {
   const state = useSyncExternalStore(
     (fn) => {
       store.listener = fn;

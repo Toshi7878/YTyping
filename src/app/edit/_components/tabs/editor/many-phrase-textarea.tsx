@@ -7,8 +7,8 @@ import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_l
 import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
 import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
 import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
-import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
+import { confirmDialog } from "@/components/ui/confirmer";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";

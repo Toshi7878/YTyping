@@ -9,8 +9,8 @@ import {
   useTypingOptionsState,
 } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
-import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Button } from "@/components/ui/button";
+import { confirmDialog } from "@/components/ui/confirmer";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";

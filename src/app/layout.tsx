@@ -6,7 +6,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { ConfirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
+import { Confirmer } from "@/components/ui/confirmer";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />
-        <ConfirmDialog />
+        <Confirmer />
       </body>
     </html>
   );

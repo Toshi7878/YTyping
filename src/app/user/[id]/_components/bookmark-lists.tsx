@@ -14,10 +14,10 @@ import type z from "zod";
 import { BookmarkListFormFields } from "@/components/shared/bookmark/bookmark-list-popover";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { confirmDialog } from "@/components/ui/alert-dialog/confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { confirmDialog } from "@/components/ui/confirmer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
