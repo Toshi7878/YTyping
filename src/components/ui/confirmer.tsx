@@ -23,7 +23,7 @@ interface ConfirmDialogOptions {
 interface State {
   options: ConfirmDialogOptions;
   variant: ComponentProps<typeof AlertDialogAction>["variant"];
-  resolve: (confirmed: boolean) => void;
+  resolvePromise: (confirmed: boolean) => void;
 }
 
 const store: { state: State | undefined; onStoreChange?: () => void } = { state: undefined };
@@ -37,8 +37,8 @@ const setState = (nextState: State | undefined) => {
 // --- Public API ---
 
 const show = (options: ConfirmDialogOptions, variant: State["variant"] = "warning") =>
-  new Promise<boolean>((resolve) => {
-    setState({ options, variant, resolve });
+  new Promise<boolean>((resolvePromise) => {
+    setState({ options, variant, resolvePromise });
   });
 
 export const confirmDialog = {
@@ -61,23 +61,23 @@ export function Confirmer() {
   );
 
   if (!state) return null;
-  const { options, variant, resolve } = state;
+  const { options, variant, resolvePromise } = state;
 
-  const resolveDialog = (confirmed: boolean) => {
-    resolve(confirmed);
+  const close = (confirmed: boolean) => {
+    resolvePromise(confirmed);
     setState(undefined);
   };
 
   return (
-    <AlertDialog open onOpenChange={(open) => !open && resolveDialog(false)}>
+    <AlertDialog open onOpenChange={(open) => !open && close(false)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => resolveDialog(false)}>キャンセル</AlertDialogCancel>
-          <AlertDialogAction variant={variant} onClick={() => resolveDialog(true)}>
+          <AlertDialogCancel onClick={() => close(false)}>キャンセル</AlertDialogCancel>
+          <AlertDialogAction variant={variant} onClick={() => close(true)}>
             {options.actionButton}
           </AlertDialogAction>
         </AlertDialogFooter>
