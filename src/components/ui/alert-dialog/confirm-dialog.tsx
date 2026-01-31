@@ -41,15 +41,15 @@ const setState = (patch: State) => {
 
 // --- Public API ---
 
-export const confirmDialog = {
-  warning: (options: ConfirmDialogOptions) => show(options, "warning"),
-  destructive: (options: ConfirmDialogOptions) => show(options, "destructive"),
-} as const;
-
 const show = (options: ConfirmDialogOptions, variant: State["variant"] = "warning") =>
   new Promise<boolean>((resolve) => {
     setState({ open: true, options, variant, resolve });
   });
+
+export const confirmDialog = {
+  warning: (options: ConfirmDialogOptions) => show(options, "warning"),
+  destructive: (options: ConfirmDialogOptions) => show(options, "destructive"),
+} as const;
 
 // --- Component ---
 
@@ -84,8 +84,10 @@ export function ConfirmDialog() {
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>キャンセル</AlertDialogCancel>
-          <AlertDialogAction variant={variant}>{options.actionButton}</AlertDialogAction>
+          <AlertDialogCancel onClick={() => close(false)}>キャンセル</AlertDialogCancel>
+          <AlertDialogAction variant={variant} onClick={() => close(true)}>
+            {options.actionButton}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
