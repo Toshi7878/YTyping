@@ -26,12 +26,12 @@ interface State {
   resolve: (confirmed: boolean) => void;
 }
 
-const store: { state: State | undefined; listener?: () => void } = { state: undefined };
+const store: { state: State | undefined; onStoreChange?: () => void } = { state: undefined };
 
 const setState = (nextState: State | undefined) => {
   store.state = nextState;
   // useSyncExternalStoreに変更を通知しConfirmer再レンダリング
-  store.listener?.();
+  store.onStoreChange?.();
 };
 
 // --- Public API ---
@@ -51,9 +51,9 @@ export const confirmDialog = {
 export function Confirmer() {
   const state = useSyncExternalStore(
     (fn) => {
-      store.listener = fn;
+      store.onStoreChange = fn;
       return () => {
-        store.listener = undefined;
+        store.onStoreChange = undefined;
       };
     },
     () => store.state, // getSnapshot,
