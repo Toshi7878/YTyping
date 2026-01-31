@@ -91,7 +91,7 @@ function AlertDialogDescription({
 }
 
 function AlertDialogAction({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
-  return <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props} />;
+  return <AlertDialogPrimitive.Action className={cn(buttonVariants({ variant: "warning" }), className)} {...props} />;
 }
 
 function AlertDialogCancel({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {

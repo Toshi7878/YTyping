@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import {
   AlertDialog,
@@ -12,38 +12,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "../button";
 
-type ButtonVariant = ComponentProps<typeof Button>["variant"];
-
 export interface ConfirmOptions {
   title: string;
   body?: string;
-  cancelButton?: string;
-  actionButton?: string;
-  cancelButtonVariant?: ButtonVariant;
-  actionButtonVariant?: ButtonVariant;
+  actionButton: string;
 }
 
 interface AlertDialogState {
   open: boolean;
   title: string;
   body?: string;
-  cancelButton: string;
   actionButton: string;
-  cancelButtonVariant: ButtonVariant;
-  actionButtonVariant: ButtonVariant;
 }
 
 const initialState: AlertDialogState = {
   open: false,
   title: "",
   body: undefined,
-  cancelButton: "Cancel",
-  actionButton: "Okay",
-  cancelButtonVariant: "default",
-  actionButtonVariant: "default",
+  actionButton: "",
 };
 
-type ConfirmFn = (params: ConfirmOptions | string) => Promise<boolean>;
+type ConfirmFn = (params: ConfirmOptions) => Promise<boolean>;
 
 const AlertDialogContext = createContext<ConfirmFn>(() => Promise.resolve(false));
 
@@ -56,18 +45,8 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     resolveRef.current?.(result);
   }, []);
 
-  const confirm: ConfirmFn = useCallback((params) => {
-    const options = typeof params === "string" ? { title: params } : params;
-
-    setState({
-      open: true,
-      title: options.title,
-      body: options.body,
-      cancelButton: options.cancelButton ?? "Cancel",
-      actionButton: options.actionButton ?? "Okay",
-      cancelButtonVariant: options.cancelButtonVariant ?? "default",
-      actionButtonVariant: options.actionButtonVariant ?? "default",
-    });
+  const confirm: ConfirmFn = useCallback(({ title, body, actionButton }) => {
+    setState({ open: true, title, body, actionButton });
 
     return new Promise<boolean>((resolve) => {
       resolveRef.current = resolve;
@@ -84,10 +63,10 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
             {state.body && <AlertDialogDescription>{state.body}</AlertDialogDescription>}
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <Button type="button" onClick={() => close(false)} variant={state.cancelButtonVariant}>
-              {state.cancelButton}
+            <Button type="button" onClick={() => close(false)} variant="outline">
+              キャンセル
             </Button>
-            <Button type="button" onClick={() => close(true)} variant={state.actionButtonVariant}>
+            <Button type="button" onClick={() => close(true)} variant="warning">
               {state.actionButton}
             </Button>
           </AlertDialogFooter>
