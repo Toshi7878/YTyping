@@ -80,7 +80,6 @@ function baseConfirmDialog(options: ConfirmDialogOptions): Promise<boolean> {
 export const confirmDialog = Object.assign(baseConfirmDialog, {
   warning: createConfirmDialog("warning"),
   destructive: createConfirmDialog("destructive"),
-  default: createConfirmDialog("default"),
 });
 
 // --- Component ---
