@@ -26,7 +26,7 @@ interface State {
   resolvePromise: (confirmed: boolean) => void;
 }
 
-const store: { state: State | undefined; onStoreChange?: () => void } = { state: undefined };
+const store: { state?: State; onStoreChange?: () => void } = {};
 
 const setState = (nextState: State | undefined) => {
   store.state = nextState;
