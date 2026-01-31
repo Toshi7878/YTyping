@@ -14,16 +14,21 @@ import { Button, type buttonVariants } from "../button";
 
 // --- Types ---
 
+type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
+
 export interface ConfirmDialogOptions {
   title: string;
   description?: string;
   actionButton: string;
-  actionButtonVariant?: VariantProps<typeof buttonVariants>["variant"];
+}
+
+interface ConfirmDialogOptionsWithVariant extends ConfirmDialogOptions {
+  actionButtonVariant?: ButtonVariant;
 }
 
 interface DialogState {
   open: boolean;
-  options: ConfirmDialogOptions | null;
+  options: ConfirmDialogOptionsWithVariant | null;
   resolve: ((value: boolean) => void) | null;
 }
 
@@ -56,15 +61,27 @@ function setState(newState: DialogState) {
 
 // --- Public API ---
 
-export function confirmDialog(options: ConfirmDialogOptions): Promise<boolean> {
-  return new Promise<boolean>((resolve) => {
-    setState({
-      open: true,
-      options,
-      resolve,
+function createConfirmDialog(variant: ButtonVariant) {
+  return (options: ConfirmDialogOptions): Promise<boolean> => {
+    return new Promise<boolean>((resolve) => {
+      setState({
+        open: true,
+        options: { ...options, actionButtonVariant: variant },
+        resolve,
+      });
     });
-  });
+  };
 }
+
+function baseConfirmDialog(options: ConfirmDialogOptions): Promise<boolean> {
+  return createConfirmDialog("warning")(options);
+}
+
+export const confirmDialog = Object.assign(baseConfirmDialog, {
+  warning: createConfirmDialog("warning"),
+  destructive: createConfirmDialog("destructive"),
+  default: createConfirmDialog("default"),
+});
 
 // --- Component ---
 
