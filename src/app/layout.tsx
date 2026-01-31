@@ -15,8 +15,9 @@ import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
-import { JotaiProvider, MainProvider } from "./_components/provider";
+import { JotaiProvider } from "./_components/provider";
 import { ThemeProvider } from "./_components/theme-provider";
+import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -53,13 +54,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <LinkProgressProvider>
                   <Header className="fixed z-50 h-10 w-full" />
                   <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                    <MainProvider>
-                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                        {children}
-                        <Analytics />
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </MainProvider>
+                    <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                      {children}
+                      <Analytics />
+                    </main>
+                    <PreviewYouTubePlayer />
                   </JotaiProvider>
                 </LinkProgressProvider>
               </TRPCProvider>
@@ -69,6 +68,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Toaster />
         <Confirmer />
         <OverlayHost />
+        <ClearSelectionOnNavigate />
       </body>
     </html>
   );
