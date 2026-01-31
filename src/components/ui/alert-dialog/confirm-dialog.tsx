@@ -71,8 +71,8 @@ export function ConfirmDialog() {
   );
   if (!isOpen || !options || !resolve) return null;
 
-  const close = (result: boolean) => {
-    resolve(result);
+  const close = (confirmed: boolean) => {
+    resolve(confirmed);
     setState({ open: false, options: undefined, resolve: undefined });
   };
 
