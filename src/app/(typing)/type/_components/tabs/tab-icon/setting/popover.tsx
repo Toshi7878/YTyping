@@ -79,11 +79,9 @@ export const SettingPopover = () => {
   const handleReset = async () => {
     const result = await confirm({
       title: "設定をリセット",
-      body: "すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。",
-      cancelButton: "キャンセル",
+      description: "すべての設定をデフォルトにリセットしますか？",
       actionButton: "リセットする",
       actionButtonVariant: "warning",
-      cancelButtonVariant: "outline",
     });
 
     if (result) {

@@ -83,10 +83,8 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
 
     const isConfirmed = await confirm({
       title: "リトライ確認",
-      body: "リトライすると今回の記録は失われますが、リトライしますか？",
-      cancelButton: "キャンセル",
+      description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
-      cancelButtonVariant: "outline",
       actionButtonVariant: "warning",
     });
 
@@ -132,10 +130,8 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
 
     const isConfirmed = await confirm({
       title: "リトライ確認",
-      body: "リトライすると今回の記録は失われますが、リトライしますか？",
-      cancelButton: "キャンセル",
+      description: "リトライすると今回の記録は失われますが、リトライしますか？",
       actionButton: "リトライ",
-      cancelButtonVariant: "outline",
       actionButtonVariant: "warning",
     });
 

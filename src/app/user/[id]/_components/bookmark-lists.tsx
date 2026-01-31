@@ -152,11 +152,8 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   const handleDelete = async () => {
     const isConfirmed = await confirm({
       title: "リストを削除",
-      body: "リストを削除してもよろしいですか？この操作は元に戻せません。",
-      cancelButton: "キャンセル",
+      description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
       actionButton: "削除する",
-      cancelButtonVariant: "outline",
-      actionButtonVariant: "destructive",
     });
     if (!isConfirmed) return;
     deleteListMutation.mutate({ listId: list.id });

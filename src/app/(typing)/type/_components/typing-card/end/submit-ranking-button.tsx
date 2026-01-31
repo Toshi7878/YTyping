@@ -51,11 +51,8 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
 
     const isConfirmed = await confirm({
       title: "スコア未更新",
-      body: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
-      cancelButton: "キャンセル",
+      description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
       actionButton: "ランキングに登録",
-      cancelButtonVariant: "outline",
-      actionButtonVariant: "warning",
     });
 
     if (isConfirmed) {

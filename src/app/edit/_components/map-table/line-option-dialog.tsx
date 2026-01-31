@@ -5,7 +5,6 @@ import { type Dispatch, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { setRawMapAction, useRawMapState } from "@/app/edit/_lib/atoms/map-reducer";
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
@@ -32,7 +31,6 @@ interface LineOptionDialogProps {
 
 export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
   const map = useRawMapState();
-  const confirm = useConfirm();
 
   const currentSpeed = calculateCurrentSpeed(map, index);
 
@@ -62,14 +60,9 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       return;
     }
 
-    const isConfirmed = await confirm({
-      title: "確認",
-      body: "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
-      cancelButton: "いいえ",
-      actionButton: "はい",
-      cancelButtonVariant: "outline",
-      actionButtonVariant: "warning",
-    });
+    const isConfirmed = window.confirm(
+      "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
+    );
 
     if (isConfirmed) {
       setOptionDialogIndex(null);

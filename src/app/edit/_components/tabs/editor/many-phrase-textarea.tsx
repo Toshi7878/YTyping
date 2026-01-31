@@ -107,11 +107,9 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const handleConfirm = async () => {
     const isConfirmed = await confirm({
       title: "記号を削除",
-      body: "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",
-      cancelButton: "キャンセル",
+      description:
+        "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",
       actionButton: "削除する",
-      cancelButtonVariant: "outline",
-      actionButtonVariant: "warning",
     });
 
     if (!isConfirmed) return;
