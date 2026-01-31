@@ -1,7 +1,7 @@
 "use client";
 
 import YouTube from "react-youtube";
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";

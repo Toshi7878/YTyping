@@ -10,7 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/raw-map-json";

@@ -2,7 +2,7 @@
 
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useVideoIdState } from "../_lib/atoms/hydrate";

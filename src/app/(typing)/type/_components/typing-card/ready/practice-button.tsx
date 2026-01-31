@@ -6,7 +6,7 @@ import { iosActiveSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/update-status/recalc-from-results";
 import { queryResultJson } from "@/app/(typing)/type/_lib/query-result-json";
 import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/overlay";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();

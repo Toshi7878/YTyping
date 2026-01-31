@@ -11,7 +11,7 @@ import {
   useSceneGroupState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";

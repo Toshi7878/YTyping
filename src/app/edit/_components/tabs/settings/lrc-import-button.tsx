@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import { importMapFile } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/loading-overlay";
+import { overlay } from "@/components/ui/overlay";
 
 export const LrcImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
