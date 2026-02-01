@@ -48,7 +48,7 @@ export const confirmDialog = {
 
 // --- Component ---
 
-export function Confirmer() {
+export function ConfirmDialogHost() {
   const state = useSyncExternalStore(
     (onStoreChange) => {
       store.onStoreChange = onStoreChange;
