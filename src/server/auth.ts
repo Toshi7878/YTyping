@@ -1,10 +1,9 @@
 import { eq, max } from "drizzle-orm";
 import md5 from "md5";
+import type { DefaultSession } from "next-auth";
 import NextAuth from "next-auth";
 import authConfig from "@/config/auth.config";
 import { env } from "@/env";
-
-import type { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
@@ -15,7 +14,6 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 }
-
 
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
