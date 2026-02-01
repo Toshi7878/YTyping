@@ -8,7 +8,7 @@ import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readBuiltMap, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRegisterRankingMutation } from "@/app/(typing)/type/_lib/mutate/register-ranking";
 import { Button } from "@/components/ui/button";
-import { confirmDialog } from "@/components/ui/confirmer";
+import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";

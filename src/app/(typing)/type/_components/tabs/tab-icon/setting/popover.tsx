@@ -10,7 +10,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
 import { Button } from "@/components/ui/button";
-import { confirmDialog } from "@/components/ui/confirmer";
+import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";

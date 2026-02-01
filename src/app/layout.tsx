@@ -6,7 +6,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { ConfirmDialogHost } from "@/components/ui/confirmer";
+import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";

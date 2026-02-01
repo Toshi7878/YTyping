@@ -43,7 +43,12 @@ export function OverlayHost() {
   );
 
   return (
-    <Overlay show={!!state} showSpinner={state?.type === "loading"} description={state?.description} position="fixed" />
+    <OverlayView
+      show={!!state}
+      showSpinner={state?.type === "loading"}
+      description={state?.description}
+      position="fixed"
+    />
   );
 }
 
@@ -57,7 +62,7 @@ interface LoadingOverlayProviderProps {
 }
 
 export const LoadingOverlayProvider = ({ isLoading, description, children, asChild }: LoadingOverlayProviderProps) => {
-  const overlay = <Overlay show={isLoading} showSpinner={true} description={description} position="absolute" />;
+  const overlay = <OverlayView show={isLoading} showSpinner={true} description={description} position="absolute" />;
 
   return asChild ? (
     <>
@@ -81,7 +86,7 @@ interface OverlayProps {
   position: "fixed" | "absolute";
 }
 
-const Overlay = ({ show, showSpinner, description, position }: OverlayProps) => (
+const OverlayView = ({ show, showSpinner, description, position }: OverlayProps) => (
   <AnimatePresence mode="wait">
     {show && (
       <motion.div

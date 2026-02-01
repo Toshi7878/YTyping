@@ -6,7 +6,7 @@ import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result"
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { Button } from "@/components/ui/button";
-import { confirmDialog } from "@/components/ui/confirmer";
+import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
