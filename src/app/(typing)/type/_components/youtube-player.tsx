@@ -4,6 +4,7 @@ import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { cn } from "@/lib/utils";
+import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { readUtilityParams } from "../_lib/atoms/state";
 import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/youtube-player";
@@ -44,6 +45,7 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
             modestbranding: 1,
             rel: 0,
             fs: 0,
+            origin: `${getBaseUrl()}/type`,
           },
         }}
         onReady={onReady}
