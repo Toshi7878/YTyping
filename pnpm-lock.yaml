@@ -178,7 +178,7 @@ importers:
         version: 7.71.1(react@19.2.3)
       react-hotkeys-hook:
         specifier: ^5.1.0
-        version: 5.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 5.2.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.2.3)
@@ -4377,8 +4377,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
-  react-hotkeys-hook@5.2.3:
-    resolution: {integrity: sha512-Q27F8EuImYJOVSXAjSQrQPj9cx4GSNY+WdSdk5tSNN085H8/a00W6LZp0PrytEDwF6iT0pGTJeVEDKPRpEK2Bg==}
+  react-hotkeys-hook@5.2.4:
+    resolution: {integrity: sha512-BgKg+A1+TawkYluh5Bo4cTmcgMN5L29uhJbDUQdHwPX+qgXRjIPYU5kIDHyxnAwCkCBiu9V5OpB2mpyeluVF2A==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -9252,7 +9252,7 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  react-hotkeys-hook@5.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-hotkeys-hook@5.2.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
