@@ -30,7 +30,6 @@ const store: { state?: State; onStoreChange?: () => void } = {};
 
 const setState = (nextState: State | undefined) => {
   store.state = nextState;
-  // useSyncExternalStoreに変更を通知しConfirmer再レンダリング
   store.onStoreChange?.();
 };
 
@@ -48,7 +47,7 @@ export const confirmDialog = {
 
 // --- Component ---
 
-export function ConfirmDialogHost() {
+export const ConfirmDialogHost = () => {
   const state = useSyncExternalStore(
     (onStoreChange) => {
       store.onStoreChange = onStoreChange;

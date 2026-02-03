@@ -28,9 +28,9 @@ export const overlay = {
   hide: () => setState(undefined),
 };
 
-// --- Host Component (layout.tsx に配置) ---
+// --- Host Component ---
 
-export function OverlayHost() {
+export const OverlayHost = () => {
   const state = useSyncExternalStore(
     (onStoreChange) => {
       store.onStoreChange = onStoreChange;
