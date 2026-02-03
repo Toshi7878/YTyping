@@ -105,8 +105,8 @@ importers:
         specifier: ^12.23.22
         version: 12.30.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       googleapis:
-        specifier: ^170.0.0
-        version: 170.1.0
+        specifier: ^171.0.0
+        version: 171.1.0
       html-react-parser:
         specifier: ^5.2.6
         version: 5.2.15(@types/react@19.2.8)(react@19.2.3)
@@ -3675,8 +3675,8 @@ packages:
     resolution: {integrity: sha512-eCzNACUXPb1PW5l0ULTzMHaL/ltPRADoPgjBlT8jWsTbxkCp6siv+qKJ/1ldaybCthGwsYFYallF7u9AkU4L+A==}
     engines: {node: '>=18.0.0'}
 
-  googleapis@170.1.0:
-    resolution: {integrity: sha512-RLbc7yG6qzZqvAmGcgjvNIoZ7wpcCFxtc+HN+46etxDrlO4a8l5Cb7NxNQGhV91oRmL7mt56VoRoypAtEQEIKg==}
+  googleapis@171.1.0:
+    resolution: {integrity: sha512-2f3O75VjbKRnvwN5Pwi6ZZEcnOiO10ZfPSX19oE2ehxC8689NxWZLMPKsap7qgT48adu2NEA8tlUQZK2nt0EDA==}
     engines: {node: '>=18'}
 
   gopd@1.2.0:
@@ -8627,7 +8627,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  googleapis@170.1.0:
+  googleapis@171.1.0:
     dependencies:
       google-auth-library: 10.5.0
       googleapis-common: 8.0.1
