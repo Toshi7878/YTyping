@@ -50,7 +50,7 @@ export const OverlayHost = () => {
       position="fixed"
     />
   );
-}
+};
 
 // --- Local Provider (相対配置用) ---
 

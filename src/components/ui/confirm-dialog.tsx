@@ -83,4 +83,4 @@ export const ConfirmDialogHost = () => {
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};
