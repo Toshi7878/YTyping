@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { env } from "@/env";
@@ -17,9 +18,9 @@ const TOOLS = [
     byUserId: "62",
   },
   {
-    title: "YTyping YouTube Background Player",
+    title: "YTyping Background YouTube Player",
     description: "タイピングページの背景にYouTubeの動画を表示する",
-    href: "/manual/bg-yt-player",
+    href: "/manual/bg-youtube-player",
     byUserId: "1",
   },
   {
@@ -32,7 +33,7 @@ const TOOLS = [
 
 export default function Page() {
   return (
-    <article className="mx-auto max-w-screen-xl space-y-4">
+    <article className="mx-auto max-w-7xl space-y-4">
       <H1>ツール</H1>
       <CardWithContent className={{ cardContent: "space-y-6" }}>
         <P>YTypingで使用できる外部ツール一覧です。</P>
@@ -43,7 +44,7 @@ export default function Page() {
               return (
                 <div key={tool.href}>
                   <div className="flex items-baseline gap-3">
-                    <LinkText href={tool.href}>
+                    <LinkText href={tool.href as Route}>
                       <Large>{tool.title}</Large>
                     </LinkText>
                     {env.VERCEL && (
