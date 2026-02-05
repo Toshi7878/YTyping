@@ -38,8 +38,6 @@ const CheckboxListItem = ({
   tooltip?: string;
   defaultChecked: boolean;
 }) => {
-  const isChanged = defaultChecked !== props.checked;
-
   const content = (
     <Label
       className={cn(
@@ -56,7 +54,7 @@ const CheckboxListItem = ({
   );
 
   return (
-    <div className={cn("border-l-4", isChanged ? "border-primary" : "border-muted")}>
+    <div className={cn("border-l-4", props.checked ? "border-primary" : "border-muted")}>
       {tooltip ? (
         <TooltipWrapper label={tooltip} align="start">
           {content}
