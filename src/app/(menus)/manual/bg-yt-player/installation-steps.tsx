@@ -1,5 +1,6 @@
 "use client";
 import type { Route } from "next";
+import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { H3, LinkText, OList, P } from "@/components/ui/typography";
 import { useBrowserTypeState } from "@/lib/atoms/user-agent";
@@ -58,6 +59,38 @@ export function InstallationSteps() {
       title: "見た目を微調整する",
       content: <P>拡張機能のStylusアイコンからスタイルの編集を行うと、プレイヤーのサイズや透過度を調整できます。</P>,
     },
+    {
+      title: "動画の境界にぼかしを追加する(任意)",
+      content: (
+        <P>
+          <LinkText href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja">
+            Tampermonkey - Chrome ウェブストア
+          </LinkText>
+          からTampermonkeyをインストールします。
+          <br />
+          <LinkText href="https://greasyfork.org/en/scripts/564909-ytyping-youtube-inner-edge-shadow">
+            GreasyFork - YTyping YouTube Inner Edge Shadow
+          </LinkText>
+          からスクリプトをインストールします。 このスクリプトを使用すると、動画の境界にぼかしを追加することができます。
+        </P>
+      ),
+      images: (
+        <div className="flex flex-col gap-4">
+          <Image
+            alt="適用前"
+            src="/images/manual/background-youtube-layout/inner-edge-shadow/before.png"
+            width={500}
+            height={250}
+          />
+          <Image
+            alt="適用後"
+            src="/images/manual/background-youtube-layout/inner-edge-shadow/after.png"
+            width={500}
+            height={250}
+          />
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -68,6 +101,7 @@ export function InstallationSteps() {
         <>
           <H3 className="inline">{step.title}</H3>
           {step.content}
+          {step.images}
           {i !== steps.length - 1 && <Separator className="my-4" />}
         </>
       ))}

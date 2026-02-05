@@ -4,12 +4,12 @@ import { InstallationSteps } from "./installation-steps";
 
 export default function Page() {
   return (
-    <article className="mx-auto max-w-screen-xl space-y-4">
+    <article className="mx-auto max-w-7xl space-y-4">
       <H1>YTyping YouTube Background Player</H1>
       <Card>
         <CardHeader>
           <CardDescription className="text-foreground text-lg">
-            タイピングページの背景にYouTubeの動画を表示する
+            ブラウザ拡張機能を使用することで、タイピングページの背景にYouTubeの動画を表示できます
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
