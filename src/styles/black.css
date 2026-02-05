@@ -36,7 +36,7 @@
   --failure: oklch(0.7012 0.1812 298.06);
 
   --opacity-word-correct: 0;
-  --word-correct: transparent;
+  --word-correct: oklch(0.5946 0.1398 250.3);
   --word-nextChar: #ffffff;
   --word-word: #ffffff;
   --word-completed: oklch(0.7864 0.1143 186.56);
