@@ -17,7 +17,6 @@ const RawMapLineSchema = z.object({
 
 export type RawMapLine = z.infer<typeof RawMapLineSchema>;
 
-// HTMLタグは許可しつつ、実行・埋め込みに繋がるタグだけを拒否する
 const DANGEROUS_TAG_RE = /<\s*\/?\s*(script|iframe|object|embed)\b/i;
 const DANGEROUS_ENTITY_TAG_RE = /&lt;\s*\/?\s*(script|iframe|object|embed)\b/i;
 
