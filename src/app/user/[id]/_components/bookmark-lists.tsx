@@ -101,13 +101,15 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
         <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute size-full" />
         <div className="flex flex-row items-center gap-3">
-          <Image
-            src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
-            alt={list.title}
-            width={100}
-            height={100}
-            className="rounded-sm"
-          />
+          <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-sm">
+            <Image
+              src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+              alt={list.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </div>
           <div className="min-w-0">
             <div className="truncate font-medium text-sm">{list.title}</div>
 
