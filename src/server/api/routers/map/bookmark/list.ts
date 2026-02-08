@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
-import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, inArray, sql } from "drizzle-orm";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import {
@@ -39,6 +39,7 @@ export const mapBookmarkListRouter = {
       )
       .where(eq(MapBookmarkLists.isPublic, true))
       .groupBy(MapBookmarkLists.id, Users.name)
+      .having(({ count }) => gt(count, 1))
       .orderBy(desc(MapBookmarkLists.updatedAt));
   }),
 
