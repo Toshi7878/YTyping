@@ -122,10 +122,12 @@ const MapTable = () => {
         >
           <Table className="w-full table-fixed text-sm">
             <colgroup>
-              <col className="w-[35px] min-w-[35px]" />
-              <col className="w-[200px] min-w-[200px]" />
-              <col className="w-[250px] min-w-[250px]" />
-              <col className="w-[34px] min-w-[34px]" />
+              {/* 11.111（小数点3桁）が収まる固定幅。xl では再生アイコン分だけ少し広げる */}
+              <col className="w-[9ch] min-w-[9ch] xl:w-[12ch] xl:min-w-[12ch]" />
+              <col className="w-72 md:w-auto" />
+              <col className="w-72 md:w-auto" />
+              {/* 「未設定 / 設定有」ボタンが収まる固定幅 */}
+              <col className="w-22 min-w-22" />
             </colgroup>
             <TableHeader className="sticky top-0 z-10 border-b [&_th]:h-8 [&_th]:border-r [&_th]:px-2 [&_th]:font-medium">
               <TableRow className="hover:bg-transparent">
@@ -190,7 +192,7 @@ const MapTableRow = ({
       }}
     >
       <TableCell
-        className="group text-center"
+        className="group whitespace-nowrap text-center tabular-nums"
         onClick={() => {
           const directEditIndex = readDirectEditIndex();
           if (directEditIndex !== index) {
