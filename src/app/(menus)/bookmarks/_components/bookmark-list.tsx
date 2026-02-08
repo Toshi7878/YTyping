@@ -27,7 +27,7 @@ export const BookmarkListView = () => {
 const BookmarkListCard = ({ list }: { list: PublicBookmarkList }) => {
   return (
     <Card className="hover-card-shadow-primary relative cursor-pointer py-0 transition-shadow">
-      <Link href={`/bookmarks/${list.id}`} className="absolute size-full" />
+      <Link href={`/bookmarks/${list.id}`} className="absolute z-1 size-full" />
       <CardContent className="flex items-center gap-3 p-4">
         <ThumbnailImage
           src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}

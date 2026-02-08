@@ -99,7 +99,7 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
   return (
     <Card className="hover-card-shadow-primary py-0 transition-shadow">
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
-        <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute size-full" />
+        <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute z-1 size-full" />
         <div className="flex flex-row items-center gap-3">
           <ThumbnailImage
             src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
