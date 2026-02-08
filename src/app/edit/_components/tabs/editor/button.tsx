@@ -53,7 +53,7 @@ export const UpdateLineButton = () => {
   );
 
   return (
-    <Button variant="outline-info" size="sm" className="w-20 font-bold xl:w-28" onClick={updateLineAction}>
+    <Button variant="outline-info" disabled={isUpdateButtonDisabled} size="sm" className="w-20 font-bold xl:w-28" onClick={updateLineAction}>
       変更<small className="hidden sm:inline">(U)</small>
     </Button>
   );

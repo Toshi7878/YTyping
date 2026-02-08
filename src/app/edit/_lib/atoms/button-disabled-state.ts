@@ -5,27 +5,26 @@ import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
 
-const isNotSelectLineAtom = atom((get) => {
+const isUnselectLineAtom = atom((get) => {
+  const selectIndex = get(selectLineIndexAtom);
+  return selectIndex === null;
+});
+
+const isSelectFirstLineAtom = atom((get) => {
+  const selectIndex = get(selectLineIndexAtom);
+  return selectIndex === 0;
+});
+
+const isSelectEndLineAtom = atom((get) => {
+  const endLineIndex = get(endLineIndexAtom);
   const selectIndex = get(selectLineIndexAtom);
 
-  return selectIndex === 0 || selectIndex === null;
+  return selectIndex === endLineIndex;
 });
 
 const endLineIndexAtom = atom((get) => {
   const map = get(mapAtom);
-
   return map.findLastIndex((line) => line.lyrics === "end");
-});
-
-const isLineLastSelectAtom = atom((get) => {
-  const endLineIndex = get(endLineIndexAtom);
-  const selectIndex = get(selectLineIndexAtom);
-
-  if (selectIndex === null) {
-    return false;
-  }
-
-  return selectIndex === endLineIndex;
 });
 
 const isAddButtonDisabledAtom = atom((get) => {
@@ -34,16 +33,17 @@ const isAddButtonDisabledAtom = atom((get) => {
 });
 
 const isUpdateButtonDisabledAtom = atom((get) => {
-  const isNotLineSelect = get(isNotSelectLineAtom);
-  const isLineLastSelect = get(isLineLastSelectAtom);
+  const isUnselectLine = get(isUnselectLineAtom);
+  const isSelectFirstLine = get(isSelectFirstLineAtom)
+  const isSelectEndLine = get(isSelectEndLineAtom);
   const isTimeInputValid = get(isTimeInputValidAtom);
 
-  return isTimeInputValid || isNotLineSelect || isLineLastSelect;
+  return isTimeInputValid || isUnselectLine || isSelectEndLine || isSelectFirstLine;
 });
 
 const isDeleteButtonDisabledAtom = atom((get) => {
-  const isNotSelectLine = get(isNotSelectLineAtom);
-  const isSelectLastLine = get(isLineLastSelectAtom);
+  const isNotSelectLine = get(isUnselectLineAtom);
+  const isSelectLastLine = get(isSelectEndLineAtom);
 
   return isNotSelectLine || isSelectLastLine;
 });
