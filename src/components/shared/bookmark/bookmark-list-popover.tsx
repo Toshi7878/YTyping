@@ -70,7 +70,7 @@ export const BookmarkListPopover = ({
           <Bookmark
             strokeWidth={2.5}
             fill={hasBookmarked ? "currentColor" : "none"}
-            className={cn("size-4", hasBookmarked ? "text-primary-light" : "text-muted-foreground", iconClassName)}
+            className={cn("size-4", hasBookmarked && "text-primary-light", iconClassName)}
           />
         </Button>
       </PopoverTrigger>
