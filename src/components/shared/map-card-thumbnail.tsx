@@ -73,7 +73,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           </div>
         </>
       ) : (
-        <div className={cn(mapLeftThumbnailVariants({ size }))}>
+        <div className={mapLeftThumbnailVariants({ size })}>
           <div className="flex h-full w-full flex-start items-center justify-center">{alt}</div>
         </div>
       )}
