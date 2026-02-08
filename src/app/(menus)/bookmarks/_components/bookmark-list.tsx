@@ -29,13 +29,14 @@ const BookmarkListCard = ({ list }: { list: PublicBookmarkList }) => {
     <Card className="hover-card-shadow-primary relative cursor-pointer py-0 transition-shadow">
       <Link href={`/bookmarks/${list.id}`} className="absolute size-full" />
       <CardContent className="flex items-center gap-3 p-4">
-        <Image
-          src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
-          alt={list.title}
-          width={100}
-          height={100}
-          className="rounded-sm"
-        />
+        <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-sm">
+          <Image
+            src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+            alt={list.title}
+            fill
+            className="object-cover"
+          />
+        </div>
         <div className="flex flex-col gap-1">
           <div className="truncate font-medium text-sm">{list.title}</div>
           <Small className="text-muted-foreground">{list.count}件</Small>
