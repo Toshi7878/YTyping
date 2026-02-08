@@ -17,6 +17,25 @@ const RawMapLineSchema = z.object({
 
 export type RawMapLine = z.infer<typeof RawMapLineSchema>;
 
+// HTMLタグは許可しつつ、実行・埋め込みに繋がるタグだけを拒否する
+const DANGEROUS_TAG_RE = /<\s*\/?\s*(script|iframe|object|embed)\b/i;
+const DANGEROUS_ENTITY_TAG_RE = /&lt;\s*\/?\s*(script|iframe|object|embed)\b/i;
+
+const validateNoXssTags = (lines: RawMapLine[]) => {
+  return !lines.some((line) => {
+    const strings: string[] = [line.time, line.lyrics, line.word];
+    const changeCSS = line.options?.changeCSS;
+    const eternalCSS = line.options?.eternalCSS;
+    if (typeof changeCSS === "string") strings.push(changeCSS);
+    if (typeof eternalCSS === "string") strings.push(eternalCSS);
+
+    return strings.some(
+      (value) =>
+        DANGEROUS_TAG_RE.test(value) || DANGEROUS_ENTITY_TAG_RE.test(value),
+    );
+  });
+};
+
 const validateNoHttpContent = (lines: RawMapLine[]) => {
   return !lines.some((line) =>
     Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
@@ -62,6 +81,9 @@ const validateCSSLength = (lines: RawMapLine[]) => {
 
 export const RawMapSchema = z
   .array(RawMapLineSchema)
+  .refine(validateNoXssTags, {
+    error: "譜面データにHTMLタグ（script/iframe/object/embed）を含めることはできません",
+  })
   .refine(validateNoHttpContent, {
     error: "譜面データにはhttpから始まる文字を含めることはできません",
   })

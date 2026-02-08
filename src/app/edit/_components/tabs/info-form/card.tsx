@@ -435,7 +435,7 @@ const useOnSubmit = (form: FormType) => {
             toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
             return;
           default:
-            toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
+            toast.error("保存に失敗しました", { description: error.message });
         }
 
         const mapId = readMapId();
