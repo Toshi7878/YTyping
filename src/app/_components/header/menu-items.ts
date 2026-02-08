@@ -4,6 +4,7 @@ type HeaderMenu = { title: string; href: Route; device?: "PC" };
 
 export const LEFT_MENU_LINK_ITEMS: HeaderMenu[] = [
   { title: "更新履歴", href: "/changelog" },
+  { title: "公開ブックマーク一覧", href: "/bookmarks" },
   { title: "バグ報告 (GitHub)", href: "https://github.com/Toshi7878/YTyping/issues" },
   { title: "ツール", href: "/tools", device: "PC" },
   { title: "クレジット", href: "/credit" },

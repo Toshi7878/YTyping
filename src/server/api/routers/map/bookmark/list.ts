@@ -2,25 +2,51 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 import z from "zod";
+import type { DBType } from "@/server/drizzle/client";
 import {
   MapBookmarkListItems,
   MapBookmarkLists,
   Maps,
   NotificationMapBookmarks,
   Notifications,
+  Users,
 } from "@/server/drizzle/schema";
 import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/bookmark";
 import { protectedProcedure, publicProcedure } from "../../../trpc";
 
 export const mapBookmarkListRouter = {
-  getForSession: protectedProcedure.query(async ({ ctx }) => {
-    const { db, user } = ctx;
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const { db } = ctx;
+
+    const firstMapByListSubquery = getFirstMapByListSubquery(db);
 
     return db
       .select({
         id: MapBookmarkLists.id,
         title: MapBookmarkLists.title,
+        count: sql<number>`count(${MapBookmarkListItems.mapId})`.mapWith(Number),
+        firstMapVideoId: sql<string | null>`max(${firstMapByListSubquery.videoId})`,
+        updatedAt: MapBookmarkLists.updatedAt,
+        userName: Users.name,
+        userId: MapBookmarkLists.userId,
       })
+      .from(MapBookmarkLists)
+      .innerJoin(Users, eq(Users.id, MapBookmarkLists.userId))
+      .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
+      .leftJoin(
+        firstMapByListSubquery,
+        and(eq(firstMapByListSubquery.listId, MapBookmarkLists.id), eq(firstMapByListSubquery.rn, 1)),
+      )
+      .where(eq(MapBookmarkLists.isPublic, true))
+      .groupBy(MapBookmarkLists.id, Users.name)
+      .orderBy(desc(MapBookmarkLists.updatedAt));
+  }),
+
+  getForSession: protectedProcedure.query(async ({ ctx }) => {
+    const { db, user } = ctx;
+
+    return db
+      .select({ id: MapBookmarkLists.id, title: MapBookmarkLists.title })
       .from(MapBookmarkLists)
       .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
       .groupBy(MapBookmarkLists.id)
@@ -32,18 +58,7 @@ export const mapBookmarkListRouter = {
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;
 
-      const firstMapByListSubquery = db
-        .select({
-          listId: MapBookmarkListItems.listId,
-          videoId: Maps.videoId,
-          rn: sql<number>`row_number() over (
-            partition by ${MapBookmarkListItems.listId}
-            order by ${MapBookmarkListItems.createdAt} asc, ${MapBookmarkListItems.mapId} asc
-          )`.as("rn"),
-        })
-        .from(MapBookmarkListItems)
-        .innerJoin(Maps, eq(Maps.id, MapBookmarkListItems.mapId))
-        .as("first_map_by_list");
+      const firstMapByListSubquery = getFirstMapByListSubquery(db);
 
       return db
         .select({
@@ -152,3 +167,18 @@ export const mapBookmarkListRouter = {
     });
   }),
 } satisfies TRPCRouterRecord;
+
+const getFirstMapByListSubquery = (db: DBType) => {
+  return db
+    .select({
+      listId: MapBookmarkListItems.listId,
+      videoId: Maps.videoId,
+      rn: sql<number>`row_number() over (
+    partition by ${MapBookmarkListItems.listId}
+    order by ${MapBookmarkListItems.createdAt} asc, ${MapBookmarkListItems.mapId} asc
+  )`.as("rn"),
+    })
+    .from(MapBookmarkListItems)
+    .innerJoin(Maps, eq(Maps.id, MapBookmarkListItems.mapId))
+    .as("first_map_by_list");
+};
