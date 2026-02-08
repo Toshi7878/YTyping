@@ -17,7 +17,7 @@ import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
-import { MapLeftThumbnail } from "../map-card-thumbnail";
+import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
@@ -48,7 +48,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
+      <MapThumbnailImage
         alt={map.info.title}
         media={map.media}
         size="sm"
@@ -77,7 +77,7 @@ export const CompactMapCard = ({ map, initialInView, imagePriority = false }: Co
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
+      <MapThumbnailImage
         alt={map.info.title}
         media={map.media}
         size="sm"

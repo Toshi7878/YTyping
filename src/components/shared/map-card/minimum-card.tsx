@@ -11,7 +11,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import { MapLeftThumbnail } from "../map-card-thumbnail";
+import { MapThumbnailImage } from "../map-thumbnail-image";
 
 interface MinimumMapCardProps {
   map: MapListItem;
@@ -26,7 +26,7 @@ export const MinimumMapCard = ({ map }: MinimumMapCardProps) => {
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
+      <MapThumbnailImage
         alt={map.info.title}
         media={map.media}
         size="xs"

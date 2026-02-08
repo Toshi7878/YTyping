@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,6 +11,7 @@ import type z from "zod";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { ThumbnailImage } from "@/components/ui/image";
 import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SelectFormField } from "@/components/ui/select/select-form-field";
@@ -107,10 +107,17 @@ interface BookMarkListItemProps {
 }
 
 const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
+  const videoId = list.firstMapVideoId;
+
   return (
     <Button variant="ghost" size="xl" className="justify-between px-1" onClick={onClick}>
       <div className="flex items-center gap-3">
-        <BookmarkThumbnail videoId={list.firstMapVideoId} />
+        <ThumbnailImage
+          src={videoId ? buildYouTubeThumbnailUrl(videoId, "mqdefault") : undefined}
+          alt={list.title}
+          fallback={<Bookmark className="size-4 text-muted-foreground" fill="currentColor" />}
+          size="3xs"
+        />
         <div className="flex flex-col items-start gap-1">
           <span className="flex-1 truncate text-sm">{list.title}</span>
           <div className="flex items-center gap-1">
@@ -124,20 +131,6 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
         fill={list.hasMap ? "currentColor" : "none"}
       />
     </Button>
-  );
-};
-
-const BookmarkThumbnail = ({ videoId }: { videoId: string | null }) => {
-  return (
-    <div className="relative aspect-video w-16 shrink-0 overflow-hidden rounded-sm bg-muted">
-      {videoId ? (
-        <Image src={buildYouTubeThumbnailUrl(videoId, "mqdefault")} alt={videoId} fill className="object-cover" />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <Bookmark className="size-4 text-muted-foreground" fill="currentColor" />
-        </div>
-      )}
-    </div>
   );
 };
 

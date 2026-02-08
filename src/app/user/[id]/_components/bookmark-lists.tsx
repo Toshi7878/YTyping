@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Route } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -27,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Form } from "@/components/ui/form";
+import { ThumbnailImage } from "@/components/ui/image";
 import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
@@ -101,15 +101,11 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
         <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute size-full" />
         <div className="flex flex-row items-center gap-3">
-          <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-sm">
-            <Image
-              src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
-              alt={list.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
+          <ThumbnailImage
+            src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+            alt={list.title}
+            size="2xs"
+          />
           <div className="min-w-0">
             <div className="truncate font-medium text-sm">{list.title}</div>
 

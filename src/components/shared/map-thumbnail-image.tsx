@@ -1,8 +1,5 @@
 import type { VariantProps } from "class-variance-authority";
-import { cva } from "class-variance-authority";
 import { Palette } from "lucide-react";
-import Image from "next/image";
-import type React from "react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { useIsPreviewEnabled } from "@/app/_components/preview-youtube-player";
@@ -16,36 +13,25 @@ import {
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { ThumbnailImage, thumbnailImageVariants } from "../ui/image";
 import { TooltipWrapper } from "../ui/tooltip";
 
-const mapLeftThumbnailVariants = cva("relative aspect-video", {
-  variants: {
-    size: {
-      home: "w-[160px] sm:w-[224px]",
-      sm: "w-[160px]",
-      xs: "w-[120px]",
-    },
-  },
-});
-
-interface MapLeftThumbnailPreviewCoverProps {
+interface MapThumbnailImageProps {
   src?: string;
   alt?: string;
   media?: MapListItem["media"];
-  size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
+  size: VariantProps<typeof thumbnailImageVariants>["size"];
   className?: string;
   imageClassName?: string;
   priority?: boolean;
   isStyledMap?: boolean;
 }
 
-export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
+export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
   const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
-  const shouldFadeIn = !priority;
-  const [isImageLoaded, setIsImageLoaded] = useState(!shouldFadeIn);
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
@@ -53,29 +39,16 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
         <>
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           {props.isStyledMap && <StyledMapBadge />}
-          <div className={mapLeftThumbnailVariants({ size })}>
-            <Image
-              alt={alt}
-              loading={priority ? "eager" : "lazy"}
-              preload={priority}
-              src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
-              fill
-              onLoad={() => setIsImageLoaded(true)}
-              onError={() => setIsImageLoaded(true)}
-              className={cn(
-                "rounded-md",
-                imageClassName,
-                shouldFadeIn && "opacity-0 transition-opacity duration-200 will-change-opacity",
-                shouldFadeIn && isImageLoaded && "opacity-100",
-              )}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
+          <ThumbnailImage
+            src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
+            alt={alt}
+            size={size}
+            className={imageClassName}
+            priority={priority}
+          />
         </>
       ) : (
-        <div className={mapLeftThumbnailVariants({ size })}>
-          <div className="flex h-full w-full flex-start items-center justify-center">{alt}</div>
-        </div>
+        <div className={cn(thumbnailImageVariants({ size }), "flex flex-start items-center justify-center")}>{alt}</div>
       )}
     </div>
   );

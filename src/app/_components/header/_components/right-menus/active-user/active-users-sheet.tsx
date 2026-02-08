@@ -4,7 +4,7 @@ import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { MinimumMapCard } from "@/components/shared/map-card/minimum-card";
-import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
+import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
@@ -71,10 +71,10 @@ const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
   );
 
   if (!map) {
-    const stateMsg = buildStateMessage(activeUser.state);
+    const stateMessage = buildStateMessage(activeUser.state);
     return (
       <CardWithContent variant="map">
-        <MapLeftThumbnail size="xs" alt={stateMsg} />
+        <MapThumbnailImage size="xs" alt={stateMessage} />
       </CardWithContent>
     );
   }

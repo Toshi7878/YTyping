@@ -15,7 +15,7 @@ import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
-import { MapLeftThumbnail } from "../map-card-thumbnail";
+import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
@@ -38,10 +38,10 @@ export const MapCard = ({ map, initialInView = false, imagePriority = false }: M
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <MapLeftThumbnail
+      <MapThumbnailImage
         alt={map.info.title}
         media={map.media}
-        size="home"
+        size="md"
         priority={imagePriority}
         isStyledMap={map.info.categories.includes("CSS")}
       />

@@ -13,7 +13,7 @@ import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
-import { MapLeftThumbnail } from "../map-card-thumbnail";
+import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";
 import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
@@ -64,7 +64,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
             </Badge>
           )}
 
-          <MapLeftThumbnail
+          <MapThumbnailImage
             alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
             size="xs"
