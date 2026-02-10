@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
 import {
   readTypingOptions,
@@ -11,11 +10,11 @@ import {
 import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
+import { SettingIconButton } from "@/components/ui/icon-button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
@@ -91,9 +90,11 @@ export const SettingPopover = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange} modal>
-      <PopoverTrigger>
-        <SettingButton />
+      {/* <TooltipWrapper label="設定" delayDuration={500}> */}
+      <PopoverTrigger asChild>
+        <SettingIconButton />
       </PopoverTrigger>
+      {/* </TooltipWrapper> */}
       <PopoverContent
         className="w-screen p-4 sm:w-xl"
         align={isMdScreen ? "end" : "center"}
@@ -123,16 +124,6 @@ export const SettingPopover = () => {
         <ResetButton onClick={handleReset} />
       </PopoverContent>
     </Popover>
-  );
-};
-
-const SettingButton = () => {
-  return (
-    <TooltipWrapper label="設定" delayDuration={500}>
-      <Button variant="unstyled" size="icon" className="hover:text-foreground/90" asChild>
-        <IoMdSettings className="size-24 md:size-9" />
-      </Button>
-    </TooltipWrapper>
   );
 };
 

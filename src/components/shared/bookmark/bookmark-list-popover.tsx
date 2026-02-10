@@ -28,18 +28,11 @@ import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator
 interface BookmarkListPopoverProps {
   mapId: number;
   hasBookmarked: boolean;
-  className?: string;
   iconClassName?: string;
-  variant?: "ghost" | "unstyled";
+  trigger: React.ReactNode;
 }
 
-export const BookmarkListPopover = ({
-  mapId,
-  hasBookmarked,
-  className,
-  iconClassName,
-  variant = "ghost",
-}: BookmarkListPopoverProps) => {
+export const BookmarkListPopover = ({ mapId, hasBookmarked, iconClassName, trigger }: BookmarkListPopoverProps) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
@@ -65,15 +58,7 @@ export const BookmarkListPopover = ({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
-      <PopoverTrigger asChild>
-        <Button variant={variant} size="icon" className={cn("dark:hover:bg-primary/35", className)}>
-          <Bookmark
-            strokeWidth={2.5}
-            fill={hasBookmarked ? "currentColor" : "none"}
-            className={cn("size-4", hasBookmarked ? "text-primary-light" : "text-muted-foreground", iconClassName)}
-          />
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <H4 className="px-2 py-2 text-base">
           ブックマークに保存 {lists?.length} / {MAX_BOOKMARK_LIST_LENGTH}件
