@@ -127,7 +127,7 @@ const BookmarkListIconButton = () => {
           "group relative bottom-0.5 ml-3 size-20 p-5 max-md:mt-8 max-md:ml-8 md:size-8 dark:hover:bg-transparent",
           hasBookmarked && "hover:opacity-80",
         )}
-        iconClassName={cn("size-20 md:size-8", !hasBookmarked && "group-hover:text-foreground/90")}
+        iconClassName={cn("size-20 md:size-8", !hasBookmarked && "text-foreground/60 group-hover:text-foreground/90")}
       />
     </TooltipWrapper>
   );
