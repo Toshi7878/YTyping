@@ -12,7 +12,7 @@ export const useReadyInputModeState = () => useAtomValue(readyRadioInputModeAtom
 export const setReadyInputMode = (value: InputMode) => store.set(readyRadioInputModeAtom, value);
 export const readReadyInputMode = () => store.get(readyRadioInputModeAtom);
 
-const volumeAtom = atomWithStorage("volume", 30);
+const volumeAtom = atomWithStorage("volume", 30, undefined, { getOnInit: true });
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
 export const readVolume = () => store.get(volumeAtom);
