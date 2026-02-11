@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { BookmarkListPopover } from "@/components/shared/bookmark/bookmark-list-popover";
-import { LikeButton } from "@/components/shared/like-button/like-button";
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { BookmarkListIconButton, EditIconLinkButton, InfoIconButton } from "@/components/ui/icon-button";
@@ -14,11 +13,11 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { formatDate } from "@/utils/date";
 import { formatTime } from "@/utils/format-time";
-import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { SettingPopover } from "./setting/popover";
+import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 
-export const TabIcons = ({ className }: { className?: string }) => {
+export const MapActionIcons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
   const mapId = useMapIdState();
   const trpc = useTRPC();
@@ -29,20 +28,20 @@ export const TabIcons = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "relative flex text-foreground/60 max-md:h-32 max-md:pr-10 md:bottom-1 [&>a]:hover:text-foreground/90 [&>button]:hover:text-foreground/90",
+        "mb-1.5 flex gap-1.5 text-foreground/60 [&>a]:hover:text-foreground/90 [&>button]:hover:text-foreground/90 [&_svg]:size-24! md:[&_svg]:size-9!",
         className,
       )}
     >
-      <MapInfoPopoverButton mapInfo={mapInfo} />
+      <MapInfoHoverCardButton mapInfo={mapInfo} />
       {session?.user.id ? <SettingPopover /> : null}
-      {session?.user.id ? <BookmarkListPopoverButton id={mapInfo.id} hasBookmarked={hasBookmarked} /> : null}
-      {session?.user.id ? <LikeIconButton id={mapInfo.id} hasLiked={hasLiked} /> : null}
+      {session?.user.id ? <BookmarkListButton id={mapInfo.id} hasBookmarked={hasBookmarked} /> : null}
+      {session?.user.id ? <MapLikeButton id={mapInfo.id} hasLiked={hasLiked} /> : null}
       <EditIconLinkButton href={`/edit/${mapInfo.id}`} replace />
     </div>
   );
 };
 
-const MapInfoPopoverButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["detail"]["get"] }) => {
+const MapInfoHoverCardButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["detail"]["get"] }) => {
   const [open, setOpen] = useState(false);
   const creatorComment = mapInfo.creator.comment?.trim() ? mapInfo.creator.comment : "-";
   const tags = mapInfo.info.tags ?? [];
@@ -110,37 +109,23 @@ const MapInfoPopoverButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["deta
   );
 };
 
-const BookmarkListPopoverButton = ({ id, hasBookmarked }: { id: number; hasBookmarked: boolean }) => {
+const BookmarkListButton = ({ id, hasBookmarked }: { id: number; hasBookmarked: boolean }) => {
   return (
     <BookmarkListPopover
       mapId={id}
       hasBookmarked={hasBookmarked}
-      trigger={
-        <BookmarkListIconButton
-          fill={hasBookmarked ? "currentColor" : "none"}
-          iconClassName={cn(hasBookmarked && "text-primary-light")}
-        />
-      }
+      trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />}
     />
   );
 };
 
-const LikeIconButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
-  const { isSmScreen } = useBreakPoint();
+const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
   const toggleMapLike = useToggleMapLikeMutation();
 
   const handleClick = () => {
     if (toggleMapLike.isPending) return;
-
     toggleMapLike.mutate({ mapId: id, newState: !hasLiked });
   };
 
-  return (
-    <LikeButton
-      onClick={handleClick}
-      size={isSmScreen ? 164 : 64}
-      defaultLiked={hasLiked}
-      className="bottom-3.5 max-md:mb-[-25px]"
-    />
-  );
+  return <LikeToggleButton onClick={handleClick} liked={hasLiked} />;
 };

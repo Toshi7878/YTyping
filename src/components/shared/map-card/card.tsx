@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { LikeCountIcon } from "@/components/shared/map-count/like-count";
-import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -14,7 +12,7 @@ import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
+import { MapListActionButtons } from "../like-count";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
@@ -55,6 +53,7 @@ interface MapInfoProps {
 }
 
 const MapInfo = ({ map }: MapInfoProps) => {
+  const { status } = useSession();
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
@@ -76,7 +75,11 @@ const MapInfo = ({ map }: MapInfoProps) => {
           <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} className="mt-2" />
         </section>
         <MapBadges map={map} className="mt-2 mb-0.5" />
-        <MapCountIcons map={map} />
+        <MapListActionButtons
+          map={map}
+          showBookmark={status === "authenticated"}
+          className="absolute right-1 -bottom-px"
+        />
       </div>
     </div>
   );
@@ -95,29 +98,6 @@ const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
         </Badge>
       </Link>
     </HoverExtractCardTrigger>
-  );
-};
-
-const MapCountIcons = ({ map }: { map: Map }) => {
-  const { status } = useSession();
-
-  return (
-    <div className="absolute right-1 -bottom-px flex items-center space-x-1">
-      {status === "authenticated" ? (
-        <BookmarkListPopover
-          className="relative z-10 mr-1.5"
-          mapId={map.id}
-          hasBookmarked={map.bookmark.hasBookmarked}
-        />
-      ) : null}
-      <RankingCount
-        className="z-10"
-        myRank={map.ranking.myRank}
-        rankingCount={map.ranking.count}
-        myRankUpdatedAt={map.ranking.myRankUpdatedAt}
-      />
-      <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
-    </div>
   );
 };
 

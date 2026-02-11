@@ -27,12 +27,10 @@ import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator
 
 interface BookmarkListPopoverProps {
   mapId: number;
-  hasBookmarked: boolean;
-  iconClassName?: string;
   trigger: React.ReactNode;
 }
 
-export const BookmarkListPopover = ({ mapId, hasBookmarked, iconClassName, trigger }: BookmarkListPopoverProps) => {
+export const BookmarkListPopover = ({ mapId,  trigger }: BookmarkListPopoverProps) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);

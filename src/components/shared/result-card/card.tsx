@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import type { HTMLAttributes } from "react";
-import { LikeCountIcon } from "@/components/shared/map-count/like-count";
-import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -12,7 +10,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
+import { MapListActionButtons } from "../like-count";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";
@@ -75,26 +73,11 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}
         </div>
         {shouldRender && (
-          <div
-            className={cn(
-              "absolute bottom-0 left-2 z-2 flex items-center space-x-1",
-              status === "authenticated" && "left-0",
-            )}
-          >
-            {status === "authenticated" ? (
-              <BookmarkListPopover mapId={result.map.id} hasBookmarked={result.map.bookmark.hasBookmarked} />
-            ) : null}{" "}
-            <RankingCount
-              myRank={result.map.ranking.myRank}
-              rankingCount={result.map.ranking.count}
-              myRankUpdatedAt={result.map.ranking.myRankUpdatedAt}
-            />
-            <LikeCountIcon
-              mapId={result.map.id}
-              hasLiked={result.map.like.hasLiked ?? false}
-              likeCount={result.map.like.count}
-            />
-          </div>
+          <MapListActionButtons
+            map={result.map}
+            showBookmark={status === "authenticated"}
+            className={cn("absolute bottom-0", status === "authenticated" ? "left-0" : "left-2")}
+          />
         )}
       </CardContentWithThumbnail>
 

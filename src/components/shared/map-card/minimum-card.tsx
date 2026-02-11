@@ -1,7 +1,5 @@
 "use client";
 import Link from "next/link";
-import { LikeCountIcon } from "@/components/shared/map-count/like-count";
-import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -11,6 +9,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
+import { MapListActionButtons } from "../like-count";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 
 interface MinimumMapCardProps {
@@ -61,7 +60,7 @@ const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
         </section>
         <section className="flex h-full w-[98%] items-center justify-between">
           <MapBadges map={map} />
-          <MapIcons map={map} />
+          <MapListActionButtons map={map} showBookmark={false} className="absolute right-1 -bottom-px" />
         </section>
       </div>
     </div>
@@ -82,25 +81,6 @@ const MapBadges = ({ map }: MapBadgesProps) => {
         </Badge>
       </Link>
     </HoverExtractCardTrigger>
-  );
-};
-
-interface MapCountIconsProps {
-  map: MapListItem;
-}
-
-const MapIcons = ({ map }: MapCountIconsProps) => {
-  return (
-    <div className="absolute right-1 -bottom-px flex items-center space-x-1">
-      <RankingCount
-        className="z-10"
-        key={map.ranking.myRank}
-        myRank={map.ranking.myRank}
-        rankingCount={map.ranking.count}
-        myRankUpdatedAt={map.ranking.myRankUpdatedAt}
-      />
-      <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
-    </div>
   );
 };
 
