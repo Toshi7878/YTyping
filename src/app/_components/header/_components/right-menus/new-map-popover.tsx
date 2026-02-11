@@ -57,7 +57,7 @@ export const NewMapPopover = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="譜面新規作成" className="relative bottom-3">
+      <TooltipWrapper label="譜面新規作成" className="relative bottom-3" asChild>
         <PopoverTrigger asChild>
           <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <RiAddBoxFill size={20} />

@@ -17,8 +17,7 @@ import { ThumbnailImage, thumbnailImageVariants } from "../ui/image";
 import { TooltipWrapper } from "../ui/tooltip";
 
 interface MapThumbnailImageProps {
-  src?: string;
-  alt?: string;
+  alt: string;
   media?: MapListItem["media"];
   size: VariantProps<typeof thumbnailImageVariants>["size"];
   className?: string;
@@ -28,17 +27,17 @@ interface MapThumbnailImageProps {
 }
 
 export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
-  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
+  const { alt, media, size, className, imageClassName, priority = false, isStyledMap = false } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
 
   return (
-    <div className={cn("group relative my-auto select-none", className)} {...rest}>
+    <div className={cn("group relative my-auto select-none", className)}>
       {media ? (
         <>
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
-          {props.isStyledMap && <StyledMapBadge />}
+          {isStyledMap && <StyledMapBadge />}
           <ThumbnailImage
             src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
             alt={alt}

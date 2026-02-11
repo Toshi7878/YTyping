@@ -22,7 +22,7 @@ export const ActiveUsersSheet = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="アクティブユーザー" className="relative bottom-3">
+      <TooltipWrapper label="アクティブユーザー" className="relative bottom-3" asChild>
         <SheetTrigger asChild>
           <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <Users size={18} strokeWidth={2.5} />

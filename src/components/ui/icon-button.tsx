@@ -9,7 +9,7 @@ import { TiFilter } from "react-icons/ti";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
-type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild">;
+type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild" | "type">;
 
 export const SettingIconButton = (props: IconButtonProps) => {
   return (
@@ -89,7 +89,7 @@ export const RankingStarIconButton = ({
 
 export const FilterIconButton = ({ ...props }: IconButtonProps) => {
   return (
-    <Button size="icon" variant="outline" tabIndex={-1} asChild {...props}>
+    <Button type="button" size="icon" variant="outline" tabIndex={-1} asChild {...props}>
       <TiFilter className="size-4" />
     </Button>
   );

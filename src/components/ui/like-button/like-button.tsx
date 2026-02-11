@@ -1,7 +1,7 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type ComponentProps, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 import "./css/render.css";
@@ -13,22 +13,21 @@ const iconSizeVariants = {
 } as const;
 
 interface LikeToggleButtonProps {
-  onClick?: () => void;
   liked?: boolean;
-  disabled?: boolean;
   size?: keyof typeof iconSizeVariants;
   label?: string;
-  className?: string;
 }
+
+type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild">;
 
 export const LikeToggleButton = ({
   onClick,
   liked = false,
-  disabled,
   size = "default",
   label,
   className,
-}: LikeToggleButtonProps) => {
+  ...buttonProps
+}: LikeToggleButtonProps & IconButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [buttonSizePx, setButtonSizePx] = useState(0);
   const [shouldAnimate, setShouldAnimate] = useState(false);
@@ -58,15 +57,20 @@ export const LikeToggleButton = ({
 
   return (
     <Button
-      disabled={disabled}
-      ref={buttonRef}
+      {...buttonProps}
+      type="button"
+      ref={(el) => {
+        buttonRef.current = el;
+        if (typeof buttonProps.ref === "function") {
+          buttonProps.ref(el);
+        }
+      }}
       variant="unstyled"
       size="icon"
       className={cn("relative gap-1", liked ? "text-like [&_svg]:fill-like" : "[&_svg]:fill-transparent", className)}
-      type="button"
-      onClick={() => {
+      onClick={(e) => {
         setShouldAnimate(true);
-        onClick?.();
+        onClick?.(e);
       }}
     >
       <Heart

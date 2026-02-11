@@ -130,8 +130,8 @@ const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
   };
 
   return (
-    <TooltipWrapper label="いいね">
-      <LikeToggleButton onClick={handleClick} liked={hasLiked} />
+    <TooltipWrapper label="いいね" asChild>
+      <LikeToggleButton onClick={handleClick} liked={hasLiked} className={cn(hasLiked && "hover:text-like")} />
     </TooltipWrapper>
   );
 };
