@@ -69,7 +69,7 @@ export const LikeToggleButton = ({
       size="icon"
       className={cn(
         "relative gap-1",
-        liked ? "text-like hover:text-like [&_svg]:fill-like" : "[&_svg]:fill-transparent",
+        liked ? "text-like hover:text-like! [&_svg]:fill-like" : "[&_svg]:fill-transparent",
         className,
       )}
       onClick={(e) => {
