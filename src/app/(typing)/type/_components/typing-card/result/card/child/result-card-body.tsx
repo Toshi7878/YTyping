@@ -28,7 +28,7 @@ export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord 
 
           return (
             type.c && (
-              <TooltipWrapper key={`${index}-${type.c}`} label={label} side="top">
+              <TooltipWrapper key={`${index}-${type.c}`} label={label} side="top" asChild>
                 <span
                   className={cn(
                     "typed break-all hover:bg-border/45",

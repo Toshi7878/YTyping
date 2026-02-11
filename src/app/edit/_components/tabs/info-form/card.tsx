@@ -278,8 +278,8 @@ const VideoIdInput = () => {
 
   return (
     <div className="flex w-full items-center gap-4">
-      <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
-        <div className="flex flex-center gap-4">
+      <div className="flex flex-center gap-4">
+        <TooltipWrapper label="動画URLを貼付するとIDが自動入力されます" asChild>
           <FloatingLabelInputFormField
             name="videoId"
             className="w-32"
@@ -308,23 +308,23 @@ const VideoIdInput = () => {
               }
             }}
           />
-          <Button
-            variant="outline-info"
-            size="lg"
-            disabled={formVideoId.length !== 11 || isVideoIdDirty}
-            onClick={(e) => {
-              e.preventDefault();
-              if (formVideoId.length !== 11) return;
+        </TooltipWrapper>
+        <Button
+          variant="outline-info"
+          size="lg"
+          disabled={formVideoId.length !== 11 || isVideoIdDirty}
+          onClick={(e) => {
+            e.preventDefault();
+            if (formVideoId.length !== 11) return;
 
-              setVideoId(getValues("videoId"));
-              setYTChangingVideo(true);
-              setCanUpload(true);
-            }}
-          >
-            動画切り替え
-          </Button>
-        </div>
-      </TooltipWrapper>
+            setVideoId(getValues("videoId"));
+            setYTChangingVideo(true);
+            setCanUpload(true);
+          }}
+        >
+          動画切り替え
+        </Button>
+      </div>
     </div>
   );
 };
@@ -349,39 +349,38 @@ const PreviewTimeInput = () => {
           <div>↑↓キー: 0.05ずつ調整, Enter:再生</div>
         </>
       }
+      asChild
     >
       <div className="flex flex-row items-center gap-3">
-        <div>
-          <FloatingLabelInputFormField
-            name="previewTime"
-            label="プレビュータイム"
-            className="w-36"
-            type="number"
-            min="0"
-            step="0.001"
-            onFocus={(e) => e.target.select()}
-            onChange={() => setCanUpload(true)}
-            inputMode="decimal"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handlePreviewClick();
-              }
-              if (e.key === "ArrowUp") {
-                e.preventDefault();
-                const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", (currentValue + 0.05).toFixed(3), { shouldDirty: true });
-                setCanUpload(true);
-              }
-              if (e.key === "ArrowDown") {
-                e.preventDefault();
-                const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3), { shouldDirty: true });
-                setCanUpload(true);
-              }
-            }}
-          />
-        </div>
+        <FloatingLabelInputFormField
+          name="previewTime"
+          label="プレビュータイム"
+          className="w-36"
+          type="number"
+          min="0"
+          step="0.001"
+          onFocus={(e) => e.target.select()}
+          onChange={() => setCanUpload(true)}
+          inputMode="decimal"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handlePreviewClick();
+            }
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              const currentValue = Number(getValues("previewTime")) || 0;
+              setValue("previewTime", (currentValue + 0.05).toFixed(3), { shouldDirty: true });
+              setCanUpload(true);
+            }
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              const currentValue = Number(getValues("previewTime")) || 0;
+              setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3), { shouldDirty: true });
+              setCanUpload(true);
+            }
+          }}
+        />
 
         <Button className="shrink-0" type="button" onClick={handlePreviewClick} variant="ghost" size="icon">
           <FaPlay size={15} />

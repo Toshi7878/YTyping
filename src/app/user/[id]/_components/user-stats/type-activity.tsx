@@ -58,7 +58,12 @@ export const TypeActivity = () => {
         });
 
         return (
-          <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
+          <TooltipWrapper
+            key={activity.date}
+            label={<BlockToolTipLabel activity={activity} />}
+            delayDuration={0}
+            asChild
+          >
             {styledBlock}
           </TooltipWrapper>
         );
@@ -68,7 +73,7 @@ export const TypeActivity = () => {
         const label = getLevelLabel(level);
 
         return (
-          <TooltipWrapper key={level} label={label}>
+          <TooltipWrapper key={level} delayDuration={0} label={label} asChild>
             <div className={level % 3 === 0 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
               <div style={{ width: 14, height: 14, backgroundColor: color, borderRadius: 2 }} />
             </div>

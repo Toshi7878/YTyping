@@ -1,7 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { FaHandsClapping } from "react-icons/fa6";
-import { Button } from "@/components/ui/button";
+import { HandsClappingButton } from "@/components/ui/icon-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
@@ -24,26 +23,18 @@ export const ResultClapButton = ({ resultId, clapCount, hasClapped, className }:
   };
 
   return (
-    <div className={cn("inline-flex", className)}>
-      <TooltipWrapper disabled={!!session} label={"拍手はログイン後に可能です"}>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={!session || toggleClapMutation.isPending}
-          onClick={onClick}
-          className={cn(
-            "min-w-[100px] rounded-full border px-7",
-            hasClapped && session ? "border-perfect bg-perfect/20 text-perfect" : "",
-            session && "hover:bg-perfect/20 hover:text-perfect",
-          )}
-        >
-          <div className="flex items-center space-x-1 tracking-wider">
-            <FaHandsClapping />
-            <span>×{clapCount}</span>
-          </div>
-        </Button>
-      </TooltipWrapper>
-    </div>
+    <TooltipWrapper disabled={!!session} label="拍手はログイン後に可能です">
+      <HandsClappingButton
+        label={`× ${clapCount}`}
+        disabled={!session || toggleClapMutation.isPending}
+        className={cn(
+          "min-w-[100px] rounded-full border px-7",
+          hasClapped && session ? "border-perfect bg-perfect/20 text-perfect" : "",
+          session && "hover:bg-perfect/20 hover:text-perfect",
+          className,
+        )}
+        onClick={onClick}
+      />
+    </TooltipWrapper>
   );
 };

@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
@@ -90,11 +91,11 @@ export const SettingPopover = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange} modal>
-      {/* <TooltipWrapper label="設定" delayDuration={500}> */}
-      <PopoverTrigger asChild>
-        <SettingIconButton />
-      </PopoverTrigger>
-      {/* </TooltipWrapper> */}
+      <TooltipWrapper label="設定">
+        <PopoverTrigger asChild>
+          <SettingIconButton />
+        </PopoverTrigger>
+      </TooltipWrapper>
       <PopoverContent
         className="w-screen p-4 sm:w-xl"
         align={isMdScreen ? "end" : "center"}

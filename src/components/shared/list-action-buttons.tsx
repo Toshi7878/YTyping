@@ -7,6 +7,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
+import { formatDate } from "@/utils/date";
 import { BookmarkListPopover } from "./bookmark/bookmark-list-popover";
 
 export const MapListActionButtons = ({
@@ -45,7 +46,15 @@ const LikeCountButton = ({
   const { stop } = useProgress();
 
   if (status !== "authenticated" || !mapId) {
-    return <LikeToggleButton label={likeCount.toString()} liked={false} disabled={false} size="xs" />;
+    return (
+      <LikeToggleButton
+        label={likeCount.toString()}
+        liked={false}
+        disabled={false}
+        size="xs"
+        className="text-muted-foreground"
+      />
+    );
   }
 
   const handleClick = () => {
@@ -60,7 +69,7 @@ const LikeCountButton = ({
       liked={hasLiked}
       onClick={handleClick}
       size="xs"
-      className="z-30 hover:bg-like/30"
+      className={cn("z-30 hover:bg-like/30", !hasLiked && "text-muted-foreground")}
     />
   );
 };
@@ -102,21 +111,21 @@ const RankingCountButton = ({
   return (
     <TooltipWrapper
       label={
-        <div>
+        myRankUpdatedAt ? (
           <p>
-            自分の順位: <span className="font-bold">{myRank}位</span> (
-            {myRankUpdatedAt?.toLocaleDateString("ja-JP", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })}
-            )
+            自分の順位: <span className="font-bold">{myRank}位</span> ({formatDate(myRankUpdatedAt)})
           </p>
-        </div>
+        ) : null
       }
+      delayDuration={0}
       disabled={!myRank || !session}
+      asChild
     >
-      <RankingStarIconButton label={rankingCount.toString()} size="xs" className={cn(colorClass, "z-30 cursor-help")} />
+      <RankingStarIconButton
+        label={rankingCount.toString()}
+        size="xs"
+        className={cn(colorClass, "z-30", myRankUpdatedAt ? "cursor-help" : "cursor-default")}
+      />
     </TooltipWrapper>
   );
 };

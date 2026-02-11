@@ -49,7 +49,7 @@ export const AllTimeAdjust = () => {
   };
 
   return (
-    <TooltipWrapper label={<div>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</div>}>
+    <TooltipWrapper label="数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します" asChild>
       <form className="flex w-fit items-baseline gap-2">
         <Label className="text-sm">全体タイム調整</Label>
         <Input

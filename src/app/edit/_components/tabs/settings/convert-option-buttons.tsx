@@ -63,6 +63,7 @@ const ConvertOptionButton = ({ option, isActive }: { option: (typeof CONVERT_OPT
         </div>
       }
       side="bottom"
+      asChild
     >
       <RadioButton
         value={option.value}

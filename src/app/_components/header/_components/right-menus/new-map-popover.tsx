@@ -57,7 +57,7 @@ export const NewMapPopover = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
+      <TooltipWrapper label="譜面新規作成" className="relative bottom-3">
         <PopoverTrigger asChild>
           <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <RiAddBoxFill size={20} />
@@ -114,15 +114,16 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
           <div>YouTubeId: {props.backupData?.videoId}</div>
         </div>
       }
+      asChild
     >
-      <Link
-        href={`/edit?new=${props.backupData?.videoId}&isBackup=true`}
-        className={cn(!props.backupData?.videoId && "invisible")}
-      >
-        <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)} type="button">
+      <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)} type="button" asChild>
+        <Link
+          href={`/edit?new=${props.backupData?.videoId}&isBackup=true`}
+          className={cn(!props.backupData?.videoId && "invisible")}
+        >
           前回のバックアップデータが存在します。
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     </TooltipWrapper>
   );
 }

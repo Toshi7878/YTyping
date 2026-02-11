@@ -123,7 +123,7 @@ export const CounterInput = ({
     <div className={cn(counterVariants({ variant, size, element: "wrapper" }), className)}>
       {label && <span className={counterVariants({ variant, size, element: "label" })}>{label}</span>}
       <div className={counterVariants({ variant, size, element: "container" })}>
-        <TooltipWrapper label={decrementTooltip} disabled={!decrementTooltip}>
+        <TooltipWrapper label={decrementTooltip} disabled={!decrementTooltip} asChild>
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
             size={buttonSize}
@@ -147,7 +147,7 @@ export const CounterInput = ({
           {unit && <span>{unit}</span>}
         </div>
 
-        <TooltipWrapper label={incrementTooltip} disabled={!incrementTooltip}>
+        <TooltipWrapper label={incrementTooltip} disabled={!incrementTooltip} asChild>
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
             size={buttonSize}

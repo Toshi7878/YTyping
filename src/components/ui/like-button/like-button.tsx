@@ -62,11 +62,7 @@ export const LikeToggleButton = ({
       ref={buttonRef}
       variant="unstyled"
       size="icon"
-      className={cn(
-        "relative gap-1",
-        liked ? "text-like [&_svg]:fill-like" : "text-muted-foreground [&_svg]:fill-transparent",
-        className,
-      )}
+      className={cn("relative gap-1", liked ? "text-like [&_svg]:fill-like" : "[&_svg]:fill-transparent", className)}
       type="button"
       onClick={() => {
         setShouldAnimate(true);

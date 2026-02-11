@@ -42,6 +42,7 @@ export const ReadyPlaySpeed = () => {
       delayDuration={0}
       open={playSpeed < 1}
       sideOffset={-20}
+      asChild
     >
       <div className="flex items-center rounded-lg border border-border border-solid px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} direction="down" />

@@ -252,7 +252,7 @@ const DirectTimeInput = ({ time }: { time: string }) => {
   const [editTime, setEditTime] = useState(time);
 
   return (
-    <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"}>
+    <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"} asChild>
       <Input
         className="h-8 px-1 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         type="number"
@@ -290,11 +290,7 @@ const DirectLyricsInput = () => {
   const lyrics = useLyricsState();
 
   return (
-    <TooltipWrapper
-      label={<span className="text-xs">Enterキーを押すとRubyタグを挿入できます。</span>}
-      disabled={!isLineLyricsSelected}
-      open={isLineLyricsSelected}
-    >
+    <TooltipWrapper label="Enterキーを押すとRubyタグを挿入できます。" open={isLineLyricsSelected} asChild>
       <Input
         className="h-8"
         autoComplete="off"

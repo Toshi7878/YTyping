@@ -9,6 +9,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
@@ -52,14 +53,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <SessionProvider session={session}>
               <TRPCProvider>
                 <LinkProgressProvider>
-                  <Header className="fixed z-50 h-10 w-full" />
-                  <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                    <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                      {children}
-                      <Analytics />
-                    </main>
-                    <PreviewYouTubePlayer />
-                  </JotaiProvider>
+                  <TooltipProvider delayDuration={600}>
+                    <Header className="fixed z-50 h-10 w-full" />
+                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        {children}
+                        <Analytics />
+                      </main>
+                      <PreviewYouTubePlayer />
+                    </JotaiProvider>
+                  </TooltipProvider>
                 </LinkProgressProvider>
               </TRPCProvider>
             </SessionProvider>

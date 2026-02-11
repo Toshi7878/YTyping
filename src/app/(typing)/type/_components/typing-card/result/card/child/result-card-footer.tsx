@@ -39,7 +39,7 @@ export const ResultCardFooter = ({
         >
           ミス: {miss}, ロスト: {lost}
         </Badge>
-        <TooltipWrapper label={`rkpm: ${rkpm}`}>
+        <TooltipWrapper label={`rkpm: ${rkpm}`} asChild>
           <Badge variant="secondary" className="px-1.5 py-0.5 text-sm">
             KPM: {kpm}
           </Badge>
@@ -48,6 +48,7 @@ export const ResultCardFooter = ({
 
       <TooltipWrapper
         label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
+        asChild
       >
         <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
           ポイント: {point}

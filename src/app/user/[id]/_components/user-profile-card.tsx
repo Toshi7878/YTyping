@@ -53,7 +53,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         </DataList>
         {isMyProfilePage && (
           <div className="flex justify-end">
-            <TooltipWrapper label="プロフィール編集ページに移動">
+            <TooltipWrapper label="プロフィール編集ページに移動" asChild>
               <Button variant="outline" size="icon" asChild>
                 <Link href="/user/settings">
                   <MdOutlineEdit className="size-4" />

@@ -30,13 +30,13 @@ export const ResultCardHeader = ({
         {lineIndex}/{map?.typingLineIndexes.length}
       </span>
       <span className="mx-2">|</span>
-      <TooltipWrapper label={`要求打鍵速度${inputModeText}`}>
+      <TooltipWrapper label={`要求打鍵速度${inputModeText}`} asChild>
         <span className={cn("line-kpm font-bold hover:bg-border/20")}>
           {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && `(${lineSpeed.toFixed(2)}倍速)`}
         </span>
       </TooltipWrapper>
       <span className="mx-2">|</span>
-      <TooltipWrapper label={`要求打鍵数${inputModeText}`}>
+      <TooltipWrapper label={`要求打鍵数${inputModeText}`} asChild>
         <span className={cn("line-notes hover:bg-border/20")}>{lineNotes}打</span>
       </TooltipWrapper>
     </CardHeader>

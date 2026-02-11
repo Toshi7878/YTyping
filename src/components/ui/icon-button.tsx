@@ -3,8 +3,9 @@ import type { Route } from "next";
 import Link from "next/link";
 import type { ComponentProps } from "react";
 import { BiEdit } from "react-icons/bi";
-import { FaRankingStar } from "react-icons/fa6";
+import { FaHandsClapping, FaRankingStar } from "react-icons/fa6";
 import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
+import { TiFilter } from "react-icons/ti";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
@@ -82,6 +83,23 @@ export const RankingStarIconButton = ({
     <Button type="button" variant="unstyled" size="icon" className={cn("gap-1", className)} {...props}>
       <FaRankingStar className={cn(sizeVariants[size])} />
       {label && <span className="select-none font-mono text-base">{label}</span>}
+    </Button>
+  );
+};
+
+export const FilterIconButton = ({ ...props }: IconButtonProps) => {
+  return (
+    <Button size="icon" variant="outline" tabIndex={-1} asChild {...props}>
+      <TiFilter className="size-4" />
+    </Button>
+  );
+};
+
+export const HandsClappingButton = ({ label, ...props }: IconButtonProps & { label?: string }) => {
+  return (
+    <Button type="button" variant="outline" size="sm" {...props}>
+      <FaHandsClapping />
+      {label && <span>{label}</span>}
     </Button>
   );
 };

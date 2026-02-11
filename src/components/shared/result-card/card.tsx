@@ -96,7 +96,7 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
-      <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
+      <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
         <Link href={`/type/${map.id}`} className="block text-secondary hover:underline">
           <div className="truncate font-bold text-sm sm:text-base">
             {nolink(`${map.info.title} / ${map.info.artistName}`)}

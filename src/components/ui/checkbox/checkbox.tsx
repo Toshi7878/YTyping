@@ -56,7 +56,7 @@ const CheckboxListItem = ({
   return (
     <div className={cn("border-l-4", props.checked ? "border-primary" : "border-muted")}>
       {tooltip ? (
-        <TooltipWrapper label={tooltip} align="start">
+        <TooltipWrapper label={tooltip} align="start" asChild>
           {content}
         </TooltipWrapper>
       ) : (
@@ -88,4 +88,4 @@ const CheckboxCardGroup = ({
   );
 };
 
-export { Checkbox, CheckboxListItem, CheckboxCardGroup };
+export { Checkbox, CheckboxCardGroup };

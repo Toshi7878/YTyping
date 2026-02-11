@@ -1,14 +1,13 @@
 import type React from "react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";
 import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_lib/atoms/state";
 import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
 import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
 import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
-import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
+import { FilterIconButton } from "@/components/ui/icon-button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
@@ -141,18 +140,9 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
           <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
         </>
       }
+      asChild
     >
-      <Button
-        aria-label="記号を削除"
-        size="sm"
-        variant="outline"
-        className="absolute right-5 bottom-2"
-        disabled={!manyPhrase}
-        onClick={handleConfirm}
-        tabIndex={-1}
-      >
-        <TiFilter size="18px" />
-      </Button>
+      <FilterIconButton disabled={!manyPhrase} onClick={handleConfirm} tabIndex={-1} />
     </TooltipWrapper>
   );
 };

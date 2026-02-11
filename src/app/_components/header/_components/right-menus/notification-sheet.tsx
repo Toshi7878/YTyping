@@ -30,7 +30,7 @@ export const NotificationSheet = () => {
 
   return (
     <Sheet>
-      <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
+      <TooltipWrapper label="通知" className="relative bottom-3">
         <SheetTrigger asChild>
           <Button
             variant="unstyled"

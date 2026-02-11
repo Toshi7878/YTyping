@@ -22,7 +22,7 @@ export const ActiveUsersSheet = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="アクティブユーザー" delayDuration={600} className="relative bottom-3">
+      <TooltipWrapper label="アクティブユーザー" className="relative bottom-3">
         <SheetTrigger asChild>
           <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <Users size={18} strokeWidth={2.5} />
@@ -45,7 +45,7 @@ export const ActiveUsersSheet = () => {
               return (
                 <TableRow key={user.id} className="border-border/30 border-b">
                   <TableCell className="px-0 py-2" width={100}>
-                    <TooltipWrapper label={user.name}>
+                    <TooltipWrapper label={user.name} asChild>
                       <Link href={`/user/${user.id}`} className="block truncate px-3 py-4 text-sm hover:underline">
                         {user.name}
                       </Link>

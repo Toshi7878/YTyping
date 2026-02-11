@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+
 import type { Route } from "next";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { BookmarkListIconButton, EditIconLinkButton, InfoIconButton } from "@/components/ui/icon-button";
 import { LikeToggleButton } from "@/components/ui/like-button/like-button";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -33,10 +35,10 @@ export const MapActionIconButtons = ({ className }: { className: string }) => {
       )}
     >
       <MapInfoHoverCardButton mapInfo={mapInfo} />
-      {session?.user.id ? <SettingPopover /> : null}
-      {session?.user.id ? <BookmarkListButton id={mapInfo.id} hasBookmarked={hasBookmarked} /> : null}
-      {session?.user.id ? <MapLikeButton id={mapInfo.id} hasLiked={hasLiked} /> : null}
-      <EditIconLinkButton href={`/edit/${mapInfo.id}`} replace />
+      {session?.user.id && <SettingPopover />}
+      {session?.user.id && <BookmarkListButton id={mapInfo.id} hasBookmarked={hasBookmarked} />}
+      {session?.user.id && <MapLikeButton id={mapInfo.id} hasLiked={hasLiked} />}
+      {session?.user.id && <MapEditLinkButton id={mapInfo.id} />}
     </div>
   );
 };
@@ -110,7 +112,13 @@ const MapInfoHoverCardButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["de
 };
 
 const BookmarkListButton = ({ id, hasBookmarked }: { id: number; hasBookmarked: boolean }) => {
-  return <BookmarkListPopover mapId={id} trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />} />;
+  return (
+    <BookmarkListPopover
+      mapId={id}
+      trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />}
+      tooltipLabel="ブックマーク"
+    />
+  );
 };
 
 const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
@@ -121,5 +129,17 @@ const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
     toggleMapLike.mutate({ mapId: id, newState: !hasLiked });
   };
 
-  return <LikeToggleButton onClick={handleClick} liked={hasLiked} />;
+  return (
+    <TooltipWrapper label="いいね">
+      <LikeToggleButton onClick={handleClick} liked={hasLiked} />
+    </TooltipWrapper>
+  );
+};
+
+const MapEditLinkButton = ({ id }: { id: number }) => {
+  return (
+    <TooltipWrapper label="編集" asChild>
+      <EditIconLinkButton href={`/edit/${id}`} replace />
+    </TooltipWrapper>
+  );
 };

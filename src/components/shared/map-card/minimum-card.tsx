@@ -48,10 +48,7 @@ const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
       <Link className="absolute size-full" href={`/type/${map.id}`} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
         <section className="flex flex-col">
-          <TooltipWrapper
-            delayDuration={300}
-            label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
-          >
+          <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
             <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary text-sm">
               {nolink(map.info.title)}
             </Link>

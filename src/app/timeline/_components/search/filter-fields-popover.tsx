@@ -97,7 +97,7 @@ const SearchModeRadioCardGroup = () => {
         const isSelected = (mode ?? "all") === option.value;
 
         return (
-          <TooltipWrapper key={option.value} label="Enterで検索" disabled={!isSelected}>
+          <TooltipWrapper key={option.value} label="Enterで検索" disabled={!isSelected} asChild>
             <RadioCard
               className="rounded-sm"
               value={option.value}
@@ -133,7 +133,6 @@ const SearchRange = ({
   step = 1,
   value,
   setValue,
-  disabled = false,
   isMaxLabel = false,
 }: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label">) => {
   const setSearchParams = useSetSearchParams();
@@ -147,7 +146,7 @@ const SearchRange = ({
   return (
     <div className="space-y-3 py-4">
       <Label>{displayValue}</Label>
-      <TooltipWrapper label="Enterで検索" disabled={disabled}>
+      <TooltipWrapper label="Enterで検索" asChild>
         <DualRangeSlider
           value={[value.min, value.max]}
           min={min}
@@ -159,7 +158,6 @@ const SearchRange = ({
               setSearchParams();
             }
           }}
-          disabled={disabled}
           aria-label={`${label}の範囲を設定`}
         />
       </TooltipWrapper>

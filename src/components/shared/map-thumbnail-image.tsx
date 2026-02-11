@@ -56,7 +56,7 @@ export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
 
 const StyledMapBadge = () => {
   return (
-    <TooltipWrapper label="装飾譜面">
+    <TooltipWrapper label="装飾譜面" asChild>
       <div className="absolute top-2 left-2 z-10 inline-flex">
         <Palette className="size-5 rounded-full bg-black/70 p-1" />
       </div>

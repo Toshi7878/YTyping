@@ -18,11 +18,7 @@ export const LyricsInput = () => {
   const lyrics = useLyricsState();
 
   return (
-    <TooltipWrapper
-      label={<span className="text-xs">Enterキーを押すとRubyタグを挿入できます。</span>}
-      disabled={!isLineLyricsSelected}
-      open={isLineLyricsSelected}
-    >
+    <TooltipWrapper label="Enterキーを押すとRubyタグを挿入できます。" open={isLineLyricsSelected} asChild>
       <FloatingLabelInput
         label="歌詞"
         className="h-8"

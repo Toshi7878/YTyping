@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { SelectFormField } from "@/components/ui/select/select-form-field";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H4, Small } from "@/components/ui/typography";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/lib/mutations/bookmark-list-item";
 import { cn } from "@/lib/utils";
@@ -28,9 +29,10 @@ import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator
 interface BookmarkListPopoverProps {
   mapId: number;
   trigger: React.ReactNode;
+  tooltipLabel?: string;
 }
 
-export const BookmarkListPopover = ({ mapId,  trigger }: BookmarkListPopoverProps) => {
+export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkListPopoverProps) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +58,9 @@ export const BookmarkListPopover = ({ mapId,  trigger }: BookmarkListPopoverProp
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
-      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <TooltipWrapper label={tooltipLabel}>
+        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      </TooltipWrapper>
       <PopoverContent className="w-80 p-0" align="end">
         <H4 className="px-2 py-2 text-base">
           ブックマークに保存 {lists?.length} / {MAX_BOOKMARK_LIST_LENGTH}件

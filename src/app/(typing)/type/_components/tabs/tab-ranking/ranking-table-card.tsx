@@ -185,9 +185,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
 
           return (
             <TooltipWrapper
-              toolTipTriggerProps={{
-                onPointerDown: (event) => event.preventDefault(),
-              }}
               label={
                 <ResultToolTipText
                   typeCounts={typeCounts}
@@ -204,6 +201,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
               delayDuration={0}
               onPointerDownOutside={(event) => event.preventDefault()}
               open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
+              asChild
             >
               {children}
             </TooltipWrapper>

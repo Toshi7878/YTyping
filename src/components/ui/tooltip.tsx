@@ -1,5 +1,7 @@
 "use client";
 
+"use client";
+
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 import type * as React from "react";
 import { useState } from "react";
@@ -8,19 +10,12 @@ import { cn } from "@/lib/utils";
 function TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
   return <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />;
 }
-
 function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
-  );
+  return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
-
 function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
-
 function TooltipContent({
   className,
   sideOffset = 0,
@@ -33,55 +28,47 @@ function TooltipContent({
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         className={cn(
-          "fade-in-0 zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) animate-in text-balance rounded-md border bg-background px-3 py-1.5 text-foreground text-xs data-[state=closed]:animate-out",
+          "data-open:fade-in-0 data-open:zoom-in-95 data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-closed:fade-out-0 data-closed:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) rounded-md border bg-background px-3 py-1.5 text-foreground text-xs data-[state=delayed-open]:animate-in data-closed:animate-out data-open:animate-in",
           className,
         )}
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] border-r border-b bg-background fill-background" />
+        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] border-r border-b bg-background fill-background" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );
 }
-
-interface TooltipWrapperProps {
+interface TooltipWrapperProps extends React.ComponentProps<typeof TooltipPrimitive.Content> {
   children: React.ReactNode;
-  label: React.ReactNode;
+  label?: React.ReactNode;
   delayDuration?: number;
   open?: boolean;
   disabled?: boolean;
-  toolTipTriggerProps?: React.ComponentProps<typeof TooltipPrimitive.Trigger>;
+  asChild?: boolean;
 }
 
-const TooltipWrapper = ({
+function TooltipWrapper({
   children,
   label,
-  delayDuration = 0,
+  delayDuration,
   open,
   disabled = false,
-  toolTipTriggerProps,
+  asChild = false,
   ...props
-}: TooltipWrapperProps & React.ComponentProps<typeof TooltipPrimitive.Content>) => {
+}: TooltipWrapperProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  if (!label || disabled) return <>{children}</>;
+
   return (
-    <Tooltip delayDuration={delayDuration} open={disabled ? false : (open ?? isOpen)} onOpenChange={setIsOpen}>
-      <TooltipTrigger
-        asChild
-        onPointerEnter={disabled ? (e) => e.preventDefault() : undefined}
-        onPointerLeave={disabled ? (e) => e.preventDefault() : undefined}
-        onFocus={disabled ? (e) => e.preventDefault() : undefined}
-        onBlur={disabled ? (e) => e.preventDefault() : undefined}
-        {...toolTipTriggerProps}
-      >
-        {children}
-      </TooltipTrigger>
+    <Tooltip delayDuration={delayDuration} open={open ?? isOpen} onOpenChange={setIsOpen}>
+      <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
       <TooltipContent {...props} onMouseEnter={() => setIsOpen(false)}>
         {label}
       </TooltipContent>
     </Tooltip>
   );
-};
+}
 
-// export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger };
-export { TooltipWrapper };
+export { TooltipProvider, TooltipWrapper };
