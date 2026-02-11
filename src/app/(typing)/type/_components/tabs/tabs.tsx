@@ -1,7 +1,7 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setTabName, TAB_NAMES, useTabNameState } from "../../_lib/atoms/state";
-import { MapActionIcons } from "./tab-icon/tab-icons";
+import { MapActionIconButtons } from "./tab-icon/action-icon-buttons";
 import { RankingTableCard } from "./tab-ranking/ranking-table-card";
 import { StatusCard } from "./tab-status/status-table-card";
 
@@ -46,7 +46,7 @@ const TabLists = () => {
         </TabsTrigger>
       ))}
 
-      <MapActionIcons className="ml-auto h-auto md:h-9" />
+      <MapActionIconButtons className="ml-auto h-auto md:h-9" />
     </TabsList>
   );
 };

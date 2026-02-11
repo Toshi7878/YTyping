@@ -17,7 +17,7 @@ import { formatTime } from "@/utils/format-time";
 import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { SettingPopover } from "./setting/popover";
 
-export const MapActionIcons = ({ className }: { className: string }) => {
+export const MapActionIconButtons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
   const mapId = useMapIdState();
   const trpc = useTRPC();
