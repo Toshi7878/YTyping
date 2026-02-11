@@ -46,7 +46,7 @@ const LinksDropdownMenu = () => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="unstyled" size="sm" className="text-sm hover:text-header-foreground">
-          Menu <ChevronDown className="relative top-[1px] size-4" />
+          Menu <ChevronDown className="relative top-px size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
