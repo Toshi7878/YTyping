@@ -81,7 +81,7 @@ export const RankingStarIconButton = ({
   return (
     <Button type="button" variant="unstyled" size="icon" className={cn("gap-1", className)} {...props}>
       <FaRankingStar className={cn(sizeVariants[size])} />
-      {label && <span className="select-none font-mono">{label}</span>}
+      {label && <span className="select-none font-mono text-base">{label}</span>}
     </Button>
   );
 };

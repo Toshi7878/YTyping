@@ -28,7 +28,7 @@ export const MapActionIcons = ({ className }: { className: string }) => {
   return (
     <div
       className={cn(
-        "mb-1.5 flex gap-1.5 text-foreground/60 [&>a]:hover:text-foreground/90 [&>button]:hover:text-foreground/90 [&_svg]:size-24! md:[&_svg]:size-9!",
+        "mb-1.5 flex gap-18 text-foreground/60 max-md:mr-12 md:gap-1.5 [&>a]:hover:text-foreground/90 [&>button]:hover:text-foreground/90 [&_svg]:size-24! md:[&_svg]:size-9!",
         className,
       )}
     >

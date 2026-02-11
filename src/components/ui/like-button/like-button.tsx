@@ -95,7 +95,7 @@ export const LikeToggleButton = ({
         />
       )}
 
-      {label && <span className="select-none font-mono">{label}</span>}
+      {label && <span className="select-none font-mono text-base">{label}</span>}
     </Button>
   );
 };
