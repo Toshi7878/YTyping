@@ -10,7 +10,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { MapListActionButtons } from "../like-count";
+import { MapListActionButtons } from "../list-action-buttons";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";

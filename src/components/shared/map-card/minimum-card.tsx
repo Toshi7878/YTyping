@@ -9,7 +9,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import { MapListActionButtons } from "../like-count";
+import { MapListActionButtons } from "../list-action-buttons";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 
 interface MinimumMapCardProps {

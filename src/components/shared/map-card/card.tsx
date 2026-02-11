@@ -12,7 +12,7 @@ import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import { MapListActionButtons } from "../like-count";
+import { MapListActionButtons } from "../list-action-buttons";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";

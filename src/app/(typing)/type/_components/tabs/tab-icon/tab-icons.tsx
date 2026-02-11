@@ -7,6 +7,7 @@ import { BookmarkListPopover } from "@/components/shared/bookmark/bookmark-list-
 import { Button } from "@/components/ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { BookmarkListIconButton, EditIconLinkButton, InfoIconButton } from "@/components/ui/icon-button";
+import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -15,7 +16,6 @@ import { formatDate } from "@/utils/date";
 import { formatTime } from "@/utils/format-time";
 import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { SettingPopover } from "./setting/popover";
-import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 
 export const MapActionIcons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
@@ -110,13 +110,7 @@ const MapInfoHoverCardButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["de
 };
 
 const BookmarkListButton = ({ id, hasBookmarked }: { id: number; hasBookmarked: boolean }) => {
-  return (
-    <BookmarkListPopover
-      mapId={id}
-      hasBookmarked={hasBookmarked}
-      trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />}
-    />
-  );
+  return <BookmarkListPopover mapId={id} trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />} />;
 };
 
 const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
