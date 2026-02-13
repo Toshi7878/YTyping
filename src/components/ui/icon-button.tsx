@@ -89,8 +89,8 @@ export const RankingStarIconButton = ({
 
 export const FilterIconButton = ({ ...props }: IconButtonProps) => {
   return (
-    <Button type="button" size="icon" variant="outline" tabIndex={-1} asChild {...props}>
-      <TiFilter className="size-4" />
+    <Button type="button" size="icon" variant="outline" {...props}>
+      <TiFilter className="size-5" />
     </Button>
   );
 };

@@ -142,7 +142,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       }
       asChild
     >
-      <FilterIconButton disabled={!manyPhrase} onClick={handleConfirm} tabIndex={-1} />
+      <FilterIconButton disabled={!manyPhrase} onClick={handleConfirm} className="absolute right-5 bottom-2 size-8" />
     </TooltipWrapper>
   );
 };
