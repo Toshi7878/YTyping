@@ -1,3 +1,6 @@
+import { DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensors } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+
 import { useState } from "react";
 import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
 import {
@@ -6,22 +9,48 @@ import {
   useMinMediaSpeedState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state";
+
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
-import { useInteractJS } from "@/app/(typing)/type/_lib/utils/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { ResultCardContent } from "./child/result-card-body";
 import { ResultCardFooter } from "./child/result-card-footer";
 import { ResultCardHeader } from "./child/result-card-header";
 
+const ACTIVATION_CONSTRAINT = { distance: 5 };
+
 export const PracticeLineCard = () => {
+  const [{ x, y }, setCoordinates] = useState({ x: 0, y: 0 });
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: ACTIVATION_CONSTRAINT }),
+    useSensor(TouchSensor, { activationConstraint: ACTIVATION_CONSTRAINT }),
+  );
+
+  return (
+    <DndContext
+      sensors={sensors}
+      onDragEnd={({ delta }) => {
+        setCoordinates(({ x, y }) => ({
+          x: x + delta.x,
+          y: y + delta.y,
+        }));
+      }}
+    >
+      <DraggableCard x={x} y={y} />
+    </DndContext>
+  );
+};
+
+const DraggableCard = ({ x, y }: { x: number; y: number }) => {
+  const { attributes, isDragging, listeners, setNodeRef, transform } = useDraggable({
+    id: "practice-line-card",
+  });
   const map = useBuiltMapState();
   const minMediaSpeed = useMinMediaSpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
-  const [isDragging, setIsDragging] = useState(false);
-  const interact = useInteractJS();
 
   const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0] ?? 0;
 
@@ -52,18 +81,21 @@ export const PracticeLineCard = () => {
 
   return (
     <Card
-      ref={interact.ref}
-      className="practice-card z-10 block border py-2"
+      {...listeners}
+      {...attributes}
+      ref={setNodeRef}
       style={{
-        ...interact.style,
-        height: "fit-content",
-        cursor: isDragging ? "move" : "pointer",
+        transform: CSS.Translate.toString(
+          transform ? { x: x + transform.x, y: y + transform.y, scaleX: 1, scaleY: 1 } : { x, y, scaleX: 1, scaleY: 1 },
+        ),
       }}
-      onMouseDown={() => setIsDragging(false)}
-      onMouseMove={() => setIsDragging(true)}
+      className={cn(
+        "practice-card fixed -right-24 bottom-14 z-10 hidden h-fit w-lg border py-2 sm:block",
+        isDragging ? "cursor-grabbing" : "cursor-grab",
+      )}
       onClick={() => {
         const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
-        if (!isDragging && seekCount) {
+        if (seekCount) {
           moveSetLine(seekCount);
         }
       }}
