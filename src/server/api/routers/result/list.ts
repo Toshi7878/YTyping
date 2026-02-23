@@ -11,6 +11,7 @@ import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
+import { buildMapVisibilityCondition } from "../map/list";
 
 const Player = alias(Users, "player");
 const Creator = alias(Users, "creator");
@@ -115,6 +116,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       thumbnailQuality: Maps.thumbnailQuality,
       likeCount: Maps.likeCount,
       rankingCount: Maps.rankingCount,
+      visibility: Maps.visibility,
       updatedAt: Maps.updatedAt,
       creatorId: Creator.id,
       creatorName: Creator.name,
@@ -178,7 +180,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     buildKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(...whereConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(user), ...whereConditions));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
@@ -200,6 +202,7 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
           source: map.musicSource,
           duration: map.duration,
           categories: map.categories,
+          visibility: map.visibility,
         },
         creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {

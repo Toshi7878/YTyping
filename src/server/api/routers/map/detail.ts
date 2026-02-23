@@ -119,6 +119,7 @@ export const mapDetailRouter = {
             creatorId: userId,
             category: getMapCategories(rawMapJson),
             publishedAt: new Date(),
+            visibility: "PUBLIC",
           })
           .returning({ id: Maps.id })
           .then((res) => res[0]?.id);

@@ -128,6 +128,7 @@ export const notificationRouter = {
           source: map.musicSource,
           duration: map.duration,
           categories: map.category,
+          visibility: map.visibility,
         },
         creator: { id: map.creator.id, name: map.creator.name },
         difficulty: {

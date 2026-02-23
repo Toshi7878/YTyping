@@ -102,6 +102,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       source: Maps.musicSource,
       duration: Maps.duration,
       categories: Maps.category,
+      visibility: Maps.visibility,
     },
     creator: {
       id: Creator.id,
@@ -189,7 +190,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(...searchConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(user), ...searchConditions));
 };
 
 function buildFilterCondition(
@@ -301,4 +302,12 @@ const buildKeywordCondition = (keyword?: string | null) => {
   });
 
   return and(...conditions);
+};
+
+export const buildMapVisibilityCondition = (user: TRPCContext["user"]) => {
+  if (!user) {
+    return eq(Maps.visibility, "PUBLIC");
+  }
+
+  return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id)));
 };
