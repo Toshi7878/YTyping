@@ -190,7 +190,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(user), ...searchConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(user, input.filter), ...searchConditions));
 };
 
 function buildFilterCondition(
@@ -304,9 +304,16 @@ const buildKeywordCondition = (keyword?: string | null) => {
   return and(...conditions);
 };
 
-export const buildMapVisibilityCondition = (user: TRPCContext["user"]) => {
+export const buildMapVisibilityCondition = (
+  user: TRPCContext["user"],
+  inputFilter?: z.output<typeof MapSearchFilterSchema>["filter"],
+) => {
   if (!user) {
     return eq(Maps.visibility, "PUBLIC");
+  }
+
+  if (inputFilter === "unlisted") {
+    return and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id));
   }
 
   return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id)));

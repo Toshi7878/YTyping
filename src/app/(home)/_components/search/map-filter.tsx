@@ -52,6 +52,7 @@ const USER_FILTER_MENU: FilterMenuConfig<"filter"> = {
   options: [
     { label: "いいね済み", value: "liked" },
     { label: "作成した譜面", value: "created" },
+    { label: "限定公開", value: "unlisted" },
   ] satisfies { label: string; value: (typeof MAP_USER_FILTER_OPTIONS)[number] }[],
 };
 
