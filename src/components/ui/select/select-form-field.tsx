@@ -3,6 +3,7 @@
 import type { ComponentProps } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FloatingLabelSelect } from "../input/floating-label-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
 interface SelectOption {
@@ -49,6 +50,52 @@ export const SelectFormField = ({
               ))}
             </SelectContent>
           </Select>
+          {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectFormFieldProps {
+  name: string;
+  label: string;
+  placeholder?: string;
+  description?: string;
+  options: SelectOption[];
+  className?: string;
+}
+
+export const FloatingLabelSelectFormField = ({
+  name,
+  label,
+  placeholder = "選択してください",
+  description,
+  options,
+  className,
+  ...props
+}: SelectFormFieldProps & ComponentProps<typeof FloatingLabelSelect>) => {
+  const form = useFormContext();
+
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={className}>
+          <FloatingLabelSelect
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            label={label}
+            options={options}
+            {...props}
+          />
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>

@@ -28,6 +28,7 @@ export const mapDetailRouter = {
           artistName: Maps.artistName,
           source: Maps.musicSource,
           duration: Maps.duration,
+          visibility: Maps.visibility,
         },
         creator: {
           id: Users.id,

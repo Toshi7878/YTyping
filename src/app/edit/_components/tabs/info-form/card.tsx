@@ -28,6 +28,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
+import { FloatingLabelSelectFormField } from "@/components/ui/select/select-form-field";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import {
   calculateDuration,
@@ -36,6 +37,8 @@ import {
   getStartLine,
 } from "@/lib/build-map/built-map-helper";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
+import { cn } from "@/lib/utils";
+import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
@@ -69,6 +72,7 @@ export const EditMapInfoFormCard = () => {
       creatorComment: mapInfo.creator.comment,
       tags: mapInfo.info.tags,
       videoId,
+      visibility: mapInfo.info.visibility,
     },
     resetOptions: {
       keepDirtyValues: true,
@@ -83,13 +87,15 @@ export const EditMapInfoFormCard = () => {
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          <VideoIdInput />
-
-          <div className="flex w-full gap-4">
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
+            <VideoIdInput />
+            <VisibilitySelect name="visibility" label="公開範囲" />
+          </div>
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
             <FloatingLabelInputFormField name="title" label="曲名" required />
             <FloatingLabelInputFormField name="artistName" label="アーティスト名" required />
           </div>
-          <div className="flex w-full gap-4">
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
             <FloatingLabelInputFormField name="musicSource" label="ソース" />
             <FloatingLabelInputFormField name="creatorComment" label="コメント" />
           </div>
@@ -145,6 +151,7 @@ export const AddMapInfoFormCard = () => {
       creatorComment: backupMap?.creatorComment ?? "",
       tags: backupMap?.tags ?? [],
       videoId: videoId,
+      visibility: "PUBLIC",
     },
 
     resetOptions: {
@@ -212,7 +219,12 @@ export const AddMapInfoFormCard = () => {
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          <div className="flex w-full gap-4">
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
+            <VideoIdInput readOnly />
+            <VisibilitySelect name="visibility" label="公開範囲" />
+          </div>
+
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
             <FloatingLabelInputFormField
               disabled={isAIFetching}
               name="title"
@@ -226,7 +238,7 @@ export const AddMapInfoFormCard = () => {
               required
             />
           </div>
-          <div className="flex w-full gap-4">
+          <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
             <FloatingLabelInputFormField
               disabled={isAIFetching}
               name="musicSource"
@@ -269,7 +281,7 @@ const UpsertButton = () => {
   );
 };
 
-const VideoIdInput = () => {
+const VideoIdInput = ({ readOnly = false }: { readOnly?: boolean }) => {
   const { watch, setValue, getValues, formState } = useFormContext();
   const {
     dirtyFields: { videoId: isVideoIdDirty },
@@ -277,56 +289,65 @@ const VideoIdInput = () => {
   const formVideoId = watch("videoId");
 
   return (
-    <div className="flex w-full items-center gap-4">
-      <div className="flex flex-center gap-4">
-        <TooltipWrapper label="動画URLを貼付するとIDが自動入力されます" asChild>
-          <FloatingLabelInputFormField
-            name="videoId"
-            className="w-32"
-            label="動画ID"
-            maxLength={11}
-            onPaste={(e) => {
-              e.preventDefault();
-
-              const clipboardText = e.clipboardData.getData("text");
-
-              const videoId = extractYouTubeId(clipboardText);
-
-              if (videoId) {
-                setValue("videoId", videoId, { shouldDirty: true });
-                setVideoId(videoId);
-                setYTChangingVideo(true);
-                setCanUpload(true);
-                return;
-              }
-
-              if (clipboardText.length === 11) {
-                setValue("videoId", clipboardText, { shouldDirty: true });
-                setVideoId(clipboardText);
-                setYTChangingVideo(true);
-                setCanUpload(true);
-              }
-            }}
-          />
-        </TooltipWrapper>
-        <Button
-          variant="outline-info"
-          size="lg"
-          disabled={formVideoId.length !== 11 || isVideoIdDirty}
-          onClick={(e) => {
+    <div className="flex items-center gap-4">
+      <TooltipWrapper label={!readOnly && "動画URLを貼付するとIDが自動入力されます"} asChild>
+        <FloatingLabelInputFormField
+          name="videoId"
+          className="w-32"
+          label="動画ID"
+          readOnly={readOnly}
+          maxLength={11}
+          onPaste={(e) => {
             e.preventDefault();
-            if (formVideoId.length !== 11) return;
 
-            setVideoId(getValues("videoId"));
-            setYTChangingVideo(true);
-            setCanUpload(true);
+            const clipboardText = e.clipboardData.getData("text");
+
+            const videoId = extractYouTubeId(clipboardText);
+
+            if (videoId) {
+              setValue("videoId", videoId, { shouldDirty: true });
+              setVideoId(videoId);
+              setYTChangingVideo(true);
+              setCanUpload(true);
+              return;
+            }
+
+            if (clipboardText.length === 11) {
+              setValue("videoId", clipboardText, { shouldDirty: true });
+              setVideoId(clipboardText);
+              setYTChangingVideo(true);
+              setCanUpload(true);
+            }
           }}
-        >
-          動画切り替え
-        </Button>
-      </div>
+        />
+      </TooltipWrapper>
+      <Button
+        variant="outline-info"
+        size="lg"
+        className={cn(readOnly && "hidden")}
+        disabled={formVideoId.length !== 11 || isVideoIdDirty}
+        onClick={(e) => {
+          e.preventDefault();
+          if (formVideoId.length !== 11) return;
+
+          setVideoId(getValues("videoId"));
+          setYTChangingVideo(true);
+          setCanUpload(true);
+        }}
+      >
+        動画切り替え
+      </Button>
     </div>
   );
+};
+
+const VisibilitySelect = ({ name, label }: { name: "visibility"; label: "公開範囲" }) => {
+  const options = [
+    { value: "PUBLIC", label: "公開", description: "譜面一覧に表示されます" },
+    { value: "UNLISTED", label: "限定公開", description: "譜面URLを知っているユーザーのみアクセスできます" },
+  ] satisfies { value: (typeof MAP_VISIBILITY_TYPES)[number]; label: string; description: string }[];
+
+  return <FloatingLabelSelectFormField name={name} label={label} options={options} triggerClassName="min-w-28" />;
 };
 
 const PreviewTimeInput = () => {
@@ -459,7 +480,7 @@ const useOnSubmit = (form: FormType) => {
   return async (data: z.output<typeof MapInfoFormSchema>) => {
     const rawMapLines = readRawMap();
 
-    const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
+    const { title, artistName, musicSource, creatorComment, tags, previewTime, visibility } = data;
     const builtMap = buildTypingMap({ rawMapLines, charPoint: 0 });
     const duration = calculateDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
@@ -486,6 +507,7 @@ const useOnSubmit = (form: FormType) => {
       previewTime: newPreviewTime,
       thumbnailQuality: await getThumbnailQuality(videoId),
       duration,
+      visibility,
     };
 
     const mapDifficulty = {
