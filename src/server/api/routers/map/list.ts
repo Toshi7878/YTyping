@@ -238,8 +238,15 @@ function buildSortConditions(
 
       return [desc(Maps.publishedAt)];
     }
-    case "publishedAt":
-      return [order(sql`${Maps.publishedAt} is null`), order(Maps.publishedAt), order(Maps.id)];
+    case "publishedAt": {
+      const nullsLast = asc(sql`${Maps.publishedAt} is null`); // ← ここは固定
+
+      return [
+        nullsLast,
+        isDesc ? desc(Maps.publishedAt) : asc(Maps.publishedAt),
+        isDesc ? desc(Maps.id) : asc(Maps.id), // NULL群の中の並び。常にid昇順にしたいなら asc(Maps.id) 固定でもOK
+      ];
+    }
   }
 }
 
