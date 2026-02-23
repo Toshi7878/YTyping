@@ -69,7 +69,12 @@ const MapInfo = ({ map }: MapInfoProps) => {
           <div className="truncate font-bold text-secondary text-xs sm:text-sm">
             {nolink(map.info.artistName + musicSource)}
           </div>
-          <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} className="mt-2" />
+          <MapCreatorInfo
+            creator={map.creator}
+            updatedAt={map.updatedAt}
+            isUnlisted={map.info.visibility === "UNLISTED"}
+            className="mt-2"
+          />
         </section>
         <MapBadges map={map} className="mt-2 mb-0.5" />
         <MapListActionButtons
@@ -101,16 +106,22 @@ const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
 interface MapCreatorInfoProps {
   creator: MapListItem["creator"];
   updatedAt: Date;
+  isUnlisted: boolean;
   className?: string;
 }
 
-const MapCreatorInfo = ({ creator, updatedAt, className }: MapCreatorInfoProps) => {
+const MapCreatorInfo = ({ creator, updatedAt, isUnlisted, className }: MapCreatorInfoProps) => {
   return (
     <div className={cn("truncate text-[0.6rem] sm:text-xs", className)}>
       <UserNameLinkText userId={creator.id} userName={creator.name} />
       <span className="mx-1">
         - <DateDistanceText date={updatedAt} />
       </span>
+      {isUnlisted ? (
+        <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">
+          限定公開
+        </Badge>
+      ) : null}
     </div>
   );
 };

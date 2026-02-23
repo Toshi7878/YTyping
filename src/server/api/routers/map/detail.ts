@@ -91,13 +91,15 @@ export const mapDetailRouter = {
     const userId = user.id;
     const userRole = user.role;
 
-    const hasUpsertPermission =
-      mapId === null
-        ? true
-        : await db.query.Maps.findFirst({
-            columns: { creatorId: true },
+    const existingMapRow =
+      typeof mapId === "number"
+        ? await db.query.Maps.findFirst({
+            columns: { publishedAt: true, creatorId: true },
             where: eq(Maps.id, mapId),
-          }).then((row) => row?.creatorId === userId || userRole === "ADMIN");
+          })
+        : null;
+
+    const hasUpsertPermission = mapId === null ? true : existingMapRow?.creatorId === userId || userRole === "ADMIN";
 
     if (!hasUpsertPermission) {
       throw new TRPCError({
@@ -119,7 +121,7 @@ export const mapDetailRouter = {
             ...mapInfo,
             creatorId: userId,
             category: getMapCategories(rawMapJson),
-            publishedAt: new Date(),
+            publishedAt: mapInfo.visibility === "PUBLIC" ? new Date() : undefined,
             visibility: "PUBLIC",
           })
           .returning({ id: Maps.id })
@@ -131,6 +133,9 @@ export const mapDetailRouter = {
             ...mapInfo,
             category: getMapCategories(rawMapJson),
             ...(isMapDataEdited ? { updatedAt: new Date() } : {}),
+            ...(existingMapRow?.publishedAt === null && mapInfo.visibility === "PUBLIC"
+              ? { publishedAt: new Date() }
+              : {}),
           })
           .where(eq(Maps.id, mapId))
           .returning({ id: Maps.id })
