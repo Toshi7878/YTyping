@@ -75,10 +75,10 @@ function parseMapRow(row: Record<string, string>) {
     category: JSON.parse(row.category ?? "[]"),
     thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as (typeof YOUTUBE_THUMBNAIL_QUALITIES)[number],
     publishedAt: new Date((row.published_at ?? "").replace(" ", "T")),
-    vilibility: (row.created_at ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
+    visibility: (row.created_at ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
-  };
+  } satisfies typeof Maps.$inferSelect;
 }
 
 function parseMapDifficultyRow(row: Record<string, string>) {
