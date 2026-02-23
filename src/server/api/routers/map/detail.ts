@@ -113,7 +113,13 @@ export const mapDetailRouter = {
 
         newId = await tx
           .insert(Maps)
-          .values({ id: nextId, ...mapInfo, creatorId: userId, category: getMapCategories(rawMapJson) })
+          .values({
+            id: nextId,
+            ...mapInfo,
+            creatorId: userId,
+            category: getMapCategories(rawMapJson),
+            publishdAt: new Date(),
+          })
           .returning({ id: Maps.id })
           .then((res) => res[0]?.id);
       } else {

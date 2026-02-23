@@ -36,7 +36,10 @@ export const Maps = pgTable("maps", {
   rankingCount: integer("ranking_count").notNull().default(0),
   category: categoryEnum("category").array().notNull().default(sql`ARRAY[]::category[]`),
   thumbnailQuality: thumbnailQualityEnum("thumbnail_quality").notNull().default("mqdefault"),
+  publishdAt: timestamp("published_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+
+  // リプレイデータに影響が出る変更があった場合に更新される
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
