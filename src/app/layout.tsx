@@ -40,6 +40,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
       <head>
         <meta charSet="UTF-8" />
+        <meta name="robots" content="noindex, nofollow" />
       </head>
       <body>
         <NuqsAdapter>
