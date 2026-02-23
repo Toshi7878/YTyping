@@ -212,9 +212,7 @@ function buildSortConditions(
   sort: z.output<typeof MapSortSearchParamsSchema>,
   searchInput: z.output<typeof MapSearchFilterSchema>,
 ) {
-  if (!sort) return [desc(Maps.id)];
-
-  const { value: sortField, desc: isDesc } = sort;
+  const { value: sortField = "publishedAt", desc: isDesc = true } = sort ?? {};
   const order = isDesc ? desc : asc;
 
   switch (sortField) {
@@ -240,9 +238,7 @@ function buildSortConditions(
 
       return [desc(Maps.publishedAt)];
     }
-
     case "publishedAt":
-    default:
       return [order(sql`${Maps.publishedAt} is null`), order(Maps.publishedAt), order(Maps.id)];
   }
 }
