@@ -188,7 +188,7 @@ const deriveSortParam = (
     if (name === "rankingStatus" && filter === "liked") {
       return { value: "like", desc: true };
     }
-    return { value: "id", desc: true };
+    return { value: "publishedAt", desc: true };
   }
 
   if (name === "filter" && filter === "liked") {
@@ -199,7 +199,7 @@ const deriveSortParam = (
     return { value: "ranking-register", desc: true };
   }
 
-  return { value: "id", desc: true };
+  return { value: "publishedAt", desc: true };
 };
 
 const getNextFilterParams = (

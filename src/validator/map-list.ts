@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const MAP_SORT_OPTIONS = [
-  "id",
+  "publishedAt",
   "difficulty",
   "ranking-count",
   "ranking-register",

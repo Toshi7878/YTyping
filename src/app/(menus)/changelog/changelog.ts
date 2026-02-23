@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-2-23",
+    descriptions: ["譜面一覧の初期の並び順をID → 公開日順に変更(内部の処理でも公開日順に変更)"],
+  },
+  {
     date: "2026-2-8",
     descriptions: [
       "ヘッダーメニューに公開ブックマーク一覧ページを追加",

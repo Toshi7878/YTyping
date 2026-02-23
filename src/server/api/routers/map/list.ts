@@ -219,8 +219,8 @@ function buildSortConditions(
   switch (sortField) {
     case "random":
       return [sql`RANDOM()`];
-    case "id":
-      return [order(Maps.id)];
+    case "publishedAt":
+      return [order(Maps.publishedAt)];
     case "difficulty":
       return [order(MapDifficulties.romaKpmMedian)];
     case "ranking-count":
@@ -238,11 +238,11 @@ function buildSortConditions(
         return [order(MapBookmarkListItems.createdAt)];
       }
 
-      return [desc(Maps.id)];
+      return [desc(Maps.publishedAt)];
     }
 
     default:
-      return [desc(Maps.id)];
+      return [desc(Maps.publishedAt)];
   }
 }
 
