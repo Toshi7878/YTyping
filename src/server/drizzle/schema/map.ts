@@ -41,7 +41,7 @@ export const Maps = pgTable("maps", {
   thumbnailQuality: thumbnailQualityEnum("thumbnail_quality").notNull().default("mqdefault"),
   publishedAt: timestamp("published_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  visibility: mapVisibilityEnum("visibility").notNull(),
+  visibility: mapVisibilityEnum("visibility").notNull().default("PUBLIC"),
   // リプレイデータに影響が出る変更があった場合に更新される
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });

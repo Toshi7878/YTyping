@@ -7,7 +7,7 @@ import { sql as rawSql } from "drizzle-orm";
 import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
-import { MapDifficulties, Maps, Users, type YOUTUBE_THUMBNAIL_QUALITIES } from "../schema";
+import { type MAP_VISIBILITY_TYPES, MapDifficulties, Maps, Users, type YOUTUBE_THUMBNAIL_QUALITIES } from "../schema";
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -74,6 +74,8 @@ function parseMapRow(row: Record<string, string>) {
     rankingCount: Number(row.ranking_count ?? 0),
     category: JSON.parse(row.category ?? "[]"),
     thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as (typeof YOUTUBE_THUMBNAIL_QUALITIES)[number],
+    publishedAt: new Date((row.published_at ?? "").replace(" ", "T")),
+    vilibility: (row.created_at ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
