@@ -108,6 +108,11 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
         <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
           {map.creator.name}
         </Link>
+        {map.info.visibility === "UNLISTED" ? (
+          <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">
+            限定公開
+          </Badge>
+        ) : null}
       </div>
     </div>
   );

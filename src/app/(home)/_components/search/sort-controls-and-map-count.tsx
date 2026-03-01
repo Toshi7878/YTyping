@@ -37,7 +37,7 @@ export const SortControlsAndMapCount = () => {
 };
 
 const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[] = [
-  { label: "ID", value: "id" },
+  { label: "公開日", value: "publishedAt" },
   { label: "難易度", value: "difficulty" },
   { label: "ランキング数", value: "ranking-count" },
   { label: "いいね数", value: "like-count" },
@@ -55,7 +55,7 @@ const SortControls = () => {
 
   const deriveNextSortParam = (value: (typeof MAP_SORT_OPTIONS)[number]): MapListSortSearchParams | undefined => {
     if (value === "random") {
-      return currentSort.value === "random" ? { value: "id", desc: true } : { value: "random", desc: false };
+      return currentSort.value === "random" ? { value: "publishedAt", desc: true } : { value: "random", desc: false };
     }
     if (currentSort.value !== value) {
       return { value, desc: true };
@@ -64,7 +64,7 @@ const SortControls = () => {
       return { value, desc: false };
     }
 
-    return { value: "id", desc: true };
+    return { value: "publishedAt", desc: true };
   };
 
   return (

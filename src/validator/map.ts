@@ -1,7 +1,7 @@
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../server/drizzle/const";
-import { MapDifficulties, thumbnailQualityEnum } from "../server/drizzle/schema";
+import { MAP_VISIBILITY_TYPES, MapDifficulties, thumbnailQualityEnum } from "../server/drizzle/schema";
 import { RawMapSchema } from "./raw-map-json";
 
 const MapInfoBaseSchema = z.object({
@@ -28,6 +28,7 @@ const MapInfoBaseSchema = z.object({
   previewTime: z.coerce.number({
     error: "プレビュータイムは数値である必要があります",
   }),
+  visibility: z.enum(MAP_VISIBILITY_TYPES),
 });
 export const MapInfoFormSchema = MapInfoBaseSchema;
 

@@ -102,6 +102,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       source: Maps.musicSource,
       duration: Maps.duration,
       categories: Maps.category,
+      visibility: Maps.visibility,
     },
     creator: {
       id: Creator.id,
@@ -189,7 +190,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(...searchConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(user, input.filter), ...searchConditions));
 };
 
 function buildFilterCondition(
@@ -211,16 +212,13 @@ function buildSortConditions(
   sort: z.output<typeof MapSortSearchParamsSchema>,
   searchInput: z.output<typeof MapSearchFilterSchema>,
 ) {
-  if (!sort) return [desc(Maps.id)];
-
-  const { value: sortField, desc: isDesc } = sort;
+  const { value: sortField = "publishedAt", desc: isDesc = true } = sort ?? {};
   const order = isDesc ? desc : asc;
 
   switch (sortField) {
     case "random":
       return [sql`RANDOM()`];
-    case "id":
-      return [order(Maps.id)];
+
     case "difficulty":
       return [order(MapDifficulties.romaKpmMedian)];
     case "ranking-count":
@@ -238,11 +236,10 @@ function buildSortConditions(
         return [order(MapBookmarkListItems.createdAt)];
       }
 
-      return [desc(Maps.id)];
+      return [desc(Maps.publishedAt)];
     }
-
-    default:
-      return [desc(Maps.id)];
+    case "publishedAt":
+      return [order(sql`COALESCE(${Maps.publishedAt}, ${Maps.createdAt})`), order(Maps.id)];
   }
 }
 
@@ -301,4 +298,19 @@ const buildKeywordCondition = (keyword?: string | null) => {
   });
 
   return and(...conditions);
+};
+
+export const buildMapVisibilityCondition = (
+  user: TRPCContext["user"],
+  inputFilter?: z.output<typeof MapSearchFilterSchema>["filter"],
+) => {
+  if (!user) {
+    return eq(Maps.visibility, "PUBLIC");
+  }
+
+  if (inputFilter === "unlisted") {
+    return and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id));
+  }
+
+  return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id)));
 };

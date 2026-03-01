@@ -192,8 +192,8 @@ const FloatingLabelInputFormField = ({
       name={name}
       disabled={disabled}
       render={({ field, fieldState }) => (
-        <FormItem className="w-full">
-          <FormControl className={cn(className)}>
+        <FormItem className={cn("w-full", className)}>
+          <FormControl>
             <FloatingLabelInput
               {...field}
               {...inputProps}

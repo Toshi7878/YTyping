@@ -50,7 +50,7 @@ const mapListFilterParsers = {
   rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
   bookmarkListId: parseAsInteger,
 };
-const mapListSortParser = parseAsSort.withDefault({ value: "id", desc: true });
+const mapListSortParser = parseAsSort.withDefault({ value: "publishedAt", desc: true });
 
 export const useMapListFilterQueryStates = () => useQueryStates(mapListFilterParsers);
 export const useMapListSortQueryState = () => useQueryState("sort", mapListSortParser);

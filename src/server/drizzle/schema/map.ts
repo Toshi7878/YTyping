@@ -14,10 +14,13 @@ import {
 import { MAX_MEDIUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 import { Users } from "./user";
 
+export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
+
 export const MAP_CATEGORIES = ["CSS", "SPEED_SHIFT", "CASE_SENSITIVE"] as const;
 export const categoryEnum = pgEnum("category", MAP_CATEGORIES);
 export const YOUTUBE_THUMBNAIL_QUALITIES = ["mqdefault", "maxresdefault"] as const;
 export const thumbnailQualityEnum = pgEnum("thumbnail_quality", YOUTUBE_THUMBNAIL_QUALITIES);
+export const mapVisibilityEnum = pgEnum("map_visibility", MAP_VISIBILITY_TYPES);
 export const Maps = pgTable("maps", {
   id: integer("id").primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
@@ -36,9 +39,9 @@ export const Maps = pgTable("maps", {
   rankingCount: integer("ranking_count").notNull().default(0),
   category: categoryEnum("category").array().notNull().default(sql`ARRAY[]::category[]`),
   thumbnailQuality: thumbnailQualityEnum("thumbnail_quality").notNull().default("mqdefault"),
-  publishdAt: timestamp("published_at", { mode: "date" }),
+  publishedAt: timestamp("published_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-
+  visibility: mapVisibilityEnum("visibility").notNull(),
   // リプレイデータに影響が出る変更があった場合に更新される
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });

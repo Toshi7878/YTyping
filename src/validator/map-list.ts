@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const MAP_SORT_OPTIONS = [
-  "id",
+  "publishedAt",
   "difficulty",
   "ranking-count",
   "ranking-register",
@@ -11,7 +11,7 @@ export const MAP_SORT_OPTIONS = [
   "bookmark",
   "random",
 ] as const;
-export const MAP_USER_FILTER_OPTIONS = ["liked", "created"] as const;
+export const MAP_USER_FILTER_OPTIONS = ["liked", "created", "unlisted"] as const;
 export const MAP_RANKING_STATUS_FILTER_OPTIONS = ["1st", "not-first", "registerd", "unregisterd", "perfect"] as const;
 export const MAP_DIFFICULTY_RATE_FILTER_LIMIT = { min: 0, max: 12 };
 
