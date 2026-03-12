@@ -30,7 +30,7 @@ export const SkipAndTimeDisplay = () => {
 
 const PlayingSkipGuide = () => {
   const activeSkipGuideKey = useActiveSkipGuideKeyState();
-  return <div className="opacity-60">{activeSkipGuideKey ? `Type ${activeSkipGuideKey} key to Skip. ⏩` : ""}</div>;
+  return <div className="opacity-60" id="skip_guide">{activeSkipGuideKey ? `Type ${activeSkipGuideKey} key to Skip. ⏩` : ""}</div>;
 };
 
 const PlayingTimeDisplay = () => {
