@@ -30,7 +30,7 @@ export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {
           size="sm"
           className={cn("mb-0.5 text-header-foreground/80 hover:text-header-foreground", className)}
         >
-          {userName}
+          <span id="header_user_name">{userName}</span>
           <ChevronDown className="relative top-px size-4" />
         </Button>
       </DropdownMenuTrigger>
