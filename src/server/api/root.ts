@@ -7,7 +7,7 @@ import { mapListRouter } from "./routers/map/list";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultClapRouter } from "./routers/result/clap";
-import { resultDetailRouter } from "./routers/result/detail";
+import { resultItemRouter } from "./routers/result/item";
 import { resultListRouter } from "./routers/result/list";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
 import { userOptionRouter } from "./routers/user/option";
@@ -28,7 +28,7 @@ export const appRouter = router({
   },
   result: {
     list: resultListRouter,
-    detail: resultDetailRouter,
+    detail: resultItemRouter,
     clap: resultClapRouter,
   },
   user: {

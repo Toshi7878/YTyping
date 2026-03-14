@@ -10,7 +10,7 @@ import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
 
-export const resultDetailRouter = {
+export const resultItemRouter = {
   getJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
 
