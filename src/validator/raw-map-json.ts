@@ -8,7 +8,7 @@ export const LineOptionSchema = z.object({
   isCaseSensitive: z.boolean().optional(),
 });
 
-const RawMapLineSchema = z.object({
+export const RawMapLineSchema = z.object({
   time: z.string().max(20),
   lyrics: z.string(),
   word: z.string(),
@@ -28,10 +28,7 @@ const validateNoXssTags = (lines: RawMapLine[]) => {
     if (typeof changeCSS === "string") strings.push(changeCSS);
     if (typeof eternalCSS === "string") strings.push(eternalCSS);
 
-    return strings.some(
-      (value) =>
-        DANGEROUS_TAG_RE.test(value) || DANGEROUS_ENTITY_TAG_RE.test(value),
-    );
+    return strings.some((value) => DANGEROUS_TAG_RE.test(value) || DANGEROUS_ENTITY_TAG_RE.test(value));
   });
 };
 

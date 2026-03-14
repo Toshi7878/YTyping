@@ -14,7 +14,7 @@ import {
   YOUTUBE_THUMBNAIL_QUALITIES,
 } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import { type RawMapLine, RawMapLineSchema } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
 
@@ -144,7 +144,18 @@ export const mapItemRouter = {
 
   getJson: publicProcedure
     .use(mapItemGetJsonRateLimit)
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/maps/{mapId}/json",
+        protect: false,
+        tags: ["Map"],
+        summary: "Get map typing data by id",
+        contentTypes: ["application/json" as OpenApiContentType],
+      },
+    })
     .input(z.object({ mapId: z.number() }))
+    .output(z.array(RawMapLineSchema))
     .query(async ({ input }) => {
       try {
         const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
