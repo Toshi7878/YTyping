@@ -63,7 +63,7 @@ export const mapItemRouter = {
     .meta({
       openapi: {
         method: "GET",
-        path: "/map/detail/{mapId}",
+        path: "/api/maps/{mapId}",
         protect: false,
         tags: ["Map"],
         summary: "Get map detail by id",
