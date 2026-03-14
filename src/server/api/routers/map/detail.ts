@@ -1,5 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
+import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
@@ -9,63 +10,116 @@ import type { RawMapLine } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
-export const mapDetailRouter = {
-  get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-    const { mapId } = input;
+const MapDetailInputSchema = z.object({ mapId: z.number() });
 
-    const mapInfo = await db
-      .select({
-        id: Maps.id,
-        media: {
-          previewTime: Maps.previewTime,
-          thumbnailQuality: Maps.thumbnailQuality,
-          videoId: Maps.videoId,
-        },
-        info: {
-          tags: Maps.tags,
-          title: Maps.title,
-          artistName: Maps.artistName,
-          source: Maps.musicSource,
-          duration: Maps.duration,
-          visibility: Maps.visibility,
-        },
-        creator: {
-          id: Users.id,
-          name: Users.name,
-          comment: Maps.creatorComment,
-        },
-        difficulty: {
-          romaKpmMedian: MapDifficulties.romaKpmMedian,
-          kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-          romaKpmMax: MapDifficulties.romaKpmMax,
-          kanaKpmMax: MapDifficulties.kanaKpmMax,
-          romaTotalNotes: MapDifficulties.romaTotalNotes,
-          kanaTotalNotes: MapDifficulties.kanaTotalNotes,
-        },
-        like: {
-          hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
-        },
-        bookmark: {
-          hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
-        },
-        createdAt: Maps.createdAt,
-        updatedAt: Maps.updatedAt,
-      })
-      .from(Maps)
-      .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-      .where(eq(Maps.id, mapId))
-      .limit(1)
-      .then((rows) => rows[0]);
-
-    if (!mapInfo) {
-      throw new TRPCError({ code: "NOT_FOUND" });
-    }
-
-    return mapInfo;
+const MapDetailResponseSchema = z.object({
+  id: z.number(),
+  media: z.object({
+    previewTime: z.number(),
+    thumbnailQuality: z.string(),
+    videoId: z.string(),
   }),
+  info: z.object({
+    tags: z.array(z.string()),
+    title: z.string(),
+    artistName: z.string(),
+    source: z.string(),
+    duration: z.number(),
+    visibility: z.enum(["PUBLIC", "UNLISTED"]),
+  }),
+  creator: z.object({
+    id: z.number(),
+    name: z.string().nullable(),
+    comment: z.string(),
+  }),
+  difficulty: z.object({
+    romaKpmMedian: z.number(),
+    kanaKpmMedian: z.number(),
+    romaKpmMax: z.number(),
+    kanaKpmMax: z.number(),
+    romaTotalNotes: z.number(),
+    kanaTotalNotes: z.number(),
+  }),
+  like: z.object({
+    hasLiked: z.boolean(),
+  }),
+  bookmark: z.object({
+    hasBookmarked: z.boolean(),
+  }),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const mapDetailRouter = {
+  get: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/map/detail/{mapId}",
+        protect: false,
+        tags: ["Map"],
+        summary: "Get map detail by id",
+        contentTypes: ["application/json" as OpenApiContentType],
+      },
+    })
+    .input(MapDetailInputSchema)
+    .output(MapDetailResponseSchema)
+    .query(async ({ input, ctx }) => {
+      const { db, user } = ctx;
+      const { mapId } = input;
+
+      const mapInfo = await db
+        .select({
+          id: Maps.id,
+          media: {
+            previewTime: Maps.previewTime,
+            thumbnailQuality: Maps.thumbnailQuality,
+            videoId: Maps.videoId,
+          },
+          info: {
+            tags: Maps.tags,
+            title: Maps.title,
+            artistName: Maps.artistName,
+            source: Maps.musicSource,
+            duration: Maps.duration,
+            visibility: Maps.visibility,
+          },
+          creator: {
+            id: Users.id,
+            name: Users.name,
+            comment: Maps.creatorComment,
+          },
+          difficulty: {
+            romaKpmMedian: MapDifficulties.romaKpmMedian,
+            kanaKpmMedian: MapDifficulties.kanaKpmMedian,
+            romaKpmMax: MapDifficulties.romaKpmMax,
+            kanaKpmMax: MapDifficulties.kanaKpmMax,
+            romaTotalNotes: MapDifficulties.romaTotalNotes,
+            kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+          },
+          like: {
+            hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
+          },
+          bookmark: {
+            hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
+          },
+          createdAt: Maps.createdAt,
+          updatedAt: Maps.updatedAt,
+        })
+        .from(Maps)
+        .innerJoin(Users, eq(Users.id, Maps.creatorId))
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
+        .where(eq(Maps.id, mapId))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      if (!mapInfo) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return mapInfo;
+    }),
 
   getJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
     try {
