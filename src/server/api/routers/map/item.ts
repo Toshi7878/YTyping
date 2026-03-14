@@ -81,6 +81,12 @@ export const mapItemRouter = {
         tags: ["Map"],
         summary: "Get map detail by id",
         contentTypes: ["application/json" as OpenApiContentType],
+        errorResponses: {
+          400: "Invalid input data",
+          404: "Not found",
+          429: "Too many requests (120 requests / 60s)",
+          500: "Internal server error",
+        },
       },
     })
     .input(MapDetailInputSchema)
@@ -152,6 +158,12 @@ export const mapItemRouter = {
         tags: ["Map"],
         summary: "Get map typing data by id",
         contentTypes: ["application/json" as OpenApiContentType],
+        errorResponses: {
+          400: "Invalid input data",
+          404: "Not found",
+          429: "Too many requests (30 requests / 60s)",
+          500: "Internal server error",
+        },
       },
     })
     .input(z.object({ mapId: z.number() }))
