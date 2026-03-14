@@ -5,7 +5,7 @@ import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
 type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["list"]["getByUserId"][number];
-type MapInfo = RouterOutputs["map"]["detail"]["get"];
+type MapInfo = RouterOutputs["map"]["item"]["get"];
 
 const createMapBookmarkUpdater = (mapId: number, hasBookmarked: boolean) => {
   const updateBookmark = <T extends { id: number; bookmark: { hasBookmarked: boolean } }>(map: T): T => {
@@ -52,7 +52,7 @@ async function runOptimisticUpdate(args: {
   const { trpc, queryClient, input } = args;
 
   const mapListFilter = trpc.map.list.pathFilter();
-  const mapInfoFilter = trpc.map.detail.get.queryFilter({ mapId: input.mapId });
+  const mapInfoFilter = trpc.map.item.get.queryFilter({ mapId: input.mapId });
   const resultListFilter = trpc.result.list.pathFilter();
   const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
   const bookmarkListsByUserIdFilter = trpc.map.bookmark.list.getByUserId.queryFilter();

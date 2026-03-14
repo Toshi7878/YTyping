@@ -19,7 +19,7 @@ import { router } from "./trpc";
 export const appRouter = router({
   map: {
     list: mapListRouter,
-    detail: mapItemRouter,
+    item: mapItemRouter,
     like: mapLikeRouter,
     bookmark: {
       list: mapBookmarkListRouter,

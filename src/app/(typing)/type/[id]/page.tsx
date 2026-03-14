@@ -9,7 +9,7 @@ import { JotaiProvider } from "../_components/provider";
 
 // React cache でメモ化：同じmapIdでの複数回の呼び出しでもDBクエリは1回のみ
 const getMapInfo = cache(async (mapId: number) => {
-  return await serverApi.map.detail.get({ mapId });
+  return await serverApi.map.item.get({ mapId });
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -39,13 +39,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: PageProps<"/type/[id]">) {
   const { id: mapId } = await params;
-  prefetch(trpc.map.detail.getJson.queryOptions({ mapId: Number(mapId) }));
+  prefetch(trpc.map.item.getJson.queryOptions({ mapId: Number(mapId) }));
   const userTypingOptions = await serverApi.user.typingOption.getForSession();
   const mapInfo = await getMapInfo(Number(mapId));
   if (!mapInfo) {
     notFound();
   }
-  prefetch(trpc.map.detail.get.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
+  prefetch(trpc.map.item.get.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
 
   return (
     <HydrateClient>

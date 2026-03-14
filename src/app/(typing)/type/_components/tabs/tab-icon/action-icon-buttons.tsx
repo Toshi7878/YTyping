@@ -23,7 +23,7 @@ export const MapActionIconButtons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
   const mapId = useMapIdState();
   const trpc = useTRPC();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.item.get.queryOptions({ mapId: mapId ?? 0 }));
   const hasBookmarked = mapInfo.bookmark.hasBookmarked;
   const hasLiked = mapInfo.like.hasLiked;
 
@@ -43,7 +43,7 @@ export const MapActionIconButtons = ({ className }: { className: string }) => {
   );
 };
 
-const MapInfoHoverCardButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["detail"]["get"] }) => {
+const MapInfoHoverCardButton = ({ mapInfo }: { mapInfo: RouterOutputs["map"]["item"]["get"] }) => {
   const [open, setOpen] = useState(false);
   const creatorComment = mapInfo.creator.comment?.trim() ? mapInfo.creator.comment : "-";
   const tags = mapInfo.info.tags ?? [];

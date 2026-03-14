@@ -25,7 +25,7 @@ import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
-  mapInfo: RouterOutputs["map"]["detail"]["get"];
+  mapInfo: RouterOutputs["map"]["item"]["get"];
   mapId: number;
 }
 
@@ -36,7 +36,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   const trpc = useTRPC();
   const pathname = usePathname();
   const { data: mapJson } = useQuery(
-    trpc.map.detail.getJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.item.getJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const loadMap = async (mapData: RawMapLine[]) => {
     overlay.loading("ひらがな判定生成中...");

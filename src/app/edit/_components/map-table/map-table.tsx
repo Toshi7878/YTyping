@@ -70,7 +70,7 @@ export const EditMapTable = () => {
   const { id: mapId } = useParams();
 
   const { data: mapData, isLoading } = useQuery(
-    trpc.map.detail.getJson.queryOptions(
+    trpc.map.item.getJson.queryOptions(
       { mapId: Number(mapId) },
       { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
     ),
