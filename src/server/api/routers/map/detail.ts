@@ -4,7 +4,15 @@ import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
-import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
+import {
+  MAP_CATEGORIES,
+  MAP_VISIBILITY_TYPES,
+  MapDifficulties,
+  MapLikes,
+  Maps,
+  Users,
+  YOUTUBE_THUMBNAIL_QUALITIES,
+} from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
@@ -16,7 +24,7 @@ const MapDetailResponseSchema = z.object({
   id: z.number(),
   media: z.object({
     previewTime: z.number(),
-    thumbnailQuality: z.string(),
+    thumbnailQuality: z.enum(YOUTUBE_THUMBNAIL_QUALITIES),
     videoId: z.string(),
   }),
   info: z.object({
@@ -25,7 +33,7 @@ const MapDetailResponseSchema = z.object({
     artistName: z.string(),
     source: z.string(),
     duration: z.number(),
-    visibility: z.enum(["PUBLIC", "UNLISTED"]),
+    visibility: z.enum(MAP_VISIBILITY_TYPES),
   }),
   creator: z.object({
     id: z.number(),
