@@ -20,6 +20,8 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.url(),
+    KV_REST_API_URL: isVercel ? z.url() : z.url().optional(),
+    KV_REST_API_TOKEN: isVercel ? z.string() : z.string().optional(),
 
     R2_ACCOUNT_ID: isVercel ? z.string() : z.string().optional(),
     R2_ACCESS_KEY_ID: isVercel ? z.string() : z.string().optional(),

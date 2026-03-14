@@ -16,7 +16,7 @@ import {
 import { UpsertMapSchema } from "@/validator/map";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
 
 const MapDetailInputSchema = z.object({ mapId: z.number() });
 
@@ -58,8 +58,21 @@ const MapDetailResponseSchema = z.object({
   updatedAt: z.date(),
 });
 
+const mapItemGetRateLimit = createRateLimitMiddleware({
+  keyPrefix: "ratelimit:map-item:get",
+  max: 120,
+  window: "60 s",
+});
+
+const mapItemGetJsonRateLimit = createRateLimitMiddleware({
+  keyPrefix: "ratelimit:map-item:get-json",
+  max: 30,
+  window: "60 s",
+});
+
 export const mapItemRouter = {
   get: publicProcedure
+    .use(mapItemGetRateLimit)
     .meta({
       openapi: {
         method: "GET",
@@ -129,23 +142,26 @@ export const mapItemRouter = {
       return mapInfo;
     }),
 
-  getJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
-    try {
-      const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
+  getJson: publicProcedure
+    .use(mapItemGetJsonRateLimit)
+    .input(z.object({ mapId: z.number() }))
+    .query(async ({ input }) => {
+      try {
+        const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 
-      if (!data) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Map data not found" });
+        if (!data) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Map data not found" });
+        }
+
+        const jsonString = new TextDecoder().decode(data);
+        const mapJson: RawMapLine[] = JSON.parse(jsonString);
+
+        return mapJson;
+      } catch (error) {
+        console.error("Error fetching map data from R2:", error);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
-
-      const jsonString = new TextDecoder().decode(data);
-      const mapJson: RawMapLine[] = JSON.parse(jsonString);
-
-      return mapJson;
-    } catch (error) {
-      console.error("Error fetching map data from R2:", error);
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-    }
-  }),
+    }),
 
   upsert: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
