@@ -16,6 +16,7 @@ import {
 import { UpsertMapSchema } from "@/validator/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
+import { OPENAPI_RATE_LIMITS } from "../../lib/rate-limit-config";
 import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
 
 const MapDetailInputSchema = z.object({ mapId: z.number() });
@@ -58,21 +59,9 @@ const MapDetailResponseSchema = z.object({
   updatedAt: z.date(),
 });
 
-const mapItemGetRateLimit = createRateLimitMiddleware({
-  keyPrefix: "ratelimit:map-item:get",
-  max: 120,
-  window: "60 s",
-});
-
-const mapItemGetJsonRateLimit = createRateLimitMiddleware({
-  keyPrefix: "ratelimit:map-item:get-json",
-  max: 30,
-  window: "60 s",
-});
-
 export const mapItemRouter = {
   get: publicProcedure
-    .use(mapItemGetRateLimit)
+    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}"].get))
     .meta({
       openapi: {
         method: "GET",
@@ -84,7 +73,7 @@ export const mapItemRouter = {
         errorResponses: {
           400: "Invalid input data",
           404: "Not found",
-          429: "Too many requests (120 requests / 60s)",
+          429: "Too many requests",
           500: "Internal server error",
         },
       },
@@ -149,7 +138,7 @@ export const mapItemRouter = {
     }),
 
   getJson: publicProcedure
-    .use(mapItemGetJsonRateLimit)
+    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}/json"].get))
     .meta({
       openapi: {
         method: "GET",
@@ -161,7 +150,7 @@ export const mapItemRouter = {
         errorResponses: {
           400: "Invalid input data",
           404: "Not found",
-          429: "Too many requests (30 requests / 60s)",
+          429: "Too many requests",
           500: "Internal server error",
         },
       },

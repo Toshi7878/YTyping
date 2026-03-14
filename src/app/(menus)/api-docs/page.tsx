@@ -10,9 +10,15 @@ const HTTP_METHODS = ["get", "post", "put", "patch", "delete"] as const;
 
 type HttpMethod = (typeof HTTP_METHODS)[number];
 
+type OpenApiRateLimit = {
+  max: number;
+  window: string;
+};
+
 type OpenApiOperation = {
   summary?: string;
   tags?: string[];
+  "x-rateLimit"?: OpenApiRateLimit;
   parameters?: Array<{
     in?: string;
     name?: string;
@@ -102,6 +108,7 @@ export default async function Page() {
           method,
           summary: operation.summary ?? "",
           tag: operation.tags?.[0] ?? "",
+          rateLimit: operation["x-rateLimit"],
           parameters: operation.parameters ?? [],
           responses: operation.responses ? Object.entries(operation.responses) : [],
           successSchema: operation.responses?.["200"]?.content?.["application/json"]?.schema,

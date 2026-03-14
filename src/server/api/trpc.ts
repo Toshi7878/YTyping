@@ -1,11 +1,11 @@
-import { TRPCError, type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
-import { initTRPC } from "@trpc/server";
+import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } from "@trpc/server";
 import { headers } from "next/headers";
 import superjson from "superjson";
-import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { OpenApiMeta } from "trpc-to-openapi";
 import { auth } from "../auth";
 import { db as drizzleDb } from "../drizzle/client";
+import type { RateLimitDef } from "./lib/rate-limit-config";
+import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { AppRouter } from "./root";
 
 export const createContext = async () => {
@@ -28,12 +28,6 @@ export const { router, createCallerFactory } = t;
 
 export const publicProcedure = t.procedure;
 
-type RateLimitConfig = {
-  keyPrefix: string;
-  max: number;
-  window: `${number} ${"ms" | "s" | "m" | "h"}`;
-};
-
 const getRequestIp = async () => {
   try {
     const requestHeaders = await headers();
@@ -48,7 +42,7 @@ const getRequestIp = async () => {
   }
 };
 
-export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitConfig) => {
+export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitDef) => {
   const ratelimit = createUpstashRateLimiter(keyPrefix, max, window);
 
   return t.middleware(async ({ ctx, path, next }) => {
