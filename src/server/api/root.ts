@@ -1,5 +1,5 @@
 import { aiRouter } from "./routers/ai";
-import { mapBookmarkDetailRouter } from "./routers/map/bookmark/detail";
+import { mapBookmarkListItemRouter } from "./routers/map/bookmark/detail";
 import { mapBookmarkListsRouter } from "./routers/map/bookmark/list";
 import { mapItemRouter } from "./routers/map/item";
 import { mapLikeRouter } from "./routers/map/like";
@@ -23,7 +23,7 @@ export const appRouter = router({
     like: mapLikeRouter,
     bookmark: {
       lists: mapBookmarkListsRouter,
-      listItem: mapBookmarkDetailRouter,
+      listItem: mapBookmarkListItemRouter,
     },
   },
   result: {

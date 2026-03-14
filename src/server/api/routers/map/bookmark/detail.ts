@@ -11,7 +11,7 @@ import {
 import { protectedProcedure } from "../../../trpc";
 import { generateNotificationId } from "../../../utils/id";
 
-export const mapBookmarkDetailRouter = {
+export const mapBookmarkListItemRouter = {
   add: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
