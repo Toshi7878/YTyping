@@ -58,7 +58,7 @@ const MapDetailResponseSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const mapDetailRouter = {
+export const mapItemRouter = {
   get: publicProcedure
     .meta({
       openapi: {

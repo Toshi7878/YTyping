@@ -1,7 +1,7 @@
 import { aiRouter } from "./routers/ai";
 import { mapBookmarkDetailRouter } from "./routers/map/bookmark/detail";
 import { mapBookmarkListRouter } from "./routers/map/bookmark/list";
-import { mapDetailRouter } from "./routers/map/detail";
+import { mapItemRouter } from "./routers/map/item";
 import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
 import { morphRouter } from "./routers/morph";
@@ -19,7 +19,7 @@ import { router } from "./trpc";
 export const appRouter = router({
   map: {
     list: mapListRouter,
-    detail: mapDetailRouter,
+    detail: mapItemRouter,
     like: mapLikeRouter,
     bookmark: {
       list: mapBookmarkListRouter,
