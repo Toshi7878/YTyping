@@ -14,7 +14,7 @@ import {
 import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/bookmark";
 import { protectedProcedure, publicProcedure } from "../../../trpc";
 
-export const mapBookmarkListRouter = {
+export const mapBookmarkListsRouter = {
   getAll: publicProcedure.query(async ({ ctx }) => {
     const { db } = ctx;
 
