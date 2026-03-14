@@ -28,7 +28,7 @@ export const appRouter = router({
   },
   result: {
     list: resultListRouter,
-    detail: resultItemRouter,
+    item: resultItemRouter,
     clap: resultClapRouter,
   },
   user: {

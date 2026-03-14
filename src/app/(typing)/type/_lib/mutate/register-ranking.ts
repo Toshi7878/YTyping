@@ -45,7 +45,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.result.detail.upsert.mutationOptions({
+    trpc.result.item.upsert.mutationOptions({
       onError,
       onSuccess: async (serverRes, input) => {
         onSuccess();
