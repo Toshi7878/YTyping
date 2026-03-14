@@ -125,7 +125,7 @@ export function useAddBookmarkListItemMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.bookmark.detail.add.mutationOptions({
+    trpc.map.bookmark.listItem.add.mutationOptions({
       onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "add" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
@@ -147,7 +147,7 @@ export function useRemoveBookmarkListItemMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.bookmark.detail.remove.mutationOptions({
+    trpc.map.bookmark.listItem.remove.mutationOptions({
       onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "remove" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
