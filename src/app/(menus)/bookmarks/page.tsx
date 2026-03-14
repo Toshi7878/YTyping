@@ -3,7 +3,7 @@ import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { BookmarkListView } from "./_components/bookmark-list";
 
 export default async function Page() {
-  prefetch(trpc.map.bookmark.list.getAll.queryOptions());
+  prefetch(trpc.map.bookmark.lists.getAll.queryOptions());
 
   return (
     <HydrateClient>

@@ -38,7 +38,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: lists, isLoading } = useQuery(
-    trpc.map.bookmark.list.getByUserId.queryOptions(
+    trpc.map.bookmark.lists.getByUserId.queryOptions(
       { userId: Number(session?.user?.id), includeMapId: mapId },
       { enabled: !!session?.user?.id && isOpen },
     ),
@@ -89,7 +89,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
 };
 
 interface BookMarkListItemProps {
-  list: RouterOutputs["map"]["bookmark"]["list"]["getByUserId"][number];
+  list: RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
   onClick: React.ComponentProps<"button">["onClick"];
 }
 
@@ -134,10 +134,10 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const createListMutation = useMutation(
-    trpc.map.bookmark.list.create.mutationOptions({
+    trpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries(
-          trpc.map.bookmark.list.getByUserId.queryOptions({
+          trpc.map.bookmark.lists.getByUserId.queryOptions({
             userId: Number(session?.user?.id),
             includeMapId: mapId,
           }),

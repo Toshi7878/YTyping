@@ -9,11 +9,11 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 
-type PublicBookmarkList = RouterOutputs["map"]["bookmark"]["list"]["getAll"][number];
+type PublicBookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getAll"][number];
 
 export const BookmarkListView = () => {
   const trpc = useTRPC();
-  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.list.getAll.queryOptions());
+  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getAll.queryOptions());
 
   return (
     <section className="grid grid-cols-1 gap-3 md:grid-cols-2">

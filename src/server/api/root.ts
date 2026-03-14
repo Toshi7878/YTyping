@@ -22,7 +22,7 @@ export const appRouter = router({
     item: mapItemRouter,
     like: mapLikeRouter,
     bookmark: {
-      list: mapBookmarkListsRouter,
+      lists: mapBookmarkListsRouter,
       detail: mapBookmarkDetailRouter,
     },
   },

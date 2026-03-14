@@ -80,7 +80,7 @@ const ResultTabLabelWithCount = ({ id }: { id: string }) => {
 const BookmarkTabLabelWithCount = ({ id }: { id: string }) => {
   const trpc = useTRPC();
   const { data: bookmarkCount } = useSuspenseQuery(
-    trpc.map.bookmark.list.getCount.queryOptions({ userId: Number(id) }),
+    trpc.map.bookmark.lists.getCount.queryOptions({ userId: Number(id) }),
   );
   return <LabelWithCount label="ブックマークリスト" count={bookmarkCount} />;
 };

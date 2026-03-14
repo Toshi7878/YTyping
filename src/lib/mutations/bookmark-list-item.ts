@@ -4,7 +4,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
-type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["list"]["getByUserId"][number];
+type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
 type MapInfo = RouterOutputs["map"]["item"]["get"];
 
 const createMapBookmarkUpdater = (mapId: number, hasBookmarked: boolean) => {
@@ -55,7 +55,7 @@ async function runOptimisticUpdate(args: {
   const mapInfoFilter = trpc.map.item.get.queryFilter({ mapId: input.mapId });
   const resultListFilter = trpc.result.list.pathFilter();
   const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-  const bookmarkListsByUserIdFilter = trpc.map.bookmark.list.getByUserId.queryFilter();
+  const bookmarkListsByUserIdFilter = trpc.map.bookmark.lists.getByUserId.queryFilter();
 
   await Promise.all([
     queryClient.cancelQueries(mapInfoFilter),
@@ -135,7 +135,7 @@ export function useAddBookmarkListItemMutation() {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
         queryClient.invalidateQueries(
-          trpc.map.bookmark.list.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+          trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
         );
       },
     }),
@@ -157,7 +157,7 @@ export function useRemoveBookmarkListItemMutation() {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
         queryClient.invalidateQueries(
-          trpc.map.bookmark.list.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+          trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
         );
       },
     }),

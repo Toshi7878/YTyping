@@ -8,7 +8,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
 
   prefetch(trpc.map.list.get.infiniteQueryOptions(mapListQueryParams));
-  prefetch(trpc.map.bookmark.list.getForSession.queryOptions());
+  prefetch(trpc.map.bookmark.lists.getForSession.queryOptions());
 
   return (
     <HydrateClient>

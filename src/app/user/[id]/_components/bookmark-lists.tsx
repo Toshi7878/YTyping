@@ -34,7 +34,7 @@ import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapBookmarkListFormSchema } from "@/validator/bookmark";
 import { serializeUserPageSearchParams, useBookmarkListIdQueryState } from "../_lib/search-params";
 
-type BookmarkList = RouterOutputs["map"]["bookmark"]["list"]["getByUserId"][number];
+type BookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
 
 export const UserBookmarkLists = ({ id }: { id: string }) => {
   const [bookmarkListId] = useBookmarkListIdQueryState();
@@ -77,7 +77,7 @@ const BookmarkListMapList = ({ listId }: { listId: number }) => {
 const BookmarkListCardList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
-  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.list.getByUserId.queryOptions({ userId: Number(id) }));
+  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: Number(id) }));
 
   if (lists.length === 0) {
     return <div className="py-10 text-center text-muted-foreground text-sm">ブックマークリストがありません</div>;
@@ -131,10 +131,10 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   const queryClient = useQueryClient();
 
   const deleteListMutation = useMutation(
-    trpc.map.bookmark.list.delete.mutationOptions({
+    trpc.map.bookmark.lists.delete.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries(
-          trpc.map.bookmark.list.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
+          trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
         );
         setOpen(false);
         toast.success("リストを削除しました");
@@ -200,10 +200,10 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
   } = form;
 
   const updateListMutation = useMutation(
-    trpc.map.bookmark.list.update.mutationOptions({
+    trpc.map.bookmark.lists.update.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries(
-          trpc.map.bookmark.list.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
+          trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
         );
         setOpen(false);
         toast.success("リストを編集しました");
