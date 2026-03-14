@@ -1,6 +1,6 @@
 import { aiRouter } from "./routers/ai";
-import { mapBookmarkListItemRouter } from "./routers/map/bookmark/detail";
-import { mapBookmarkListsRouter } from "./routers/map/bookmark/list";
+import { mapBookmarkListItemRouter } from "./routers/map/bookmark/list-item";
+import { mapBookmarkListsRouter } from "./routers/map/bookmark/lists";
 import { mapItemRouter } from "./routers/map/item";
 import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
