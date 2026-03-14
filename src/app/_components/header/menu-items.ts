@@ -9,6 +9,7 @@ export const LEFT_MENU_LINK_ITEMS: HeaderMenu[] = [
   { title: "ツール", href: "/tools", device: "PC" },
   { title: "クレジット", href: "/credit" },
   { title: "プライバシーポリシー", href: "/privacy" },
+  { title: "API Docs", href: "/api-docs" },
 ];
 
 export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
