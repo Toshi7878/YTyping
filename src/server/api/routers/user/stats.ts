@@ -12,8 +12,14 @@ import {
   UserStats,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user-stats";
-import { publicProcedure } from "../../trpc";
+import { createRateLimitMiddleware, publicProcedure } from "../../trpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
+
+const userStatsWriteRateLimit = createRateLimitMiddleware({
+  keyPrefix: "ratelimit:user-stats:write",
+  max: 30,
+  window: "60 s",
+});
 
 export const userStatsRouter = {
   get: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -137,6 +143,7 @@ export const userStatsRouter = {
   }),
 
   incrementMapCompletionPlayCount: publicProcedure
+    .use(userStatsWriteRateLimit)
     .input(z.object({ mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
@@ -153,6 +160,7 @@ export const userStatsRouter = {
     }),
 
   incrementPlayCountStats: publicProcedure
+    .use(userStatsWriteRateLimit)
     .meta({
       openapi: {
         method: "POST",
@@ -185,6 +193,7 @@ export const userStatsRouter = {
     }),
 
   incrementImeStats: publicProcedure
+    .use(userStatsWriteRateLimit)
     .meta({
       openapi: {
         method: "POST",
@@ -226,6 +235,7 @@ export const userStatsRouter = {
     }),
 
   incrementTypingStats: publicProcedure
+    .use(userStatsWriteRateLimit)
     .meta({
       openapi: {
         method: "POST",
