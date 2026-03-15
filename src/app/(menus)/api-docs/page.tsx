@@ -23,7 +23,7 @@ type OpenApiOperation = {
     in?: string;
     name?: string;
     required?: boolean;
-    schema?: { type?: string };
+    schema?: OpenApiSchema;
   }>;
   responses?: Record<string, OpenApiResponse>;
 };
@@ -61,8 +61,14 @@ const getSchemaTypeLabel = (schema?: OpenApiSchema): string => {
   if (!schema) return "unknown";
   if (schema.$ref) return schema.$ref.split("/").at(-1) ?? schema.$ref;
   if (schema.enum?.length) return schema.enum.map((value) => `"${value}"`).join(" | ");
-  if (schema.anyOf?.length) return schema.anyOf.map((item) => getSchemaTypeLabel(item)).join(" | ");
+  if (schema.anyOf?.length) {
+    const labels = schema.anyOf
+      .map((item) => getSchemaTypeLabel(item))
+      .filter((label) => label !== "null" && label !== "undefined" && label !== "");
+    return labels.join(" | ");
+  }
   if (schema.type === "array") return `${getSchemaTypeLabel(schema.items)}[]`;
+  if (schema.type === "null") return "";
   if (schema.type) return schema.type;
   return "unknown";
 };
@@ -160,13 +166,17 @@ export default async function Page() {
                               <code>{param.name}</code>
                             </TableCell>
                             <TableCell>{param.in}</TableCell>
-                            <TableCell>{param.schema?.type}</TableCell>
+                            <TableCell>{getSchemaTypeLabel(param.schema)}</TableCell>
                             <TableCell>
                               {param.required ? (
-                                <Badge variant="outline" size="xs">
+                                <Badge variant="secondary" size="xs">
                                   required
                                 </Badge>
-                              ) : null}
+                              ) : (
+                                <Badge variant="outline" size="xs">
+                                  optional
+                                </Badge>
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}

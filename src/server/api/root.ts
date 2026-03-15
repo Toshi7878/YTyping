@@ -46,6 +46,7 @@ export const appRouter = router({
 
 export const openApiDocumentRouter = router({
   map: {
+    list: mapListRouter,
     item: mapItemRouter,
   },
 });

@@ -11,6 +11,9 @@ export type RateLimitDef = {
  * ミドルウェア生成・OpenAPI ドキュメント・api-docs ページの単一ソース
  */
 export const OPENAPI_RATE_LIMITS = {
+  "/maps": {
+    get: { keyPrefix: "ratelimit:map-list:get", max: 60, window: "60 s" },
+  },
   "/maps/{mapId}": {
     get: { keyPrefix: "ratelimit:map-item:get", max: 120, window: "60 s" },
   },
