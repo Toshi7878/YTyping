@@ -7,7 +7,7 @@ import type z from "zod/v4";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { findClosestLowerOrEqual } from "@/utils/array";
 import type { Updater } from "@/utils/types";
-import type { LineOptionSchema } from "@/validator/raw-map-json";
+import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";

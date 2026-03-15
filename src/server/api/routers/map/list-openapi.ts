@@ -13,9 +13,9 @@ import {
   Users,
 } from "@/server/drizzle/schema";
 import {
+  GetMapListOpenApiResponseSchema,
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_SORT_OPTIONS_WITH_OPEN_API,
-  MapListOpenApiResponseSchema,
   type MapSearchFilterSchema,
   SelectMapListOpenApiSchema,
 } from "@/validator/map/list";
@@ -46,7 +46,7 @@ export const mapListOpenApiRouter = {
       },
     })
     .input(SelectMapListOpenApiSchema)
-    .output(MapListOpenApiResponseSchema)
+    .output(GetMapListOpenApiResponseSchema)
     .query(async ({ input, ctx }) => {
       const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
       const { db } = ctx;

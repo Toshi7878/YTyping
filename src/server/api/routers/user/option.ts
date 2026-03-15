@@ -1,7 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { UserOptions } from "@/server/drizzle/schema";
-import { UpsertUserOptionSchema } from "@/validator/user-option";
+import { UpsertUserOptionSchema } from "@/validator/user/option";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const userOptionRouter = {

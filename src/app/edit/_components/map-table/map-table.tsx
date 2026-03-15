@@ -16,7 +16,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
 import { readRawMap, setRawMapAction, useRawMapState } from "../../_lib/atoms/map-reducer";
 import { setTimeInputValue } from "../../_lib/atoms/ref";

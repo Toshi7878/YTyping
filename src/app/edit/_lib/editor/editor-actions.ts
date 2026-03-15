@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { backupMap } from "@/lib/indexed-db";
 import { normalizeSymbols } from "@/utils/string-transform";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { readMapId, readVideoId } from "../atoms/hydrate";
 import { readRawMap, setRawMapAction } from "../atoms/map-reducer";

@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { normalizeSymbols } from "@/utils/string-transform";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();

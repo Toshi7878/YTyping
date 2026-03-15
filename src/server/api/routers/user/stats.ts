@@ -11,7 +11,7 @@ import {
   UserOptions,
   UserStats,
 } from "@/server/drizzle/schema";
-import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user-stats";
+import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
 import { createRateLimitMiddleware, publicProcedure } from "../../trpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
 

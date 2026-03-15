@@ -1,6 +1,6 @@
 import z from "zod";
 import { ja } from "zod/locales";
-import { STRING_SHORT_LENGTH } from "../server/drizzle/const";
+import { STRING_SHORT_LENGTH } from "@/server/drizzle/const";
 
 z.config(ja());
 

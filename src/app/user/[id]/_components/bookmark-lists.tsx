@@ -31,7 +31,7 @@ import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { MapBookmarkListFormSchema } from "@/validator/bookmark";
+import { MapBookmarkListFormSchema } from "@/validator/map/bookmark";
 import { serializeUserPageSearchParams, useBookmarkListIdQueryState } from "../_lib/search-params";
 
 type BookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];

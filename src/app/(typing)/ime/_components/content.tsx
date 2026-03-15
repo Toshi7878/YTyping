@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { InputTextarea } from "../_components/input-textarea";
 import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";

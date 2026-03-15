@@ -1,5 +1,5 @@
 import { boolean, date, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
-import { DEFAULT_TYPING_OPTIONS, ID_MAXIMUM_LENGTH, STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "../const";
+import { DEFAULT_TYPING_OPTIONS, STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const Users = pgTable("users", {
@@ -100,7 +100,7 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   insertEnglishSpaces: boolean("insert_english_spaces").notNull().default(DEFAULT_IME_OPTIONS.insertEnglishSpaces),
   isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_IME_OPTIONS.isCaseSensitive),
   enableNextLyrics: boolean("enable_next_lyrics").notNull().default(DEFAULT_IME_OPTIONS.enableNextLyrics),
-  includeRegexPattern: varchar("include_regex_pattern", { length: ID_MAXIMUM_LENGTH })
+  includeRegexPattern: varchar("include_regex_pattern", { length: STRING_LONG_LENGTH })
     .notNull()
     .default(DEFAULT_IME_OPTIONS.includeRegexPattern),
   enableLargeVideoDisplay: boolean("enable_large_video_display")

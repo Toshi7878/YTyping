@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator/bookmark";
+import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator/map/bookmark";
 
 interface BookmarkListPopoverProps {
   mapId: number;

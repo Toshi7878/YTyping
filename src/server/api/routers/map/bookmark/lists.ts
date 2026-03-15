@@ -11,7 +11,7 @@ import {
   Notifications,
   Users,
 } from "@/server/drizzle/schema";
-import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/bookmark";
+import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/map/bookmark";
 import { protectedProcedure, publicProcedure } from "../../../trpc";
 
 export const mapBookmarkListsRouter = {

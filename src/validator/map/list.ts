@@ -93,7 +93,7 @@ const MapListItemSchema = z.object({
   }),
 });
 
-export const MapListOpenApiResponseSchema = z.object({
+export const GetMapListOpenApiResponseSchema = z.object({
   items: z.array(MapListItemSchema),
   nextCursor: z.number().optional(),
 });

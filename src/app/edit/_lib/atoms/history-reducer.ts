@@ -1,5 +1,5 @@
 import { atomWithReducer } from "jotai/utils";
-import type { RawMapLine } from "@/validator/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer";
 import { getEditAtomStore } from "./store";
 

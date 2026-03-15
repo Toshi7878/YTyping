@@ -1,7 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { UserTypingOptions } from "@/server/drizzle/schema";
-import { CreateUserTypingOptionSchema } from "@/validator/user-option";
+import { CreateUserTypingOptionSchema } from "@/validator/user/option";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const userTypingOptionRouter = {
