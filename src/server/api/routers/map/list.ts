@@ -250,7 +250,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   }
 
   const searchConditions = [
-    user ? buildFilterCondition(input.filter, user) : undefined,
+    user ? buildFilterCondition(input.filterType, user) : undefined,
     user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
     buildKeywordCondition(input.keyword),
@@ -261,7 +261,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(user, input.filter), ...searchConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(user, input.filterType), ...searchConditions));
 };
 
 function buildFilterCondition(
@@ -373,7 +373,7 @@ const buildKeywordCondition = (keyword?: string | null) => {
 
 export const buildMapVisibilityCondition = (
   user: TRPCContext["user"],
-  inputFilter?: z.output<typeof MapSearchFilterSchema>["filter"],
+  inputFilter?: z.output<typeof MapSearchFilterSchema>["filterType"],
 ) => {
   if (!user) {
     return eq(Maps.visibility, "PUBLIC");

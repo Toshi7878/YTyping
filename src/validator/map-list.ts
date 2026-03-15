@@ -16,7 +16,7 @@ export const MAP_RANKING_STATUS_FILTER_OPTIONS = ["1st", "not-first", "registerd
 export const MAP_DIFFICULTY_RATE_FILTER_LIMIT = { min: 0, max: 12 };
 
 export const MapSearchFilterSchema = z.object({
-  filter: z.enum(MAP_USER_FILTER_OPTIONS).nullish(),
+  filterType: z.enum(MAP_USER_FILTER_OPTIONS).nullish(),
   rankingStatus: z.enum(MAP_RANKING_STATUS_FILTER_OPTIONS).nullish(),
   bookmarkListId: z.number().nullish(),
   keyword: z.string().nullish(),
