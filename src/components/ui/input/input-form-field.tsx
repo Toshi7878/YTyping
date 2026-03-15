@@ -116,7 +116,7 @@ const MutationInputFormField = ({
         const { value } = e.currentTarget;
 
         debounce(async () => {
-          if (!errors[props.name] && value) {
+          if (!errors[props.name]) {
             await mutation.mutateAsync(value);
             onSuccess?.(value);
           }
