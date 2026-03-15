@@ -23,7 +23,7 @@ import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
   type MAP_USER_FILTER_OPTIONS,
-} from "@/validator/map-list";
+} from "@/validator/map/list";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const MapFilter = () => {

@@ -1,7 +1,7 @@
 import z from "zod/v4";
 import { YOUTUBE_THUMBNAIL_QUALITIES } from "@/server/drizzle/schema";
 
-export const MapItemOpenApiResponseSchema = z.object({
+export const getByIdOpenApiResponseSchema = z.object({
   id: z.number(),
   media: z.object({
     previewTime: z.number(),

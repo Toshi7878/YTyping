@@ -20,7 +20,7 @@ import {
   type MAP_USER_FILTER_OPTIONS,
   MapSearchFilterSchema,
   SelectMapListApiSchema,
-} from "@/validator/map-list";
+} from "@/validator/map/list";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";

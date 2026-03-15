@@ -4,7 +4,7 @@ import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
-import { UpsertMapSchema } from "@/validator/map";
+import { upsertMapItemSchema } from "@/validator/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
@@ -88,7 +88,7 @@ export const mapItemRouter = {
       }
     }),
 
-  upsert: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
+  upsert: protectedProcedure.input(upsertMapItemSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
     const userId = user.id;
@@ -178,7 +178,7 @@ const getNextMapId = async (db: TXType) => {
 
 type MapCategory = (typeof MAP_CATEGORIES)[number];
 
-const getMapCategories = (rawMap: z.output<typeof UpsertMapSchema>["rawMapJson"]): MapCategory[] => {
+const getMapCategories = (rawMap: z.output<typeof upsertMapItemSchema>["rawMapJson"]): MapCategory[] => {
   const categories = new Set<MapCategory>();
 
   for (const line of rawMap) {

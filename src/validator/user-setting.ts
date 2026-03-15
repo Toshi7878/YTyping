@@ -1,6 +1,6 @@
 import z from "zod";
 import { ja } from "zod/locales";
-import { MAX_SHORT_LENGTH } from "../server/drizzle/const";
+import { STRING_SHORT_LENGTH } from "../server/drizzle/const";
 
 z.config(ja());
 
@@ -24,6 +24,6 @@ const FingerChartUrlBaseSchema = z
 export const FingerChartUrlFormSchema = z.object({ url: FingerChartUrlBaseSchema });
 export const FingerChartUrlApiSchema = FingerChartUrlBaseSchema;
 
-const keyboardBaseSchema = z.string().max(MAX_SHORT_LENGTH);
+const keyboardBaseSchema = z.string().max(STRING_SHORT_LENGTH);
 export const keyboardFormSchema = z.object({ keyboard: keyboardBaseSchema });
 export const keyboardApiSchema = keyboardBaseSchema;

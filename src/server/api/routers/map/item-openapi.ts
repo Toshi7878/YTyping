@@ -4,7 +4,7 @@ import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile } from "@/server/api/utils/storage";
 import { MapDifficulties, Maps, Users } from "@/server/drizzle/schema";
-import { MapItemOpenApiResponseSchema } from "@/validator/map/item";
+import { getByIdOpenApiResponseSchema } from "@/validator/map/item";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/raw-map-json";
 import { OPENAPI_RATE_LIMITS } from "../../lib/rate-limit-config";
 import { createRateLimitMiddleware, publicProcedure } from "../../trpc";
@@ -29,7 +29,7 @@ export const mapItemOpenApiRouter = {
       },
     })
     .input(z.object({ mapId: z.number() }))
-    .output(MapItemOpenApiResponseSchema)
+    .output(getByIdOpenApiResponseSchema)
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
       const { mapId } = input;
