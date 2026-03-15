@@ -46,7 +46,7 @@ export const appRouter = router({
   vercel: vercelRouter,
 });
 
-export const openApiDocumentRouter = router({
+export const openApiRouter = router({
   map: {
     list: mapListOpenApiRouter,
     item: mapItemOpenApiRouter,

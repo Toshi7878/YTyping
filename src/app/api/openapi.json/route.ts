@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateOpenApiDocument } from "trpc-to-openapi";
 import { OPENAPI_RATE_LIMITS, type RateLimitDef } from "@/server/api/lib/rate-limit-config";
-import { openApiDocumentRouter } from "@/server/api/root";
+import { openApiRouter } from "@/server/api/root";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const baseUrl = `${url.origin}/api`;
 
-  const doc = generateOpenApiDocument(openApiDocumentRouter, {
+  const doc = generateOpenApiDocument(openApiRouter, {
     title: "YTyping API",
     version: "1.0.0",
     baseUrl,
