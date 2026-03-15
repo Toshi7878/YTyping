@@ -1,12 +1,12 @@
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
-import { MAX_SHORT_LENGTH } from "@/server/drizzle/const";
+import { STRING_SHORT_LENGTH } from "@/server/drizzle/const";
 import { MapBookmarkLists } from "@/server/drizzle/schema";
 
 export const MAX_BOOKMARK_LIST_LENGTH = 15;
 
 export const MapBookmarkListFormSchema = z.object({
-  title: z.string().trim().min(1).max(MAX_SHORT_LENGTH),
+  title: z.string().trim().min(1).max(STRING_SHORT_LENGTH),
   visibility: z.literal(["public", "private"]),
 });
 

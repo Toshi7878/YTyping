@@ -11,7 +11,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { MAX_MEDIUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
+import { STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "../const";
 import { Users } from "./user";
 
 export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
@@ -24,10 +24,10 @@ export const mapVisibilityEnum = pgEnum("map_visibility", MAP_VISIBILITY_TYPES);
 export const Maps = pgTable("maps", {
   id: integer("id").primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
-  title: varchar("title", { length: MAX_SHORT_LENGTH }).notNull().default(""),
-  artistName: varchar("artist_name", { length: MAX_SHORT_LENGTH }).notNull().default(""),
-  musicSource: varchar("music_source", { length: MAX_SHORT_LENGTH }).notNull().default(""),
-  creatorComment: varchar("creator_comment", { length: MAX_MEDIUM_LENGTH }).notNull().default(""),
+  title: varchar("title", { length: STRING_SHORT_LENGTH }).notNull(),
+  artistName: varchar("artist_name", { length: STRING_SHORT_LENGTH }).notNull(),
+  musicSource: varchar("music_source", { length: STRING_SHORT_LENGTH }).notNull(),
+  creatorComment: varchar("creator_comment", { length: STRING_LONG_LENGTH }).notNull(),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   creatorId: integer("creator_id")
     .notNull()

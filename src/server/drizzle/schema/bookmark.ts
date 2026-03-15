@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { boolean, integer, pgTable, primaryKey, serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { MAX_SHORT_LENGTH } from "../const";
+import { STRING_SHORT_LENGTH } from "../const";
 import { Maps } from "./map";
 import { Users } from "./user";
 
@@ -9,7 +9,7 @@ export const MapBookmarkLists = pgTable("map_bookmark_lists", {
   userId: integer("user_id")
     .notNull()
     .references(() => Users.id, { onDelete: "cascade" }),
-  title: varchar("title", { length: MAX_SHORT_LENGTH }).notNull(),
+  title: varchar("title", { length: STRING_SHORT_LENGTH }).notNull(),
   isPublic: boolean("is_public").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
