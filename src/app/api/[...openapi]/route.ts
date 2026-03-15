@@ -5,14 +5,37 @@ import { createContext } from "@/server/api/trpc";
 
 export const dynamic = "force-dynamic";
 
-const handler = (req: NextRequest) => {
-  return createOpenApiFetchHandler({
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+} as const;
+
+const withCors = (response: Response) => {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(CORS_HEADERS)) {
+    headers.set(key, value);
+  }
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+};
+
+const handler = async (req: NextRequest) => {
+  const response = await createOpenApiFetchHandler({
     endpoint: "/api",
     router: openApiRouter,
     createContext: () => createContext(),
     req,
   });
+
+  return withCors(response);
 };
+
+const optionsHandler = () => new Response(null, { status: 204, headers: CORS_HEADERS });
 
 export {
   handler as GET,
@@ -20,6 +43,6 @@ export {
   handler as PUT,
   handler as PATCH,
   handler as DELETE,
-  handler as OPTIONS,
+  optionsHandler as OPTIONS,
   handler as HEAD,
 };
