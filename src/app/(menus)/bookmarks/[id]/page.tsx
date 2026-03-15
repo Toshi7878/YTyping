@@ -4,7 +4,7 @@ import { BookmarkListDetailView } from "./_components/map-list";
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;
   prefetch(
-    trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sortValue: "bookmark", sortDesc: true }),
+    trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sortType: "bookmark", isSortDesc: true }),
   );
 
   return (

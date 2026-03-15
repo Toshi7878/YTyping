@@ -105,7 +105,7 @@ export const mapListRouter = {
     .input(SelectMapListApiSchema)
     .output(MapListResponseSchema)
     .query(async ({ input, ctx }) => {
-      const { cursor, sortValue, sortDesc, ...searchInput } = input ?? {};
+      const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
       const { db, user } = ctx;
 
       const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);

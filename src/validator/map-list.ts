@@ -29,7 +29,7 @@ export const MapSearchFilterSchema = z.object({
 export const SelectMapListApiSchema = z
   .object({
     cursor: z.number().optional(),
-    sortValue: z.enum(MAP_SORT_OPTIONS).nullish(),
-    sortDesc: z.boolean().nullish(),
+    sortType: z.enum(MAP_SORT_OPTIONS).nullish(),
+    isSortDesc: z.boolean().nullish(),
   })
   .extend(MapSearchFilterSchema.shape);
