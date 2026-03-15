@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/provider";
-import { FingerChartUrlFormSchema } from "@/validator/user-setting";
+import { FingerChartUrlFormSchema } from "@/validator/user/profile";
 
 interface FingerChartUrlInputProps {
   url: string;

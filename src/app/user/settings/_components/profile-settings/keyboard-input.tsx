@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/provider";
-import { keyboardFormSchema } from "@/validator/user-setting";
+import { keyboardFormSchema } from "@/validator/user/profile";
 
 interface KeyboardInputProps {
   keyboard: string;

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/provider";
-import { UserNameSchema } from "@/validator/user-setting";
+import { UserNameSchema } from "@/validator/user/profile";
 
 interface UserNameInputFormProps {
   placeholder?: string;
