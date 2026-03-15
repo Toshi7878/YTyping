@@ -77,6 +77,10 @@ const collectSchemaFields = (
   schema?: OpenApiSchema,
   parentPath = "",
 ): Array<{ path: string; type: string; required: boolean }> => {
+  if (schema?.type === "array" && schema.items?.type === "object") {
+    return collectSchemaFields(schema.items, parentPath ? `${parentPath}[]` : "[]");
+  }
+
   if (!schema?.properties) return [];
 
   return Object.entries(schema.properties).flatMap(([name, childSchema]) => {
