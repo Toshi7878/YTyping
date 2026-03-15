@@ -1,160 +1,73 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
-import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
-import {
-  MAP_CATEGORIES,
-  MAP_VISIBILITY_TYPES,
-  MapDifficulties,
-  MapLikes,
-  Maps,
-  Users,
-  YOUTUBE_THUMBNAIL_QUALITIES,
-} from "@/server/drizzle/schema";
+import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
-import { OPENAPI_RATE_LIMITS } from "../../lib/rate-limit-config";
-import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
-
-const MapDetailInputSchema = z.object({ mapId: z.number() });
-
-const MapDetailResponseSchema = z.object({
-  id: z.number(),
-  media: z.object({
-    previewTime: z.number(),
-    thumbnailQuality: z.enum(YOUTUBE_THUMBNAIL_QUALITIES),
-    videoId: z.string(),
-  }),
-  info: z.object({
-    tags: z.array(z.string()),
-    title: z.string(),
-    artistName: z.string(),
-    source: z.string(),
-    duration: z.number(),
-    visibility: z.enum(MAP_VISIBILITY_TYPES),
-  }),
-  creator: z.object({
-    id: z.number(),
-    name: z.string().nullable(),
-    comment: z.string(),
-  }),
-  difficulty: z.object({
-    romaKpmMedian: z.number(),
-    kanaKpmMedian: z.number(),
-    romaKpmMax: z.number(),
-    kanaKpmMax: z.number(),
-    romaTotalNotes: z.number(),
-    kanaTotalNotes: z.number(),
-  }),
-  like: z.object({
-    hasLiked: z.boolean(),
-  }),
-  bookmark: z.object({
-    hasBookmarked: z.boolean(),
-  }),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapItemRouter = {
-  get: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}"].get))
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/maps/{mapId}",
-        protect: false,
-        tags: ["Map"],
-        summary: "Get map detail by id",
-        contentTypes: ["application/json" as OpenApiContentType],
-        errorResponses: {
-          400: "Invalid input data",
-          404: "Not found",
-          429: "Too many requests",
-          500: "Internal server error",
+  get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+    const { mapId } = input;
+
+    const mapInfo = await db
+      .select({
+        id: Maps.id,
+        media: {
+          previewTime: Maps.previewTime,
+          thumbnailQuality: Maps.thumbnailQuality,
+          videoId: Maps.videoId,
         },
-      },
-    })
-    .input(MapDetailInputSchema)
-    .output(MapDetailResponseSchema)
-    .query(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      const { mapId } = input;
+        info: {
+          tags: Maps.tags,
+          title: Maps.title,
+          artistName: Maps.artistName,
+          source: Maps.musicSource,
+          duration: Maps.duration,
+          visibility: Maps.visibility,
+        },
+        creator: {
+          id: Users.id,
+          name: Users.name,
+          comment: Maps.creatorComment,
+        },
+        difficulty: {
+          romaKpmMedian: MapDifficulties.romaKpmMedian,
+          kanaKpmMedian: MapDifficulties.kanaKpmMedian,
+          romaKpmMax: MapDifficulties.romaKpmMax,
+          kanaKpmMax: MapDifficulties.kanaKpmMax,
+          romaTotalNotes: MapDifficulties.romaTotalNotes,
+          kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+        },
+        like: {
+          hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
+        },
+        bookmark: {
+          hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
+        },
+        createdAt: Maps.createdAt,
+        updatedAt: Maps.updatedAt,
+      })
+      .from(Maps)
+      .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
+      .where(eq(Maps.id, mapId))
+      .limit(1)
+      .then((rows) => rows[0]);
 
-      const mapInfo = await db
-        .select({
-          id: Maps.id,
-          media: {
-            previewTime: Maps.previewTime,
-            thumbnailQuality: Maps.thumbnailQuality,
-            videoId: Maps.videoId,
-          },
-          info: {
-            tags: Maps.tags,
-            title: Maps.title,
-            artistName: Maps.artistName,
-            source: Maps.musicSource,
-            duration: Maps.duration,
-            visibility: Maps.visibility,
-          },
-          creator: {
-            id: Users.id,
-            name: Users.name,
-            comment: Maps.creatorComment,
-          },
-          difficulty: {
-            romaKpmMedian: MapDifficulties.romaKpmMedian,
-            kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-            romaKpmMax: MapDifficulties.romaKpmMax,
-            kanaKpmMax: MapDifficulties.kanaKpmMax,
-            romaTotalNotes: MapDifficulties.romaTotalNotes,
-            kanaTotalNotes: MapDifficulties.kanaTotalNotes,
-          },
-          like: {
-            hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
-          },
-          bookmark: {
-            hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
-          },
-          createdAt: Maps.createdAt,
-          updatedAt: Maps.updatedAt,
-        })
-        .from(Maps)
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-        .where(eq(Maps.id, mapId))
-        .limit(1)
-        .then((rows) => rows[0]);
+    if (!mapInfo) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
 
-      if (!mapInfo) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
-      return mapInfo;
-    }),
+    return mapInfo;
+  }),
 
   getJson: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}/json"].get))
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/maps/{mapId}/json",
-        protect: false,
-        tags: ["Map"],
-        summary: "Get map typing data by id",
-        contentTypes: ["application/json" as OpenApiContentType],
-        errorResponses: {
-          400: "Invalid input data",
-          404: "Not found",
-          429: "Too many requests",
-          500: "Internal server error",
-        },
-      },
-    })
     .input(z.object({ mapId: z.number() }))
     .output(z.array(RawMapLineSchema))
     .query(async ({ input }) => {

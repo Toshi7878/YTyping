@@ -2,11 +2,8 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
-import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import {
-  MAP_CATEGORIES,
-  MAP_VISIBILITY_TYPES,
   MapBookmarkListItems,
   MapBookmarkLists,
   MapDifficulties,
@@ -15,7 +12,6 @@ import {
   ResultStatuses,
   Results,
   Users,
-  YOUTUBE_THUMBNAIL_QUALITIES,
 } from "@/server/drizzle/schema";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
@@ -26,56 +22,8 @@ import {
   SelectMapListApiSchema,
 } from "@/validator/map-list";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
-import { OPENAPI_RATE_LIMITS } from "../../lib/rate-limit-config";
-import { createRateLimitMiddleware, protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
-
-const MapListItemSchema = z.object({
-  id: z.number(),
-  updatedAt: z.date(),
-  media: z.object({
-    videoId: z.string(),
-    previewTime: z.number(),
-    thumbnailQuality: z.enum(YOUTUBE_THUMBNAIL_QUALITIES),
-  }),
-  info: z.object({
-    title: z.string(),
-    artistName: z.string(),
-    source: z.string(),
-    duration: z.number(),
-    categories: z.array(z.enum(MAP_CATEGORIES)),
-    visibility: z.enum(MAP_VISIBILITY_TYPES),
-  }),
-  creator: z.object({
-    id: z.number(),
-    name: z.string().nullable(),
-  }),
-  difficulty: z.object({
-    romaKpmMedian: z.number(),
-    kanaKpmMedian: z.number(),
-    romaKpmMax: z.number(),
-    kanaKpmMax: z.number(),
-    romaTotalNotes: z.number(),
-    kanaTotalNotes: z.number(),
-  }),
-  bookmark: z.object({
-    hasBookmarked: z.boolean(),
-  }),
-  like: z.object({
-    count: z.number(),
-    hasLiked: z.boolean(),
-  }),
-  ranking: z.object({
-    count: z.number(),
-    myRank: z.number().nullable(),
-    myRankUpdatedAt: z.date().nullable(),
-  }),
-});
-
-const MapListResponseSchema = z.object({
-  items: z.array(MapListItemSchema),
-  nextCursor: z.number().optional(),
-});
 
 const PAGE_SIZE = 30;
 const Creator = alias(Users, "creator");
@@ -85,38 +33,19 @@ const MyResult = alias(Results, "my_result");
 const MyResultStatus = alias(ResultStatuses, "my_result_status");
 
 export const mapListRouter = {
-  get: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps"].get))
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/maps",
-        protect: false,
-        tags: ["Map"],
-        summary: "Get map list",
-        contentTypes: ["application/json" as OpenApiContentType],
-        errorResponses: {
-          400: "Invalid input data",
-          429: "Too many requests",
-          500: "Internal server error",
-        },
-      },
-    })
-    .input(SelectMapListApiSchema)
-    .output(MapListResponseSchema)
-    .query(async ({ input, ctx }) => {
-      const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
-      const { db, user } = ctx;
+  get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
+    const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
+    const { db, user } = ctx;
 
-      const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
+    const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-      const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, searchInput)
-        .limit(limit)
-        .offset(offset)
-        .orderBy(...buildSortConditions(sortValue, sortDesc, searchInput));
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, searchInput)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(...buildSortConditions(sortValue, sortDesc, searchInput));
 
-      return buildPageResult(maps);
-    }),
+    return buildPageResult(maps);
+  }),
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;

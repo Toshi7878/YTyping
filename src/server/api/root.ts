@@ -2,8 +2,10 @@ import { aiRouter } from "./routers/ai";
 import { mapBookmarkListItemRouter } from "./routers/map/bookmark/list-item";
 import { mapBookmarkListsRouter } from "./routers/map/bookmark/lists";
 import { mapItemRouter } from "./routers/map/item";
+import { mapItemOpenApiRouter } from "./routers/map/item-openapi";
 import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
+import { mapListOpenApiRouter } from "./routers/map/list-openapi";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultClapRouter } from "./routers/result/clap";
@@ -46,8 +48,8 @@ export const appRouter = router({
 
 export const openApiDocumentRouter = router({
   map: {
-    list: mapListRouter,
-    item: mapItemRouter,
+    list: mapListOpenApiRouter,
+    item: mapItemOpenApiRouter,
   },
 });
 
