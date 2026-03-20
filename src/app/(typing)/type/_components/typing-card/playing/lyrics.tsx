@@ -12,8 +12,9 @@ export const Lyrics = () => {
       id="lyrics"
       className={cn(
         "w-full max-w-[103%] whitespace-nowrap text-word-word",
-        "font-bold text-7xl md:text-[2.5rem]",
-        "font-[system-ui]",
+        "text-7xl md:text-[2.5rem]",
+        // biome-ignore lint/style/useConsistentFontFamily: <>
+        "[font-family:system-ui] font-bold",
         typingOptions.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed+&]:invisible",
       )}
     >
