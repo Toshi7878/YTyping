@@ -7,6 +7,25 @@ import { dispatchEditHistory } from "../atoms/history-reducer";
 import { getYTDuration } from "../atoms/youtube-player";
 import { wordConvert } from "./typable-word-convert";
 
+export const importMapFromJsonText = (text: string) => {
+  const convertedData = jsonConverter(JSON.parse(text).map);
+  dispatchEditHistory({
+    type: "add",
+    payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
+  });
+  setRawMapAction({ type: "replaceAll", payload: convertedData });
+};
+
+export const importMapFromLrcText = async (text: string) => {
+  const lrc = text.split(/\r\n|\n/);
+  const convertedData = await lrcConverter(lrc);
+  dispatchEditHistory({
+    type: "add",
+    payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
+  });
+  setRawMapAction({ type: "replaceAll", payload: convertedData });
+};
+
 export const importMapFile = async (file: File) => {
   const fileReader = new FileReader();
   fileReader.readAsArrayBuffer(file);
