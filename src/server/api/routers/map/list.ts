@@ -194,10 +194,10 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
 };
 
 function buildFilterCondition(
-  filter: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
+  filterType: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
   user: NonNullable<TRPCContext["user"]>,
 ) {
-  switch (filter) {
+  switch (filterType) {
     case "liked": {
       return eq(MyLike.hasLiked, true);
     }

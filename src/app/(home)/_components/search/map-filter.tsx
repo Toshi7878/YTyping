@@ -46,8 +46,8 @@ type FilterMenuConfig<K extends keyof MapListFilterSearchParams> = {
   }[];
 };
 
-const USER_FILTER_MENU: FilterMenuConfig<"filter"> = {
-  name: "filter",
+const USER_FILTER_MENU: FilterMenuConfig<"filterType"> = {
+  name: "filterType",
   label: "フィルター",
   options: [
     { label: "いいね済み", value: "liked" },
@@ -82,7 +82,7 @@ const FilterControlCard = () => {
 };
 
 interface FilterMenuProps {
-  filter: FilterMenuConfig<"filter" | "rankingStatus">;
+  filter: FilterMenuConfig<"filterType" | "rankingStatus">;
   children?: React.ReactNode;
 }
 
@@ -97,7 +97,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
       </div>
       <div className="flex flex-wrap items-center gap-1">
         {filter.options.map((param: (typeof filter.options)[number], index: number) => {
-          const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
+          const currentValue = filter.name === "filterType" ? params.filterType : params.rankingStatus;
           const isActive = currentValue === param.value;
 
           return (
@@ -165,13 +165,13 @@ const BookmarkListSelect = () => {
 
 const deriveSortParam = (
   {
-    filter,
+    filterType,
     rankingStatus,
   }: {
-    filter: MapListFilterSearchParams["filter"];
+    filterType: MapListFilterSearchParams["filterType"];
     rankingStatus: MapListFilterSearchParams["rankingStatus"];
   },
-  name: "filter" | "rankingStatus",
+  name: "filterType" | "rankingStatus",
   isActive: boolean,
 ): MapListSortSearchParams | undefined => {
   const RANKING_REGISTERED_FILTER_OPTIONS: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number][] = [
@@ -183,16 +183,16 @@ const deriveSortParam = (
   const hasRankingStatusFilter = rankingStatus !== null && RANKING_REGISTERED_FILTER_OPTIONS.includes(rankingStatus);
 
   if (isActive) {
-    if (name === "filter" && hasRankingStatusFilter) {
+    if (name === "filterType" && hasRankingStatusFilter) {
       return { value: "ranking-register", desc: true };
     }
-    if (name === "rankingStatus" && filter === "liked") {
+    if (name === "rankingStatus" && filterType === "liked") {
       return { value: "like", desc: true };
     }
     return { value: "publishedAt", desc: true };
   }
 
-  if (name === "filter" && filter === "liked") {
+  if (name === "filterType" && filterType === "liked") {
     return { value: "like", desc: true };
   }
 
@@ -204,23 +204,23 @@ const deriveSortParam = (
 };
 
 const getNextFilterParams = (
-  name: "filter" | "rankingStatus",
+  name: "filterType" | "rankingStatus",
   value:
     | (typeof USER_FILTER_MENU.options)[number]["value"]
     | (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"],
   isApply: boolean,
   params: MapListFilterSearchParams,
-): Pick<MapListFilterSearchParams, "filter" | "rankingStatus"> => {
-  let selectedFilter = params.filter;
-  if (name === "filter") {
-    selectedFilter = isApply ? (value as typeof params.filter) : null;
+): Pick<MapListFilterSearchParams, "filterType" | "rankingStatus"> => {
+  let selectedFilter = params.filterType;
+  if (name === "filterType") {
+    selectedFilter = isApply ? (value as typeof params.filterType) : null;
   }
 
   let selectedRankingStatus = params.rankingStatus;
   if (name === "rankingStatus") {
     selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
   }
-  return { filter: selectedFilter, rankingStatus: selectedRankingStatus };
+  return { filterType: selectedFilter, rankingStatus: selectedRankingStatus };
 };
 
 const DifficultyRangeControl = () => {

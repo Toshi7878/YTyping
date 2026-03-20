@@ -9,9 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { setUserOptions, useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import {
-  type MapListSortSearchParams,
-  useMapListFilterQueryStates,
-  useMapListSortQueryState,
+    type MapListSortSearchParams,
+    useMapListFilterQueryStates,
+    useMapListSortQueryState,
 } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import type { MAP_LIST_LAYOUT_TYPES } from "@/server/drizzle/schema/user";
@@ -70,7 +70,7 @@ const SortControls = () => {
   return (
     <div className="flex select-none flex-wrap items-center gap-1">
       {SORT_OPTIONS.map(({ label, value }) => {
-        const isLikedFilterActive = params.filter === "liked";
+        const isLikedFilterActive = params.filterType === "liked";
         if (value === "like" && !isLikedFilterActive) return null;
 
         const RANKING_STATUS_FOR_REGISTER_SORT: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
