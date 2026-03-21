@@ -4,7 +4,6 @@
 - [@hookform/resolvers@5.2.2](https://github.com/react-hook-form/resolvers) - MIT
 - [@pixi/sound@6.0.1](https://github.com/pixijs/sound) - MIT
 - [@pixi/ticker@7.4.3](https://github.com/pixijs/pixijs) - MIT
-- [@sentry/nextjs@10.34.0](https://github.com/getsentry/sentry-javascript) - MIT
 - [@supabase/supabase-js@2.90.1](https://github.com/supabase/supabase-js) - MIT
 - [@t3-oss/env-nextjs@0.13.10](https://github.com/t3-oss/t3-env) - MIT
 - [@tailwindcss/postcss@4.1.18](https://github.com/tailwindlabs/tailwindcss) - MIT
