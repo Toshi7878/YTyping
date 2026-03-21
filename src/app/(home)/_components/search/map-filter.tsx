@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { Small } from "@/components/ui/typography";
+import { useSession } from "@/lib/auth-client";
 import {
   type MapListFilterSearchParams,
   type MapListSortSearchParams,

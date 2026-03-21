@@ -2,7 +2,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { BookmarkListPopover } from "@/components/shared/bookmark/bookmark-list-popover";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { BookmarkListIconButton, EditIconLinkButton, InfoIconButton } from "@/components/ui/icon-button";
 import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useSession } from "@/lib/auth-client";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";

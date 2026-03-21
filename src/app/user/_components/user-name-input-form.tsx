@@ -3,13 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
 import { UserNameSchema } from "@/validator/user/profile";
 
@@ -18,7 +18,7 @@ interface UserNameInputFormProps {
 }
 
 export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameInputFormProps) => {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const trpc = useTRPC();
@@ -39,10 +39,9 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   } = form;
 
   const updateUserName = useMutation(
-    trpc.user.profile.updateName.mutationOptions({
-      onSuccess: async (newName) => {
-        await update({ ...session?.user, name: newName });
-        reset({ newName });
+    trpc.auth.updateName.mutationOptions({
+      onSuccess: async (_data, variables) => {
+        reset({ newName: variables.name });
         toast.success("名前を更新しました");
 
         if (pathname === "/user/register") {
@@ -62,8 +61,8 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
     }),
   );
 
-  const onSubmit = (formData: z.output<typeof UserNameSchema>) => {
-    updateUserName.mutate(formData);
+  const onSubmit = (data: z.output<typeof UserNameSchema>) => {
+    updateUserName.mutate({ name: data.newName });
   };
 
   return (

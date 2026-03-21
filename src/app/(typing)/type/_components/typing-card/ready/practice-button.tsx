@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { readBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_lib/atoms/youtube-player";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
@@ -7,6 +6,7 @@ import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/u
 import { queryResultJson } from "@/app/(typing)/type/_lib/query-result-json";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
+import { useSession } from "@/lib/auth-client";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();

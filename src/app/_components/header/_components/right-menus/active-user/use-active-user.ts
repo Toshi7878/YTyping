@@ -1,8 +1,8 @@
 import { useParams, usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import type { ActiveUserStatus } from "@/lib/atoms/global-atoms";
 import { usePresenceOptionState, useSetOnlineUsers } from "@/lib/atoms/global-atoms";
+import { useSession } from "@/lib/auth-client";
 import { createPresenceChannel } from "@/lib/supabase-client";
 
 export const useActiveUsers = () => {

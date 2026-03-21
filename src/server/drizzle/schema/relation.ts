@@ -11,6 +11,8 @@ import {
 } from "./notification";
 import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
+  Accounts,
+  Sessions,
   UserDailyTypeCounts,
   UserImeTypingOptions,
   UserMapCompletionPlayCounts,
@@ -23,6 +25,8 @@ import {
 
 export const UsersRelations = relations(Users, ({ many, one }) => {
   return {
+    sessions: many(Sessions),
+    accounts: many(Accounts),
     maps: many(Maps, { relationName: "maps_creator" }),
     results: many(Results),
     resultClaps: many(ResultClaps),
@@ -56,6 +60,20 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
     imeResults: many(ImeResults),
   };
 });
+
+export const sessionsRelations = relations(Sessions, ({ one }) => ({
+  users: one(Users, {
+    fields: [Sessions.userId],
+    references: [Users.id],
+  }),
+}));
+
+export const accountsRelations = relations(Accounts, ({ one }) => ({
+  users: one(Users, {
+    fields: [Accounts.userId],
+    references: [Users.id],
+  }),
+}));
 
 export const MapsRelations = relations(Maps, ({ one, many }) => ({
   creator: one(Users, {

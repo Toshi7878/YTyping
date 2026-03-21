@@ -9,17 +9,17 @@ export const resultClapRouter = {
   toggleClap: protectedProcedure
     .input(z.object({ resultId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
       const { resultId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
         const isFirstClap = await tx.query.ResultClaps.findFirst({
-          where: and(eq(ResultClaps.userId, user.id), eq(ResultClaps.resultId, resultId)),
+          where: and(eq(ResultClaps.userId, session.user.id), eq(ResultClaps.resultId, resultId)),
         }).then((res) => !res);
 
         await tx
           .insert(ResultClaps)
-          .values({ userId: user.id, resultId, hasClapped: true })
+          .values({ userId: session.user.id, resultId, hasClapped: true })
           .onConflictDoUpdate({
             target: [ResultClaps.userId, ResultClaps.resultId],
             set: { hasClapped: newState },
@@ -49,7 +49,7 @@ export const resultClapRouter = {
             columns: { userId: true },
           });
 
-          if (result && result.userId !== user.id) {
+          if (result && result.userId !== session.user.id) {
             const notificationId = generateNotificationId();
 
             await tx.insert(Notifications).values({
@@ -60,7 +60,7 @@ export const resultClapRouter = {
 
             await tx.insert(NotificationClaps).values({
               notificationId,
-              clapperId: user.id,
+              clapperId: session.user.id,
               resultId,
             });
           }

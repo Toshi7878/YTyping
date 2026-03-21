@@ -25,8 +25,8 @@ export const resultItemRouter = {
   }),
 
   upsert: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
-    const { user } = ctx;
-    const userId = user.id;
+    const { session } = ctx;
+    const { id: userId } = session.user;
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {

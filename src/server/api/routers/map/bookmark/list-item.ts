@@ -15,10 +15,10 @@ export const mapBookmarkListItemRouter = {
   add: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
 
       const list = await db.query.MapBookmarkLists.findFirst({
-        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)),
+        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)),
       });
       if (!list) throw new Error("List not found");
 
@@ -34,10 +34,10 @@ export const mapBookmarkListItemRouter = {
           where: eq(Maps.id, input.mapId),
         });
 
-        if (map && map.creatorId !== user.id) {
+        if (map && map.creatorId !== session.user.id) {
           const existingNotification = await db.query.NotificationMapBookmarks.findFirst({
             where: and(
-              eq(NotificationMapBookmarks.bookmarkerId, user.id),
+              eq(NotificationMapBookmarks.bookmarkerId, session.user.id),
               eq(NotificationMapBookmarks.listId, input.listId),
               eq(NotificationMapBookmarks.mapId, input.mapId),
             ),
@@ -53,7 +53,7 @@ export const mapBookmarkListItemRouter = {
               });
               await tx.insert(NotificationMapBookmarks).values({
                 notificationId,
-                bookmarkerId: user.id,
+                bookmarkerId: session.user.id,
                 listId: input.listId,
                 mapId: input.mapId,
               });
@@ -68,10 +68,10 @@ export const mapBookmarkListItemRouter = {
   remove: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
 
       const list = await db.query.MapBookmarkLists.findFirst({
-        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)),
+        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)),
       });
       if (!list) throw new Error("List not found");
 

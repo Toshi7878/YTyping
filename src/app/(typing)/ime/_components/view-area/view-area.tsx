@@ -1,5 +1,5 @@
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { readTypingTextarea, readUserStats, resetUserStats } from "../../_lib/atoms/ref";

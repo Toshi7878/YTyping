@@ -1,7 +1,7 @@
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
+import { useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RandomEmoji } from "./random-emoji";
 

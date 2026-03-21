@@ -9,15 +9,18 @@ import type { MapListItem } from "./map";
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {
-    const isUnreadNotificationFound = await ctx.db.query.Notifications.findFirst({
+    const { db, session } = ctx;
+
+    const isUnreadNotificationFound = await db.query.Notifications.findFirst({
       columns: { checked: true },
-      where: and(eq(Notifications.recipientId, ctx.user.id), eq(Notifications.checked, false)),
+      where: and(eq(Notifications.recipientId, session.user.id), eq(Notifications.checked, false)),
     }).then((res) => res !== undefined);
 
     return isUnreadNotificationFound;
   }),
+
   getInfinite: protectedProcedure.input(z.object({ cursor: z.number().optional() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const PAGE_SIZE = 20;
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
@@ -30,7 +33,7 @@ export const notificationRouter = {
         tags: false,
       },
       extras: (table) => ({
-        hasBookmarked: buildHasBookmarkedMapExists(user, table.id).as("has_bookmarked"),
+        hasBookmarked: buildHasBookmarkedMapExists(session, table.id).as("has_bookmarked"),
       }),
       with: {
         creator: { columns: { id: true, name: true } },
@@ -45,12 +48,12 @@ export const notificationRouter = {
           },
         },
         mapLikes: {
-          where: and(eq(MapLikes.userId, user.id)),
+          where: and(eq(MapLikes.userId, session.user.id)),
           columns: { hasLiked: true },
           limit: 1,
         },
         results: {
-          where: and(eq(Results.userId, user.id)),
+          where: and(eq(Results.userId, session.user.id)),
           columns: { rank: true, updatedAt: true },
           limit: 1,
         },
@@ -106,7 +109,7 @@ export const notificationRouter = {
           },
         },
       },
-      where: eq(Notifications.recipientId, user.id),
+      where: eq(Notifications.recipientId, session.user.id),
       orderBy: desc(Notifications.updatedAt),
       limit,
       offset,
@@ -215,11 +218,11 @@ export const notificationRouter = {
   }),
 
   postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     await db
       .update(Notifications)
       .set({ checked: true })
-      .where(and(eq(Notifications.recipientId, user.id), eq(Notifications.checked, false)));
+      .where(and(eq(Notifications.recipientId, session.user.id), eq(Notifications.checked, false)));
   }),
 } satisfies TRPCRouterRecord;

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { H2 } from "@/components/ui/typography";
-import { auth } from "@/server/auth";
+import { getSession } from "@/lib/auth";
 import { serverApi } from "@/trpc/server";
 import { UserNameInputForm } from "../_components/user-name-input-form";
 import { UserOptionsForm } from "./_components/option-form";
@@ -17,7 +17,7 @@ export default async function Page() {
 }
 
 const ProfileSettingCard = async () => {
-  const session = await auth();
+  const session = await getSession();
   const userProfile = await serverApi.user.profile.get({ userId: Number(session?.user.id) });
 
   return (

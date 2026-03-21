@@ -1,9 +1,8 @@
 import { useProgress } from "@bprogress/next";
-import type { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 import { BookmarkListIconButton, RankingStarIconButton } from "@/components/ui/icon-button";
 import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { type Session, useSession } from "@/lib/auth-client";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
@@ -41,11 +40,11 @@ const LikeCountButton = ({
   hasLiked: boolean;
   likeCount: number;
 }) => {
-  const { status } = useSession();
+  const { data: session } = useSession();
   const setLikeMutation = useToggleMapLikeMutation();
   const { stop } = useProgress();
 
-  if (status !== "authenticated" || !mapId) {
+  if (!session || !mapId) {
     return (
       <LikeToggleButton
         label={likeCount.toString()}

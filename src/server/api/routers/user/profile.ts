@@ -2,7 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, ne } from "drizzle-orm";
 import z from "zod";
 import { UserProfiles, Users } from "@/server/drizzle/schema";
-import { FingerChartUrlApiSchema, keyboardApiSchema, UserNameSchema } from "@/validator/user/profile";
+import { FingerChartUrlApiSchema, keyboardApiSchema } from "@/validator/user/profile";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const userProfileRouter = {
@@ -23,18 +23,11 @@ export const userProfileRouter = {
     return userProfile;
   }),
 
-  updateName: protectedProcedure.input(UserNameSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-
-    await db.update(Users).set({ name: input.newName }).where(eq(Users.emailHash, user.email_hash));
-    return input.newName;
-  }),
-
   checkUsernameAvailability: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const existing = await db.query.Users.findFirst({
       columns: { name: true },
-      where: and(eq(Users.name, input), ne(Users.id, user.id)),
+      where: and(eq(Users.name, input), ne(Users.id, session.user.id)),
     }).then((res) => !!res?.name);
 
     if (existing) {
@@ -48,20 +41,20 @@ export const userProfileRouter = {
   }),
 
   upsertFingerChartUrl: protectedProcedure.input(FingerChartUrlApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     await db
       .insert(UserProfiles)
-      .values({ userId: user.id, fingerChartUrl: input })
+      .values({ userId: session.user.id, fingerChartUrl: input })
       .onConflictDoUpdate({ target: [UserProfiles.userId], set: { fingerChartUrl: input } });
   }),
 
   upsertKeyboard: protectedProcedure.input(keyboardApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     await db
       .insert(UserProfiles)
-      .values({ userId: user.id, keyboard: input })
+      .values({ userId: session.user.id, keyboard: input })
       .onConflictDoUpdate({ target: [UserProfiles.userId], set: { keyboard: input } });
   }),
 } satisfies TRPCRouterRecord;

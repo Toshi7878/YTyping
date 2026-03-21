@@ -52,6 +52,11 @@ function parseUserRow(row: Record<string, string>) {
     name: row.name === "" ? null : row.name,
     emailHash: row.email_hash ?? "",
     role: (row.role ?? "USER") as "USER" | "ADMIN",
+    emailVerified: row.email_verified === "true",
+    image: row.image === "" ? null : (row.image ?? null),
+    banned: row.banned === "true",
+    banReason: row.ban_reason === "" ? null : (row.ban_reason ?? null),
+    banExpires: row.ban_expires ? new Date(row.ban_expires.replace(" ", "T")) : null,
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
@@ -74,11 +79,11 @@ function parseMapRow(row: Record<string, string>) {
     rankingCount: Number(row.ranking_count ?? 0),
     category: JSON.parse(row.category ?? "[]"),
     thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as (typeof YOUTUBE_THUMBNAIL_QUALITIES)[number],
-    publishedAt: new Date((row.published_at ?? "").replace(" ", "T")),
-    visibility: (row.created_at ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
+    publishedAt: row.published_at ? new Date(row.published_at.replace(" ", "T")) : null,
+    visibility: (row.visibility ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
-  } satisfies typeof Maps.$inferSelect;
+  };
 }
 
 function parseMapDifficultyRow(row: Record<string, string>) {

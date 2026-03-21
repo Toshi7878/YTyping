@@ -1,4 +1,4 @@
-import type { Session } from "next-auth";
+import type { Session } from "@/lib/auth-client";
 
 export const hasMapUploadPermission = (session: Session | null, creatorId: number | null) => {
   if (!session) return false;

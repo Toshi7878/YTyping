@@ -4,13 +4,11 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
-import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -32,7 +30,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const session = await auth();
   const userAgent = (await headers()).get("user-agent") ?? "";
   const userOptions = await serverApi.user.option.getForSession();
 
@@ -51,22 +48,20 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             disableTransitionOnChange
             themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
           >
-            <SessionProvider session={session}>
-              <TRPCProvider>
-                <LinkProgressProvider>
-                  <TooltipProvider delayDuration={600}>
-                    <Header className="fixed z-50 h-10 w-full" />
-                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                        {children}
-                        <Analytics />
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </JotaiProvider>
-                  </TooltipProvider>
-                </LinkProgressProvider>
-              </TRPCProvider>
-            </SessionProvider>
+            <TRPCProvider>
+              <LinkProgressProvider>
+                <TooltipProvider delayDuration={600}>
+                  <Header className="fixed z-50 h-10 w-full" />
+                  <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
+                    <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                      {children}
+                      <Analytics />
+                    </main>
+                    <PreviewYouTubePlayer />
+                  </JotaiProvider>
+                </TooltipProvider>
+              </LinkProgressProvider>
+            </TRPCProvider>
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />

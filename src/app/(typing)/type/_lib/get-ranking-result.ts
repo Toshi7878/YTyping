@@ -1,4 +1,4 @@
-import type { Session } from "next-auth";
+import type { Session } from "@/lib/auth-client";
 import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
 import { readMapId } from "./atoms/hydrate";
 

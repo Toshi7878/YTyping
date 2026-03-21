@@ -5,13 +5,10 @@ import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { cache } from "react";
-
+import { auth } from "@/lib/auth";
 import type { AppRouter } from "@/server/api/root";
 import { appRouter } from "@/server/api/root";
-
-import { createCallerFactory } from "@/server/api/trpc";
-import { auth } from "@/server/auth";
-import { db } from "@/server/drizzle/client";
+import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
 import { createQueryClient } from "./query-client";
 
 /**
@@ -22,12 +19,7 @@ const createContext = cache(async () => {
   const heads = new Headers(await headers());
   heads.set("x-trpc-source", "rsc");
 
-  const session = await auth();
-  if (!session) {
-    return { headers: heads, db, user: null };
-  }
-
-  return { headers: heads, db, user: { ...session.user, id: Number(session.user.id) } };
+  return createTRPCContext({ headers: heads, auth });
 });
 
 const getQueryClient = cache(createQueryClient);

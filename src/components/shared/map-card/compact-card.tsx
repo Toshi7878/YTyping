@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import type { ReactNode } from "react";
 import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -92,7 +92,7 @@ interface CompactMapInfoProps {
 }
 
 const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
-  const { status } = useSession();
+  const { data: session } = useSession();
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
@@ -114,11 +114,7 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
           />
         </section>
         <MapBadges map={map} />
-        <MapListActionButtons
-          map={map}
-          showBookmark={status === "authenticated"}
-          className="absolute right-1 -bottom-px"
-        />
+        <MapListActionButtons map={map} showBookmark={!!session} className="absolute right-1 -bottom-px" />
       </div>
     </div>
   );

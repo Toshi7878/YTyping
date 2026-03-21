@@ -4,7 +4,7 @@ import { MapBookmarkListItems, MapBookmarkLists, Maps } from "@/server/drizzle/s
 import type { TRPCContext } from "../trpc";
 
 export const buildHasBookmarkedMapExists = (
-  user: NonNullable<TRPCContext["user"]>,
+  session: NonNullable<TRPCContext["session"]>,
   mapIdColumn: SQLWrapper = Maps.id,
 ) => {
   return exists(
@@ -12,6 +12,6 @@ export const buildHasBookmarkedMapExists = (
       .select({ one: sql`1` })
       .from(MapBookmarkListItems)
       .innerJoin(MapBookmarkLists, eq(MapBookmarkLists.id, MapBookmarkListItems.listId))
-      .where(and(eq(MapBookmarkListItems.mapId, mapIdColumn), eq(MapBookmarkLists.userId, user.id))),
+      .where(and(eq(MapBookmarkListItems.mapId, mapIdColumn), eq(MapBookmarkLists.userId, session.user.id))),
   ).mapWith(Boolean);
 };

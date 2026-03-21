@@ -9,17 +9,17 @@ export const mapLikeRouter = {
   toggleLike: protectedProcedure
     .input(z.object({ mapId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
       const { mapId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
         const isFirstLike = await tx.query.MapLikes.findFirst({
-          where: and(eq(MapLikes.userId, user.id), eq(MapLikes.mapId, mapId)),
+          where: and(eq(MapLikes.userId, session.user.id), eq(MapLikes.mapId, mapId)),
         }).then((res) => !res);
 
         await tx
           .insert(MapLikes)
-          .values({ userId: user.id, mapId, hasLiked: true })
+          .values({ userId: session.user.id, mapId, hasLiked: true })
           .onConflictDoUpdate({ target: [MapLikes.userId, MapLikes.mapId], set: { hasLiked: newState } });
 
         const newLikeCount = await tx
@@ -36,7 +36,7 @@ export const mapLikeRouter = {
             columns: { creatorId: true },
           });
 
-          if (map && map.creatorId !== user.id) {
+          if (map && map.creatorId !== session.user.id) {
             const notificationId = generateNotificationId();
 
             await tx.insert(Notifications).values({
@@ -47,7 +47,7 @@ export const mapLikeRouter = {
 
             await tx.insert(NotificationLikes).values({
               notificationId,
-              likerId: user.id,
+              likerId: session.user.id,
               mapId,
             });
           }

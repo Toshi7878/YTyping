@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import type { HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
@@ -22,7 +22,7 @@ interface ResultCardProps {
 }
 
 export const ResultCard = ({ result, initialInView = false }: ResultCardProps) => {
-  const { status } = useSession();
+  const { data: session } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
@@ -75,8 +75,8 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
         {shouldRender && (
           <MapListActionButtons
             map={result.map}
-            showBookmark={status === "authenticated"}
-            className={cn("absolute bottom-0", status === "authenticated" ? "left-0" : "left-2")}
+            showBookmark={!!session}
+            className={cn("absolute bottom-0", session ? "left-0" : "left-2")}
           />
         )}
       </CardContentWithThumbnail>

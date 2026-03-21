@@ -28,11 +28,12 @@ export const env = createEnv({
     R2_SECRET_ACCESS_KEY: isVercel ? z.string() : z.string().optional(),
     R2_BUCKET_NAME: isVercel ? z.string() : z.string().optional(),
 
-    AUTH_GOOGLE_ID: isVercel ? z.string() : z.string().optional(),
-    AUTH_GOOGLE_SECRET: isVercel ? z.string() : z.string().optional(),
-    AUTH_DISCORD_ID: isVercel ? z.string() : z.string().optional(),
-    AUTH_DISCORD_SECRET: isVercel ? z.string() : z.string().optional(),
+    AUTH_GOOGLE_ID: z.string(),
+    AUTH_GOOGLE_SECRET: z.string(),
+    AUTH_DISCORD_ID: z.string(),
+    AUTH_DISCORD_SECRET: z.string(),
     AUTH_SECRET: isVercel ? z.string() : z.string().optional().default("auth-secret"),
+    BETTER_AUTH_URL: z.url().optional(),
 
     GCP_AUTH_KEY: isVercel ? z.string() : z.string().optional(),
     VERCEL_PROJECT_ID: isVercel ? z.string() : z.string().optional(),

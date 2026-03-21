@@ -45,6 +45,7 @@
     "@vercel/sdk": "^1.18.7",
     "ai": "^6.0.37",
     "autoprefixer": "^10.4.21",
+    "better-auth": "^1.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "csv-parse": "^6.1.0",
@@ -69,7 +70,6 @@
     "md5": "^2.3.0",
     "nanoid": "^5.1.6",
     "next": "16.1.6",
-    "next-auth": "5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "nuqs": "^2.7.0",
     "postcss": "^8.5.6",
@@ -95,6 +95,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.4.20",
     "@biomejs/biome": "2.4.4",
     "@types/md5": "^2.3.5",
     "@types/node": "^24.5.2",

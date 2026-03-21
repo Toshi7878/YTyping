@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { setLineResultSheet, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
@@ -7,6 +6,7 @@ import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
+import { useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RegisterRankingButton } from "./submit-ranking-button";
 

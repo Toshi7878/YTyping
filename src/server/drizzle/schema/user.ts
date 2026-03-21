@@ -1,14 +1,95 @@
-import { boolean, date, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  real,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 import { DEFAULT_TYPING_OPTIONS, STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "../const";
 
-export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
+export const USER_ROLE_TYPES = ["USER", "ADMIN"] as const;
+export const roleEnum = pgEnum("role", USER_ROLE_TYPES);
 export const Users = pgTable("users", {
-  id: integer("id").primaryKey(),
+  id: serial("id").primaryKey(),
   name: varchar("name").unique(),
-  emailHash: varchar("email_hash").unique().notNull(),
+  emailHash: varchar("email_hash").notNull().unique(),
   role: roleEnum("role").notNull().default("USER"),
+  emailVerified: boolean("email_verified").default(true).notNull(),
+  image: text("image"),
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const Sessions = pgTable(
+  "sessions",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    expiresAt: timestamp("expires_at").notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    impersonatedBy: text("impersonated_by"),
+  },
+  (table) => [index("sessions_userId_idx").on(table.userId)],
+);
+
+export const Accounts = pgTable(
+  "accounts",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("accounts_userId_idx").on(table.userId)],
+);
+
+export const Verifications = pgTable("verifications", {
+  id: varchar("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });
 
 export const UserProfiles = pgTable("user_profiles", {

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { ClearRateText } from "@/components/shared/text/clear-rate-text";
@@ -11,6 +10,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverAnchor } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";

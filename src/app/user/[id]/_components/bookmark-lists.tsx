@@ -5,7 +5,6 @@ import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,6 +27,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { ThumbnailImage } from "@/components/ui/image";
 import { Small } from "@/components/ui/typography";
+import { useSession } from "@/lib/auth-client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
