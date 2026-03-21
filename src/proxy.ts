@@ -2,7 +2,6 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { env } from "@/env";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
@@ -14,8 +13,8 @@ export async function proxy(request: NextRequest) {
   const { nextUrl } = request;
   const { pathname } = nextUrl;
 
-  const session = await auth.api.getSession({ headers: await headers() })
- const isLoggedIn = !!session?.user;
+  const session = await auth.api.getSession({ headers: request.headers });
+  const isLoggedIn = !!session?.user;
 
   if (isLoggedIn) {
     const userName = session.user.name;
