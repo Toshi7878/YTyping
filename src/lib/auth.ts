@@ -11,7 +11,7 @@ const baseUrl =
   env.VERCEL_ENV === "production"
     ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
     : env.VERCEL_ENV === "preview"
-      ? `https://${env.VERCEL_URL}`
+      ? "https://ytyping-dev.vercel.app"
       : "http://localhost:3000";
 
 export const auth = betterAuth({
