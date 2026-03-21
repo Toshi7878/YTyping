@@ -2,22 +2,32 @@ import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } 
 import { headers } from "next/headers";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
-import { auth } from "../auth";
+import type { Auth } from "@/lib/auth";
 import { db as drizzleDb } from "../drizzle/client";
 import type { RateLimitDef } from "./lib/rate-limit-config";
 import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { AppRouter } from "./root";
 
-export const createContext = async () => {
-  const session = await auth();
-  if (!session) {
-    return { db: drizzleDb, user: null };
-  }
+export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) => {
+  const authApi = opts.auth.api;
+  const session = await authApi.getSession({
+    headers: opts.headers,
+  });
 
-  return { db: drizzleDb, user: { ...session.user, id: Number(session.user.id) } };
+  return {
+    authApi,
+    session: session
+      ? {
+          session: session.session,
+          user: { ...session.user, id: Number(session.user.id) },
+        }
+      : null,
+    db: drizzleDb,
+    headers: opts.headers,
+  };
 };
 
-export type TRPCContext = Awaited<ReturnType<typeof createContext>>;
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
 const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
   transformer: superjson,
 });
@@ -27,6 +37,19 @@ t.procedure.use((opts) => opts.next());
 export const { router, createCallerFactory } = t;
 
 export const publicProcedure = t.procedure;
+
+export const protectedProcedure = t.procedure.use((opts) => {
+  if (!opts.ctx.session) {
+    throw new Error("認証が必要です");
+  }
+
+  return opts.next({
+    ctx: { ...opts.ctx, session: opts.ctx.session },
+  });
+});
+
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 const getRequestIp = async () => {
   try {
@@ -49,8 +72,9 @@ export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitD
     if (!ratelimit) {
       return next();
     }
+    const { session } = ctx;
 
-    const actorKey = ctx.user ? `user:${ctx.user.id}` : `ip:${(await getRequestIp()) ?? "unknown"}`;
+    const actorKey = session ? `user:${session.user.id}` : `ip:${(await getRequestIp()) ?? "unknown"}`;
     const result = await ratelimit.limit(`${path}:${actorKey}`);
 
     if (!result.success) {
@@ -65,19 +89,3 @@ export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitD
     return next();
   });
 };
-
-export const protectedProcedure = t.procedure.use((opts) => {
-  if (!opts.ctx.user) {
-    throw new Error("認証が必要です");
-  }
-
-  return opts.next({
-    ctx: {
-      db: drizzleDb,
-      user: { ...opts.ctx.user, id: Number(opts.ctx.user.id) },
-    },
-  });
-});
-
-export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterOutputs<AppRouter>;

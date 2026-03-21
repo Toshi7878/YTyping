@@ -11,7 +11,7 @@ import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapItemRouter = {
   get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const { mapId } = input;
 
     const mapInfo = await db
@@ -47,7 +47,7 @@ export const mapItemRouter = {
           hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
         },
         bookmark: {
-          hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
+          hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
         },
         createdAt: Maps.createdAt,
         updatedAt: Maps.updatedAt,
@@ -55,7 +55,7 @@ export const mapItemRouter = {
       .from(Maps)
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
       .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, session?.user.id ?? 0)))
       .where(eq(Maps.id, mapId))
       .limit(1)
       .then((rows) => rows[0]);
@@ -89,10 +89,9 @@ export const mapItemRouter = {
     }),
 
   upsert: protectedProcedure.input(upsertMapItemSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
-    const userId = user.id;
-    const userRole = user.role;
+    const { id: userId, role: userRole } = session.user;
 
     const existingMapRow =
       typeof mapId === "number"

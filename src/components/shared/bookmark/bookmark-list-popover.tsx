@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H4, Small } from "@/components/ui/typography";
+import { useSession } from "@/lib/auth-client";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/lib/mutations/bookmark-list-item";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";

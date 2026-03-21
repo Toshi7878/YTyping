@@ -146,13 +146,13 @@ export const userStatsRouter = {
     .use(userStatsWriteRateLimit)
     .input(z.object({ mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      if (!user) return;
+      const { db, session } = ctx;
+      if (!session) return;
       const { mapId } = input;
 
       await db
         .insert(UserMapCompletionPlayCounts)
-        .values({ userId: user.id, mapId: mapId, count: 1 })
+        .values({ userId: session.user.id, mapId: mapId, count: 1 })
         .onConflictDoUpdate({
           target: [UserMapCompletionPlayCounts.userId, UserMapCompletionPlayCounts.mapId],
           set: { count: sql`${UserMapCompletionPlayCounts.count} + 1` },
@@ -174,7 +174,7 @@ export const userStatsRouter = {
     .input(z.object({ mapId: z.number() }))
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
       const { mapId } = input;
 
       await db
@@ -182,10 +182,10 @@ export const userStatsRouter = {
         .set({ playCount: sql`${Maps.playCount} + 1` })
         .where(eq(Maps.id, mapId));
 
-      if (!user) return;
+      if (!session) return;
       await db
         .insert(UserStats)
-        .values({ userId: user.id, totalPlayCount: 1 })
+        .values({ userId: session.user.id, totalPlayCount: 1 })
         .onConflictDoUpdate({
           target: [UserStats.userId],
           set: { totalPlayCount: sql`${UserStats.totalPlayCount} + 1` },
@@ -207,14 +207,14 @@ export const userStatsRouter = {
     .input(IncrementImeTypeCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { user, db } = ctx;
-      if (!user) return;
+      const { db, session } = ctx;
+      if (!session) return;
       const isAllZero = input.typingTime === 0 && input.imeTypeCount === 0;
       if (isAllZero) return;
 
       await db
         .insert(UserStats)
-        .values({ userId: user.id, ...input })
+        .values({ userId: session.user.id, ...input })
         .onConflictDoUpdate({
           target: [UserStats.userId],
           set: {
@@ -227,7 +227,7 @@ export const userStatsRouter = {
 
       await db
         .insert(UserDailyTypeCounts)
-        .values({ userId: user.id, date, imeTypeCount: input.imeTypeCount })
+        .values({ userId: session.user.id, date, imeTypeCount: input.imeTypeCount })
         .onConflictDoUpdate({
           target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.date],
           set: { imeTypeCount: sql`${UserDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
@@ -249,8 +249,8 @@ export const userStatsRouter = {
     .input(IncrementTypingCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { user, db } = ctx;
-      if (!user) return;
+      const { db, session } = ctx;
+      if (!session) return;
 
       const isAllZero =
         input.romaType === 0 &&
@@ -266,14 +266,14 @@ export const userStatsRouter = {
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },
-        where: eq(UserStats.userId, user.id),
+        where: eq(UserStats.userId, session.user.id),
       }).then((res) => res?.maxCombo ?? 0);
 
       const isUpdateMaxCombo = input.maxCombo > currentMaxCombo;
 
       await db
         .insert(UserStats)
-        .values({ userId: user.id, ...input })
+        .values({ userId: session.user.id, ...input })
         .onConflictDoUpdate({
           target: [UserStats.userId],
           set: {
@@ -294,7 +294,7 @@ export const userStatsRouter = {
       await db
         .insert(UserDailyTypeCounts)
         .values({
-          userId: user.id,
+          userId: session.user.id,
           date,
           romaTypeCount: input.romaType,
           kanaTypeCount: input.kanaType,

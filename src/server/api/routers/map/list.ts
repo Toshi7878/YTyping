@@ -35,11 +35,11 @@ const MyResultStatus = alias(ResultStatuses, "my_result_status");
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, searchInput)
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session, searchInput)
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(sortValue, sortDesc, searchInput));
@@ -48,35 +48,35 @@ export const mapListRouter = {
   }),
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(Maps).$dynamic(), user, input);
+    const { db, session } = ctx;
+    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(Maps).$dynamic(), session, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
   }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const { videoId } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
+    return await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.videoId, videoId))
       .orderBy(desc(Maps.id));
   }),
 
   getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const { title } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
+    return await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.title, title))
       .orderBy(desc(Maps.id));
   }),
 
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
-    const map = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
+    const map = await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.id, input.mapId))
       .limit(1)
       .then((rows) => rows[0]);
@@ -87,7 +87,7 @@ export const mapListRouter = {
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildBaseSelect = (user: TRPCContext["user"]) =>
+const buildBaseSelect = (session: TRPCContext["session"]) =>
   ({
     id: Maps.id,
     updatedAt: Maps.updatedAt,
@@ -117,16 +117,16 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
     },
     bookmark: {
-      hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
+      hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
     },
     like: {
       count: Maps.likeCount,
-      hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
     },
     ranking: {
       count: Maps.rankingCount,
-      myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
-      myRankUpdatedAt: user
+      myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      myRankUpdatedAt: session
         ? sql`${MyResult.updatedAt}`.mapWith({
             mapFromDriverValue: (value) => {
               if (value === null) return null;
@@ -139,18 +139,18 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
 
 const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   db: T,
-  user: TRPCContext["user"],
+  session: TRPCContext["session"],
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
   let baseQuery = db
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
     .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
 
-  if (user) {
+  if (session) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
-      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)));
+      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, session.user.id)))
+      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, session.user.id)));
   }
 
   if (!input) return baseQuery;
@@ -179,8 +179,8 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   }
 
   const searchConditions = [
-    user ? buildFilterCondition(input.filterType, user) : undefined,
-    user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
+    session ? buildFilterCondition(input.filterType, session) : undefined,
+    session ? buildRankingStatusCondition(input.rankingStatus) : undefined,
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
     buildKeywordCondition(input.keyword),
     input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
@@ -190,19 +190,19 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(user, input.filterType), ...searchConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(session, input.filterType), ...searchConditions));
 };
 
 function buildFilterCondition(
   filterType: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
-  user: NonNullable<TRPCContext["user"]>,
+  session: NonNullable<TRPCContext["session"]>,
 ) {
   switch (filterType) {
     case "liked": {
       return eq(MyLike.hasLiked, true);
     }
     case "created":
-      return eq(Maps.creatorId, user.id);
+      return eq(Maps.creatorId, session.user.id);
     default:
       return undefined;
   }
@@ -301,16 +301,16 @@ const buildKeywordCondition = (keyword?: string | null) => {
 };
 
 export const buildMapVisibilityCondition = (
-  user: TRPCContext["user"],
+  session: TRPCContext["session"],
   inputFilter?: z.output<typeof MapSearchFilterSchema>["filterType"],
 ) => {
-  if (!user) {
+  if (!session) {
     return eq(Maps.visibility, "PUBLIC");
   }
 
   if (inputFilter === "unlisted") {
-    return and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id));
+    return and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id));
   }
 
-  return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, user.id)));
+  return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id)));
 };

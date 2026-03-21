@@ -34,7 +34,7 @@ const isAddButtonDisabledAtom = atom((get) => {
 
 const isUpdateButtonDisabledAtom = atom((get) => {
   const isUnselectLine = get(isUnselectLineAtom);
-  const isSelectFirstLine = get(isSelectFirstLineAtom)
+  const isSelectFirstLine = get(isSelectFirstLineAtom);
   const isSelectEndLine = get(isSelectEndLineAtom);
   const isTimeInputValid = get(isTimeInputValidAtom);
 

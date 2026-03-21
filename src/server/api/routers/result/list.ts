@@ -24,12 +24,16 @@ const PAGE_SIZE = 25;
 export const resultListRouter = {
   get: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, ...searchInput } = input ?? {};
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
-    const baseSelect = buildBaseSelect(user);
+    const baseSelect = buildBaseSelect(session);
 
-    const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user, searchInput)
+    const items = await buildResultWithMapBaseQuery(
+      db.select(baseSelect).from(Results).$dynamic(),
+      session,
+      searchInput,
+    )
       .orderBy(desc(Results.updatedAt))
       .limit(limit)
       .offset(offset);
@@ -39,11 +43,11 @@ export const resultListRouter = {
 
   getCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, ...searchInput } = input ?? {};
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     const baseQuery = buildResultWithMapBaseQuery(
       db.select({ count: count() }).from(Results).$dynamic(),
-      user,
+      session,
       searchInput,
     );
 
@@ -53,10 +57,10 @@ export const resultListRouter = {
   }),
 
   getRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     const { mapId } = input;
 
-    const { map: _, ...resultSelect } = buildBaseSelect(user);
+    const { map: _, ...resultSelect } = buildBaseSelect(session);
 
     return db
       .select(resultSelect)
@@ -65,14 +69,16 @@ export const resultListRouter = {
       .innerJoin(Player, eq(Player.id, Results.userId))
       .leftJoin(
         MyClap,
-        user ? and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)) : eq(MyClap.resultId, Results.id),
+        session
+          ? and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, session.user.id))
+          : eq(MyClap.resultId, Results.id),
       )
       .where(eq(Results.mapId, mapId))
       .orderBy(desc(ResultStatuses.score));
   }),
 } satisfies TRPCRouterRecord;
 
-const buildBaseSelect = (user: TRPCContext["user"]) =>
+const buildBaseSelect = (session: TRPCContext["session"]) =>
   ({
     id: Results.id,
     updatedAt: Results.updatedAt,
@@ -104,7 +110,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
     },
     clap: {
       count: Results.clapCount,
-      hasClapped: user ? sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      hasClapped: session ? sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
     },
     map: {
       id: Maps.id,
@@ -128,10 +134,10 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
       categories: Maps.category,
-      hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
-      hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
-      myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
-      myRankUpdatedAt: user
+      hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
+      hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      myRankUpdatedAt: session
         ? sql`${MyResult.updatedAt}`.mapWith({
             mapFromDriverValue: (value) => {
               if (value === null) return null;
@@ -148,7 +154,7 @@ export type ResultWithMapItem = ReturnType<typeof formatMapListItem>[number];
 
 const buildResultWithMapBaseQuery = <T extends PgSelect>(
   db: T,
-  user: TRPCContext["user"],
+  session: TRPCContext["session"],
   input?: z.output<typeof ResultListSearchFilterSchema>,
 ) => {
   let baseQuery = db
@@ -161,12 +167,12 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   /**
    * @see https://github.com/drizzle-team/drizzle-orm/issues/4232
    */
-  if (user) {
+  if (session) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
-      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
-      .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)));
+      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, session.user.id)))
+      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, session.user.id)))
+      .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, session.user.id)));
   }
 
   if (!input) return baseQuery;
@@ -180,7 +186,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     buildKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(user), ...whereConditions));
+  return baseQuery.where(and(buildMapVisibilityCondition(session), ...whereConditions));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

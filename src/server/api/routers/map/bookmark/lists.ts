@@ -44,20 +44,20 @@ export const mapBookmarkListsRouter = {
   }),
 
   getForSession: protectedProcedure.query(async ({ ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     return db
       .select({ id: MapBookmarkLists.id, title: MapBookmarkLists.title })
       .from(MapBookmarkLists)
       .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
       .groupBy(MapBookmarkLists.id)
-      .where(eq(MapBookmarkLists.userId, user.id));
+      .where(eq(MapBookmarkLists.userId, session.user.id));
   }),
 
   getByUserId: publicProcedure
     .input(z.object({ userId: z.number(), includeMapId: z.number().optional() }))
     .query(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { db, session } = ctx;
 
       const firstMapByListSubquery = getFirstMapByListSubquery(db);
 
@@ -84,7 +84,7 @@ export const mapBookmarkListsRouter = {
         .where(
           and(
             eq(MapBookmarkLists.userId, input.userId),
-            input.userId !== user?.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
+            input.userId !== session?.user.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
           ),
         )
         .groupBy(MapBookmarkLists.id)
@@ -92,7 +92,7 @@ export const mapBookmarkListsRouter = {
     }),
 
   getCount: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     const total = await db
       .select({ count: count() })
@@ -100,7 +100,7 @@ export const mapBookmarkListsRouter = {
       .where(
         and(
           eq(MapBookmarkLists.userId, input.userId),
-          input.userId !== user?.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
+          input.userId !== session?.user.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
         ),
       );
 
@@ -108,12 +108,12 @@ export const mapBookmarkListsRouter = {
   }),
 
   create: protectedProcedure.input(CreateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     const listCount = await db
       .select({ count: count() })
       .from(MapBookmarkLists)
-      .where(eq(MapBookmarkLists.userId, user.id))
+      .where(eq(MapBookmarkLists.userId, session.user.id))
       .then((rows) => rows[0]?.count ?? 0);
 
     if (listCount >= 15) {
@@ -124,25 +124,25 @@ export const mapBookmarkListsRouter = {
     }
 
     return db.insert(MapBookmarkLists).values({
-      userId: user.id,
+      userId: session.user.id,
       title: input.title,
       isPublic: input.isPublic,
     });
   }),
 
   update: protectedProcedure.input(UpdateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
     return db
       .update(MapBookmarkLists)
       .set({
         title: input.title,
         isPublic: input.isPublic,
       })
-      .where(and(eq(MapBookmarkLists.id, input.id), eq(MapBookmarkLists.userId, user.id)));
+      .where(and(eq(MapBookmarkLists.id, input.id), eq(MapBookmarkLists.userId, session.user.id)));
   }),
 
   delete: protectedProcedure.input(z.object({ listId: z.number() })).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     return db.transaction(async (tx) => {
       // list削除の cascade で notification_map_bookmarks 側は消えるが、notifications は残り得る。
@@ -151,7 +151,7 @@ export const mapBookmarkListsRouter = {
         .select({ id: NotificationMapBookmarks.notificationId })
         .from(NotificationMapBookmarks)
         .innerJoin(MapBookmarkLists, eq(MapBookmarkLists.id, NotificationMapBookmarks.listId))
-        .where(and(eq(NotificationMapBookmarks.listId, input.listId), eq(MapBookmarkLists.userId, user.id)));
+        .where(and(eq(NotificationMapBookmarks.listId, input.listId), eq(MapBookmarkLists.userId, session.user.id)));
 
       if (relatedNotificationIds.length > 0) {
         await tx.delete(Notifications).where(
@@ -164,7 +164,7 @@ export const mapBookmarkListsRouter = {
 
       return await tx
         .delete(MapBookmarkLists)
-        .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)));
+        .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)));
     });
   }),
 } satisfies TRPCRouterRecord;

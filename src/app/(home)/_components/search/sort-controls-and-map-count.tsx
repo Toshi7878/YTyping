@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { TfiLayoutGrid2Alt, TfiLayoutGrid3Alt } from "react-icons/tfi";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { setUserOptions, useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
+import { useSession } from "@/lib/auth-client";
 import {
     type MapListSortSearchParams,
     useMapListFilterQueryStates,
@@ -21,14 +21,14 @@ import { useSetSearchParams } from "../../_lib/use-set-search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortControlsAndMapCount = () => {
-  const { status } = useSession();
+  const { data: session } = useSession();
 
   return (
     <Card className="p-0">
       <CardContent className="flex flex-wrap items-center justify-between p-1.5">
         <SortControls />
         <div className="flex items-center gap-2">
-          {status === "authenticated" && <ListLayoutRadioGroup className="hidden lg:flex" />}
+          {!!session && <ListLayoutRadioGroup className="hidden lg:flex" />}
           <MapCountBadge />
         </div>
       </CardContent>

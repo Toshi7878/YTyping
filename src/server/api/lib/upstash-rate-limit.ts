@@ -12,7 +12,11 @@ const redis = isRateLimitEnabled
     })
   : null;
 
-export const createUpstashRateLimiter = (prefix: string, max: number, window: `${number} ${"ms" | "s" | "m" | "h"}`) => {
+export const createUpstashRateLimiter = (
+  prefix: string,
+  max: number,
+  window: `${number} ${"ms" | "s" | "m" | "h"}`,
+) => {
   if (!redis) {
     return null;
   }

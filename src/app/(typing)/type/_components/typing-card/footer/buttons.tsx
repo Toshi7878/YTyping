@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import {
   readMinMediaSpeed,
   readUtilityParams,
@@ -13,6 +12,7 @@ import {
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
 import { useTypingOptionsState } from "../../../_lib/atoms/hydrate";
@@ -26,13 +26,13 @@ export const FooterButtons = () => {
   const isReady = sceneGroup === "Ready";
   const isPlaying = isYTStarted && sceneGroup === "Playing";
   const { id: mapId } = useParams<{ id: string }>();
-  const { status } = useSession();
+  const { data: session } = useSession();
 
   return (
     <section
       className={cn("mx-3 mt-2 mb-3 flex h-16 w-full justify-between font-bold md:h-10", isReady && "justify-end")}
     >
-      {isReady && status === "authenticated" && (
+      {isReady && !!session && (
         <Link href={`/ime/${mapId}`} replace>
           <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
             変換有りタイピング

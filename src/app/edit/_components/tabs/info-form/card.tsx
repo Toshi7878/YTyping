@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { queryOptions, useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
@@ -30,6 +29,7 @@ import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-fi
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { FloatingLabelSelectFormField } from "@/components/ui/select/select-form-field";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useSession } from "@/lib/auth-client";
 import {
   calculateDuration,
   calculateSpeedDifficulty,

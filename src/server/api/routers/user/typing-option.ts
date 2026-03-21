@@ -6,23 +6,23 @@ import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const userTypingOptionRouter = {
   getForSession: publicProcedure.query(async ({ ctx }) => {
-    const { db, user } = ctx;
-    if (!user) return null;
+    const { db, session } = ctx;
+    if (!session) return null;
 
     return (
       (await db.query.UserTypingOptions.findFirst({
         columns: { userId: false },
-        where: eq(UserTypingOptions.userId, user.id),
+        where: eq(UserTypingOptions.userId, session.user.id),
       })) ?? null
     );
   }),
 
   upsert: protectedProcedure.input(CreateUserTypingOptionSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { db, session } = ctx;
 
     await db
       .insert(UserTypingOptions)
-      .values({ userId: user.id, ...input })
+      .values({ userId: session.user.id, ...input })
       .onConflictDoUpdate({ target: [UserTypingOptions.userId], set: { ...input } });
   }),
 } satisfies TRPCRouterRecord;

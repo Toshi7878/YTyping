@@ -1,4 +1,5 @@
 import { aiRouter } from "./routers/ai";
+import { authRouter } from "./routers/auth";
 import { mapBookmarkListItemRouter } from "./routers/map/bookmark/list-item";
 import { mapBookmarkListsRouter } from "./routers/map/bookmark/lists";
 import { mapItemRouter } from "./routers/map/item";
@@ -43,6 +44,7 @@ export const appRouter = router({
   notification: notificationRouter,
   morph: morphRouter,
   ai: aiRouter,
+  auth: authRouter,
   vercel: vercelRouter,
 });
 

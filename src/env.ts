@@ -4,6 +4,7 @@ import { vercel } from "@t3-oss/env-nextjs/presets-zod";
 import { z } from "zod/v4";
 
 const isVercel = Boolean(process.env.VERCEL);
+const isProduction = Boolean(process.env.VERCEL_ENV === "production");
 
 export const env = createEnv({
   extends: [vercel()],
@@ -23,15 +24,15 @@ export const env = createEnv({
     KV_REST_API_URL: isVercel ? z.url() : z.url().optional(),
     KV_REST_API_TOKEN: isVercel ? z.string() : z.string().optional(),
 
-    R2_ACCOUNT_ID: isVercel ? z.string() : z.string().optional(),
-    R2_ACCESS_KEY_ID: isVercel ? z.string() : z.string().optional(),
-    R2_SECRET_ACCESS_KEY: isVercel ? z.string() : z.string().optional(),
-    R2_BUCKET_NAME: isVercel ? z.string() : z.string().optional(),
+    R2_ACCOUNT_ID: isProduction ? z.string() : z.string().optional(),
+    R2_ACCESS_KEY_ID: isProduction ? z.string() : z.string().optional(),
+    R2_SECRET_ACCESS_KEY: isProduction ? z.string() : z.string().optional(),
+    R2_BUCKET_NAME: isProduction ? z.string() : z.string().optional(),
 
-    AUTH_GOOGLE_ID: isVercel ? z.string() : z.string().optional(),
-    AUTH_GOOGLE_SECRET: isVercel ? z.string() : z.string().optional(),
-    AUTH_DISCORD_ID: isVercel ? z.string() : z.string().optional(),
-    AUTH_DISCORD_SECRET: isVercel ? z.string() : z.string().optional(),
+    AUTH_GOOGLE_ID: z.string(),
+    AUTH_GOOGLE_SECRET: z.string(),
+    AUTH_DISCORD_ID: z.string(),
+    AUTH_DISCORD_SECRET: z.string(),
     AUTH_SECRET: isVercel ? z.string() : z.string().optional().default("auth-secret"),
 
     GCP_AUTH_KEY: isVercel ? z.string() : z.string().optional(),

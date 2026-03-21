@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
   useIsAddBtnDisabledState,
@@ -15,6 +14,7 @@ import {
 } from "@/app/edit/_lib/editor/editor-actions";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/lib/auth-client";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 
 export const AddLineButton = () => {
@@ -53,7 +53,13 @@ export const UpdateLineButton = () => {
   );
 
   return (
-    <Button variant="outline-info" disabled={isUpdateButtonDisabled} size="sm" className="w-20 font-bold xl:w-28" onClick={updateLineAction}>
+    <Button
+      variant="outline-info"
+      disabled={isUpdateButtonDisabled}
+      size="sm"
+      className="w-20 font-bold xl:w-28"
+      onClick={updateLineAction}
+    >
       変更<small className="hidden sm:inline">(U)</small>
     </Button>
   );

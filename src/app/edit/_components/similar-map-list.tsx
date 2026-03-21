@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import { MapCard } from "@/components/shared/map-card/card";
+import { useSession } from "@/lib/auth-client";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import { useCreatorIdState } from "../_lib/atoms/hydrate";

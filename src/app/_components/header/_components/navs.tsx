@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth-client";
 import { LeftMenus, SiteLogo } from "./left-menus";
 import { ActiveUsersSheet } from "./right-menus/active-user/active-users-sheet";
 import { RegisterLogoutButton } from "./right-menus/auth/register-logout-button";

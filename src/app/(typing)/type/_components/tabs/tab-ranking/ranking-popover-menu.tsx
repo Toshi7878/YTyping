@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
   setPlayingInputMode,
@@ -13,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
+import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
