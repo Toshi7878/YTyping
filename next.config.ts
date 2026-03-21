@@ -27,3 +27,6 @@ const nextConfig: NextConfig = {
     ],
   },
 };
+
+// biome-ignore lint/style/noDefaultExport: required default export
+export default nextConfig;
