@@ -33,7 +33,6 @@ export const env = createEnv({
     AUTH_DISCORD_ID: z.string(),
     AUTH_DISCORD_SECRET: z.string(),
     AUTH_SECRET: isVercel ? z.string() : z.string().optional().default("auth-secret"),
-    BETTER_AUTH_URL: z.url().optional(),
 
     GCP_AUTH_KEY: isVercel ? z.string() : z.string().optional(),
     VERCEL_PROJECT_ID: isVercel ? z.string() : z.string().optional(),
