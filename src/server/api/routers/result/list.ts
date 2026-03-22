@@ -11,7 +11,7 @@ import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
-import { buildMapVisibilityCondition } from "../map/list";
+import { filterByMapVisibility } from "../map/list";
 
 const Player = alias(Users, "player");
 const Creator = alias(Users, "creator");
@@ -179,14 +179,14 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
 
   const whereConditions = [
     input.playerId ? eq(Player.id, input.playerId) : undefined,
-    buildModeFilter({ mode: input.mode }),
-    buildKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
-    buildClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
-    buildPlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
-    buildKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
+    filterByInputMode({ mode: input.mode }),
+    filterByKpm({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
+    filterByClearRate({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
+    filterByPlaySpeed({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
+    filterByKeyword({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(session), ...whereConditions));
+  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
@@ -227,7 +227,7 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
   });
 };
 
-const buildModeFilter = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
+const filterByInputMode = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
   switch (mode) {
     case "roma":
       return and(gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0));
@@ -242,7 +242,7 @@ const buildModeFilter = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)[n
   }
 };
 
-const buildKpmFilter = ({ minKpm, maxKpm }: { minKpm?: number | null; maxKpm?: number | null }) => {
+const filterByKpm = ({ minKpm, maxKpm }: { minKpm?: number | null; maxKpm?: number | null }) => {
   const conditions: SQL<unknown>[] = [];
   if (minKpm && minKpm > KPM_LIMIT.min) {
     conditions.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
@@ -253,7 +253,7 @@ const buildKpmFilter = ({ minKpm, maxKpm }: { minKpm?: number | null; maxKpm?: n
   return and(...conditions);
 };
 
-const buildClearRateFilter = ({
+const filterByClearRate = ({
   minClearRate,
   maxClearRate,
 }: {
@@ -271,7 +271,7 @@ const buildClearRateFilter = ({
   return and(...conditions);
 };
 
-const buildPlaySpeedFilter = ({
+const filterByPlaySpeed = ({
   minPlaySpeed,
   maxPlaySpeed,
 }: {
@@ -290,7 +290,7 @@ const buildPlaySpeedFilter = ({
   return and(...conditions);
 };
 
-const buildKeywordFilter = ({ username, mapKeyword }: { username?: string | null; mapKeyword?: string | null }) => {
+const filterByKeyword = ({ username, mapKeyword }: { username?: string | null; mapKeyword?: string | null }) => {
   const conditions = [];
 
   if (username) {

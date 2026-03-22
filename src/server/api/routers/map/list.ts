@@ -42,7 +42,7 @@ export const mapListRouter = {
     const maps = await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session, searchInput)
       .limit(limit)
       .offset(offset)
-      .orderBy(...buildSortConditions(sortValue, sortDesc, searchInput));
+      .orderBy(...mapOrderBy(sortValue, sortDesc, searchInput));
 
     return buildPageResult(maps);
   }),
@@ -178,11 +178,11 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       );
   }
 
-  const searchConditions = [
-    session ? buildFilterCondition(input.filterType, session) : undefined,
-    session ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-    buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
-    buildKeywordCondition(input.keyword),
+  const searchFilters = [
+    session ? filterByFilterType(input.filterType, session) : undefined,
+    session ? filterByRankingStatus(input.rankingStatus) : undefined,
+    filterByDifficulty({ minRate: input.minRate, maxRate: input.maxRate }),
+    filterByKeyword(input.keyword),
     input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
     input.bookmarkListId
@@ -190,10 +190,10 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
       : undefined,
   ];
 
-  return baseQuery.where(and(buildMapVisibilityCondition(session, input.filterType), ...searchConditions));
+  return baseQuery.where(and(filterByMapVisibility(session, input.filterType), ...searchFilters));
 };
 
-function buildFilterCondition(
+function filterByFilterType(
   filterType: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
   session: NonNullable<TRPCContext["session"]>,
 ) {
@@ -208,7 +208,7 @@ function buildFilterCondition(
   }
 }
 
-function buildSortConditions(
+function mapOrderBy(
   sortField: (typeof MAP_SORT_OPTIONS)[number] | undefined | null,
   isDesc: boolean | undefined | null = true,
   searchInput: z.output<typeof MapSearchFilterSchema>,
@@ -243,12 +243,7 @@ function buildSortConditions(
   }
 }
 
-interface GetDifficultyFilterSqlParams {
-  minRate?: number | null;
-  maxRate?: number | null;
-}
-
-function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
+function filterByDifficulty({ minRate, maxRate }: { minRate?: number | null; maxRate?: number | null }) {
   const conditions = [];
 
   if (minRate && minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
@@ -262,7 +257,7 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
   return and(...conditions);
 }
 
-const buildRankingStatusCondition = (
+const filterByRankingStatus = (
   rankingStatus: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number] | undefined | null,
 ) => {
   switch (rankingStatus) {
@@ -281,7 +276,7 @@ const buildRankingStatusCondition = (
   }
 };
 
-const buildKeywordCondition = (keyword?: string | null) => {
+const filterByKeyword = (keyword?: string | null) => {
   if (!keyword || keyword.trim() === "") return;
 
   const keywords = keyword.trim().split(/\s+/);
@@ -300,7 +295,7 @@ const buildKeywordCondition = (keyword?: string | null) => {
   return and(...conditions);
 };
 
-export const buildMapVisibilityCondition = (
+export const filterByMapVisibility = (
   session: TRPCContext["session"],
   inputFilter?: z.output<typeof MapSearchFilterSchema>["filterType"],
 ) => {

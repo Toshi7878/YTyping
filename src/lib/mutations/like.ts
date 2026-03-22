@@ -47,7 +47,7 @@ export function useToggleMapLikeMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.like.toggleLike.mutationOptions({
+    trpc.map.like.toggle.mutationOptions({
       onMutate: async (input) => {
         const mapListFilter = trpc.map.list.pathFilter();
         const mapInfoFilter = trpc.map.getById.queryFilter();

@@ -6,7 +6,7 @@ import { protectedProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
 
 export const mapLikeRouter = {
-  toggleLike: protectedProcedure
+  toggle: protectedProcedure
     .input(z.object({ mapId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
