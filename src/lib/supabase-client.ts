@@ -43,8 +43,8 @@ export const downloadPublicFromSupabase = async ({ key }: { key: string }): Prom
   return undefined;
 };
 
-export const createPresenceChannel = (channelName: string, userId: string) => {
+export const createPresenceChannel = (channelName: string, userId: number) => {
   return supabase.channel(channelName, {
-    config: { presence: { key: userId } },
+    config: { presence: { key: String(userId) } },
   });
 };

@@ -34,7 +34,7 @@ export const UserStatsCard = () => {
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
   const isHideUserStats = userStats?.options?.hideUserStats ?? false;
-  const isMyStats = session?.user?.id === userId;
+  const isMyStats = session?.user?.id === Number(userId);
   const isMyStatsWithHide = isMyStats && isHideUserStats;
 
   return (

@@ -18,7 +18,7 @@ interface UserProfileCardProps {
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
-  const isMyProfilePage = session?.user.id === userId;
+  const isMyProfilePage = session?.user.id === Number(userId);
 
   const profile = [
     {

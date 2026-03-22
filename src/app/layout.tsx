@@ -9,6 +9,7 @@ import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -16,6 +17,7 @@ import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navig
 import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
+import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
 
 const notoSansJP = Noto_Sans_JP({
@@ -31,6 +33,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";
+  const session = await getSession();
   const userOptions = await serverApi.user.option.getForSession();
 
   return (
@@ -51,14 +54,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             <TRPCProvider>
               <LinkProgressProvider>
                 <TooltipProvider delayDuration={600}>
-                  <Header className="fixed z-50 h-10 w-full" />
-                  <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                    <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
-                      {children}
-                      <Analytics />
-                    </main>
-                    <PreviewYouTubePlayer />
-                  </JotaiProvider>
+                  <SessionProvider session={session}>
+                    <Header className="fixed z-50 h-10 w-full" />
+                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        {children}
+                        <Analytics />
+                      </main>
+                      <PreviewYouTubePlayer />
+                    </JotaiProvider>
+                  </SessionProvider>
                 </TooltipProvider>
               </LinkProgressProvider>
             </TRPCProvider>

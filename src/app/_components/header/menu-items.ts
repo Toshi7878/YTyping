@@ -14,7 +14,7 @@ export const LEFT_MENU_LINK_ITEMS: HeaderMenu[] = [
 
 export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
 
-export const buildUserMenuLinkItems = (userId: string): HeaderMenu[] => {
+export const buildUserMenuLinkItems = (userId: number): HeaderMenu[] => {
   return [
     { title: "ユーザーページ", href: `/user/${userId}` as Route },
     { title: "ユーザー設定", href: "/user/settings" },

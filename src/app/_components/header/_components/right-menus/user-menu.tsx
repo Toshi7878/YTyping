@@ -16,7 +16,7 @@ import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 interface UserMenuProps {
   userName: string;
   className: string;
-  userId: string;
+  userId: number;
 }
 
 export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {

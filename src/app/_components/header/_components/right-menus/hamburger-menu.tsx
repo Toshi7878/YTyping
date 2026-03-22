@@ -81,7 +81,7 @@ const MenuDropdownItems = () => {
   );
 };
 
-const UserMenuDropdownItems = ({ userId }: { userId: string }) => {
+const UserMenuDropdownItems = ({ userId }: { userId: number }) => {
   const userMenuLinkItems = buildUserMenuLinkItems(userId);
   return (
     <>
