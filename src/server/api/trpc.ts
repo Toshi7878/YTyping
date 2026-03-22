@@ -2,29 +2,17 @@ import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } 
 import { headers } from "next/headers";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
-import type { Auth } from "@/lib/auth";
-import { db as drizzleDb } from "../drizzle/client";
+import { type Auth, getSession } from "@/lib/auth";
+import { db } from "../drizzle/client";
 import type { RateLimitDef } from "./lib/rate-limit-config";
 import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { AppRouter } from "./root";
 
 export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) => {
   const authApi = opts.auth.api;
-  const session = await authApi.getSession({
-    headers: opts.headers,
-  });
+  const session = await getSession();
 
-  return {
-    authApi,
-    session: session
-      ? {
-          session: session.session,
-          user: { ...session.user, id: Number(session.user.id) },
-        }
-      : null,
-    db: drizzleDb,
-    headers: opts.headers,
-  };
+  return { authApi, session, db, headers: opts.headers };
 };
 
 export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;

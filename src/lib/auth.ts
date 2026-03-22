@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import { env } from "@/env";
 import { db, schema } from "@/server/drizzle/client";
+import type { Session } from "./auth-client";
 
 const baseUrl =
   env.VERCEL_ENV === "production"
@@ -66,5 +67,13 @@ export const auth = betterAuth({
   },
 });
 
-export const getSession = cache(async () => auth.api.getSession({ headers: await headers() }));
+export const getSession = cache(async () => {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return null;
+  return {
+    ...session,
+    user: { ...session.user, id: Number(session.user.id), role: session.user.role as Session["user"]["role"] },
+  };
+});
+
 export type Auth = typeof auth;
