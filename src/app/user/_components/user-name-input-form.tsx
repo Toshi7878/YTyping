@@ -18,7 +18,7 @@ interface UserNameInputFormProps {
 }
 
 export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameInputFormProps) => {
-  const { data: session } = useSession();
+  const { data: session, refetch: refetchSession } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const trpc = useTRPC();
@@ -44,6 +44,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         reset({ newName: variables.name });
         toast.success("名前を更新しました");
 
+        refetchSession();
         if (pathname === "/user/register") {
           router.refresh();
         }
