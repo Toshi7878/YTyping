@@ -12,8 +12,8 @@ const parseAsNewMapVideoId = createParser({
     return value;
   },
 });
-const isBuckupParser = parseAsBoolean.withDefault(false);
+const isBackupParser = parseAsBoolean.withDefault(false);
 
-export const useIsBuckupQueryState = () => useQueryState("isBuckup", parseAsBoolean.withDefault(false));
+export const useIsBuckupQueryState = () => useQueryState("isBackup", parseAsBoolean.withDefault(false));
 
-export const searchParamsLoader = createLoader({ new: parseAsNewMapVideoId, isBuckup: isBuckupParser });
+export const searchParamsLoader = createLoader({ new: parseAsNewMapVideoId, isBackup: isBackupParser });
