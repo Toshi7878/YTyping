@@ -9,9 +9,11 @@ import type { TypingLineResults } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
+import { resultClapRouter } from "./clap";
+import { resultListRouter } from "./list";
 
-export const resultItemRouter = {
-  getJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
+export const resultRouter = {
+  getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
 
     if (!data) {
@@ -94,6 +96,9 @@ export const resultItemRouter = {
       return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
     });
   }),
+
+  list: resultListRouter,
+  clap: resultClapRouter,
 } satisfies TRPCRouterRecord;
 
 const getNextResultId = async (db: TXType) => {

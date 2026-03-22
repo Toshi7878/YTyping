@@ -168,6 +168,7 @@ export const mapRouter = {
 
     return { id: newMapId, creatorId: userId };
   }),
+
   list: mapListRouter,
   like: mapLikeRouter,
   bookmark: { lists: mapBookmarkListsRouter, listItem: mapBookmarkListItemRouter },

@@ -4,9 +4,7 @@ import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
-import { resultClapRouter } from "./routers/result/clap";
-import { resultItemRouter } from "./routers/result/item";
-import { resultListRouter } from "./routers/result/list";
+import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
 import { userOptionRouter } from "./routers/user/option";
 import { userProfileRouter } from "./routers/user/profile";
@@ -16,11 +14,7 @@ import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
 export const appRouter = router({
   map: mapRouter,
-  result: {
-    list: resultListRouter,
-    item: resultItemRouter,
-    clap: resultClapRouter,
-  },
+  result: resultRouter,
   user: {
     profile: userProfileRouter,
     option: userOptionRouter,
