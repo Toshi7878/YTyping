@@ -8,7 +8,7 @@ import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 
 const getMapInfo = cache(async (mapId: number) => {
-  return await serverApi.map.item.get({ mapId });
+  return await serverApi.map.getById({ mapId });
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {

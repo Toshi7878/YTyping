@@ -1,12 +1,7 @@
 import { aiRouter } from "./routers/ai";
 import { authRouter } from "./routers/auth";
-import { mapBookmarkListItemRouter } from "./routers/map/bookmark/list-item";
-import { mapBookmarkListsRouter } from "./routers/map/bookmark/lists";
-import { mapItemRouter } from "./routers/map/item";
-import { mapItemOpenApiRouter } from "./routers/map/item-openapi";
-import { mapLikeRouter } from "./routers/map/like";
-import { mapListRouter } from "./routers/map/list";
-import { mapListOpenApiRouter } from "./routers/map/list-openapi";
+import { mapRouter } from "./routers/map/map";
+import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultClapRouter } from "./routers/result/clap";
@@ -20,15 +15,7 @@ import { userTypingOptionRouter } from "./routers/user/typing-option";
 import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
 export const appRouter = router({
-  map: {
-    list: mapListRouter,
-    item: mapItemRouter,
-    like: mapLikeRouter,
-    bookmark: {
-      lists: mapBookmarkListsRouter,
-      listItem: mapBookmarkListItemRouter,
-    },
-  },
+  map: mapRouter,
   result: {
     list: resultListRouter,
     item: resultItemRouter,
@@ -49,10 +36,7 @@ export const appRouter = router({
 });
 
 export const openApiRouter = router({
-  map: {
-    list: mapListOpenApiRouter,
-    item: mapItemOpenApiRouter,
-  },
+  map: mapOpenApiRouter,
 });
 
 export type AppRouter = typeof appRouter;

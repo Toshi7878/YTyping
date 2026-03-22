@@ -35,7 +35,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
 
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapInfo } = useQuery(trpc.map.item.get.queryOptions({ mapId: Number(mapId) }));
+  const { data: mapInfo } = useQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
 
   const toggleClap = useToggleClapMutation();
 

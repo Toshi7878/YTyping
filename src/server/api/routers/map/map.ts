@@ -8,9 +8,13 @@ import { upsertMapItemSchema } from "@/validator/map/item";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
+import { mapBookmarkListItemRouter } from "./bookmark/list-item";
+import { mapBookmarkListsRouter } from "./bookmark/lists";
+import { mapLikeRouter } from "./like";
+import { mapListRouter } from "./list";
 
-export const mapItemRouter = {
-  get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+export const mapRouter = {
+  getById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { mapId } = input;
 
@@ -67,7 +71,7 @@ export const mapItemRouter = {
     return mapInfo;
   }),
 
-  getJson: publicProcedure
+  getJsonById: publicProcedure
     .input(z.object({ mapId: z.number() }))
     .output(z.array(RawMapLineSchema))
     .query(async ({ input }) => {
@@ -164,6 +168,9 @@ export const mapItemRouter = {
 
     return { id: newMapId, creatorId: userId };
   }),
+  list: mapListRouter,
+  like: mapLikeRouter,
+  bookmark: { lists: mapBookmarkListsRouter, listItem: mapBookmarkListItemRouter },
 } satisfies TRPCRouterRecord;
 
 const getNextMapId = async (db: TXType) => {

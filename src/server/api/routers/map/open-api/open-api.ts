@@ -6,10 +6,11 @@ import { downloadPublicFile } from "@/server/api/utils/storage";
 import { MapDifficulties, Maps, Users } from "@/server/drizzle/schema";
 import { getByIdOpenApiResponseSchema } from "@/validator/map/item";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
-import { OPENAPI_RATE_LIMITS } from "../../lib/rate-limit-config";
-import { createRateLimitMiddleware, publicProcedure } from "../../trpc";
+import { OPENAPI_RATE_LIMITS } from "../../../lib/rate-limit-config";
+import { createRateLimitMiddleware, publicProcedure } from "../../../trpc";
+import { mapListOpenApiRouter } from "./list";
 
-export const mapItemOpenApiRouter = {
+export const mapOpenApiRouter = {
   get: publicProcedure
     .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}"].get))
     .meta({
@@ -115,4 +116,6 @@ export const mapItemOpenApiRouter = {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
     }),
+
+  list: mapListOpenApiRouter,
 } satisfies TRPCRouterRecord;
