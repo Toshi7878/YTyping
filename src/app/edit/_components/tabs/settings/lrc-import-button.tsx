@@ -1,21 +1,24 @@
 "use client";
+import iconv from "iconv-lite";
+import jschardet from "jschardet";
 import type React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { importMapFromJsonText, importMapFromLrcText } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/components/ui/button";
-import {
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogWithContent,
-} from "@/components/ui/dialog";
+import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog";
 import { overlay } from "@/components/ui/overlay";
 
 type FileType = "lrc" | "json";
 
-const detectFileType = (fileName: string): FileType =>
-  fileName.endsWith(".json") ? "json" : "lrc";
+const detectFileType = (fileName: string): FileType => (fileName.endsWith(".json") ? "json" : "lrc");
+
+const readFileAsText = async (file: File): Promise<string> => {
+  const buffer = await file.arrayBuffer();
+  const bytes = Buffer.from(buffer);
+  const { encoding } = jschardet.detect(bytes);
+  return iconv.decode(bytes, encoding ?? "UTF-8");
+};
 
 export const LrcImportButton = () => {
   const [open, setOpen] = useState(false);
@@ -27,7 +30,7 @@ export const LrcImportButton = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const content = await file.text();
+      const content = await readFileAsText(file);
       setFileType(detectFileType(file.name));
       setText(content);
     } catch {
@@ -71,13 +74,7 @@ export const LrcImportButton = () => {
 
   return (
     <>
-      <input
-        type="file"
-        hidden
-        ref={fileInputRef}
-        accept=".lrc,.json"
-        onChange={handleFileChange}
-      />
+      <input type="file" hidden ref={fileInputRef} accept=".lrc,.json" onChange={handleFileChange} />
 
       <Button size="sm" onClick={() => setOpen(true)}>
         lrcインポート
@@ -89,12 +86,7 @@ export const LrcImportButton = () => {
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
-          <Button
-            size="sm"
-            variant="outline"
-            className="self-start"
-            onClick={() => fileInputRef.current?.click()}
-          >
+          <Button size="sm" variant="outline" className="self-start" onClick={() => fileInputRef.current?.click()}>
             lrcファイルから読み込む
           </Button>
 
