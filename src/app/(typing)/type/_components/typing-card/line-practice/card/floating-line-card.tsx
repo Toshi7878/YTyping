@@ -15,13 +15,13 @@ import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { ResultCardContent } from "./child/result-card-body";
-import { ResultCardFooter } from "./child/result-card-footer";
-import { ResultCardHeader } from "./child/result-card-header";
+import { ResultCardContent } from "./card-content";
+import { ResultCardFooter } from "./card-footer";
+import { ResultCardHeader } from "./card-header";
 
 const ACTIVATION_CONSTRAINT = { distance: 5 };
 
-export const PracticeLineCard = () => {
+export const FloatingPracticeLineCard = () => {
   const [{ x, y }, setCoordinates] = useState({ x: 0, y: 0 });
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: ACTIVATION_CONSTRAINT }),

@@ -27,8 +27,9 @@ const builtMapAtom = atomWithReset<{
   hasAlphabet: boolean;
   isCaseSensitive: boolean;
 } | null>(null);
+export type BuiltMap = ExtractAtomValue<typeof builtMapAtom>;
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
-export const setBuiltMap = (map: ExtractAtomValue<typeof builtMapAtom>) => store.set(builtMapAtom, map);
+export const setBuiltMap = (map: BuiltMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 

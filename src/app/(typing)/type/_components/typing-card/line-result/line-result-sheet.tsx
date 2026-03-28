@@ -1,37 +1,27 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
-import { useEffect, useRef } from "react";
-import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/ref";
-import {
-  setLineResultSheet,
-  setLineSelectIndex,
-  useBuiltMapState,
-  useLineResultSheetOpenState,
-  useSceneGroupState,
-} from "@/app/(typing)/type/_lib/atoms/state";
-import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useRef, useState } from "react";
+import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { TypingLineResults } from "@/validator/result";
-import { OptimizedResultCard } from "./card/optimized-result-card";
+import { OptimizedResultCard } from "./card/line-card";
 
-export const ResultListSheet = () => {
-  const isOpen = useLineResultSheetOpenState();
-  const sceneGroup = useSceneGroupState();
+interface ResultLineSheetProps {
+  trigger: React.ReactNode;
+}
+
+export const ResultLineSheet = ({ trigger }: ResultLineSheetProps) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Sheet modal={false} open={isOpen} onOpenChange={setLineResultSheet}>
-      <SheetContent
-        onEscapeKeyDown={sceneGroup === "Playing" ? (event) => event.preventDefault() : undefined}
-        forceMount
-        side="right"
-        className="w-xs bg-accent/90"
-        overlayClassName="bg-transparent"
-      >
+    <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
+      {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
+      <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
-          <SheetTitle>{sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}</SheetTitle>
+          <SheetTitle>詳細リザルト</SheetTitle>
         </SheetHeader>
 
-        <ResultLineList />
+        {isOpen && <ResultLineList />}
       </SheetContent>
     </Sheet>
   );
@@ -39,26 +29,11 @@ export const ResultListSheet = () => {
 
 const ResultLineList = () => {
   const map = useBuiltMapState();
+  const itemsRef = useRef<HTMLDivElement[]>([]);
 
-  const sceneGroup = useSceneGroupState();
-
-  const cardRefs = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    writeResultCards(cardRefs.current);
-  }, [sceneGroup]);
-
-  const practiceReplayCardClick = (lineIndex: number) => {
-    if (!map) return;
-    const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
-
-    moveSetLine(seekCount);
-    setLineSelectIndex(lineIndex);
-  };
-
-  const endCardClick = (lineIndex: number) => {
+  const handleCardClick = (lineIndex: number) => {
     let nextTypedCount = 0;
-    const typedElements = cardRefs.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
+    const typedElements = itemsRef.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
     if (!typedElements) return;
 
     const lastTypedChildClassList = typedElements[typedElements.length - 1]?.classList;
@@ -100,7 +75,6 @@ const ResultLineList = () => {
   };
 
   let lineIndex = 0;
-  const scoreCount = 0;
 
   return (
     <div className="relative h-full overflow-y-auto px-4">
@@ -109,7 +83,6 @@ const ResultLineList = () => {
         if (!lineData?.kanaLyrics) return null;
 
         lineIndex++;
-        // scoreCount += (lineResult.status?.p ?? 0) + (lineResult.status?.tBonus ?? 0);
 
         return (
           <OptimizedResultCard
@@ -117,10 +90,9 @@ const ResultLineList = () => {
             key={index}
             count={index}
             lineIndex={lineIndex}
-            scoreCount={scoreCount}
-            cardRefs={cardRefs}
+            itemsRef={itemsRef}
             lineData={lineData}
-            handleCardClick={sceneGroup === "End" ? endCardClick : practiceReplayCardClick}
+            onClick={handleCardClick}
           />
         );
       })}

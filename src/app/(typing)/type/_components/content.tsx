@@ -122,7 +122,7 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
   };
 
   return (
-    <div style={style} className="space-y-8 md:space-y-5">
+    <div style={style} className="space-y-8 md:space-y-5" id="content_container">
       <section className="flex w-full gap-6 md:flex-row">
         {layout === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
 

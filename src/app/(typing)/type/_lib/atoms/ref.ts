@@ -103,6 +103,6 @@ export const setTotalProgressValue = (value: number) => {
   }
 };
 
-const lineResultCardsAtom = atomWithReset<HTMLDivElement[]>([]);
-export const readResultCards = () => store.get(lineResultCardsAtom);
-export const writeResultCards = (newCards: HTMLDivElement[]) => store.set(lineResultCardsAtom, newCards);
+const practiceLineListItemsAtom = atomWithReset<HTMLElement[]>([]);
+export const readPracticeLineItems = () => store.get(practiceLineListItemsAtom);
+export const writePracticeLineItems = (newItems: HTMLElement[]) => store.set(practiceLineListItemsAtom, newItems);

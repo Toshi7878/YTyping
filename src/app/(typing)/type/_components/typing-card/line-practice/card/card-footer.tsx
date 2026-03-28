@@ -6,7 +6,6 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
-  scoreCount?: number;
   point: number;
   tBonus: number;
   maxLinePoint: number;
@@ -17,7 +16,6 @@ interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const ResultCardFooter = ({
-  scoreCount,
   point,
   tBonus,
   maxLinePoint,
@@ -46,10 +44,7 @@ export const ResultCardFooter = ({
         </TooltipWrapper>
       </div>
 
-      <TooltipWrapper
-        label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
-        asChild
-      >
+      <TooltipWrapper label={`合計ポイント: ${Number(point) + Number(tBonus)}`} asChild>
         <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
           ポイント: {point}
           {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}

@@ -13,27 +13,19 @@ import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { ResultCardContent } from "./child/result-card-body";
-import { ResultCardFooter } from "./child/result-card-footer";
-import { ResultCardHeader } from "./child/result-card-header";
+import { ResultCardContent } from "./card-content";
+import { ResultCardFooter } from "./card-footer";
+import { ResultCardHeader } from "./card-header";
 
 interface OptimizedResultCardProps {
   count: number;
   lineIndex: number;
-  scoreCount: number;
-  cardRefs: RefObject<HTMLDivElement[]>;
-  handleCardClick: (lineNumber: number) => void;
+  itemsRef: RefObject<HTMLElement[]>;
+  onClick: (lineNumber: number) => void;
   lineData: BuiltMapLineWithOption;
 }
 
-export const OptimizedResultCard = ({
-  count,
-  lineIndex,
-  scoreCount,
-  cardRefs,
-  handleCardClick,
-  lineData,
-}: OptimizedResultCardProps) => {
+export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineData }: OptimizedResultCardProps) => {
   const _lineResult = useLineResultState(count);
 
   const map = useBuiltMapState();
@@ -70,7 +62,7 @@ export const OptimizedResultCard = ({
   return (
     <Card
       ref={(el) => {
-        if (el) cardRefs.current[lineIndex] = el;
+        if (el) itemsRef.current[lineIndex] = el;
       }}
       data-seek-time={seekTime}
       data-line-index={lineIndex}
@@ -80,7 +72,7 @@ export const OptimizedResultCard = ({
         "hover:outline-2 hover:outline-foreground",
         isSelected && "outline-2 outline-primary",
       )}
-      onClick={() => handleCardClick(lineIndex)}
+      onClick={() => onClick(lineIndex)}
     >
       <ResultCardHeader
         lineIndex={lineIndex}
@@ -100,7 +92,6 @@ export const OptimizedResultCard = ({
       <Separator className="mx-auto w-[88%]" />
       <CardFooter className="py-0 font-semibold text-lg">
         <ResultCardFooter
-          scoreCount={scoreCount}
           point={point}
           tBonus={tBonus}
           maxLinePoint={maxLinePoint}

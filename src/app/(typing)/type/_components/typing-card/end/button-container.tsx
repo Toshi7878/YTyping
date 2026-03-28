@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { setLineResultSheet, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
+import { ResultLineSheet } from "../line-result/line-result-sheet";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
 export const EndButtonContainer = () => {
@@ -32,29 +33,19 @@ export const EndButtonContainer = () => {
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
         )}
-        <LineResultButton />
+        <ResultLineSheet
+          trigger={
+            <Button size="4xl" variant="primary-hover-light" className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl">
+              詳細リザルトを見る
+            </Button>
+          }
+        />
       </div>
       <div className="mx-12 flex items-center justify-end gap-14" id="end_sub_buttons">
         <ModeChangeButton showAlert={Boolean(isDisplayRankingButton && !isSubmitRankingButtonDisabled)} />
         <RetryButton showAlert={Boolean(isDisplayRankingButton && !isSubmitRankingButtonDisabled)} />
       </div>
     </>
-  );
-};
-
-const LineResultButton = () => {
-  return (
-    <Button
-      size="4xl"
-      variant="primary-hover-light"
-      className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl"
-      onClickCapture={(event) => {
-        event.stopPropagation();
-        setLineResultSheet((prev) => !prev);
-      }}
-    >
-      詳細リザルトを見る
-    </Button>
   );
 };
 

@@ -1,4 +1,4 @@
-import { readLineCount, readLineProgress, readResultCards, writeLineCount } from "../atoms/ref";
+import { readLineCount, readLineProgress, readPracticeLineItems, writeLineCount } from "../atoms/ref";
 import { readBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { seekYTPlayer } from "../atoms/youtube-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
@@ -110,7 +110,7 @@ export const moveSetLine = (seekCount: number) => {
 };
 
 const scrollToCard = (newIndex: number) => {
-  const resultCards = readResultCards();
+  const resultCards = readPracticeLineItems();
 
   const card = resultCards[newIndex];
 
