@@ -12,6 +12,8 @@ const CreateTypingResultJsonSchema = z.array(
       lostCount: z.number().optional(),
       rkpm: z.number().or(z.literal(Infinity)).optional(),
       kpm: z.number().optional(),
+      typedHiragana: z.string().nullable().optional(),
+      lostHiragana: z.string().nullable().optional(),
       lostWord: z.string().nullable().optional(),
       combo: z.number(),
       typingTime: z.number(),

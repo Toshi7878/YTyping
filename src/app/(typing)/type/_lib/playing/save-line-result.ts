@@ -42,6 +42,14 @@ export const saveLineResult = (count: number) => {
   const { totalTypeTime } = readSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 
+  const typingWord = readTypingWord();
+  const lostHiraganaJoined = typingWord.nextChunk.kana
+    ? `${typingWord.nextChunk.kana}${typingWord.wordChunks
+        .slice(typingWord.wordChunksIndex)
+        .map((chunk) => chunk.kana)
+        .join("")}`
+    : "";
+
   setLineResult({
     index: count,
     lineResult: isTypingLine
@@ -51,9 +59,11 @@ export const saveLineResult = (count: number) => {
             timeBonus: typingStatus.timeBonus,
             typeCount,
             missCount,
+            typedHiragana: typingWord.correct.kana,
+            lostHiragana: lostHiraganaJoined,
             rkpm,
             kpm: readLineKpm(),
-            lostWord: lostWord,
+            lostWord,
             lostCount: actualLostNotes,
             combo: readCombo(),
             typingTime: roundedTotalTypeTime,
