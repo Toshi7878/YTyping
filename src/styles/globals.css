@@ -190,12 +190,7 @@
     background-color: var(--background);
     color: var(--foreground);
     color-scheme: var(--color-scheme);
-    /* ガット幅ゼロ・レイアウトシフトなし */
-    scrollbar-width: none;
-  }
-
-  html::-webkit-scrollbar {
-    display: none;
+    scrollbar-gutter: stable;
   }
 
   body[data-scroll-locked] {

@@ -7,7 +7,6 @@ import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
@@ -58,12 +57,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   <SessionProvider session={session}>
                     <Header className="fixed z-50 h-10 w-full" />
                     <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
-                      <ScrollArea type="always" scrollHideDelay={1000} className="h-screen pt-12 md:pt-16">
-                        <main id="main_content">
-                          {children}
-                          <Analytics />
-                        </main>
-                      </ScrollArea>
+                      <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
+                        {children}
+                        <Analytics />
+                      </main>
                       <PreviewYouTubePlayer />
                     </JotaiProvider>
                   </SessionProvider>
