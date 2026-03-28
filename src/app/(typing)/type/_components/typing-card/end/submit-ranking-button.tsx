@@ -90,7 +90,7 @@ const generateResultData = (mapId: number) => {
 
   const lineResults = readAllLineResult();
 
-  const minPlaySpeed = getMinValue(lineResults.flatMap(({ status }) => (status?.tTime ? [status.sp] : [])));
+  const minPlaySpeed = getMinValue(lineResults.flatMap(({ status }) => (status?.typingTime ? [status.speed] : [])));
 
   const rkpmTime = totalTypeTime - totalLatency;
   const typingStatus = readTypingStatus();

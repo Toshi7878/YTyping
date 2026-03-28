@@ -4,7 +4,7 @@ export const updateTypingTimeOnLineEnded = ({ constantLineTime }: { constantLine
   const { totalTypeTime } = readSubstatus();
   writeSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
 
-  const { type: lineTypeCount } = readLineSubstatus();
+  const { typeCount: lineTypeCount } = readLineSubstatus();
 
   if (lineTypeCount !== 0) {
     const { typingTime } = readUserStats();

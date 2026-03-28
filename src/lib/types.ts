@@ -2,7 +2,7 @@ import type { BuiltMapLine } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 
-type ContentType = "application/json";
+type ContentType = "application/gzip" | "application/json";
 
 export interface FileUploadParams {
   key: string;

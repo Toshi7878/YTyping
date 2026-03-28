@@ -36,7 +36,7 @@ export const processReplayKeyAtTimestamp = ({
   const type = types[replayKeyCount];
   if (!type) return;
 
-  const keyTime = type.t;
+  const keyTime = type.time;
 
   if (constantLineTime >= keyTime) {
     simulateRecordedKeyInput({ constantLineTime, constantRemainLineTime, type });
@@ -51,7 +51,7 @@ interface SimulateKeyInputParams {
 }
 
 const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, type }: SimulateKeyInputParams) => {
-  const { c: inputChar, is: isSuccess, op: option } = type;
+  const { char: inputChar, isCorrect: isSuccess, option } = type;
   const count = readLineCount();
   const replayRankingResult = readReplayRankingResult();
   const isCaseSensitive = replayRankingResult?.otherStatus.isCaseSensitive ?? false;
@@ -85,7 +85,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
         recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
         writeLineSubstatus({ isCompleted: true });
         setCombo(lineResult?.status.combo ?? 0);
-        setLineKpm(lineResult?.status.lKpm ?? 0);
+        setLineKpm(lineResult?.status.kpm ?? 0);
       }
     } else {
       triggerMissSound();

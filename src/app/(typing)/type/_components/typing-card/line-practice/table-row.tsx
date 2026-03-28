@@ -40,13 +40,13 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
   const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
   const lineTypeWord =
     lineInputMode === "roma" ? lineData.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("") : lineKanaWord;
-  const point = lineResult.status.p ?? 0;
-  const tBonus = lineResult.status.tBonus ?? 0;
-  const kpm = lineResult.status.lKpm ?? 0;
-  const rkpm = lineResult.status.lRkpm ?? 0;
-  const miss = lineResult.status.lMiss ?? 0;
-  const lost = lineResult.status.lLost ?? 0;
-  const lostWord = lineResult.status.lostW ?? "";
+  const point = lineResult.status.point ?? 0;
+  const tBonus = lineResult.status.timeBonus ?? 0;
+  const kpm = lineResult.status.kpm ?? 0;
+  const rkpm = lineResult.status.rkpm ?? 0;
+  const miss = lineResult.status.missCount ?? 0;
+  const lost = lineResult.status.lostCount ?? 0;
+  const lostWord = lineResult.status.lostWord ?? "";
   const maxLinePoint = lineData.notes.roma * CHAR_POINT;
 
   return (
@@ -138,23 +138,23 @@ const TypesResult = ({
   return (
     <div className={cn("word-font word-outline-text break-all text-foreground uppercase")}>
       {types.map((type: TypeResult, index: number) => {
-        if (type.is) {
+        if (type.isCorrect) {
           correctCount++;
         }
 
-        const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.t / 60))}`;
+        const label = `time: ${type.time.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.time / 60))}`;
 
         return (
-          type.c && (
-            <TooltipWrapper key={`${index}-${type.c}`} label={label} side="top" asChild>
+          type.char && (
+            <TooltipWrapper key={`${index}-${type.char}`} label={label} side="top" asChild>
               <span
                 className={cn(
                   "typed break-all hover:bg-border/45",
-                  type.is ? (lostWord === "" ? "text-word-completed" : "text-word-correct") : "text-destructive",
+                  type.isCorrect ? (lostWord === "" ? "text-word-completed" : "text-word-correct") : "text-destructive",
                 )}
-                data-time={type.t}
+                data-time={type.time}
               >
-                {type.c.replace(/ /g, "ˍ")}
+                {type.char.replace(/ /g, "ˍ")}
               </span>
             </TooltipWrapper>
           )

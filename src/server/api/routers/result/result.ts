@@ -1,6 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
+import { gzipCompress, gzipDecompress } from "@/server/api/utils/gzip";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
@@ -20,7 +21,7 @@ export const resultRouter = {
       throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
     }
 
-    const jsonString = new TextDecoder().decode(data);
+    const jsonString = new TextDecoder().decode(await gzipDecompress(data));
     const jsonData: TypingLineResults = JSON.parse(jsonString);
 
     return jsonData;
@@ -67,11 +68,12 @@ export const resultRouter = {
         .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
       const jsonString = JSON.stringify(lineResults, null, 2);
+      const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
 
       await uploadPublicFile({
         key: `result-json/${resultId}.json`,
-        body: jsonString,
-        contentType: "application/json",
+        body: compressed,
+        contentType: "application/gzip",
       });
 
       const rankedUsers = await tx

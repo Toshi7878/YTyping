@@ -36,8 +36,8 @@ export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof sub
 export const resetSubstatus = () => store.set(substatusRefAtom, RESET);
 
 const lineSubstatusRefAtom = atomWithReset({
-  type: 0,
-  miss: 0,
+  typeCount: 0,
+  missCount: 0,
   latency: 0,
   types: [] as TypeResult[],
   startSpeed: 1,

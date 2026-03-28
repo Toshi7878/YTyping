@@ -39,7 +39,7 @@ export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineD
 
   const { isSelected, lineResult } = _lineResult;
 
-  const lineSpeed = lineResult.status.sp > minMediaSpeed ? lineResult.status.sp : minMediaSpeed;
+  const lineSpeed = lineResult.status.speed > minMediaSpeed ? lineResult.status.speed : minMediaSpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
   const lineTypeWord =
@@ -49,13 +49,13 @@ export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineD
 
   const maxLinePoint = lineData.notes.roma * CHAR_POINT;
 
-  const kpm = lineResult.status.lKpm ?? 0;
-  const rkpm = lineResult.status.lRkpm ?? 0;
-  const point = lineResult.status.p ?? 0;
-  const miss = lineResult.status.lMiss ?? 0;
-  const tBonus = lineResult.status?.tBonus ?? 0;
-  const lostWord = lineResult.status.lostW ?? "";
-  const lost = lineResult.status.lLost ?? 0;
+  const kpm = lineResult.status.kpm ?? 0;
+  const rkpm = lineResult.status.rkpm ?? 0;
+  const point = lineResult.status.point ?? 0;
+  const miss = lineResult.status.missCount ?? 0;
+  const tBonus = lineResult.status?.timeBonus ?? 0;
+  const lostWord = lineResult.status.lostWord ?? "";
+  const lost = lineResult.status.lostCount ?? 0;
 
   const seekTime = currentLine.time - (scene === "replay" ? 0 : 1 * playSpeed);
 

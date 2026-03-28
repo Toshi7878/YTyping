@@ -10,15 +10,15 @@ import { CHAR_POINT, MISS_PENALTY_POINT } from "../const";
 
 export const hasLineResultImproved = (count: number) => {
   const lineResults = readAllLineResult();
-  const { miss: lineMiss } = readLineSubstatus();
+  const { missCount } = readLineSubstatus();
   const savedLineResult = lineResults[count];
   const typingStatus = readTypingStatus();
 
-  const currentLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY_POINT;
+  const currentLineScore = typingStatus.point + typingStatus.timeBonus + missCount * MISS_PENALTY_POINT;
   const savedLineScore =
-    (savedLineResult?.status.p ?? 0) +
-    (savedLineResult?.status.tBonus ?? 0) +
-    (savedLineResult?.status.lMiss ?? 0) * MISS_PENALTY_POINT;
+    (savedLineResult?.status.point ?? 0) +
+    (savedLineResult?.status.timeBonus ?? 0) +
+    (savedLineResult?.status.missCount ?? 0) * MISS_PENALTY_POINT;
 
   const { scene, isPaused } = readUtilityParams();
   const playSpeed = readMediaSpeed();
@@ -37,7 +37,7 @@ export const saveLineResult = (count: number) => {
   }
 
   const typingStatus = readTypingStatus();
-  const { miss: lineMiss, type: lineType, types, startSpeed, startInputMode, rkpm: lineRkpm } = readLineSubstatus();
+  const { missCount, typeCount, types, startSpeed, startInputMode, rkpm } = readLineSubstatus();
   const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
   const { totalTypeTime } = readSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
@@ -47,27 +47,27 @@ export const saveLineResult = (count: number) => {
     lineResult: isTypingLine
       ? {
           status: {
-            p: typingStatus.point,
-            tBonus: typingStatus.timeBonus,
-            lType: lineType,
-            lMiss: lineMiss,
-            lRkpm: lineRkpm,
-            lKpm: readLineKpm(),
-            lostW: lostWord,
-            lLost: actualLostNotes,
+            point: typingStatus.point,
+            timeBonus: typingStatus.timeBonus,
+            typeCount,
+            missCount,
+            rkpm,
+            kpm: readLineKpm(),
+            lostWord: lostWord,
+            lostCount: actualLostNotes,
             combo: readCombo(),
-            tTime: roundedTotalTypeTime,
+            typingTime: roundedTotalTypeTime,
             mode: startInputMode,
-            sp: startSpeed,
+            speed: startSpeed,
           },
           types,
         }
       : {
           status: {
             combo: readCombo(),
-            tTime: roundedTotalTypeTime,
+            typingTime: roundedTotalTypeTime,
             mode: startInputMode,
-            sp: startSpeed,
+            speed: startSpeed,
           },
           types,
         },
