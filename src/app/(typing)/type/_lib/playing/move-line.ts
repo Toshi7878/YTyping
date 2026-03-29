@@ -40,7 +40,7 @@ export const movePrevLine = () => {
   const seekTargetTime = isTimeBuffer ? prevTime : (map.lines[prevCount]?.time ?? 0);
   seekYTPlayer(seekTargetTime);
   setNotify(Symbol("◁"));
-  scrollToCard(newLineSelectIndex);
+  scrollToTable(newLineSelectIndex);
   const newLine = map.lines[newCount];
   const lineProgress = readLineProgress();
   if (lineProgress) {
@@ -82,7 +82,7 @@ export const moveNextLine = () => {
 
   seekYTPlayer(nextTime);
   setNotify(Symbol("▷"));
-  scrollToCard(newLineSelectIndex);
+  scrollToTable(newLineSelectIndex);
   const lineProgress = readLineProgress();
   if (lineProgress) {
     lineProgress.value = nextTime - (map.lines[newCount]?.time ?? 0);
@@ -109,18 +109,19 @@ export const moveSetLine = (seekCount: number) => {
   }
 };
 
-const scrollToCard = (newIndex: number) => {
+const scrollToTable = (newIndex: number) => {
   const resultCards = readPracticeLineItems();
-
   const card = resultCards[newIndex];
 
   if (card) {
-    const drawerBody = card.parentNode as HTMLDivElement;
+    const viewport = card.closest('[data-slot="scroll-area-viewport"]') as HTMLElement | null;
+    if (!viewport) return;
 
-    const cardTop = card.offsetTop;
-    const drawerHeight = drawerBody.clientHeight;
-    const scrollPosition = cardTop - drawerHeight / 2 + card.clientHeight / 2;
+    const cardRect = card.getBoundingClientRect();
+    const viewportRect = viewport.getBoundingClientRect();
+    const scrollPosition =
+      viewport.scrollTop + cardRect.top - viewportRect.top - viewportRect.height / 2 + card.clientHeight / 2;
 
-    drawerBody.scrollTo({ top: Math.max(0, scrollPosition), behavior: "instant" });
+    viewport.scrollTo({ top: Math.max(0, scrollPosition), behavior: "instant" });
   }
 };
