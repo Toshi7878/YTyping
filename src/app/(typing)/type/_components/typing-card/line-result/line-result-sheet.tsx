@@ -7,15 +7,7 @@ import type { TypingLineResults } from "@/validator/result";
 import { moveSetLine } from "../../../_lib/playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 
-export const ReplayResultLineSheet = ({
-  trigger,
-  open,
-  setOpen,
-}: {
-  trigger: React.ReactNode;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}) => {
+export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
   const map = useBuiltMapState();
   const handleCardClick = (lineIndex: number) => {
     if (!map) return;
@@ -27,7 +19,6 @@ export const ReplayResultLineSheet = ({
 
   return (
     <Sheet modal={false} open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
           <SheetTitle>詳細リザルト</SheetTitle>

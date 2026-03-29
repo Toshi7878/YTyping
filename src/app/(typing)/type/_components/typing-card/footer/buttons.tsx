@@ -140,10 +140,16 @@ const ResultListButton = () => {
   });
 
   return (
-    <ReplayResultLineSheet
-      trigger={<ButtonWithKbd buttonLabel="リスト" kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"} />}
-      open={open}
-      setOpen={setOpen}
-    />
+    <>
+      <ButtonWithKbd
+        buttonLabel="リスト"
+        kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
+        onClickCapture={(event) => {
+          event.stopPropagation();
+          setOpen(true);
+        }}
+      />
+      <ReplayResultLineSheet open={open} setOpen={setOpen} />
+    </>
   );
 };
