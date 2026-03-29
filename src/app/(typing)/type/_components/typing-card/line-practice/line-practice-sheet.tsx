@@ -51,7 +51,7 @@ export const PracticeLineSheet = () => {
     width: `${isHovered ? width + HOVER_EXTRA_WIDTH : width}px`,
     top: top || undefined,
     height: top ? `calc(100% - ${top}px)` : undefined,
-    transition: "width 1500ms ease",
+    transition: "width 900ms ease",
   };
 
   return (
@@ -70,7 +70,7 @@ export const PracticeLineSheet = () => {
         <div ref={containerRef} className="h-full">
           <ScrollArea type="always" className="h-full overflow-hidden">
             {lineFailureCount === 0 ? (
-              <div className="text-perfect">All Line Completed!!</div>
+              <div className="text-perfect">All Completed</div>
             ) : (
               <div className="text-failure">Failure Line: {lineFailureCount}</div>
             )}
