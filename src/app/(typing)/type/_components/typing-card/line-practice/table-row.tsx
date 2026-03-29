@@ -1,18 +1,12 @@
 "use client";
 import type { RefObject } from "react";
 import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
-import {
-  useBuiltMapState,
-  useMediaSpeedState,
-  usePlayingInputModeState,
-  useSceneState,
-} from "@/app/(typing)/type/_lib/atoms/state";
+import { useBuiltMapState, useMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
 import { TableCell, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import type { TypeResult } from "@/validator/result";
 
 interface PracticeLineTableRowProps {
   count: number;
@@ -28,7 +22,6 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
   const map = useBuiltMapState();
   const scene = useSceneState();
   const playSpeed = useMediaSpeedState();
-  const inputMode = usePlayingInputModeState();
   const currentLine = map?.lines[count];
 
   if (!currentLine || !_lineResult) return null;
@@ -36,17 +29,13 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
   const { isSelected, lineResult } = _lineResult;
 
   const seekTime = currentLine.time - (scene === "replay" ? 0 : 1 * playSpeed);
-  const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
-  const lineTypeWord =
-    lineInputMode === "roma" ? lineData.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("") : lineKanaWord;
   const point = lineResult.status.point ?? 0;
   const tBonus = lineResult.status.timeBonus ?? 0;
   const kpm = lineResult.status.kpm ?? 0;
   const rkpm = lineResult.status.rkpm ?? 0;
   const miss = lineResult.status.missCount ?? 0;
   const lost = lineResult.status.lostCount ?? 0;
-  const lostWord = lineResult.status.lostWord ?? "";
   const maxLinePoint = lineData.notes.roma * CHAR_POINT;
 
   return (
@@ -82,7 +71,11 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
         onClick={() => onClick(lineIndex)}
       >
         <TableCell className="text-xs">
-          <TypesResult types={lineResult.types} lostWord={lostWord} lineTypeWord={lineTypeWord} />
+          <TypedHiraganaResult
+            hiragana={lineResult.status.typedHiragana ?? ""}
+            lostHiragana={lineResult.status.lostHiragana ?? ""}
+            kanaLyrics={lineKanaWord}
+          />
         </TableCell>
       </TableRow>
     </TooltipWrapper>
@@ -124,43 +117,26 @@ const TableRowTooltipContent = ({
   );
 };
 
-const TypesResult = ({
-  types,
-  lostWord,
-  lineTypeWord,
+const TypedHiraganaResult = ({
+  hiragana,
+  lostHiragana,
+  kanaLyrics,
 }: {
-  types: TypeResult[];
-  lostWord: string;
-  lineTypeWord: string;
+  hiragana: string;
+  lostHiragana: string;
+  kanaLyrics: string;
 }) => {
-  let correctCount = 0;
-
   return (
     <div className={cn("word-font word-outline-text break-all text-foreground uppercase")}>
-      {types.map((type: TypeResult, index: number) => {
-        if (type.isCorrect) {
-          correctCount++;
-        }
-
-        const label = `time: ${type.time.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.time / 60))}`;
-
-        return (
-          type.char && (
-            <TooltipWrapper key={`${index}-${type.char}`} label={label} side="top" asChild>
-              <span
-                className={cn(
-                  "typed break-all hover:bg-border/45",
-                  type.isCorrect ? (lostWord === "" ? "text-word-completed" : "text-word-correct") : "text-destructive",
-                )}
-                data-time={type.time}
-              >
-                {type.char.replace(/ /g, "ˍ")}
-              </span>
-            </TooltipWrapper>
-          )
-        );
-      })}
-      <span className="break-all text-word-word">{types.length === 0 ? lineTypeWord : lostWord}</span>
+      <span
+        className={cn(
+          "typed break-all hover:bg-border/45",
+          lostHiragana === "" ? "text-word-completed" : "text-word-correct",
+        )}
+      >
+        {hiragana.replace(/ /g, "ˍ")}
+      </span>
+      <span className="break-all text-word-word">{hiragana.length === 0 ? kanaLyrics : lostHiragana}</span>
     </div>
   );
 };
