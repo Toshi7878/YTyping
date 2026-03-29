@@ -6,7 +6,6 @@ import {
   readBuiltMap,
   readReplayRankingResult,
   readUtilityParams,
-  setLineResultSheet,
   useBuiltMapState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state";
@@ -58,10 +57,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   const map = useBuiltMapState();
 
   useEffect(() => {
-    if (scene === "practice") {
-      setLineResultSheet(true);
-    }
-
     if (scene === "replay") {
       setTimerMaxFPS(0);
     } else {
