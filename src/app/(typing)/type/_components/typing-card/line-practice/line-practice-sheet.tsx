@@ -19,7 +19,7 @@ const HOVER_EXTRA_WIDTH = 200;
 const LAYOUT_CALCULATE_DELAY_MS = 100;
 
 export const PracticeLineSheet = () => {
-  const { width, top } = useSheetLayout();
+  const { width, top, sheetHeightPx } = useSheetLayout();
   const [isHovered, setIsHovered] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ export const PracticeLineSheet = () => {
   const sheetStyle = {
     width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 30}px`,
     top: top || undefined,
-    height: top ? `calc(100% - ${top}px)` : undefined,
+    height: sheetHeightPx > 0 ? `${sheetHeightPx}px` : undefined,
     transition: "width 1200ms ease",
   };
 
@@ -56,15 +56,15 @@ export const PracticeLineSheet = () => {
         hideCloseButton
         forceMount
         side="right"
-        className="border-t"
+        className="flex min-h-0 flex-col gap-0 rounded-l-sm border-y"
         style={sheetStyle}
         overlayClassName="bg-transparent"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div ref={containerRef} className="h-full">
-          {lineFailureCount > 0 && <div className="text-failure">Failure Line: {lineFailureCount}</div>}
-          <ScrollArea type="always" className="h-full overflow-hidden">
+        <div ref={containerRef} className="flex min-h-0 flex-1 flex-col">
+          {lineFailureCount > 0 && <div className="shrink-0 text-failure">Failure Line: {lineFailureCount}</div>}
+          <ScrollArea type="always" className="min-h-0 flex-1 overflow-hidden">
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
         </div>
@@ -85,33 +85,35 @@ const PracticeLineTable = ({
   let lineIndex = 0;
 
   return (
-    <Table>
-      <TableBody>
-        {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
-          const lineData = map.lines[index];
-          if (!lineData?.kanaLyrics) return null;
+    <div className="min-h-full">
+      <Table>
+        <TableBody>
+          {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
+            const lineData = map.lines[index];
+            if (!lineData?.kanaLyrics) return null;
 
-          lineIndex++;
+            lineIndex++;
 
-          return (
-            <PracticeLineTableRow
-              // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
-              key={index}
-              count={index}
-              lineIndex={lineIndex}
-              itemsRef={lineItemsRef}
-              lineData={lineData}
-              onClick={onRowClick}
-            />
-          );
-        })}
-      </TableBody>
-    </Table>
+            return (
+              <PracticeLineTableRow
+                // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+                key={index}
+                count={index}
+                lineIndex={lineIndex}
+                itemsRef={lineItemsRef}
+                lineData={lineData}
+                onClick={onRowClick}
+              />
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 
 const useSheetLayout = () => {
-  const [layout, setLayout] = useState({ width: 0, top: 0 });
+  const [layout, setLayout] = useState({ width: 0, top: 0, sheetHeightPx: 0 });
 
   useEffect(() => {
     const container = document.getElementById("content_container");
@@ -119,9 +121,13 @@ const useSheetLayout = () => {
     if (!container || !topElement) return;
 
     const calculate = () => {
+      const top = topElement.getBoundingClientRect().bottom;
+      const typingCard = document.getElementById("typing_card");
+      const bottomEdge = typingCard?.getBoundingClientRect().bottom ?? window.innerHeight;
       setLayout({
         width: window.innerWidth - container.getBoundingClientRect().right,
-        top: topElement.getBoundingClientRect().bottom,
+        top,
+        sheetHeightPx: Math.max(0, bottomEdge - top),
       });
     };
 
@@ -136,6 +142,8 @@ const useSheetLayout = () => {
 
     const ro = new ResizeObserver(scheduleCalculate);
     ro.observe(container);
+    const typingCard = document.getElementById("typing_card");
+    if (typingCard) ro.observe(typingCard);
     window.addEventListener("resize", scheduleCalculate);
     scheduleCalculate();
 

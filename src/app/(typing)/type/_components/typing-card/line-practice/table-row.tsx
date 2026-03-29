@@ -39,12 +39,12 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
       data-line-index={lineIndex}
       data-count={count}
       className={cn(
-        "h-9 cursor-pointer select-none",
+        "h-10 cursor-pointer select-none",
         isSelected && "bg-primary/60 outline-primary hover:bg-primary/60",
       )}
       onClick={() => onClick(lineIndex)}
     >
-      <TableCell className="flex items-center gap-2 text-xs">
+      <TableCell className="flex items-center gap-2 text-sm">
         {missCount > 0 && (
           <span
             className={cn(
