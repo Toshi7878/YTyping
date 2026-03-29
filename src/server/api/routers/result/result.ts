@@ -8,19 +8,20 @@ import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } f
 import type { TypingLineResults } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
+import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../../utils/id";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
 
 export const resultRouter = {
   getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
+    const data = await downloadPublicFile(`result-json/${input.resultId}.json.gz`);
 
     if (!data) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
     }
 
-    const jsonString = new TextDecoder().decode(data);
+    const jsonString = new TextDecoder().decode(await gzipDecompress(data));
     const jsonData: TypingLineResults = JSON.parse(jsonString);
 
     return jsonData;
@@ -67,11 +68,12 @@ export const resultRouter = {
         .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
       const jsonString = JSON.stringify(lineResults, null, 2);
+      const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
 
       await uploadPublicFile({
-        key: `result-json/${resultId}.json`,
-        body: jsonString,
-        contentType: "application/json",
+        key: `result-json/${resultId}.json.gz`,
+        body: compressed,
+        contentType: "application/gzip",
       });
 
       const rankedUsers = await tx

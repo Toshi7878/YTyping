@@ -22,10 +22,10 @@ export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLin
   const { clearRate, missCombo } = readSubstatus();
   writeSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
 
-  const { miss: lineMissCount, types } = readLineSubstatus();
+  const { missCount: lineMissCount, types } = readLineSubstatus();
 
   writeLineSubstatus({
-    miss: lineMissCount + 1,
-    types: [...types, { c: failKey, t: constantLineTime }],
+    missCount: lineMissCount + 1,
+    types: [...types, { char: failKey, time: constantLineTime }],
   });
 };

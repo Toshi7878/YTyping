@@ -21,8 +21,8 @@ export const togglePlayInputMode = () => {
     types: [
       ...types,
       {
-        op: newInputMode,
-        t: Math.floor(currentLineTime * 1000) / 1000,
+        option: newInputMode,
+        time: Math.floor(currentLineTime * 1000) / 1000,
       },
     ],
   });

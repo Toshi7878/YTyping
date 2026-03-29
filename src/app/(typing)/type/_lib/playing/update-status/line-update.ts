@@ -22,8 +22,8 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   if (isFailed) {
     diffSubstatus.failureCount = currentSubstatus.failureCount + 1;
 
-    const { type: lineType } = readLineSubstatus();
-    if (lineType === 0) {
+    const { typeCount: lineTypeCount } = readLineSubstatus();
+    if (lineTypeCount === 0) {
       // lineType === 0 の場合のみ更新
       diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
     }

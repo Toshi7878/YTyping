@@ -31,21 +31,21 @@ export const recalculateStatusFromResults = ({
   const { scene } = readUtilityParams();
 
   for (const lineResult of lineResults.slice(1, count)) {
-    newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
-    newStatus.miss += lineResult.status.lMiss ?? 0;
-    newStatus.lost += lineResult.status.lLost ?? 0;
+    newStatus.score += (lineResult.status.point ?? 0) + (lineResult.status.timeBonus ?? 0);
+    newStatus.miss += lineResult.status.missCount ?? 0;
+    newStatus.lost += lineResult.status.lostCount ?? 0;
 
     if (scene === "practice") {
-      newStatus.line -= lineResult.status.lLost === 0 ? 1 : 0;
+      newStatus.line -= lineResult.status.lostCount === 0 ? 1 : 0;
     } else if (scene === "replay") {
-      newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
+      newStatus.line -= lineResult.status.typeCount !== undefined ? 1 : 0;
     }
 
     const typesLength = lineResult.types.length;
     if (typesLength) {
-      totalTypeTime += lineResult.types[typesLength - 1]?.t ?? 0;
+      totalTypeTime += lineResult.types[typesLength - 1]?.time ?? 0;
     }
-    newStatus.type += lineResult.status.lType ?? 0;
+    newStatus.type += lineResult.status.typeCount ?? 0;
   }
 
   const lineResult = lineResults[count - 1];
@@ -53,13 +53,13 @@ export const recalculateStatusFromResults = ({
   newStatus.rank = calcCurrentRank(newStatus.score);
 
   if (updateType === "completed") {
-    newStatus.point = lineResult?.status.p ?? 0;
-    newStatus.timeBonus = lineResult?.status.tBonus ?? 0;
+    newStatus.point = lineResult?.status.point ?? 0;
+    newStatus.timeBonus = lineResult?.status.timeBonus ?? 0;
   } else {
     newStatus.point = 0;
     newStatus.timeBonus = 0;
   }
 
-  writeSubstatus({ totalTypeTime: lineResult?.status.tTime });
+  writeSubstatus({ totalTypeTime: lineResult?.status.typingTime });
   setAllTypingStatus(newStatus);
 };

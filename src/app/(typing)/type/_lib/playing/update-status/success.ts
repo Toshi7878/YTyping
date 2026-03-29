@@ -31,7 +31,7 @@ export const updateSuccessStatus = ({
   // KPM計算用の状態取得
   // Note: updateSuccessSubstatusより先に実行されるため、現在のlineTypeCountは加算前の値です。
   // そのため、計算には +1 した値を使用します。
-  const { type: lineTypeCount } = readLineSubstatus();
+  const { typeCount: lineTypeCount } = readLineSubstatus();
   const { totalTypeTime } = readSubstatus();
 
   if (!isPaused) {
@@ -87,11 +87,11 @@ export const updateSuccessSubstatus = ({
   diffSubstatus.missCombo = 0;
 
   // 2. 行開始時の処理
-  if (currentLineSubstatus.type === 0) {
+  if (currentLineSubstatus.typeCount === 0) {
     diffLineSubstatus.latency = constantLineTime;
     diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
     if (isCompleted) {
-      const { latency: lineLatency, type: lineTypeCount } = readLineSubstatus();
+      const { latency: lineLatency, typeCount: lineTypeCount } = readLineSubstatus();
       const lineRkpm = calculateLineRkpm({ lineLatency, lineTypeCount, constantLineTime });
       diffSubstatus.rkpm = lineRkpm;
     }
@@ -107,7 +107,7 @@ export const updateSuccessSubstatus = ({
   }
 
   // 4. type数の更新
-  diffLineSubstatus.type = currentLineSubstatus.type + 1;
+  diffLineSubstatus.typeCount = currentLineSubstatus.typeCount + 1;
 
   // 5. 行完了時の処理
   if (isCompleted) {
@@ -121,7 +121,7 @@ export const updateSuccessSubstatus = ({
   // 6. 統計情報の詳細更新（Replay以外）
   if (scene !== "replay" && chunkType) {
     const currentTypes = diffLineSubstatus.types ?? currentLineSubstatus.types;
-    diffLineSubstatus.types = [...currentTypes, { c: successKey, is: true, t: constantLineTime }];
+    diffLineSubstatus.types = [...currentTypes, { char: successKey, isCorrect: true, time: constantLineTime }];
 
     if (chunkType === "kana") {
       const { inputMode } = readUtilityParams();

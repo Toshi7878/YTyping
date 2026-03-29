@@ -13,18 +13,18 @@ export function buildInitialLineResult(
     if (line.notes.roma > 0) {
       initialLineResultData.push({
         status: {
-          p: 0,
-          tBonus: 0,
-          lType: 0,
-          lMiss: 0,
-          lRkpm: 0,
-          lKpm: 0,
-          lostW: null,
-          lLost: 0,
+          point: 0,
+          timeBonus: 0,
+          typeCount: 0,
+          missCount: 0,
+          rkpm: 0,
+          kpm: 0,
+          lostWord: null,
+          lostCount: 0,
           combo: 0,
-          tTime: 0,
+          typingTime: 0,
           mode: inputMode,
-          sp: 1,
+          speed: 1,
         },
         types: [],
       });
@@ -32,9 +32,9 @@ export function buildInitialLineResult(
       initialLineResultData.push({
         status: {
           combo: 0,
-          tTime: 0,
+          typingTime: 0,
           mode: inputMode,
-          sp: 1,
+          speed: 1,
         },
         types: [],
       });

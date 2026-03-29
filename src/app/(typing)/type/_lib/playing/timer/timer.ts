@@ -147,7 +147,7 @@ const updateEvery100ms = ({
   const { isCompleted } = readLineSubstatus();
 
   if (!isCompleted) {
-    const { type: lineTypeCount } = readLineSubstatus();
+    const { typeCount: lineTypeCount } = readLineSubstatus();
     const newLineKpm = calculateLineKpm({ lineTypeCount, constantLineTime });
     setLineKpm(newLineKpm);
   }
@@ -278,7 +278,7 @@ const syncReplayLineSnapshot = (newCurrentCount: number) => {
   writeUtilityRefParams({ replayKeyCount: 0 });
 
   const playSpeed = readMediaSpeed();
-  const speed = lineResult.status.sp as YouTubeSpeed;
+  const speed = lineResult.status.speed as YouTubeSpeed;
 
   if (playSpeed === speed) return;
   setYTPlaybackRate(speed);
