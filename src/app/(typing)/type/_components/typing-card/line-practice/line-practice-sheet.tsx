@@ -69,7 +69,11 @@ export const PracticeLineSheet = () => {
       >
         <div ref={containerRef} className="h-full">
           <ScrollArea type="always" className="h-full overflow-hidden">
-            {lineFailureCount !== 0 && <div className="text-failure">FailureLine: {lineFailureCount}</div>}
+            {lineFailureCount === 0 ? (
+              <div className="text-perfect">All Line Completed!!</div>
+            ) : (
+              <div className="text-failure">Failure Line: {lineFailureCount}</div>
+            )}
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
         </div>
