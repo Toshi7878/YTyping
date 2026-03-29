@@ -40,8 +40,7 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
       data-count={count}
       className={cn(
         "h-9 cursor-pointer select-none",
-        "data-[pointer-near=true]:bg-muted/50 data-[pointer-near=true]:outline-2 data-[pointer-near=true]:outline-foreground",
-        isSelected && "bg-primary/10 outline-primary",
+        isSelected && "bg-primary/60 outline-primary hover:bg-primary/60",
       )}
       onClick={() => onClick(lineIndex)}
     >
