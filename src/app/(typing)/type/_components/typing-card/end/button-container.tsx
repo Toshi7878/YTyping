@@ -9,6 +9,7 @@ import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { ResultLineSheet } from "../line-result/line-result-sheet";
+import { RegisterRankingButton } from "./submit-ranking-button";
 
 export const EndButtonContainer = () => {
   const { data: session } = useSession();
@@ -25,13 +26,13 @@ export const EndButtonContainer = () => {
   return (
     <>
       <div className="flex items-center justify-around" id="end_main_buttons">
-        {/* {isDisplayRankingButton && (
+        {isDisplayRankingButton && (
           <RegisterRankingButton
             isScoreUpdated={isScoreUpdated}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
-        )} */}
+        )}
         <ResultLineSheet
           trigger={
             <Button size="4xl" variant="primary-hover-light" className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl">
