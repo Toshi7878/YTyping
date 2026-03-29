@@ -1,12 +1,7 @@
 "use client";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { useLineFailureCountState, writePracticeLineItems } from "@/app/(typing)/type/_lib/atoms/ref";
-import {
-  type BuiltMap,
-  setLineResultSheet,
-  setLineSelectIndex,
-  useBuiltMapState,
-} from "@/app/(typing)/type/_lib/atoms/state";
+import { type BuiltMap, setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -50,7 +45,7 @@ export const PracticeLineSheet = () => {
   };
 
   return (
-    <Sheet modal={false} open={true} onOpenChange={setLineResultSheet}>
+    <Sheet modal={false} open={true}>
       <SheetContent
         ref={sheetRef}
         hideCloseButton

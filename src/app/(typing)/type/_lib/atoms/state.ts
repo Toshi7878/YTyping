@@ -6,7 +6,6 @@ import type { BuiltMapLine, InputMode } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { findClosestLowerOrEqual } from "@/utils/array";
-import type { Updater } from "@/utils/types";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
@@ -42,7 +41,6 @@ const utilityParamsAtom = atomWithReset({
   activeSkipKey: null as SkipGuideKey,
   changeCSSCount: null as number | null,
   isYTStarted: false,
-  lineResultdrawerClosure: false,
   isPaused: false,
   movieDuration: 0,
   lineSelectIndex: 0,
@@ -50,7 +48,6 @@ const utilityParamsAtom = atomWithReset({
   minMediaSpeed: 1,
 });
 
-const lineResultDrawerClosureAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
 const sceneAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("scene"));
 const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"));
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
@@ -63,11 +60,6 @@ const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("mo
 const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
 const mediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("mediaSpeed"));
 const minMediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("minMediaSpeed"));
-
-export const useLineResultSheetOpenState = () => useAtomValue(lineResultDrawerClosureAtom);
-export const setLineResultSheet = (update: Updater<boolean>) => {
-  store.set(lineResultDrawerClosureAtom, update);
-};
 
 const sceneGroupAtom = atom((get) => {
   const scene = get(sceneAtom);

@@ -4,7 +4,6 @@ import {
   readMediaSpeed,
   readUtilityParams,
   resetReplayRankingResult,
-  setLineResultSheet,
   setMinMediaSpeed,
   setNotify,
   setPlayingInputMode,
@@ -25,8 +24,6 @@ export const commitPlayModeChange = () => {
     if (window.confirm(confirmMessage)) {
       writeUtilityRefParams({ replayKeyCount: 0 });
       resetReplayRankingResult();
-
-      setLineResultSheet(false);
 
       if (scene === "replay") {
         const readyInputMode = readReadyInputMode();

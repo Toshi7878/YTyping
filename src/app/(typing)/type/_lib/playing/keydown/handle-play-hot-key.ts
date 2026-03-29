@@ -1,7 +1,7 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { readTypingOptions } from "../../atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "../../atoms/ref";
-import { readBuiltMap, readMinMediaSpeed, readUtilityParams, setLineResultSheet, setNotify } from "../../atoms/state";
+import { readBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "../../atoms/state";
 import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { commitLineSkip } from "../commit-line-skip";
 import { commitPlayModeChange } from "../commit-play-mode-change";
@@ -70,13 +70,6 @@ export const handlePlayHotKey = (event: KeyboardEvent) => {
         movePrevLine();
       }
       break;
-    case "F1":
-      if (typingOptions.InputModeToggleKey === "TAB") {
-        if (scene === "replay" || scene === "practice") {
-          setLineResultSheet((prev) => !prev);
-        }
-      }
-      break;
 
     case "F4": {
       const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
@@ -123,8 +116,6 @@ export const handlePlayHotKey = (event: KeyboardEvent) => {
         if (scene !== "replay") {
           togglePlayInputMode();
         }
-      } else if (scene === "replay" || scene === "practice") {
-        setLineResultSheet((prev) => !prev);
       }
       break;
   }
