@@ -51,7 +51,7 @@ export const PracticeLineSheet = () => {
     width: `${isHovered ? width + HOVER_EXTRA_WIDTH : width}px`,
     top: top || undefined,
     height: top ? `calc(100% - ${top}px)` : undefined,
-    transition: "width 900ms ease",
+    transition: "width 1200ms ease",
   };
 
   return (
