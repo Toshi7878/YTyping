@@ -1,7 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
-import { gzipCompress, gzipDecompress } from "@/server/api/utils/gzip";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
@@ -9,13 +8,14 @@ import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } f
 import type { TypingLineResults } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
+import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../../utils/id";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
 
 export const resultRouter = {
   getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
+    const data = await downloadPublicFile(`result-json/${input.resultId}.json.gz`);
 
     if (!data) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
@@ -71,7 +71,7 @@ export const resultRouter = {
       const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
 
       await uploadPublicFile({
-        key: `result-json/${resultId}.json`,
+        key: `result-json/${resultId}.json.gz`,
         body: compressed,
         contentType: "application/gzip",
       });

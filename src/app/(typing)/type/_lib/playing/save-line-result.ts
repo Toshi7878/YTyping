@@ -59,7 +59,7 @@ export const saveLineResult = (count: number) => {
             timeBonus: typingStatus.timeBonus,
             typeCount,
             missCount,
-            typedHiragana: typingWord.correct.kana,
+            typedHiragana: map.isCaseSensitive ? typingWord.correct.kana : typingWord.correct.kana.toLowerCase(),
             lostHiragana: lostHiraganaJoined,
             rkpm,
             kpm: readLineKpm(),
