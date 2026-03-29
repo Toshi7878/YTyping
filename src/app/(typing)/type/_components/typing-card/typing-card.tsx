@@ -69,7 +69,7 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
       )}
 
       {scene === "practice" && <PracticeLineSheet />}
-      {sceneGroup === "Playing" && map?.lines[0]?.options?.eternalCSS && (
+      {(sceneGroup === "Playing" || sceneGroup === "End") && map?.lines[0]?.options?.eternalCSS && (
         <style>{map.lines[0].options?.eternalCSS}</style>
       )}
     </CardContent>
