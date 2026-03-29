@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   readMinMediaSpeed,
   readUtilityParams,
@@ -14,10 +16,12 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
+import { useTypingOptionsState } from "../../../_lib/atoms/hydrate";
 import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../../_lib/atoms/youtube-player";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
 import { FloatingPracticeLineCard } from "../line-practice/card/floating-line-card";
+import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 
 export const FooterButtons = () => {
   const isYTStarted = useYTStartedState();
@@ -50,6 +54,14 @@ export const FooterButtons = () => {
           <LineMoveButton />
           <FloatingPracticeLineCard />
         </div>
+      )}
+      {isYTStarted && scene === "replay" && (
+        <>
+          <SpeedButton />
+          <LineMoveButton />
+          <ResultListButton />
+          <RetryButton />
+        </>
       )}
     </section>
   );
@@ -118,40 +130,20 @@ const LineMoveButton = () => {
   );
 };
 
-// const ListButton = () => {
-//   const { InputModeToggleKey } = useTypingOptionsState();
+const ResultListButton = () => {
+  const { InputModeToggleKey } = useTypingOptionsState();
+  const [open, setOpen] = useState(false);
 
-//   return (
-//     <ButtonWithKbd
-//       buttonLabel="リスト"
-//       kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
-//       onClickCapture={(event) => {
-//         event.stopPropagation();
-//         setLineResultSheet(true);
-//       }}
-//     />
-//   );
-// };
+  useHotkeys(InputModeToggleKey === "TAB" ? "F1" : "Tab", () => setOpen(true), {
+    enableOnFormTags: false,
+    preventDefault: true,
+  });
 
-// const PracticeSelectedLine = () => {
-//   const lineSelectIndex = useLineSelectIndexState();
-//   const lineResult = useLineResultState(lineSelectIndex - 1);
-//   if (!lineResult) return null;
-//   const { missCount, typedHiragana, lostHiragana } = lineResult.lineResult.status;
-
-//   return (
-//     <span className="flex items-center gap-2 overflow-hidden">
-//       {!!missCount && (
-//         <span className="word-outline-text shrink-0 font-semibold text-destructive text-xs tabular-nums">
-//           miss:{missCount}
-//         </span>
-//       )}
-//       <div className="word-font word-outline-text truncate text-sm">
-//         <span className={cn(lostHiragana === "" ? "text-word-completed" : "text-word-correct")}>
-//           {typedHiragana?.replace(/ /g, "ˍ")}
-//         </span>
-//         <span className="text-word-word">{lostHiragana}</span>
-//       </div>
-//     </span>
-//   );
-// };
+  return (
+    <ReplayResultLineSheet
+      trigger={<ButtonWithKbd buttonLabel="リスト" kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"} />}
+      open={open}
+      setOpen={setOpen}
+    />
+  );
+};

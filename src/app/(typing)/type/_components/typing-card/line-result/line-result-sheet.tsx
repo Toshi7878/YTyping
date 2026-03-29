@@ -1,37 +1,46 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
-import { useRef, useState } from "react";
+import { type RefObject, useRef, useState } from "react";
 import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { TypingLineResults } from "@/validator/result";
+import { moveSetLine } from "../../../_lib/playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 
-interface ResultLineSheetProps {
+export const ReplayResultLineSheet = ({
+  trigger,
+  open,
+  setOpen,
+}: {
   trigger: React.ReactNode;
-}
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) => {
+  const map = useBuiltMapState();
+  const handleCardClick = (lineIndex: number) => {
+    if (!map) return;
+    const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
 
-export const ResultLineSheet = ({ trigger }: ResultLineSheetProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+    moveSetLine(seekCount);
+    setLineSelectIndex(lineIndex);
+  };
 
   return (
-    <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
-      {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
+    <Sheet modal={false} open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
           <SheetTitle>詳細リザルト</SheetTitle>
         </SheetHeader>
-
-        {isOpen && <ResultLineList />}
+        <ResultLineList onCardClick={handleCardClick} />
       </SheetContent>
     </Sheet>
   );
 };
 
-const ResultLineList = () => {
-  const map = useBuiltMapState();
-  const itemsRef = useRef<HTMLDivElement[]>([]);
-
-  const handleCardClick = (lineIndex: number) => {
+export const EndResultLineSheet = ({ trigger }: { trigger: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const handleCardClick = (lineIndex: number, itemsRef: RefObject<HTMLDivElement[]>) => {
     let nextTypedCount = 0;
     const typedElements = itemsRef.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
     if (!typedElements) return;
@@ -74,6 +83,26 @@ const ResultLineList = () => {
     }
   };
 
+  return (
+    <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
+      <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
+        <SheetHeader className="py-2">
+          <SheetTitle>詳細リザルト</SheetTitle>
+        </SheetHeader>
+        {isOpen && <ResultLineList onCardClick={handleCardClick} />}
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+const ResultLineList = ({
+  onCardClick,
+}: {
+  onCardClick: (lineIndex: number, itemsRef: RefObject<HTMLDivElement[]>) => void;
+}) => {
+  const map = useBuiltMapState();
+  const itemsRef = useRef<HTMLDivElement[]>([]);
   let lineIndex = 0;
 
   return (
@@ -92,7 +121,7 @@ const ResultLineList = () => {
             lineIndex={lineIndex}
             itemsRef={itemsRef}
             lineData={lineData}
-            onClick={handleCardClick}
+            onClick={(lineIndex) => onCardClick(lineIndex, itemsRef)}
           />
         );
       })}
