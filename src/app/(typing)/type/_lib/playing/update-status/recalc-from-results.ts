@@ -30,10 +30,17 @@ export const recalculateStatusFromResults = ({
   let totalTypeTime = 0;
   const { scene } = readUtilityParams();
 
+  let completeLineCount = 0;
+  let failureLineCount = 0;
   for (const lineResult of lineResults.slice(1, count)) {
     newStatus.score += (lineResult.status.point ?? 0) + (lineResult.status.timeBonus ?? 0);
     newStatus.miss += lineResult.status.missCount ?? 0;
     newStatus.lost += lineResult.status.lostCount ?? 0;
+    if (lineResult.status.lostCount) {
+      failureLineCount++;
+    } else {
+      completeLineCount++;
+    }
 
     if (scene === "practice") {
       newStatus.line -= lineResult.status.lostCount === 0 ? 1 : 0;
@@ -60,6 +67,10 @@ export const recalculateStatusFromResults = ({
     newStatus.timeBonus = 0;
   }
 
-  writeSubstatus({ totalTypeTime: lineResult?.status.typingTime });
+  writeSubstatus({
+    totalTypeTime: lineResult?.status.typingTime,
+    completeCount: completeLineCount,
+    failureCount: failureLineCount,
+  });
   setAllTypingStatus(newStatus);
 };

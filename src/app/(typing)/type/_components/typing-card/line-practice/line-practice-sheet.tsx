@@ -1,6 +1,10 @@
 "use client";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { writePracticeLineItems } from "@/app/(typing)/type/_lib/atoms/ref";
+import {
+  useLineCompleteCountState,
+  useLineFailureCountState,
+  writePracticeLineItems,
+} from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   type BuiltMap,
   setLineResultSheet,
@@ -26,6 +30,8 @@ export const PracticeLineSheet = () => {
   useExternalWheelScroll(containerRef);
 
   const map = useBuiltMapState();
+  const lineCompleteCount = useLineCompleteCountState();
+  const lineFailureCount = useLineFailureCountState();
   const lineItemsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
@@ -63,7 +69,7 @@ export const PracticeLineSheet = () => {
       >
         <div ref={containerRef} className="h-full">
           <ScrollArea type="always" className="h-full overflow-hidden">
-            <div className="text-muted-foreground text-xs">Backspace: 選択中の行を再生</div>
+            {lineFailureCount !== 0 && <div className="text-failure">FailureLine: {lineFailureCount}</div>}
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
         </div>

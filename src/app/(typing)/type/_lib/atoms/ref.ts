@@ -1,5 +1,6 @@
-import type { ExtractAtomValue } from "jotai";
+import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
 import type { InputMode } from "lyrics-typing-engine";
 import type { TypeResult } from "@/validator/result";
 import { getTypeAtomStore } from "./store";
@@ -11,7 +12,7 @@ export const readLineCount = () => store.get(lineCountAtom);
 export const writeLineCount = (count: number) => store.set(lineCountAtom, count);
 export const resetLineCount = () => store.set(lineCountAtom, RESET);
 
-const substatusRefAtom = atomWithReset({
+const substatusAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -30,10 +31,16 @@ const substatusRefAtom = atomWithReset({
   failureCount: 0,
 });
 
-export const readSubstatus = () => store.get(substatusRefAtom);
-export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof substatusRefAtom>>) =>
-  store.set(substatusRefAtom, (prev) => ({ ...prev, ...newSubstatus }));
-export const resetSubstatus = () => store.set(substatusRefAtom, RESET);
+export const readSubstatus = () => store.get(substatusAtom);
+export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof substatusAtom>>) =>
+  store.set(substatusAtom, (prev) => ({ ...prev, ...newSubstatus }));
+export const resetSubstatus = () => store.set(substatusAtom, RESET);
+
+const lineCompleteCountAtom = focusAtom(substatusAtom, (optic) => optic.prop("completeCount"));
+const lineFailureCountAtom = focusAtom(substatusAtom, (optic) => optic.prop("failureCount"));
+
+export const useLineCompleteCountState = () => useAtomValue(lineCompleteCountAtom);
+export const useLineFailureCountState = () => useAtomValue(lineFailureCountAtom);
 
 const lineSubstatusRefAtom = atomWithReset({
   typeCount: 0,
