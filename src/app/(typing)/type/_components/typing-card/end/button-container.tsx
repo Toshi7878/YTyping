@@ -14,7 +14,7 @@ export const EndButtonContainer = () => {
   const { data: session } = useSession();
   const status = useTypingStatusState();
   const scene = useSceneState();
-  const [isSubmitRankingButtonDisabled, setIsSubmitRankingButtonDisabled] = useState(false);
+  const [isSubmitRankingButtonDisabled] = useState(false);
   const [bestScore] = useState(() => getRankingMyResult(session)?.score ?? 0);
   const minMediaSpeed = useMinMediaSpeedState();
 
