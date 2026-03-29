@@ -8,7 +8,6 @@ import { SkipAndTimeDisplay } from "./footer/skip-and-time-display";
 import { Combo } from "./header/combo";
 import { LineRemainTimeAndKpm } from "./header/linekpm-and-remain-time";
 import { PlayingNotify } from "./header/notify";
-import { FloatingPracticeLineCard } from "./line-practice/card/floating-line-card";
 import { PracticeLineSheet } from "./line-practice/line-practice-sheet";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
@@ -69,12 +68,7 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
         <EndScene className={minHeight} />
       )}
 
-      {scene === "practice" && (
-        <>
-          <PracticeLineSheet />
-          <FloatingPracticeLineCard />
-        </>
-      )}
+      {scene === "practice" && <PracticeLineSheet />}
       {sceneGroup === "Playing" && map?.lines[0]?.options?.eternalCSS && (
         <style>{map.lines[0].options?.eternalCSS}</style>
       )}

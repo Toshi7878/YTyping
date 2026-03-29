@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import {
   readMinMediaSpeed,
   readUtilityParams,
-  setLineResultSheet,
   useIsPausedState,
   useMediaSpeedState,
   useSceneGroupState,
@@ -15,16 +14,16 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
-import { useTypingOptionsState } from "../../../_lib/atoms/hydrate";
 import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../../_lib/atoms/youtube-player";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
+import { FloatingPracticeLineCard } from "../line-practice/card/floating-line-card";
 
 export const FooterButtons = () => {
   const isYTStarted = useYTStartedState();
+  const scene = useSceneState();
   const sceneGroup = useSceneGroupState();
   const isReady = sceneGroup === "Ready";
-  const isPlaying = isYTStarted && sceneGroup === "Playing";
   const { id: mapId } = useParams<{ id: string }>();
   const { data: session } = useSession();
 
@@ -39,12 +38,18 @@ export const FooterButtons = () => {
           </Button>
         </Link>
       )}
-      {isPlaying && (
+      {isYTStarted && scene === "play" && (
         <>
           <SpeedButton />
-          <PracticeButtons />
           <RetryButton />
         </>
+      )}
+      {isYTStarted && scene === "practice" && (
+        <div className="flex items-center gap-14">
+          <SpeedButton />
+          <LineMoveButton />
+          <FloatingPracticeLineCard />
+        </div>
       )}
     </section>
   );
@@ -82,34 +87,6 @@ const SpeedButton = () => {
   );
 };
 
-const PracticeButtons = () => {
-  const scene = useSceneState();
-  const { InputModeToggleKey } = useTypingOptionsState();
-
-  return (
-    (scene === "practice" || scene === "replay") && (
-      <>
-        <ButtonWithDoubleKbd
-          buttonLabel="移動"
-          prevKbdLabel="←"
-          nextKbdLabel="→"
-          onClick={() => {}}
-          onClickPrev={() => movePrevLine()}
-          onClickNext={() => moveNextLine()}
-        />
-        <ButtonWithKbd
-          buttonLabel="リスト"
-          kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
-          onClickCapture={(event) => {
-            event.stopPropagation();
-            setLineResultSheet(true);
-          }}
-        />
-      </>
-    )
-  );
-};
-
 const RetryButton = () => {
   const isPaused = useIsPausedState();
   return (
@@ -127,3 +104,54 @@ const RetryButton = () => {
     />
   );
 };
+
+const LineMoveButton = () => {
+  return (
+    <ButtonWithDoubleKbd
+      buttonLabel="移動"
+      prevKbdLabel="←"
+      nextKbdLabel="→"
+      onClick={() => {}}
+      onClickPrev={() => movePrevLine()}
+      onClickNext={() => moveNextLine()}
+    />
+  );
+};
+
+// const ListButton = () => {
+//   const { InputModeToggleKey } = useTypingOptionsState();
+
+//   return (
+//     <ButtonWithKbd
+//       buttonLabel="リスト"
+//       kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
+//       onClickCapture={(event) => {
+//         event.stopPropagation();
+//         setLineResultSheet(true);
+//       }}
+//     />
+//   );
+// };
+
+// const PracticeSelectedLine = () => {
+//   const lineSelectIndex = useLineSelectIndexState();
+//   const lineResult = useLineResultState(lineSelectIndex - 1);
+//   if (!lineResult) return null;
+//   const { missCount, typedHiragana, lostHiragana } = lineResult.lineResult.status;
+
+//   return (
+//     <span className="flex items-center gap-2 overflow-hidden">
+//       {!!missCount && (
+//         <span className="word-outline-text shrink-0 font-semibold text-destructive text-xs tabular-nums">
+//           miss:{missCount}
+//         </span>
+//       )}
+//       <div className="word-font word-outline-text truncate text-sm">
+//         <span className={cn(lostHiragana === "" ? "text-word-completed" : "text-word-correct")}>
+//           {typedHiragana?.replace(/ /g, "ˍ")}
+//         </span>
+//         <span className="text-word-word">{lostHiragana}</span>
+//       </div>
+//     </span>
+//   );
+// };

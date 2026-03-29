@@ -29,7 +29,7 @@ export const ResultCardFooter = ({
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
-    <div className={cn("flex w-full justify-between gap-2 py-2", className)} {...props}>
+    <div className={cn("flex w-full justify-between gap-2", className)} {...props}>
       <div className="flex items-center gap-2">
         <Badge
           variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}

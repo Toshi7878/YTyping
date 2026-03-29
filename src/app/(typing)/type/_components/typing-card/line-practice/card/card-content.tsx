@@ -14,10 +14,11 @@ export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord 
   let correctCount = 0;
 
   return (
-    <CardContent className="word-font gap-2 py-2 text-base">
+    <CardContent className="word-font gap-2 text-base">
       <div className="kana-word">
         <div>{lineKanaWord}</div>
       </div>
+
       <div className={cn("word-outline-text break-all text-foreground uppercase tracking-wider")}>
         {types.map((type: TypeResult, index: number) => {
           if (type.isCorrect) {

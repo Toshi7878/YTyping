@@ -6,18 +6,15 @@ import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
 import {
   useBuiltMapState,
   useLineSelectIndexState,
-  useMinMediaSpeedState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Card, CardFooter } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { ResultCardContent } from "./card-content";
 import { ResultCardFooter } from "./card-footer";
-import { ResultCardHeader } from "./card-header";
 
 const ACTIVATION_CONSTRAINT = { distance: 5 };
 
@@ -48,7 +45,6 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
     id: "practice-line-card",
   });
   const map = useBuiltMapState();
-  const minMediaSpeed = useMinMediaSpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
 
@@ -65,9 +61,6 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
 
   const maxLinePoint = builtLine.notes.roma * CHAR_POINT;
   const lineKanaWord = builtLine.wordChunks.map((chunk) => chunk.kana).join("");
-  const lineNotes = lineInputMode === "roma" ? builtLine.notes.roma : builtLine.notes.kana;
-  const lineSpeed = lineResult.status.speed > minMediaSpeed ? lineResult.status.speed : minMediaSpeed;
-  const lineKpm = (lineInputMode === "roma" ? builtLine.kpm.roma : builtLine.kpm.kana) * lineSpeed;
 
   const lineTypeWord =
     lineInputMode === "roma" ? builtLine.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("") : lineKanaWord;
@@ -90,7 +83,7 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
         ),
       }}
       className={cn(
-        "practice-card fixed -right-24 bottom-14 z-10 hidden h-fit w-lg border py-2 sm:block",
+        "practice-card relative top-4 z-10 hidden h-fit max-w-4xl border py-1.5 sm:block",
         isDragging ? "cursor-grabbing" : "cursor-grab",
       )}
       onClick={() => {
@@ -100,14 +93,6 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
         }
       }}
     >
-      <ResultCardHeader
-        lineIndex={lineSelectIndex}
-        lineNotes={lineNotes}
-        lineInputMode={lineInputMode}
-        lineKpm={lineKpm}
-        lineSpeed={lineSpeed}
-      />
-
       <ResultCardContent
         lineKanaWord={lineKanaWord}
         types={lineResult.types}
@@ -115,8 +100,7 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
         lostWord={lostWord}
       />
 
-      <Separator className="mx-auto w-[92%]" />
-      <CardFooter>
+      <CardFooter className="py-1">
         <ResultCardFooter
           point={point}
           tBonus={tBonus}

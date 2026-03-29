@@ -43,7 +43,7 @@ export const PracticeLineSheet = () => {
   if (!width) return null;
 
   const sheetStyle = {
-    width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 15}px`,
+    width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 30}px`,
     top: top || undefined,
     height: top ? `calc(100% - ${top}px)` : undefined,
     transition: "width 1200ms ease",
@@ -63,12 +63,12 @@ export const PracticeLineSheet = () => {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div ref={containerRef} className="h-full">
+          {lineFailureCount === 0 ? (
+            <div className="text-perfect">All Completed</div>
+          ) : (
+            <div className="text-failure">Failure Line: {lineFailureCount}</div>
+          )}
           <ScrollArea type="always" className="h-full overflow-hidden">
-            {lineFailureCount === 0 ? (
-              <div className="text-perfect">All Completed</div>
-            ) : (
-              <div className="text-failure">Failure Line: {lineFailureCount}</div>
-            )}
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
         </div>
