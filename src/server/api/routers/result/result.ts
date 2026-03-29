@@ -1,10 +1,9 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, desc, eq, inArray, max } from "drizzle-orm";
+import { and, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
-import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
+import { downloadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
-import { db } from "@/server/drizzle/client";
-import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } from "@/server/drizzle/schema";
+import { NotificationOverTakes, Notifications, ResultStatuses, Results } from "@/server/drizzle/schema";
 import type { TypingLineResults } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
@@ -26,75 +25,76 @@ export const resultRouter = {
     return jsonData;
   }),
 
-  upsert: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
-    const { session } = ctx;
-    const { id: userId } = session.user;
-    const { mapId, lineResults, status } = input;
+  upsert: protectedProcedure.input(CreateResultSchema).mutation(async () => {
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    // const { session } = ctx;
+    // const { id: userId } = session.user;
+    // const { mapId, lineResults, status } = input;
 
-    return db.transaction(async (tx) => {
-      const existingResult = await tx
-        .select({ id: Results.id })
-        .from(Results)
-        .where(and(eq(Results.userId, userId), eq(Results.mapId, mapId)))
-        .limit(1)
-        .then((rows) => rows[0]);
+    // return db.transaction(async (tx) => {
+    //   const existingResult = await tx
+    //     .select({ id: Results.id })
+    //     .from(Results)
+    //     .where(and(eq(Results.userId, userId), eq(Results.mapId, mapId)))
+    //     .limit(1)
+    //     .then((rows) => rows[0]);
 
-      let resultId: number | undefined;
+    //   let resultId: number | undefined;
 
-      if (existingResult) {
-        resultId = await tx
-          .update(Results)
-          .set({ updatedAt: new Date() })
-          .where(eq(Results.id, existingResult.id))
-          .returning({ id: Results.id })
-          .then((res) => res[0]?.id);
-      } else {
-        const nextId = await getNextResultId(tx);
+    //   if (existingResult) {
+    //     resultId = await tx
+    //       .update(Results)
+    //       .set({ updatedAt: new Date() })
+    //       .where(eq(Results.id, existingResult.id))
+    //       .returning({ id: Results.id })
+    //       .then((res) => res[0]?.id);
+    //   } else {
+    //     const nextId = await getNextResultId(tx);
 
-        resultId = await tx
-          .insert(Results)
-          .values({ id: nextId, mapId, userId })
-          .returning({ id: Results.id })
-          .then((res) => res[0]?.id);
-      }
-      if (!resultId) {
-        throw new TRPCError({ code: "PRECONDITION_FAILED" });
-      }
+    //     resultId = await tx
+    //       .insert(Results)
+    //       .values({ id: nextId, mapId, userId })
+    //       .returning({ id: Results.id })
+    //       .then((res) => res[0]?.id);
+    //   }
+    //   if (!resultId) {
+    //     throw new TRPCError({ code: "PRECONDITION_FAILED" });
+    //   }
 
-      await tx
-        .insert(ResultStatuses)
-        .values({ resultId, ...status })
-        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
+    //   await tx
+    //     .insert(ResultStatuses)
+    //     .values({ resultId, ...status })
+    //     .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
-      const jsonString = JSON.stringify(lineResults, null, 2);
+    //   const jsonString = JSON.stringify(lineResults, null, 2);
 
-      await uploadPublicFile({
-        key: `result-json/${resultId}.json`,
-        body: jsonString,
-        contentType: "application/json",
-      });
+    //   await uploadPublicFile({
+    //     key: `result-json/${resultId}.json`,
+    //     body: jsonString,
+    //     contentType: "application/json",
+    //   });
 
-      const rankedUsers = await tx
-        .select({
-          userId: Results.userId,
-          rank: Results.rank,
-          score: ResultStatuses.score,
-        })
-        .from(Results)
-        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .where(eq(Results.mapId, mapId))
-        .orderBy(desc(ResultStatuses.score));
+    //   const rankedUsers = await tx
+    //     .select({
+    //       userId: Results.userId,
+    //       rank: Results.rank,
+    //       score: ResultStatuses.score,
+    //     })
+    //     .from(Results)
+    //     .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+    //     .where(eq(Results.mapId, mapId))
+    //     .orderBy(desc(ResultStatuses.score));
 
-      await cleanupOutdatedOvertakeNotifications({ tx, mapId, userId, rankedUsers });
-      await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
+    //   await cleanupOutdatedOvertakeNotifications({ tx, mapId, userId, rankedUsers });
+    //   await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
 
-      await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
+    //   await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
 
-      const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
-      const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
+    //   const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
+    //   const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
 
-      return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
-    });
+    //   return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
+    // });
   }),
 
   list: resultListRouter,

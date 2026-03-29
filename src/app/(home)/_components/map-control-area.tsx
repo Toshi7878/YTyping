@@ -11,6 +11,7 @@ export const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInput />
+      <div>お知らせ: 現在、リザルトデータのメンテナンス中のため、ランキング登録機能が一時的に無効化されています。</div>
       <div className="flex flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <MapFilter />
         <VolumeRange YTPlayer={YTPlayer} />
