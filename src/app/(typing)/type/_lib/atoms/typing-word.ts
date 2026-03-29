@@ -73,7 +73,7 @@ export const resetCurrentLine = () => {
   const map = readBuiltMap();
   const lineProgress = readLineProgress();
 
-  if (lineProgress && map && map.lines[1]) {
+  if (lineProgress && map?.lines[1]) {
     lineProgress.value = 0;
     lineProgress.max = map.lines[1].time;
   }

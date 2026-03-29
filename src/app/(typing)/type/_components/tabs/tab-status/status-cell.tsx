@@ -1,16 +1,17 @@
 "use client";
-import type { RefObject } from "react";
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import type { LabelType, StatusValueElementRefs } from "./status-table-card";
+import type { LabelType } from "./status-table-card";
+import { statusAtoms } from "../../../_lib/atoms/status";
+import { type Atom, useStore } from "jotai";
+import { uncontrolled } from "jotai-uncontrolled";
 
 interface StatusCellProps {
   label: LabelType;
-  statusValueRefs: StatusValueElementRefs;
 }
 
-export const StatusCell = ({ label, statusValueRefs }: StatusCellProps) => {
-  const statusValueRef = statusValueRefs[label];
+export const StatusCell = ({ label }: StatusCellProps) => {
+  const atom = statusAtoms[label];
 
   return (
     <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
@@ -19,9 +20,9 @@ export const StatusCell = ({ label, statusValueRefs }: StatusCellProps) => {
 
       <span className="value text-6xl md:text-[2.2rem]">
         {label === "point" ? (
-          <PointStatusValue pointValueRef={statusValueRef} timeBonusValueRef={statusValueRefs.timeBonus} />
+          <PointStatusValue pointAtom={statusAtoms.point} timeBonusAtom={statusAtoms.timeBonus} />
         ) : (
-          <StatusValue statusValueRef={statusValueRef} />
+          <StatusValue atom={atom} />
         )}
       </span>
     </TableCell>
@@ -37,21 +38,23 @@ const StatusLabel = ({ label }: { label: LabelType }) => {
 };
 
 interface PointStatusValueProps {
-  pointValueRef: RefObject<HTMLSpanElement | null>;
-  timeBonusValueRef: RefObject<HTMLSpanElement | null>;
+  pointAtom: Atom<number>;
+  timeBonusAtom: Atom<string>;
 }
 
-const PointStatusValue = ({ pointValueRef, timeBonusValueRef }: PointStatusValueProps) => {
+const PointStatusValue = ({ pointAtom, timeBonusAtom }: PointStatusValueProps) => {
+  const store = useStore();
   return (
     <>
-      <span ref={pointValueRef}>0</span>
-      <small ref={timeBonusValueRef}></small>
+      <uncontrolled.span atomStore={store}>{pointAtom}</uncontrolled.span>
+      <uncontrolled.small atomStore={store}>{timeBonusAtom}</uncontrolled.small>
     </>
   );
 };
 
-const StatusValue = ({ statusValueRef }: { statusValueRef: RefObject<HTMLSpanElement | null> }) => {
-  return <span ref={statusValueRef}>0</span>;
+const StatusValue = ({ atom }: { atom: Atom<number> }) => {
+  const store = useStore();
+  return <uncontrolled.span atomStore={store}>{atom}</uncontrolled.span>;
 };
 
 const StatusUnderline = ({ label }: { label: LabelType }) => {
