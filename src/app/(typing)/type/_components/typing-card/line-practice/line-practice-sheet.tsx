@@ -1,10 +1,6 @@
 "use client";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import {
-  useLineCompleteCountState,
-  useLineFailureCountState,
-  writePracticeLineItems,
-} from "@/app/(typing)/type/_lib/atoms/ref";
+import { useLineFailureCountState, writePracticeLineItems } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   type BuiltMap,
   setLineResultSheet,
@@ -30,7 +26,6 @@ export const PracticeLineSheet = () => {
   useExternalWheelScroll(containerRef);
 
   const map = useBuiltMapState();
-  const lineCompleteCount = useLineCompleteCountState();
   const lineFailureCount = useLineFailureCountState();
   const lineItemsRef = useRef<HTMLElement[]>([]);
 
@@ -48,7 +43,7 @@ export const PracticeLineSheet = () => {
   if (!width) return null;
 
   const sheetStyle = {
-    width: `${isHovered ? width + HOVER_EXTRA_WIDTH : width}px`,
+    width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 15}px`,
     top: top || undefined,
     height: top ? `calc(100% - ${top}px)` : undefined,
     transition: "width 1200ms ease",
