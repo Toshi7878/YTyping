@@ -45,7 +45,7 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
       onClick={() => onClick(lineIndex)}
     >
       <TableCell className="flex items-center gap-2 text-xs">
-        {missCount > 1 && (
+        {missCount > 0 && (
           <span
             className={cn(
               "word-outline-text shrink-0 font-semibold text-muted-foreground tabular-nums",
