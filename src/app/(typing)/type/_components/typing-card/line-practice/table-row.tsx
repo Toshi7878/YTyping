@@ -52,7 +52,7 @@ export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, line
               missCount > 0 && "text-destructive",
             )}
           >
-            miss: <span>{missCount}</span>
+            ﾐｽ: <span>{missCount}</span>
           </span>
         )}
 
