@@ -147,8 +147,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       lyrics-typing-engine:
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.1
+        version: 2.0.1
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -2654,6 +2654,7 @@ packages:
   '@xmldom/xmldom@0.8.11':
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -3884,8 +3885,8 @@ packages:
   lyrics-ime-typing-engine@1.0.1:
     resolution: {integrity: sha512-oIWv0VwlUvp58ASgIILONjtQI6Vd9V1q4Cdx6DqycJC7zXHMyYJuKYdlUzRjJWSsOMU8uNGhYj5ZnQFxjO9DkA==}
 
-  lyrics-typing-engine@2.0.0:
-    resolution: {integrity: sha512-ncGTXCymQAIDoC3ZQvkQb+wj0tzB+OeU6u/p4AGG0o2A3+rWOE7RU/BaTYeRH98Z/T3e/KOoQAOsyL5wIikN4Q==}
+  lyrics-typing-engine@2.0.1:
+    resolution: {integrity: sha512-hNMaqVW0CV3LEOucydgCkzLYlNCBuEYTLtXDFekeYlb0e/t+E4bmMgtM8MCNa7rKJTdJN6QWOjpTOBtr2KqJdA==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -8514,7 +8515,7 @@ snapshots:
 
   lyrics-ime-typing-engine@1.0.1: {}
 
-  lyrics-typing-engine@2.0.0: {}
+  lyrics-typing-engine@2.0.1: {}
 
   magic-string@0.30.21:
     dependencies:
