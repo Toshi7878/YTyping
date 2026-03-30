@@ -226,52 +226,40 @@ const updateWordDisplay = (
   const isUpdateLine = !correct.kana;
   const wordContainer = store.get(wordContainerElementAtom);
   requestAnimationFrame(() => {
-    if (isCompleted) {
-      if (wordContainer) {
-        wordContainer.classList.add("word-area-completed");
-      }
+    wordContainer?.classList.toggle("word-area-completed", isCompleted);
 
-      if (lineCompletedDisplay === "NEXT_WORD") {
-        const builtMap = readBuiltMap();
-        const count = readLineCount();
-        const nextLine = builtMap?.lines[count + 1];
-        if (nextLine && main && sub) {
-          const { kanaLyrics, romaLyrics } = nextLine;
-          main.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? kanaLyrics : romaLyrics)}`;
-          sub.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? romaLyrics : kanaLyrics)}`;
-          main.nextWordRef.classList.add("!block");
-          sub.nextWordRef.classList.add("!block");
-          main.viewportRef.classList.add("hidden");
-          sub.viewportRef.classList.add("hidden");
-        }
-      } else {
-        const mainCorrectEl = main.trackRef.children[0];
-        const subCorrectEl = sub.trackRef.children[0];
-        if (mainCorrectEl && subCorrectEl) {
-          mainCorrectEl.classList.add("!text-word-completed");
-          subCorrectEl.classList.add("!text-word-completed");
-        }
+    if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
+      const builtMap = readBuiltMap();
+      const count = readLineCount();
+      const nextLine = builtMap?.lines[count + 1];
+      if (nextLine && main && sub) {
+        const { kanaLyrics, romaLyrics } = nextLine;
+        main.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? kanaLyrics : romaLyrics)}`;
+        sub.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? romaLyrics : kanaLyrics)}`;
+        main.nextWordRef.classList.toggle("!block", true);
+        sub.nextWordRef.classList.toggle("!block", true);
+        main.viewportRef.classList.toggle("hidden", true);
+        sub.viewportRef.classList.toggle("hidden", true);
       }
     } else if (isUpdateLine) {
       main.nextWordRef.textContent = "";
       sub.nextWordRef.textContent = "";
 
-      main.nextWordRef.classList.remove("!block");
-      sub.nextWordRef.classList.remove("!block");
-      main.viewportRef.classList.remove("hidden");
-      sub.viewportRef.classList.remove("hidden");
-      wordContainer?.classList.remove("word-area-completed");
+      main.nextWordRef.classList.toggle("!block", false);
+      sub.nextWordRef.classList.toggle("!block", false);
+      main.viewportRef.classList.toggle("hidden", false);
+      sub.viewportRef.classList.toggle("hidden", false);
+    }
 
-      const mainCorrectEl = main.trackRef.children[0];
-      const subCorrectEl = sub.trackRef.children[0];
-      if (mainCorrectEl && subCorrectEl) {
-        mainCorrectEl.classList.remove("!text-word-completed");
-        subCorrectEl.classList.remove("!text-word-completed");
-      }
+    const mainCorrectEl = main.trackRef.children[0];
+    const subCorrectEl = sub.trackRef.children[0];
+    if (mainCorrectEl && subCorrectEl) {
+      mainCorrectEl.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
+      subCorrectEl.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
     }
   });
 
-  return { correct, nextChar, remainWord };
+  return { correct };
 };
 
 let prevMainShift = -1;
