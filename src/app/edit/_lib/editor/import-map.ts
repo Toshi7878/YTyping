@@ -1,5 +1,3 @@
-import iconv from "iconv-lite";
-import jschardet from "jschardet";
 import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import { normalizeSymbols } from "@/utils/string-transform";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
@@ -26,35 +24,6 @@ export const importMapFromLrcText = async (text: string) => {
   setRawMapAction({ type: "replaceAll", payload: convertedData });
 };
 
-export const importMapFile = async (file: File) => {
-  const fileReader = new FileReader();
-  fileReader.readAsArrayBuffer(file);
-
-  const data = await new Promise((resolve) => {
-    fileReader.onload = (event: ProgressEvent<FileReader>) => resolve((event.target as FileReader).result);
-  });
-
-  const buffer = Buffer.from(new Uint8Array(data as ArrayBuffer));
-  const detected = jschardet.detect(buffer);
-  const decodedData = iconv.decode(buffer, detected.encoding);
-
-  if (file.name.endsWith(".lrc")) {
-    const lrc = decodedData.split(/\r\n|\n/);
-    const convertedData = await lrcConverter(lrc);
-    dispatchEditHistory({
-      type: "add",
-      payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
-    });
-    setRawMapAction({ type: "replaceAll", payload: convertedData });
-  } else {
-    const convertedData = jsonConverter(JSON.parse(decodedData).map);
-    dispatchEditHistory({
-      type: "add",
-      payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
-    });
-    setRawMapAction({ type: "replaceAll", payload: convertedData });
-  }
-};
 type JsonMap = [string, string, string];
 
 const jsonConverter = (jsonMap: JsonMap) => {
