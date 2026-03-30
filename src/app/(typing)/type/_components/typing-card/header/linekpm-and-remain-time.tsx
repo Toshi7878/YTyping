@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
-import { setLineKpmElement, setLineRemainTimeElement } from "../../../_lib/atoms/sub-status";
+import { lineKpmFormatAtom, lineRemainFormatTimeAtom } from "../../../_lib/atoms/sub-status";
+import { useStore } from "jotai";
+import { uncontrolled } from "jotai-uncontrolled";
 
 export const LineRemainTimeAndKpm = () => {
   return (
@@ -14,25 +15,21 @@ export const LineRemainTimeAndKpm = () => {
 };
 
 const LineKpm = () => {
-  const lineKpmRef = useRef<HTMLSpanElement>(null);
+  const store = useStore();
 
-  useEffect(() => {
-    if (lineKpmRef.current) {
-      setLineKpmElement(lineKpmRef.current);
-    }
-  }, []);
-
-  return <span ref={lineKpmRef}>0</span>;
+  return (
+    <uncontrolled.span id="line_kpm" atomStore={store}>
+      {lineKpmFormatAtom}
+    </uncontrolled.span>
+  );
 };
 
 const LineRemainTime = ({ className }: { className: string }) => {
-  const lineRemainTimeRef = useRef<HTMLSpanElement>(null);
+  const store = useStore();
 
-  useEffect(() => {
-    if (lineRemainTimeRef.current) {
-      setLineRemainTimeElement(lineRemainTimeRef.current);
-    }
-  }, []);
-
-  return <span className={className} ref={lineRemainTimeRef}></span>;
+  return (
+    <uncontrolled.span id="line_remain_time" className={className} atomStore={store}>
+      {lineRemainFormatTimeAtom}
+    </uncontrolled.span>
+  );
 };

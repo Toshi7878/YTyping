@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useStore } from "jotai";
+import { uncontrolled } from "jotai-uncontrolled";
 import {
   useActiveSkipGuideKeyState,
   useBuiltMapState,
@@ -9,7 +10,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/format-time";
-import { setElapsedSecTimeElement } from "../../../_lib/atoms/sub-status";
+import { elapsedSecFormatTimeAtom } from "../../../_lib/atoms/sub-status";
 
 export const SkipAndTimeDisplay = () => {
   const isYTStarted = useYTStartedState();
@@ -46,18 +47,12 @@ const PlayingTimeDisplay = () => {
 };
 
 const ElapsedMmSsDisplay = () => {
-  const elapsedSecTimeRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (elapsedSecTimeRef.current) {
-      setElapsedSecTimeElement(elapsedSecTimeRef.current);
-    }
-  }, []);
+  const store = useStore();
 
   return (
-    <span id="elapsed_sec_time" ref={elapsedSecTimeRef}>
-      00:00
-    </span>
+    <uncontrolled.span id="elapsed_sec_time" atomStore={store}>
+      {elapsedSecFormatTimeAtom}
+    </uncontrolled.span>
   );
 };
 

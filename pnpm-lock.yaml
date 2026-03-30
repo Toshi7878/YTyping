@@ -137,6 +137,9 @@ importers:
       jotai-optics:
         specifier: ^0.4.0
         version: 0.4.0(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4))(optics-ts@2.4.1)
+      jotai-uncontrolled:
+        specifier: ^0.4.1
+        version: 0.4.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
       jschardet:
         specifier: ^3.1.4
         version: 3.1.4
@@ -3720,6 +3723,12 @@ packages:
     peerDependencies:
       jotai: '>=2.0.0'
       optics-ts: '>=2.0.0'
+
+  jotai-uncontrolled@0.4.1:
+    resolution: {integrity: sha512-/+ZyO7z3p7epld3MUhTuXuxvsXGaLNRt/jIJiuZ+ym8n9HmASMBR+aqBx/jAO4aENqy3XPWvkFJR/auLwwWdpg==}
+    peerDependencies:
+      jotai: '>=1.11.0'
+      react: '>=17.0.0'
 
   jotai@2.18.0:
     resolution: {integrity: sha512-XI38kGWAvtxAZ+cwHcTgJsd+kJOJGf3OfL4XYaXWZMZ7IIY8e53abpIHvtVn1eAgJ5dlgwlGFnP4psrZ/vZbtA==}
@@ -8405,6 +8414,11 @@ snapshots:
     dependencies:
       jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
       optics-ts: 2.4.1
+
+  jotai-uncontrolled@0.4.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4):
+    dependencies:
+      jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+      react: 19.2.4
 
   jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4):
     optionalDependencies:
