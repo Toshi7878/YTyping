@@ -11,7 +11,8 @@ import { PlayingNotify } from "./header/notify";
 import { PracticeLineSheet } from "./line-practice/line-practice-sheet";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
-import { TimeProgress } from "./time-progress";
+import { TotalTimeProgress } from "./footer/total-time-progress";
+import { LineTimeProgress } from "./header/line-time-progress";
 
 export const TypingCard = ({ className }: { className?: string }) => {
   return (
@@ -40,7 +41,7 @@ const GameCardHeader = ({ className }: { className?: string }) => {
         <PlayingNotify />
         <LineRemainTimeAndKpm />
       </section>
-      <TimeProgress id="line_progress" />
+      <LineTimeProgress id="line_progress" />
     </CardHeader>
   );
 };
@@ -80,7 +81,7 @@ const GameCardFooter = ({ className }: { className?: string }) => {
   return (
     <CardFooter className={className}>
       <SkipAndTimeDisplay />
-      <TimeProgress id="total_progress" />
+      <TotalTimeProgress id="total_progress" />
       <FooterButtons />
     </CardFooter>
   );

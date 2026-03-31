@@ -1,19 +1,15 @@
 import React, { useEffect } from "react";
-import { writeLineProgress, writeTotalProgress } from "../../_lib/atoms/ref";
+import { writeTotalProgress } from "../../../_lib/atoms/ref";
 
-interface TimeProgressProps {
+interface TotalTimeProgressProps {
   id: string;
 }
-export const TimeProgress = (props: TimeProgressProps) => {
+export const TotalTimeProgress = (props: TotalTimeProgressProps) => {
   const progressRef = React.useRef<HTMLProgressElement>(null);
 
   useEffect(() => {
     if (progressRef.current) {
-      if (props.id === "line_progress") {
-        writeLineProgress(progressRef.current);
-      } else {
-        writeTotalProgress(progressRef.current);
-      }
+      writeTotalProgress(progressRef.current);
     }
   }, []);
 
