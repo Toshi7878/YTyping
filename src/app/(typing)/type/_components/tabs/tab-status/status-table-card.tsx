@@ -16,7 +16,7 @@ export const StatusCard = ({ className }: { className: string }) => {
       id="tab-status-card"
       className={{
         card: cn("tab-card py-0", className),
-        cardContent: "my-auto overflow-auto pl-16 md:pl-6",
+        cardContent: "my-auto overflow-auto pl-[4%]",
       }}
     >
       <Table className="h-64 table-fixed overflow-hidden md:h-48">
