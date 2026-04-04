@@ -26,7 +26,7 @@ export const morphOpenApiRouter = {
         protect: false,
         tags: ["Morph"],
         summary:
-          "Tokenize Japanese sentence with readings (Sudachi + custom dictionary). One Sudachi request per call; newlines in input are reflected as a \"\\n\" entry in lyrics and readings when surfaces align with the original text.",
+          'Tokenize Japanese sentence with readings (Sudachi + custom dictionary). One Sudachi request per call; newlines in input are reflected as a "\\n" entry in lyrics and readings when surfaces align with the original text.',
         contentTypes: ["application/json" as OpenApiContentType],
         errorResponses: {
           400: "Invalid input data",
@@ -40,7 +40,7 @@ export const morphOpenApiRouter = {
       z.object({
         sentence: z.string().min(1),
         apiKey: z.string().min(1),
-        symbolFilter: wordSymbolFilterOptionSchema.default("add_symbol_all"),
+        symbolFilter: wordSymbolFilterOptionSchema.default("non_symbol"),
       }),
     )
     .output(tokenizeSentenceResultSchema)
