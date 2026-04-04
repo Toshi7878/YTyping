@@ -87,7 +87,7 @@ export const filterWordSymbol = ({
   replaceChar?: string;
 }) => {
   const convertOption = readWordConvertOption();
-  const filterSymbolRegExp = generateFilterRegExp(convertOption);
+  const filterSymbolRegExp = buildFilterSymbolRegExp(convertOption);
   if (convertOption === "add_symbol_all") {
     return sentence;
   }
@@ -105,7 +105,7 @@ export const filterWordSymbol = ({
   return result;
 };
 
-const generateFilterRegExp = (convertOption: ConvertOption) => {
+const buildFilterSymbolRegExp = (convertOption: ConvertOption) => {
   if (convertOption === "non_symbol") {
     const filterChars = [...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST]
       .map((s) => s.replaceAll(/./g, String.raw`\$&`))

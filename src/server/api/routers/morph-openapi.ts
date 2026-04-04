@@ -10,6 +10,7 @@ import { tokenizeSentenceResultSchema, wordSymbolFilterOptionSchema } from "@/va
 import { injectNewlinesIntoTokenArrays } from "../lib/morph-multiline-tokenize";
 import { OPENAPI_RATE_LIMITS } from "../lib/rate-limit-config";
 import { createRateLimitMiddleware, publicProcedure } from "../trpc";
+import { normalizeSymbols } from "@/utils/string-transform";
 
 const sudachiCoreResponseSchema = z.object({
   lyrics: z.array(z.string()),
@@ -62,7 +63,7 @@ export const morphOpenApiRouter = {
 
       const dictionaryDict = await fetchDictionaryDict(db);
       const raw = await tokenizeSentenceWithSudachi({
-        sentence: input.sentence,
+        sentence: normalizeSymbols(input.sentence),
         apiUrl: sudachiUrl,
         apiKey: sudachiKey,
       });
@@ -72,7 +73,6 @@ export const morphOpenApiRouter = {
       const readingText = applyWordSymbolFilter({
         sentence: mergedAfterDict.readings.join(""),
         option: input.symbolFilter,
-        filterType: "wordConvert",
       });
 
       return { ...mergedAfterDict, readingText };
