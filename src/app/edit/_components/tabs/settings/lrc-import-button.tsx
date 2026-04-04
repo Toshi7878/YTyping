@@ -4,14 +4,10 @@ import jschardet from "jschardet";
 import type React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { importMapFromJsonText, importMapFromLrcText } from "@/app/edit/_lib/editor/import-map";
+import { importMapFromTextAutoDetect } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/components/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog";
 import { overlay } from "@/components/ui/overlay";
-
-type FileType = "lrc" | "json";
-
-const detectFileType = (fileName: string): FileType => (fileName.endsWith(".json") ? "json" : "lrc");
 
 const readFileAsText = async (file: File): Promise<string> => {
   const buffer = await file.arrayBuffer();
@@ -22,7 +18,6 @@ const readFileAsText = async (file: File): Promise<string> => {
 
 export const LrcImportButton = () => {
   const [open, setOpen] = useState(false);
-  const [fileType, setFileType] = useState<FileType>("lrc");
   const [text, setText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +26,6 @@ export const LrcImportButton = () => {
     if (!file) return;
     try {
       const content = await readFileAsText(file);
-      setFileType(detectFileType(file.name));
       setText(content);
     } catch {
       toast.error("ファイル読み込みエラー");
@@ -48,16 +42,12 @@ export const LrcImportButton = () => {
     try {
       setOpen(false);
       overlay.loading("lrcインポート中...");
-      if (fileType === "lrc") {
-        await importMapFromLrcText(text);
-      } else {
-        importMapFromJsonText(text);
-      }
+      await importMapFromTextAutoDetect(text);
       toast.success("lrcインポート完了");
       setText("");
-    } catch {
+    } catch (e) {
       toast.error("lrcエラー", {
-        description: "ファイルの処理中にエラーが発生しました。",
+        description: e instanceof Error ? e.message : "ファイルの処理中にエラーが発生しました。",
       });
     } finally {
       overlay.hide();
@@ -68,7 +58,6 @@ export const LrcImportButton = () => {
     setOpen(v);
     if (!v) {
       setText("");
-      setFileType("lrc");
     }
   };
 
