@@ -20,4 +20,7 @@ export const OPENAPI_RATE_LIMITS = {
   "/maps/{mapId}/json": {
     get: { keyPrefix: "ratelimit:map-item:get-json", max: 30, window: "60 s" },
   },
+  "/morph/tokenize": {
+    post: { keyPrefix: "ratelimit:morph-tokenize:post", max: 60, window: "60 s" },
+  },
 } as const satisfies Record<string, Record<string, RateLimitDef>>;

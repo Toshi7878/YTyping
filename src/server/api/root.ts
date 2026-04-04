@@ -2,6 +2,7 @@ import { aiRouter } from "./routers/ai";
 import { authRouter } from "./routers/auth";
 import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
+import { morphOpenApiRouter } from "./routers/morph-openapi";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultRouter } from "./routers/result/result";
@@ -12,6 +13,7 @@ import { userStatsRouter } from "./routers/user/stats";
 import { userTypingOptionRouter } from "./routers/user/typing-option";
 import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
+
 export const appRouter = router({
   map: mapRouter,
   result: resultRouter,
@@ -31,6 +33,7 @@ export const appRouter = router({
 
 export const openApiRouter = router({
   map: mapOpenApiRouter,
+  morph: morphOpenApiRouter,
 });
 
 export type AppRouter = typeof appRouter;

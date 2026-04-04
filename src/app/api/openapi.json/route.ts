@@ -5,6 +5,9 @@ import { openApiRouter } from "@/server/api/root";
 
 export const dynamic = "force-dynamic";
 
+/** createOpenApiFetchHandler ではそのまま公開し、openapi.json と API Docs ページの一覧からだけ除くパス */
+const OPENAPI_PATHS_OMITTED_FROM_DOCUMENT = new Set(["/morph/tokenize"]);
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const baseUrl = `${url.origin}/api`;
@@ -15,6 +18,11 @@ export async function GET(request: Request) {
     baseUrl,
     description: "OpenAPI for selected tRPC procedures",
     tags: ["Map"],
+    filter: ({ metadata }) => {
+      const openApiPath = metadata.openapi?.path;
+      if (!openApiPath) return true;
+      return !OPENAPI_PATHS_OMITTED_FROM_DOCUMENT.has(openApiPath);
+    },
   });
 
   // trpc-to-openapi はエラーコード単位で response をキャッシュするため
