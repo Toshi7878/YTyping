@@ -19,7 +19,7 @@ export const EditorCard = () => {
       </section>
 
       <section className="flex items-center justify-between">
-        <div className="grid grid-cols-2 gap-2 sm:flex">
+        <div id="editor-button-container" className="grid grid-cols-2 gap-2 sm:flex">
           <AddLineButton />
           <UpdateLineButton />
           <WordConvertButton className="w-20 font-bold xl:w-28" label="読み変換" variant="outline-info" />
