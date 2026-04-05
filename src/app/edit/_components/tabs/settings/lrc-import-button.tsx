@@ -88,9 +88,6 @@ export const LrcImportButton = () => {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => handleClose(false)}>
-            キャンセル
-          </Button>
           <Button onClick={handleConfirm}>確定</Button>
         </DialogFooter>
       </DialogWithContent>
