@@ -7,7 +7,6 @@ export type WordSymbolFilterOption = z.infer<typeof wordSymbolFilterOptionSchema
 export const tokenizeSentenceResultSchema = z.object({
   lyrics: z.array(z.string()),
   readings: z.array(z.string()),
-  readingText: z.string(),
 });
 
 export type TokenizeSentenceResult = z.infer<typeof tokenizeSentenceResultSchema>;

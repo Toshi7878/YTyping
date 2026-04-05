@@ -6,11 +6,14 @@ import { env } from "@/env";
 import { applyWordSymbolFilter } from "@/lib/word-symbol-filter";
 import type { DBType } from "@/server/drizzle/client";
 import { ReadingConversionDict } from "@/server/drizzle/schema";
-import { tokenizeSentenceResultSchema, wordSymbolFilterOptionSchema } from "@/validator/morph/tokenize";
-import { injectNewlinesIntoTokenArrays } from "../lib/morph-multiline-tokenize";
+import {
+  tokenizeSentenceResultSchema,
+  type WordSymbolFilterOption,
+  wordSymbolFilterOptionSchema,
+} from "@/validator/morph/tokenize";
 import { OPENAPI_RATE_LIMITS } from "../lib/rate-limit-config";
 import { createRateLimitMiddleware, publicProcedure } from "../trpc";
-import { normalizeSymbols } from "@/utils/string-transform";
+import { kanaToHira, normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 
 const sudachiCoreResponseSchema = z.object({
   lyrics: z.array(z.string()),
@@ -61,26 +64,45 @@ export const morphOpenApiRouter = {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid API key" });
       }
 
-      const dictionaryDict = await fetchDictionaryDict(db);
-      const raw = await tokenizeSentenceWithSudachi({
-        sentence: normalizeSymbols(input.sentence),
+      const { regexDict, dictionaryDict } = await fetchCustomDict(db);
+
+      const tokenized = await tokenizeSentenceWithSudachi({
+        sentence: normalizeRawSentence(input.sentence, input.symbolFilter, regexDict),
         apiUrl: sudachiUrl,
         apiKey: sudachiKey,
       });
-      const tokenized = injectNewlinesIntoTokenArrays(input.sentence, raw.lyrics, raw.readings);
 
-      const mergedAfterDict = applyDictionaryReadingsToTokenized(tokenized, dictionaryDict);
-      const readingText = applyWordSymbolFilter({
-        sentence: mergedAfterDict.readings.join(""),
-        option: input.symbolFilter,
-      });
-
-      return { ...mergedAfterDict, readingText };
+      return replaceReadingDictonaryDict(tokenized, dictionaryDict);
     }),
 } satisfies TRPCRouterRecord;
+const normalizeRawSentence = (
+  sentence: string,
+  symbolFilterType: WordSymbolFilterOption,
+  regexDict: {
+    surface: string;
+    reading: string;
+  }[],
+) => {
+  const symbolNormalizedSentence = normalizeFullWidthAlnum(
+    kanaToHira(
+      applyWordSymbolFilter({
+        sentence: normalizeSymbols(sentence),
+        option: symbolFilterType,
+      }),
+    ),
+  );
 
-const fetchDictionaryDict = async (db: DBType) => {
-  return db
+  let processedSentence = symbolNormalizedSentence;
+  for (const { surface, reading } of regexDict) {
+    const regex = new RegExp(surface, "g");
+    processedSentence = processedSentence.replace(regex, reading);
+  }
+
+  return processedSentence;
+};
+
+const fetchCustomDict = async (db: DBType) => {
+  const dictionaryDict = await db
     .select({
       surface: ReadingConversionDict.surface,
       reading: ReadingConversionDict.reading,
@@ -88,13 +110,24 @@ const fetchDictionaryDict = async (db: DBType) => {
     .from(ReadingConversionDict)
     .where(eq(ReadingConversionDict.type, "DICTIONARY"))
     .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
+
+  const regexDict = await db
+    .select({
+      surface: ReadingConversionDict.surface,
+      reading: ReadingConversionDict.reading,
+    })
+    .from(ReadingConversionDict)
+    .where(eq(ReadingConversionDict.type, "REGEX"))
+    .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
+
+  return { dictionaryDict, regexDict };
 };
 
-function applyDictionaryReadingsToTokenized(
-  tokenized: { lyrics: string[]; readings: string[] },
+export const replaceReadingDictonaryDict = async (
+  tokenizedSentence: { lyrics: string[]; readings: string[] },
   dictionaryDict: { surface: string; reading: string }[],
-): { lyrics: string[]; readings: string[] } {
-  let result = tokenized;
+) => {
+  let result = tokenizedSentence;
 
   for (const { surface, reading } of dictionaryDict) {
     const matchIndexes: number[] = [];
@@ -115,7 +148,7 @@ function applyDictionaryReadingsToTokenized(
   }
 
   return result;
-}
+};
 
 async function tokenizeSentenceWithSudachi({
   sentence,
