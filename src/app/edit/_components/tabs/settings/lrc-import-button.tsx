@@ -69,7 +69,7 @@ export const LrcImportButton = () => {
         lrcインポート
       </Button>
 
-      <DialogWithContent open={open} onOpenChange={handleClose} className="sm:max-w-2xl">
+      <DialogWithContent id="lrc-import-dialog" open={open} onOpenChange={handleClose} className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>lrcインポート</DialogTitle>
         </DialogHeader>
