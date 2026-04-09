@@ -1,34 +1,36 @@
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
-import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
-import type { PlayMode } from "@/app/(typing)/type/_lib/type";
+import type { PlayMode, SceneType } from "@/app/(typing)/type/_lib/type";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
-import { useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { EndResultLineSheet } from "../line-result/line-result-sheet";
 import { RegisterRankingButton } from "./submit-ranking-button";
+import { useSession } from "@/lib/auth-client";
 
-export const EndButtonContainer = () => {
+export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) => {
   const { data: session } = useSession();
   const status = useTypingStatusState();
   const scene = useSceneState();
   const [isSubmitRankingButtonDisabled, setIsSubmitRankingButtonDisabled] = useState(false);
-  const [bestScore] = useState(() => getRankingMyResult(session)?.score ?? 0);
   const minMediaSpeed = useMinMediaSpeedState();
 
-  const isPerfect = status.miss === 0 && status.lost === 0;
-  const isScoreUpdated = status.score >= bestScore && status.score > 0;
   const isDisplayRankingButton =
-    !!session && (isScoreUpdated || isPerfect) && minMediaSpeed >= 1 && scene === "play_end";
+    !!session &&
+    canRankingRegistration({
+      status,
+      bestScore,
+      scene,
+      minMediaSpeed,
+    });
   return (
     <>
       <div className="flex items-center justify-around" id="end_main_buttons">
-        {isDisplayRankingButton && (
+        {isRankingRegistration && (
           <RegisterRankingButton
-            isScoreUpdated={isScoreUpdated}
+            showAlert={Boolean(isRankingRegistration && bestScore && bestScore > status.score)}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
@@ -47,6 +49,23 @@ export const EndButtonContainer = () => {
       </div>
     </>
   );
+};
+
+const canRankingRegistration = ({
+  status,
+  bestScore,
+  scene,
+  minMediaSpeed,
+}: {
+  status: { score: number; miss: number; lost: number };
+  bestScore: number | null;
+  scene: SceneType;
+  minMediaSpeed: number;
+}) => {
+  if (scene !== "play_end" || minMediaSpeed < 1 || status.score <= 0) return false;
+  if (status.miss === 0 && status.lost === 0) return true;
+  if (bestScore === null || status.score >= bestScore) return true;
+  return false;
 };
 
 interface RetryButtonProps {

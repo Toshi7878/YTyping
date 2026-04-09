@@ -1,41 +1,46 @@
-import { useState } from "react";
 import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
-import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
-import { useSession } from "@/lib/auth-client";
+import { type Session, useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RandomEmoji } from "./random-emoji";
+import type { SceneType } from "../../../_lib/type";
 
-export const ResultMessage = () => {
+export const ResultMessage = ({ bestScore }: { bestScore: number | null }) => {
   const { data: session } = useSession();
   const { score, miss, lost } = useTypingStatusState();
-  const minMediaSpeed = useMinMediaSpeedState();
-  const [bestScore] = useState(() => getRankingMyResult(session)?.score ?? 0);
-  const isPerfect = miss === 0 && lost === 0;
   const scene = useSceneState();
+  const minMediaSpeed = useMinMediaSpeedState();
+  const isPerfect = miss === 0 && lost === 0;
 
   return (
     <div className="mx-2 text-left text-5xl md:text-3xl" id="end_text">
       {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
-      <span>
-        {scene === "practice_end" ? (
-          "練習モード終了"
-        ) : scene === "replay_end" ? (
-          "リプレイ再生終了"
-        ) : !session ? (
-          `スコアは ${score} です。ログインをするとランキングに登録することができます。`
-        ) : bestScore === 0 ? (
-          `初めての記録です！スコアは ${score} です。`
-        ) : score >= bestScore ? (
-          <>
-            おめでとうございます！最高スコアが {bestScore} から {score} に更新されました！
-            <wbr />
-            <RandomEmoji />
-          </>
-        ) : (
-          `最高スコアは ${bestScore} です。記録更新まであと ${bestScore - score} です。`
-        )}
-      </span>
+      <span>{Message({ bestScore, score, scene, session })}</span>
       {minMediaSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
   );
+};
+
+const Message = ({
+  bestScore,
+  score,
+  scene,
+  session,
+}: {
+  bestScore: number | null;
+  score: number;
+  scene: SceneType;
+  session: Session | null;
+}) => {
+  if (scene === "practice_end") return "練習モード終了";
+  if (scene === "replay_end") return "リプレイ再生終了";
+  if (!session) return `スコアは ${score} です。ログインをするとランキングに登録することができます。`;
+  if (bestScore === null) return `初めての記録です！スコアは ${score} です。`;
+  if (score >= bestScore)
+    return (
+      <>
+        おめでとうございます！最高スコアが ${bestScore} から ${score} に更新されました！ <wbr />
+        <RandomEmoji />
+      </>
+    );
+  return `最高スコアは ${bestScore} です。記録更新まであと ${bestScore - score} です。`;
 };

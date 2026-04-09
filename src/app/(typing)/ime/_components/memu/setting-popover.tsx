@@ -21,7 +21,7 @@ import {
   setImeOptions,
   useImeTypeOptionsState,
 } from "../../_lib/atoms/state";
-import { generateLyricsWithReadings } from "../../_lib/core/generate-lyrics-with-readings";
+import { ensureLyricsWithReadings } from "../../_lib/core/ensure-lyrics-with-readings";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -49,7 +49,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
           const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } =
             readImeTypeOptions();
           const lines = await buildImeLines(rawMapLines, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
-          const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces });
+          const words = await buildImeWords(lines, ensureLyricsWithReadings, { insertEnglishSpaces });
           const totalNotes = getTotalNotes(words);
           const flatWords = createFlatWords(words);
           const initWordResults = createInitWordResults(flatWords);

@@ -9,7 +9,8 @@ import { auth } from "@/lib/auth";
 import type { AppRouter } from "@/server/api/root";
 import { appRouter } from "@/server/api/root";
 import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
-import { createQueryClient } from "./query-client";
+import { makeQueryClient } from "./query-client";
+import "server-only";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -22,9 +23,8 @@ const createContext = cache(async () => {
   return createTRPCContext({ headers: heads, auth });
 });
 
-const getQueryClient = cache(createQueryClient);
-
-export const serverApi = createCallerFactory(appRouter)(createContext);
+const getQueryClient = cache(makeQueryClient);
+export const getCaller = cache(() => createCallerFactory(appRouter)(createContext));
 
 export const trpc = createTRPCOptionsProxy<AppRouter>({
   router: appRouter,

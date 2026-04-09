@@ -1,11 +1,12 @@
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, Small, UList } from "@/components/ui/typography";
-import { serverApi } from "@/trpc/server";
+import { getCaller } from "@/trpc/server";
 import { formatDate } from "@/utils/date";
 import { changelog } from "./changelog";
 
 export default async function Page() {
-  const buildingDate = await serverApi.vercel.getActiveBuildingAt();
+  const caller = getCaller();
+  const buildingDate = await caller.vercel.getActiveBuildingAt();
 
   return (
     <article className="mx-auto max-w-7xl space-y-4">

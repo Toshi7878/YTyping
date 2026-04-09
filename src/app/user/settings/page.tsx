@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { H2 } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
-import { serverApi } from "@/trpc/server";
+import { getCaller } from "@/trpc/server";
 import { UserNameInputForm } from "../_components/user-name-input-form";
 import { UserOptionsForm } from "./_components/option-form";
 import { FingerChartUrlInput } from "./_components/profile-settings/finger-chart-url-input";
@@ -18,7 +18,8 @@ export default async function Page() {
 
 const ProfileSettingCard = async () => {
   const session = await getSession();
-  const userProfile = await serverApi.user.profile.get({ userId: Number(session?.user.id) });
+  const caller = getCaller();
+  const userProfile = await caller.user.profile.get({ userId: Number(session?.user.id) });
 
   return (
     <Card className="mx-8">
@@ -38,7 +39,8 @@ const ProfileSettingCard = async () => {
 };
 
 const OptionSettingCard = async () => {
-  const userOptions = await serverApi.user.option.getForSession();
+  const caller = getCaller();
+  const userOptions = await caller.user.option.getForSession();
 
   return (
     <Card className="mx-8">

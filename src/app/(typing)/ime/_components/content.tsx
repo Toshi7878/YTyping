@@ -20,7 +20,7 @@ import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
 import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
-import { generateLyricsWithReadings } from "../_lib/core/generate-lyrics-with-readings";
+import { ensureLyricsWithReadings } from "../_lib/core/ensure-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
@@ -45,7 +45,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = readImeTypeOptions();
       const lines = await buildImeLines(mapData, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
 
-      const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces });
+      const words = await buildImeWords(lines, ensureLyricsWithReadings, { insertEnglishSpaces });
       const totalNotes = getTotalNotes(words);
       const flatWords = createFlatWords(words);
       const initWordResults = createInitWordResults(flatWords);

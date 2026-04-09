@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { serverApi } from "@/trpc/server";
+import { getCaller } from "@/trpc/server";
 import { toLocaleDateString } from "@/utils/date";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 
-const getMapInfo = cache(async (mapId: number) => {
-  return await serverApi.map.getById({ mapId });
+const getMapInfo = cache(async (caller: ReturnType<typeof getCaller>, mapId: number) => {
+  return await caller.map.getById({ mapId });
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const mapInfo = await getMapInfo(Number(id));
-
+  const caller = getCaller();
+  const mapInfo = await getMapInfo(caller, Number(id));
   const thumbnailUrl = buildYouTubeThumbnailUrl(mapInfo.media.videoId, mapInfo.media.thumbnailQuality);
 
   return {
@@ -38,8 +38,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const mapInfo = await getMapInfo(Number(id));
-  const userImeTypingOptions = await serverApi.user.imeTypingOption.getForSession();
+  const caller = getCaller();
+  const [mapInfo, userImeTypingOptions] = await Promise.all([
+    getMapInfo(caller, Number(id)),
+    caller.user.imeTypingOption.getForSession(),
+  ]);
   if (!mapInfo) notFound();
 
   return (

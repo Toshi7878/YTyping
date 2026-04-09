@@ -9,48 +9,47 @@ import SuperJSON from "superjson";
 import { env } from "@/env";
 import type { AppRouter } from "@/server/api/root";
 import { getBaseUrl } from "@/utils/get-base-url";
-import { createQueryClient } from "./query-client";
+import { makeQueryClient } from "./query-client";
 
-let clientQueryClientSingleton: QueryClient | undefined;
+let browserQueryClient: QueryClient | undefined;
 export const getQueryClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
-    return createQueryClient();
+    return makeQueryClient();
   }
-
-  // Browser: use singleton pattern to keep the same query client
-  // biome-ignore lint/suspicious/noAssignInExpressions: intentional use of ||= (nullish coalescing assignment)
-  return (clientQueryClientSingleton ??= createQueryClient());
+  // Browser: make a new query client if we don't already have one
+  // This is very important, so we don't re-make a new client if React
+  // suspends during the initial render. This may not be needed if we
+  // have a suspense boundary BELOW the creation of the query client
+  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+  return browserQueryClient;
 };
 
-export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
+const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
+export { useTRPC };
+
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) => env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
     }),
     httpBatchStreamLink({
-      transformer: SuperJSON,
       url: `${getBaseUrl()}/api/trpc`,
-      headers() {
-        const headers = new Headers();
-        headers.set("x-trpc-source", "nextjs-react");
-        return headers;
-      },
+      transformer: SuperJSON,
     }),
   ],
 });
 
 const trpcOptions = createTRPCOptionsProxy({
   client: trpcClient,
-  queryClient: getQueryClient(),
+  queryClient: getQueryClient,
 });
 
 export const getTRPCClient = () => trpcClient;
 export const getTRPCOptionsProxy = () => trpcOptions;
 
 // biome-ignore lint/style/noDefaultExport: <名前空間が被るため>
-export default function Provider({ children }: { children: React.ReactNode }) {
+export default function TRPCReactProvider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   const [client] = useState(() => trpcClient);
   return (

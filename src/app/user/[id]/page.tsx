@@ -1,5 +1,5 @@
 import { H1 } from "@/components/ui/typography";
-import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, getCaller, trpc } from "@/trpc/server";
 import { UserTabs } from "./_components/tabs";
 import { UserProfileCard } from "./_components/user-profile-card";
 import { loadUserPageSearchParams } from "./_lib/search-params";
@@ -30,7 +30,8 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     prefetch(trpc.map.list.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
 
-  const userProfile = await serverApi.user.profile.get({ userId: Number(id) });
+  const caller = getCaller();
+  const userProfile = await caller.user.profile.get({ userId: Number(id) });
 
   return (
     <HydrateClient>

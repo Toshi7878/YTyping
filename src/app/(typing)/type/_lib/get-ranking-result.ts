@@ -1,24 +1,19 @@
 import type { Session } from "@/lib/auth-client";
 import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
-import { readMapId } from "./atoms/hydrate";
 
-export const getRankingMyResult = (session: Session | null) => {
-  const mapId = readMapId();
-  if (!session?.user || !mapId) return null;
-  const queryClient = getQueryClient();
+export const getRankingMyResult = ({ mapId, session }: { mapId: number; session: Session }) => {
   const trpc = getTRPCOptionsProxy();
+  const queryClient = getQueryClient();
 
   const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
   if (!rankingData) return null;
-  const myResult = rankingData.find((result) => result.player.id === Number(session.user.id));
+  const myResult = rankingData.find((result) => result.player.id === session.user.id);
   return myResult ?? null;
 };
 
-export const getRankingResultByResultId = (resultId: number) => {
-  const mapId = readMapId();
-  if (!mapId) return null;
-  const queryClient = getQueryClient();
+export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number; resultId: number }) => {
   const trpc = getTRPCOptionsProxy();
+  const queryClient = getQueryClient();
 
   const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
   if (!rankingData) return null;

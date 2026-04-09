@@ -21,6 +21,7 @@ import { getRankingResultByResultId } from "../../../_lib/get-ranking-result";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { iosActiveSound } from "../../../_lib/playing/sound-effect";
 import { queryResultJson } from "../../../_lib/query-result-json";
+import { readMapId } from "../../../_lib/atoms/hydrate";
 
 interface RankingMenuProps {
   resultId: number;
@@ -66,7 +67,8 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
 
     setTabName("ステータス");
 
-    const replayRankingResult = getRankingResultByResultId(resultId);
+    const mapId = readMapId();
+    const replayRankingResult = mapId ? getRankingResultByResultId({ mapId, resultId }) : null;
     setReplayRankingResult(replayRankingResult);
 
     if (sceneGroup === "End") {

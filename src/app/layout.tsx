@@ -12,13 +12,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
-import { serverApi } from "@/trpc/server";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
 import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
 import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
+import { getCaller } from "@/trpc/server";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -34,7 +34,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";
   const session = await getSession();
-  const userOptions = await serverApi.user.option.getForSession();
+  const caller = getCaller();
+  const userOptions = await caller.user.option.getForSession();
 
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
