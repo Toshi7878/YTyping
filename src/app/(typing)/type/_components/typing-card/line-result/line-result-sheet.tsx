@@ -3,7 +3,7 @@ import { Ticker } from "@pixi/ticker";
 import { type RefObject, useRef, useState } from "react";
 import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import { moveSetLine } from "../../../_lib/playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 
@@ -98,7 +98,7 @@ const ResultLineList = ({
 
   return (
     <div className="relative h-full overflow-y-auto px-4">
-      {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
+      {map?.initialLineResults.map((_: TypingLineResult, index: number) => {
         const lineData = map.lines[index];
         if (!lineData?.kanaLyrics) return null;
 

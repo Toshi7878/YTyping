@@ -1,7 +1,8 @@
-export function getMinValue(numbers: number[]): number {
-  return Math.min(...numbers);
-}
-
+/**
+ * 0 を除いた要素だけを使って中央値を求めます（0 は無視）。
+ *
+ * @param array 数値の配列
+ */
 export function medianIgnoringZeros(array: number[]) {
   const nonZeroArray = array.filter((a) => a !== 0);
 

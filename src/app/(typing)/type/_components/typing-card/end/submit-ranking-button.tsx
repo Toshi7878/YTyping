@@ -2,26 +2,24 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
-import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
-import { readBuiltMap, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
+import { readTypingSubstatus, type TypingSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
+import { type BuiltMap, readBuiltMap, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRegisterRankingMutation } from "@/app/(typing)/type/_lib/mutate/register-ranking";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
-import { getMinValue } from "@/utils/array";
-import type { CreateResultStatusSchema } from "@/validator/result";
-import { readMapId, readTypingOptions } from "../../../_lib/atoms/hydrate";
-import { readTypingStatus } from "../../../_lib/atoms/status";
+import type { TypingLineResult } from "@/validator/result";
+import { readMapId, readTypingOptions, type TypingOptions } from "../../../_lib/atoms/hydrate";
+import { readTypingStatus, type TypingStatus } from "../../../_lib/atoms/status";
 
 interface RegisterRankingButtonProps {
-  isScoreUpdated: boolean;
+  showAlert: boolean;
   disabled: boolean;
   onSuccess: () => void;
 }
 
-export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
+export const RegisterRankingButton = ({ showAlert, disabled, onSuccess }: RegisterRankingButtonProps) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -42,19 +40,26 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     const mapId = readMapId();
     if (!mapId) return;
 
-    if (isScoreUpdated) {
-      registerRanking.mutate(generateResultData(mapId));
-      return;
-    }
-
-    const isConfirmed = await confirmDialog.warning({
-      title: "スコア未更新",
-      description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
-      confirmLabel: "ランキングに登録",
-    });
+    const isConfirmed = showAlert
+      ? true
+      : await confirmDialog.warning({
+          title: "スコア未更新",
+          description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
+          confirmLabel: "ランキングに登録",
+        });
 
     if (isConfirmed) {
-      registerRanking.mutate(generateResultData(mapId));
+      const typingSubStatus = readTypingSubstatus();
+      const lineResults = readAllLineResult();
+      const typingStatus = readTypingStatus();
+      const builtMap = readBuiltMap();
+      const typingOptions = readTypingOptions();
+
+      registerRanking.mutate({
+        mapId,
+        status: buildResultData(typingSubStatus, lineResults, typingStatus, builtMap, typingOptions),
+        lineResults,
+      });
     }
   };
 
@@ -72,7 +77,13 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
   );
 };
 
-const generateResultData = (mapId: number) => {
+const buildResultData = (
+  typingSubStatus: TypingSubstatus,
+  lineResults: TypingLineResult[],
+  typingStatus: TypingStatus,
+  builtMap: BuiltMap,
+  typingOptions: TypingOptions,
+) => {
   const {
     totalTypeTime,
     totalLatency,
@@ -86,18 +97,11 @@ const generateResultData = (mapId: number) => {
     symbolType,
     numType,
     maxCombo,
-  } = readSubstatus();
-
-  const lineResults = readAllLineResult();
-
-  const minPlaySpeed = getMinValue(lineResults.flatMap(({ status }) => (status?.typingTime ? [status.speed] : [])));
-
+  } = typingSubStatus;
+  const minPlaySpeed = Math.min(...lineResults.flatMap(({ status }) => (status?.typingTime ? [status.speed] : [])));
   const rkpmTime = totalTypeTime - totalLatency;
-  const typingStatus = readTypingStatus();
-  const builtMap = readBuiltMap();
-  const typingOptions = readTypingOptions();
 
-  const sendStatus: z.output<typeof CreateResultStatusSchema> = {
+  return {
     score: typingStatus.score,
     rkpm: Math.floor((typingStatus.type / rkpmTime) * 60),
     kpm: typingStatus.kpm,
@@ -116,11 +120,5 @@ const generateResultData = (mapId: number) => {
     kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
     clearRate: Number(Math.max(0, clearRate).toFixed(1)),
     isCaseSensitive: !!builtMap?.hasAlphabet && (builtMap.isCaseSensitive || typingOptions.isCaseSensitive),
-  };
-
-  return {
-    mapId,
-    status: sendStatus,
-    lineResults,
   };
 };

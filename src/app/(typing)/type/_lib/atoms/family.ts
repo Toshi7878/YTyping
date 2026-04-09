@@ -1,18 +1,18 @@
 import deepEqual from "fast-deep-equal";
 import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai-family";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
 const lineResultAtomFamily = atomFamily(
-  () => atom<{ isSelected: boolean; lineResult: TypingLineResults[number] } | undefined>(),
+  () => atom<{ isSelected: boolean; lineResult: TypingLineResult } | undefined>(),
   deepEqual,
 );
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
-export const setLineResult = ({ index, lineResult }: { index: number; lineResult: TypingLineResults[number] }) => {
+export const setLineResult = ({ index, lineResult }: { index: number; lineResult: TypingLineResult }) => {
   const prev = store.get(lineResultAtomFamily(index));
   if (!prev) return;
   store.set(lineResultAtomFamily(index), { ...prev, lineResult });
@@ -22,8 +22,8 @@ export const setLineResultSelected = ({ index, isSelected }: { index: number; is
   if (!target) return;
   store.set(lineResultAtomFamily(index), { ...target, isSelected });
 };
-export const readAllLineResult = (): TypingLineResults => {
-  const results: TypingLineResults = [];
+export const readAllLineResult = (): TypingLineResult[] => {
+  const results: TypingLineResult[] = [];
   let index = 0;
 
   while (true) {
@@ -40,8 +40,8 @@ export const readAllLineResult = (): TypingLineResults => {
 
   return results;
 };
-export const initializeAllLineResult = (initResultData: TypingLineResults) => {
-  initResultData.forEach((lineResult, index) => {
+export const initializeAllLineResult = (initLineResults: TypingLineResult[]) => {
+  initLineResults.forEach((lineResult, index) => {
     store.set(lineResultAtomFamily(index), { isSelected: false, lineResult });
   });
 };

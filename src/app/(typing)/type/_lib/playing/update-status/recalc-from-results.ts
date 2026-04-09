@@ -1,5 +1,5 @@
 import { readAllLineResult } from "../../atoms/family";
-import { writeSubstatus } from "../../atoms/ref";
+import { writeTypingSubstatus } from "../../atoms/ref";
 import { readBuiltMap, readUtilityParams } from "../../atoms/state";
 import { setAllTypingStatus } from "../../atoms/status";
 import { calcCurrentRank } from "./calc-current-rank";
@@ -67,7 +67,7 @@ export const recalculateStatusFromResults = ({
     newStatus.timeBonus = 0;
   }
 
-  writeSubstatus({
+  writeTypingSubstatus({
     totalTypeTime: lineResult?.status.typingTime,
     completeCount: completeLineCount,
     failureCount: failureLineCount,

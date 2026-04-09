@@ -1,13 +1,13 @@
 import type { InputMode } from "lyrics-typing-engine";
 import { medianIgnoringZeros } from "@/utils/array";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import type { BuiltMapLineWithOption } from "../types";
 
 export function buildInitialLineResult(
   builtMapLines: BuiltMapLineWithOption[],
   inputMode: InputMode,
-): TypingLineResults {
-  const initialLineResultData: TypingLineResults = [];
+): TypingLineResult[] {
+  const initialLineResultData: TypingLineResult[] = [];
 
   for (const line of builtMapLines) {
     if (line.notes.roma > 0) {

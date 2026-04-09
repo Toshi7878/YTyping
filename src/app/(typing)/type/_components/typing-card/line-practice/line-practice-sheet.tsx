@@ -6,7 +6,7 @@ import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Table, TableBody } from "@/components/ui/table/table";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import { PracticeLineTableRow } from "./table-row";
 
 const HOVER_EXTRA_WIDTH = 200;
@@ -83,7 +83,7 @@ const PracticeLineTable = ({
     <div className="min-h-full">
       <Table>
         <TableBody>
-          {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
+          {map?.initialLineResults.map((_: TypingLineResult, index: number) => {
             const lineData = map.lines[index];
             if (!lineData?.kanaLyrics) return null;
 

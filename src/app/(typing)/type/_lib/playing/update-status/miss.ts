@@ -1,4 +1,4 @@
-import { readLineSubstatus, readSubstatus, writeLineSubstatus, writeSubstatus } from "../../atoms/ref";
+import { readLineSubstatus, readTypingSubstatus, writeLineSubstatus, writeTypingSubstatus } from "../../atoms/ref";
 import { readBuiltMap } from "../../atoms/state";
 import { readTypingStatus, setAllTypingStatus } from "../../atoms/status";
 import { setCombo } from "../../atoms/sub-status";
@@ -19,8 +19,8 @@ export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLin
   const map = readBuiltMap();
   if (!map) return;
 
-  const { clearRate, missCombo } = readSubstatus();
-  writeSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
+  const { clearRate, missCombo } = readTypingSubstatus();
+  writeTypingSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
 
   const { missCount: lineMissCount, types } = readLineSubstatus();
 

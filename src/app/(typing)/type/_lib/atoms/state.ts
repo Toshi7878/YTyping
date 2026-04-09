@@ -7,7 +7,7 @@ import type z from "zod/v4";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { findClosestLowerOrEqual } from "@/utils/array";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
 import { getTypeAtomStore } from "./store";
@@ -19,7 +19,7 @@ const builtMapAtom = atomWithReset<{
   totalNotes: { roma: number; kana: number };
   keyRate: number;
   missRate: number;
-  initialLineResults: TypingLineResults;
+  initialLineResults: TypingLineResult[];
   typingLineIndexes: number[];
   changeCSSIndexes: number[];
   duration: number;

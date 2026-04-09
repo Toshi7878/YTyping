@@ -1,4 +1,4 @@
-import { readLineSubstatus, readSubstatus, writeSubstatus } from "../../atoms/ref";
+import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../atoms/ref";
 import { readBuiltMap } from "../../atoms/state";
 import { setAllTypingStatus } from "../../atoms/status";
 import { readTypingWord } from "../../atoms/typing-word";
@@ -10,7 +10,7 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   const typingWord = readTypingWord();
 
   // 現在の状態を取得
-  const currentSubstatus = readSubstatus();
+  const currentSubstatus = readTypingSubstatus();
   const diffSubstatus: Partial<typeof currentSubstatus> = {};
 
   // 1. kanaToRomaConvertCount の更新
@@ -30,7 +30,7 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   }
 
   // Substatus を一度に更新
-  writeSubstatus(diffSubstatus);
+  writeTypingSubstatus(diffSubstatus);
 
   // 3. TypingStatus の更新
   setAllTypingStatus((prev) => {
