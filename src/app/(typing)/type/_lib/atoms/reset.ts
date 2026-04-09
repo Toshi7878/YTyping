@@ -1,5 +1,5 @@
 import { clearAllLineResult } from "./family";
-import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams } from "./ref";
+import { resetLineCount, resetLineSubstatus, resetTypingSubstatus, resetUtilityRefParams } from "./ref";
 import { resetBuiltMap, resetReplayRankingResult, resetUtilityParams } from "./state";
 import { resetAllTypingStatus } from "./status";
 import { resetSubstatusState } from "./sub-status";
@@ -15,7 +15,7 @@ export const resetAllStateOnCleanup = () => {
   resetAllTypingStatus();
   resetUtilityRefParams();
   resetSubstatusState();
-  resetSubstatus();
+  resetTypingSubstatus();
   resetLineSubstatus();
   resetLineCount();
   resetReplayRankingResult();

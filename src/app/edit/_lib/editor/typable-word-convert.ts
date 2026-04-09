@@ -3,6 +3,7 @@ import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
+import { halfKanaToHiragana } from "@/utils/kana";
 import {
   kanaToHira,
   normalizeExclamationQuestionMarks,
@@ -13,7 +14,7 @@ import { type ConvertOption, readWordConvertOption } from "../atoms/storage";
 import { filterToTypableWordChars } from "../utils/filter-word";
 
 export const wordConvert = async (lyrics: string) => {
-  const formatedLyrics = normalizeSymbols(normalizeFullWidthAlnum(kanaToHira(rubyToKana(lyrics))));
+  const formatedLyrics = normalizeSymbols(normalizeFullWidthAlnum(kanaToHira(halfKanaToHiragana(rubyToKana(lyrics)))));
   const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatedLyrics);
 
   if (isNeedsConversion) {
@@ -26,11 +27,11 @@ export const wordConvert = async (lyrics: string) => {
 
 const fetchReading = async (sentence: string) => {
   setIsWordConverting(true);
+  const trpc = getTRPCOptionsProxy();
   const queryClient = getQueryClient();
-  const trpcOptions = getTRPCOptionsProxy();
   try {
     const { regexDict } = await queryClient.ensureQueryData(
-      trpcOptions.morph.getCustomDict.queryOptions(undefined, {
+      trpc.morph.getCustomDict.queryOptions(undefined, {
         staleTime: Infinity,
         gcTime: Infinity,
       }),
@@ -43,7 +44,7 @@ const fetchReading = async (sentence: string) => {
     }
 
     const tokenizedWord = await queryClient.ensureQueryData(
-      trpcOptions.morph.tokenizeSentence.queryOptions(
+      trpc.morph.tokenizeSentence.queryOptions(
         { sentence: processedSentence },
         { staleTime: Infinity, gcTime: Infinity },
       ),
@@ -52,7 +53,6 @@ const fetchReading = async (sentence: string) => {
     const result = await replaceReadingWithCustomDict(tokenizedWord);
     return result.readings.join("");
   } catch {
-    // const message = session ? undefined : "読み変換機能はログイン後に使用できます";
     const message = undefined;
     toast.error("読み変換に失敗しました", { description: message });
     return "";

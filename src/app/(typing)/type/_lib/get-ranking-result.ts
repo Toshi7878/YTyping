@@ -17,6 +17,6 @@ export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number;
 
   const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
   if (!rankingData) return null;
-  const myResult = rankingData.find((result) => result.id === resultId);
-  return myResult ?? null;
+  const playerResult = rankingData.find((result) => result.id === resultId);
+  return playerResult ?? null;
 };

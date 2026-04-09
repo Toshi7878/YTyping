@@ -12,7 +12,7 @@ export const readLineCount = () => store.get(lineCountAtom);
 export const writeLineCount = (count: number) => store.set(lineCountAtom, count);
 export const resetLineCount = () => store.set(lineCountAtom, RESET);
 
-const substatusAtom = atomWithReset({
+const typingSubstatusAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -31,13 +31,14 @@ const substatusAtom = atomWithReset({
   failureCount: 0,
 });
 
-export const readSubstatus = () => store.get(substatusAtom);
-export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof substatusAtom>>) =>
-  store.set(substatusAtom, (prev) => ({ ...prev, ...newSubstatus }));
-export const resetSubstatus = () => store.set(substatusAtom, RESET);
+export type TypingSubstatus = ExtractAtomValue<typeof typingSubstatusAtom>;
+export const readTypingSubstatus = () => store.get(typingSubstatusAtom);
+export const writeTypingSubstatus = (newSubstatus: Partial<TypingSubstatus>) =>
+  store.set(typingSubstatusAtom, (prev) => ({ ...prev, ...newSubstatus }));
+export const resetTypingSubstatus = () => store.set(typingSubstatusAtom, RESET);
 
-const lineCompleteCountAtom = focusAtom(substatusAtom, (optic) => optic.prop("completeCount"));
-const lineFailureCountAtom = focusAtom(substatusAtom, (optic) => optic.prop("failureCount"));
+const lineCompleteCountAtom = focusAtom(typingSubstatusAtom, (optic) => optic.prop("completeCount"));
+const lineFailureCountAtom = focusAtom(typingSubstatusAtom, (optic) => optic.prop("failureCount"));
 
 export const useLineCompleteCountState = () => useAtomValue(lineCompleteCountAtom);
 export const useLineFailureCountState = () => useAtomValue(lineFailureCountAtom);

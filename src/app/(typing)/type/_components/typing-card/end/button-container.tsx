@@ -5,10 +5,10 @@ import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-
 import type { PlayMode, SceneType } from "@/app/(typing)/type/_lib/type";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
+import { type Session, useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { EndResultLineSheet } from "../line-result/line-result-sheet";
 import { RegisterRankingButton } from "./submit-ranking-button";
-import { useSession } from "@/lib/auth-client";
 
 export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) => {
   const { data: session } = useSession();
@@ -16,21 +16,14 @@ export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) 
   const scene = useSceneState();
   const [isSubmitRankingButtonDisabled, setIsSubmitRankingButtonDisabled] = useState(false);
   const minMediaSpeed = useMinMediaSpeedState();
+  const isRankingRegistration = canRankingRegistration({ session, status, bestScore, scene, minMediaSpeed });
 
-  const isDisplayRankingButton =
-    !!session &&
-    canRankingRegistration({
-      status,
-      bestScore,
-      scene,
-      minMediaSpeed,
-    });
   return (
     <>
       <div className="flex items-center justify-around" id="end_main_buttons">
         {isRankingRegistration && (
           <RegisterRankingButton
-            showAlert={Boolean(isRankingRegistration && bestScore && bestScore > status.score)}
+            isScoreUpdated={!!bestScore && status.score >= bestScore}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
@@ -44,27 +37,30 @@ export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) 
         />
       </div>
       <div className="mx-12 flex items-center justify-end gap-14" id="end_sub_buttons">
-        <ModeChangeButton showAlert={Boolean(isDisplayRankingButton && !isSubmitRankingButtonDisabled)} />
-        <RetryButton showAlert={Boolean(isDisplayRankingButton && !isSubmitRankingButtonDisabled)} />
+        <ModeChangeButton showAlert={Boolean(isRankingRegistration && !isSubmitRankingButtonDisabled)} />
+        <RetryButton showAlert={Boolean(isRankingRegistration && !isSubmitRankingButtonDisabled)} />
       </div>
     </>
   );
 };
 
 const canRankingRegistration = ({
+  session,
   status,
   bestScore,
   scene,
   minMediaSpeed,
 }: {
+  session: Session | null;
   status: { score: number; miss: number; lost: number };
   bestScore: number | null;
   scene: SceneType;
   minMediaSpeed: number;
 }) => {
-  if (scene !== "play_end" || minMediaSpeed < 1 || status.score <= 0) return false;
+  if (!session || scene !== "play_end" || minMediaSpeed < 1 || status.score <= 0) return false;
   if (status.miss === 0 && status.lost === 0) return true;
-  if (bestScore === null || status.score >= bestScore) return true;
+  if (!bestScore) return true;
+  if (status.score >= bestScore) return true;
   return false;
 };
 

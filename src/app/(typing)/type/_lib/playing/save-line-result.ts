@@ -1,7 +1,7 @@
 import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
-import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
+import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../atoms/ref";
 import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../atoms/state";
 import { readTypingStatus, setAllTypingStatus } from "../atoms/status";
 import { readCombo, readLineKpm } from "../atoms/sub-status";
@@ -32,14 +32,14 @@ export const saveLineResult = (count: number) => {
 
   if (actualLostNotes > 0) setAllTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
   if (pointLostNotes > 0) {
-    const { clearRate } = readSubstatus();
-    writeSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
+    const { clearRate } = readTypingSubstatus();
+    writeTypingSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
   }
 
   const typingStatus = readTypingStatus();
   const { missCount, typeCount, types, startSpeed, startInputMode, rkpm } = readLineSubstatus();
   const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
-  const { totalTypeTime } = readSubstatus();
+  const { totalTypeTime } = readTypingSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 
   const typingWord = readTypingWord();

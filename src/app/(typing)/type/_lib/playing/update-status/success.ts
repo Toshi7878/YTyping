@@ -1,10 +1,10 @@
 import type { WordChunk } from "lyrics-typing-engine";
 import {
   readLineSubstatus,
-  readSubstatus,
+  readTypingSubstatus,
   readUserStats,
   writeLineSubstatus,
-  writeSubstatus,
+  writeTypingSubstatus,
   writeUserStats,
 } from "../../atoms/ref";
 import { readMediaSpeed, readUtilityParams } from "../../atoms/state";
@@ -32,7 +32,7 @@ export const updateSuccessStatus = ({
   // Note: updateSuccessSubstatusより先に実行されるため、現在のlineTypeCountは加算前の値です。
   // そのため、計算には +1 した値を使用します。
   const { typeCount: lineTypeCount } = readLineSubstatus();
-  const { totalTypeTime } = readSubstatus();
+  const { totalTypeTime } = readTypingSubstatus();
 
   if (!isPaused) {
     const newLineKpm = calculateLineKpm({ lineTypeCount: lineTypeCount + 1, constantLineTime });
@@ -75,7 +75,7 @@ export const updateSuccessSubstatus = ({
 
   // 現在の状態を一度だけ読み込む
   const currentLineSubstatus = readLineSubstatus();
-  const currentSubstatus = readSubstatus();
+  const currentSubstatus = readTypingSubstatus();
   const currentUserStats = readUserStats();
 
   // 更新用の一時オブジェクト（差分のみ保持）
@@ -152,7 +152,7 @@ export const updateSuccessSubstatus = ({
 
   // まとめてAtomを更新する（回数を削減）
   if (Object.keys(diffSubstatus).length > 0) {
-    writeSubstatus(diffSubstatus);
+    writeTypingSubstatus(diffSubstatus);
   }
   if (Object.keys(diffLineSubstatus).length > 0) {
     writeLineSubstatus(diffLineSubstatus);

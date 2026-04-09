@@ -2,7 +2,7 @@
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import type { LabelType } from "./status-table-card";
-import { statusAtoms } from "../../../_lib/atoms/status";
+import { typingStatusDisplayAtoms } from "../../../_lib/atoms/status";
 import { type Atom, useStore } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
 
@@ -11,7 +11,7 @@ interface StatusCellProps {
 }
 
 export const StatusCell = ({ label }: StatusCellProps) => {
-  const atom = statusAtoms[label];
+  const atom = typingStatusDisplayAtoms[label];
 
   return (
     <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
@@ -20,7 +20,10 @@ export const StatusCell = ({ label }: StatusCellProps) => {
 
       <span className="value text-6xl md:text-[2.2rem]">
         {label === "point" ? (
-          <PointStatusValue pointAtom={statusAtoms.point} timeBonusAtom={statusAtoms.timeBonus} />
+          <PointStatusValue
+            pointAtom={typingStatusDisplayAtoms.point}
+            timeBonusAtom={typingStatusDisplayAtoms.timeBonus}
+          />
         ) : (
           <StatusValue atom={atom} />
         )}

@@ -5,7 +5,7 @@ import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } from "@/server/drizzle/schema";
-import type { TypingLineResults } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress, gzipDecompress } from "../../utils/gzip";
@@ -22,7 +22,7 @@ export const resultRouter = {
     }
 
     const jsonString = new TextDecoder().decode(await gzipDecompress(data));
-    const jsonData: TypingLineResults = JSON.parse(jsonString);
+    const jsonData: TypingLineResult[] = JSON.parse(jsonString);
 
     return jsonData;
   }),

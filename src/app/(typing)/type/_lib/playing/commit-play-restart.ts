@@ -6,7 +6,7 @@ import {
   readUtilityRefParams,
   resetLineCount,
   resetLineSubstatus,
-  resetSubstatus,
+  resetTypingSubstatus,
   writeUtilityRefParams,
 } from "../atoms/ref";
 import {
@@ -85,7 +85,7 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   if (newPlayMode !== "practice") {
     resetAllTypingStatus();
     setCombo(0);
-    resetSubstatus();
+    resetTypingSubstatus();
   }
 
   if (newPlayMode !== "replay") {

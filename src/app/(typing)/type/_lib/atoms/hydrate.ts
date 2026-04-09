@@ -12,6 +12,7 @@ export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
 export const readMapId = () => store.get(mapIdAtom);
 
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
+export type TypingOptions = ExtractAtomValue<typeof typingOptionsAtom>;
 export const wordDisplayAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
 
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom, { store });

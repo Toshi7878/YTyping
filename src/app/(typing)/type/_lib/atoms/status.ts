@@ -19,10 +19,11 @@ const typingStatusAtom = atomWithReset({
   line: 0,
   timeBonus: 0,
 });
+export type TypingStatus = ExtractAtomValue<typeof typingStatusAtom>;
 
 const timeBonusAtom = focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus"));
 
-export const statusAtoms = {
+export const typingStatusDisplayAtoms = {
   score: focusAtom(typingStatusAtom, (optic) => optic.prop("score")),
   point: focusAtom(typingStatusAtom, (optic) => optic.prop("point")),
   timeBonus: atom((get) => {
@@ -37,8 +38,10 @@ export const statusAtoms = {
   line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
 };
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
-export const setLineStatus = (value: ExtractAtomValue<typeof statusAtoms.line>) => store.set(statusAtoms.line, value);
-export const setRankStatus = (value: ExtractAtomValue<typeof statusAtoms.rank>) => store.set(statusAtoms.rank, value);
+export const setLineStatus = (value: ExtractAtomValue<typeof typingStatusDisplayAtoms.line>) =>
+  store.set(typingStatusDisplayAtoms.line, value);
+export const setRankStatus = (value: ExtractAtomValue<typeof typingStatusDisplayAtoms.rank>) =>
+  store.set(typingStatusDisplayAtoms.rank, value);
 export const setAllTypingStatus = (update: Updater<ExtractAtomValue<typeof typingStatusAtom>>) =>
   store.set(typingStatusAtom, update);
 export const resetAllTypingStatus = () => {

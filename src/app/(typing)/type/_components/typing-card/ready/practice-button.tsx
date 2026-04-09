@@ -3,14 +3,19 @@ import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/typ
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { iosActiveSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/update-status/recalc-from-results";
-import { queryResultJson } from "@/app/(typing)/type/_lib/query-result-json";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { useSession } from "@/lib/auth-client";
+import { useTRPC } from "@/trpc/provider";
+import { useQueryClient } from "@tanstack/react-query";
+import { initializeAllLineResult } from "../../../_lib/atoms/family";
+import { readMapId } from "../../../_lib/atoms/hydrate";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
+  const trpc = useTRPC();
 
   const handleClick = async () => {
     if (map) {
@@ -18,11 +23,13 @@ export const ReadyPracticeButton = () => {
       primeYTPlayerForMobilePlayback();
       overlay.loading("リザルトデータを読込中...");
       setScene("practice");
-      const resultId = getRankingMyResult(session)?.id;
+      const mapId = readMapId();
+      const resultId = mapId && session ? getRankingMyResult({ mapId, session })?.id : null;
 
       try {
         if (resultId) {
-          await queryResultJson(resultId);
+          const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+          initializeAllLineResult(resultData);
         }
       } finally {
         overlay.hide();

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -20,7 +20,7 @@ import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atom
 import { getRankingResultByResultId } from "../../../_lib/get-ranking-result";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { iosActiveSound } from "../../../_lib/playing/sound-effect";
-import { queryResultJson } from "../../../_lib/query-result-json";
+import { initializeAllLineResult } from "../../../_lib/atoms/family";
 import { readMapId } from "../../../_lib/atoms/hydrate";
 
 interface RankingMenuProps {
@@ -33,7 +33,7 @@ interface RankingMenuProps {
 export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
-
+  const queryClient = useQueryClient();
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
   const { data: mapInfo } = useQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
@@ -46,7 +46,8 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     overlay.loading("リザルトデータを読込中...");
     setScene("replay");
     try {
-      const resultData = await queryResultJson(resultId);
+      const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+      initializeAllLineResult(resultData);
       const mode = resultData[0]?.status?.mode ?? "roma";
       setPlayingInputMode(mode);
       playYTPlayer();
