@@ -23,7 +23,7 @@ export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) 
       <div className="flex items-center justify-around" id="end_main_buttons">
         {isRankingRegistration && (
           <RegisterRankingButton
-            isScoreUpdated={!!bestScore && status.score >= bestScore}
+            isScoreUpdated={bestScore === null ? status.score > 0 : status.score >= bestScore}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
@@ -59,7 +59,7 @@ const canRankingRegistration = ({
 }) => {
   if (!session || scene !== "play_end" || minMediaSpeed < 1 || status.score <= 0) return false;
   if (status.miss === 0 && status.lost === 0) return true;
-  if (!bestScore) return true;
+  if (bestScore === null) return true;
   if (status.score >= bestScore) return true;
   return false;
 };
