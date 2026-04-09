@@ -14,7 +14,9 @@ export const ResultMessage = ({ bestScore }: { bestScore: number | null }) => {
   return (
     <div className="mx-2 text-left text-5xl md:text-3xl" id="end_text">
       {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
-      <span>{Message({ bestScore, score, scene, session })}</span>
+      <span>
+        <Message bestScore={bestScore} score={score} scene={scene} session={session} />
+      </span>
       {minMediaSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
   );
@@ -38,7 +40,7 @@ const Message = ({
   if (score >= bestScore)
     return (
       <>
-        おめでとうございます！最高スコアが ${bestScore} から ${score} に更新されました！ <wbr />
+        おめでとうございます！最高スコアが {bestScore} から {score} に更新されました！ <wbr />
         <RandomEmoji />
       </>
     );

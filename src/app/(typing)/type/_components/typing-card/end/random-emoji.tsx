@@ -31,10 +31,6 @@ const HAPPY_EMOJI = [
   "(＞⩊＜)",
 ];
 
-export const getRandomEmoji = () => {
-  const randomIndex = Math.floor(Math.random() * HAPPY_EMOJI.length);
-  return HAPPY_EMOJI[randomIndex];
-};
 export const RandomEmoji = () => {
   const randomIndex = Math.floor(Math.random() * HAPPY_EMOJI.length);
   const randomEmoji = HAPPY_EMOJI[randomIndex];
