@@ -14,12 +14,12 @@ import { readMapId, readTypingOptions, type TypingOptions } from "../../../_lib/
 import { readTypingStatus, type TypingStatus } from "../../../_lib/atoms/status";
 
 interface RegisterRankingButtonProps {
-  showAlert: boolean;
+  isScoreUpdated: boolean;
   disabled: boolean;
   onSuccess: () => void;
 }
 
-export const RegisterRankingButton = ({ showAlert, disabled, onSuccess }: RegisterRankingButtonProps) => {
+export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -40,7 +40,7 @@ export const RegisterRankingButton = ({ showAlert, disabled, onSuccess }: Regist
     const mapId = readMapId();
     if (!mapId) return;
 
-    const isConfirmed = showAlert
+    const isConfirmed = isScoreUpdated
       ? true
       : await confirmDialog.warning({
           title: "スコア未更新",

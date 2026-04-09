@@ -25,7 +25,7 @@ export const EndButtonContainer = () => {
       <div className="flex items-center justify-around" id="end_main_buttons">
         {isRankingRegistration && (
           <RegisterRankingButton
-            showAlert={bestScore > status.score}
+            isScoreUpdated={status.score >= bestScore}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}
           />
@@ -62,6 +62,7 @@ const canRankingRegistration = ({
   if (!session || scene !== "play_end" || minMediaSpeed < 1 || status.score <= 0) return false;
   if (status.miss === 0 && status.lost === 0) return true;
   if (status.score >= bestScore) return true;
+  return false;
 };
 
 interface RetryButtonProps {
