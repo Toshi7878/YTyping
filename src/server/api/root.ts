@@ -13,6 +13,7 @@ import { userStatsRouter } from "./routers/user/stats";
 import { userTypingOptionRouter } from "./routers/user/typing-option";
 import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
+import "server-only";
 
 export const appRouter = router({
   map: mapRouter,
