@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
-import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { halfKanaToHiragana } from "@/utils/kana";
 import {
   kanaToHira,
@@ -27,7 +27,7 @@ export const wordConvert = async (lyrics: string) => {
 
 const fetchReading = async (sentence: string) => {
   setIsWordConverting(true);
-  const trpc = getTRPCOptionsProxy();
+  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
   try {
     const { regexDict } = await queryClient.ensureQueryData(

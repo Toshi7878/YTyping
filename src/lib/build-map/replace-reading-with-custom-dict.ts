@@ -1,8 +1,8 @@
 import type { RouterOutputs } from "@/server/api/trpc";
-import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const replaceReadingWithCustomDict = async (tokenizedSentence: RouterOutputs["morph"]["tokenizeSentence"]) => {
-  const trpc = getTRPCOptionsProxy();
+  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
   const { dictionaryDict } = await queryClient.ensureQueryData(

@@ -1,8 +1,8 @@
 import type { Session } from "@/lib/auth-client";
-import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const getRankingMyResult = ({ mapId, session }: { mapId: number; session: Session }) => {
-  const trpc = getTRPCOptionsProxy();
+  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
   const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
@@ -12,7 +12,7 @@ export const getRankingMyResult = ({ mapId, session }: { mapId: number; session:
 };
 
 export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number; resultId: number }) => {
-  const trpc = getTRPCOptionsProxy();
+  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
   const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);

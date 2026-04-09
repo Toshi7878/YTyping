@@ -46,7 +46,7 @@ const trpcOptions = createTRPCOptionsProxy({
 });
 
 export const getTRPCClient = () => trpcClient;
-export const getTRPCOptionsProxy = () => trpcOptions;
+export const getTRPCOptions = () => trpcOptions;
 
 // biome-ignore lint/style/noDefaultExport: <名前空間が被るため>
 export default function TRPCReactProvider({ children }: { children: React.ReactNode }) {
