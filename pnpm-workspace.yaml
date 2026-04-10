@@ -6,3 +6,5 @@ onlyBuiltDependencies:
 
 patchedDependencies:
   '@pixi/sound': patches/@pixi__sound.patch
+
+minimumReleaseAge: 1440
