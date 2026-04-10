@@ -9,7 +9,7 @@ overrides:
   '@types/react-dom': 19.2.3
 
 patchedDependencies:
-  '@pixi/sound':
+  '@pixi/sound@6.0.1':
     hash: b0300d5c2c0d3f9f1449ff45b40a439b01f7914f0d33b2c999aa58251be1a9dd
     path: patches/@pixi__sound.patch
 

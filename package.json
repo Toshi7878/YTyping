@@ -109,7 +109,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@pixi/sound": "patches/@pixi__sound.patch"
+      "@pixi/sound@6.0.1": "patches/@pixi__sound.patch"
     },
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
