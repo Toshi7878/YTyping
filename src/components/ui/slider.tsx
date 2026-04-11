@@ -43,7 +43,7 @@ function Slider({
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
-          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+          // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
           key={index}
           className="block size-4 shrink-0 rounded-full border border-primary bg-foreground shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50"
         >

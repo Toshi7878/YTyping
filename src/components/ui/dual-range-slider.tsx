@@ -29,7 +29,7 @@ const DualRangeSlider = ({
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>
       {initialValue.map((value, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+        // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
         <React.Fragment key={index}>
           <SliderPrimitive.Thumb className="block size-4 shrink-0 rounded-full border border-primary bg-foreground shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50">
             {label && (

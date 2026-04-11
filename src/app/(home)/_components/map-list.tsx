@@ -57,7 +57,7 @@ export const MapList = () => {
 
         return layoutType === "THREE_COLUMNS" ? (
           <ThreeColumnMapList
-            // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+            // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
             key={pageIndex}
             items={page.items}
             initialInView={isInView}
@@ -67,7 +67,7 @@ export const MapList = () => {
           />
         ) : (
           <TwoColumnMapList
-            // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+            // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
             key={pageIndex}
             items={page.items}
             initialInView={isInView}

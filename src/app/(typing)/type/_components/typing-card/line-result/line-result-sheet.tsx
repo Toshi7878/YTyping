@@ -106,7 +106,7 @@ const ResultLineList = ({
 
         return (
           <OptimizedResultCard
-            // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+            // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
             key={index}
             count={index}
             lineIndex={lineIndex}

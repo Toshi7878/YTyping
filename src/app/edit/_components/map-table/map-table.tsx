@@ -141,7 +141,7 @@ const MapTable = () => {
 
                 return (
                   <MapTableRow
-                    // biome-ignore lint/suspicious/noArrayIndexKey: The map order is the key itself
+                    // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
                     key={index}
                     row={row}
                     index={index}

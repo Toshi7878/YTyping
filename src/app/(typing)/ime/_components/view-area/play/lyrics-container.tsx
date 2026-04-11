@@ -42,7 +42,7 @@ const Lyrics = () => {
     >
       {displayLines.map((line, index) => (
         <WipeLyrics
-          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+          // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
           key={index}
           line={line}
           wipeColor={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}
