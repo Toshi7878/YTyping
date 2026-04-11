@@ -69,6 +69,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     }
   }, [mapJson, loadMap]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
   useEffect(() => {
     return () => {
       void mutateImeStats();

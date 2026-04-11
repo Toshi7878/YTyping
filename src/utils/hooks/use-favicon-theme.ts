@@ -27,6 +27,7 @@ export function useFaviconTheme() {
   const { theme, resolvedTheme } = useTheme();
   const pathname = usePathname();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname変更時もfaviconを更新する
   useEffect(() => {
     const active = theme === "system" ? resolvedTheme : theme;
     if (!active) return;

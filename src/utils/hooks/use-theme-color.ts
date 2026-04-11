@@ -34,6 +34,8 @@ export function applyThemeColor() {
 
 export function useThemeColor() {
   const { theme, resolvedTheme } = useTheme();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: applyThemeColor は安定参照のため依存に不要。
   useEffect(() => {
     requestAnimationFrame(() => applyThemeColor());
   }, [theme, resolvedTheme]);

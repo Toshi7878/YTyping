@@ -86,6 +86,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     }
   }, [rawMapLines]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
   useEffect(() => {
     return () => {
       const scene = readScene();

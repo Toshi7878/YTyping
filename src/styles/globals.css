@@ -174,13 +174,13 @@
   .map-card-hover:hover {
     box-shadow:
       0 8px 13px -3px color-mix(in oklch, var(--color-secondary-light) 50%, transparent),
-      0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent) !important;
+      0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent);
   }
 
   .hover-card-shadow-primary:hover {
     box-shadow:
       0 8px 13px -3px color-mix(in oklch, var(--color-primary-light) 50%, transparent),
-      0 3px 5px -2px color-mix(in oklch, var(--color-primary-light) 30%, transparent) !important;
+      0 3px 5px -2px color-mix(in oklch, var(--color-primary-light) 30%, transparent);
   }
 }
 
@@ -196,6 +196,7 @@
   }
 
   body[data-scroll-locked] {
+    /* biome-ignore lint/complexity/noImportantStyles: Sheetが開いたときにページ全体が左にズレるのを防ぐため */
     margin-right: 0 !important;
   }
 

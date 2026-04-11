@@ -16,6 +16,7 @@ export const PlayingNotify = () => {
   const scene = useSceneState();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: notifyが変更された時のみ発火させたいため
   const notifyKey = useMemo(() => Math.random().toString(), [notify]);
 
   const playModeNotify = () => {
@@ -28,6 +29,7 @@ export const PlayingNotify = () => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: notifyが変更された時のみ発火させたいため
   useEffect(() => {
     if (!NON_ANIMATED.includes(notify.description || "")) {
       timerRef.current = setTimeout(() => {
@@ -52,6 +54,7 @@ export const PlayingNotify = () => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: sceneが変更された時のみ発火させたいため
   useEffect(() => {
     if (scene !== "play") {
       playModeNotify();

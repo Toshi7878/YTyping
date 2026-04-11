@@ -109,6 +109,7 @@ export const HoverExtractCard = ({
     };
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: isOpen, cardWidthが変更された時のみ発火させたいため
   const ctxValue = useMemo<HoverExtractCtx>(() => ({ openHover, closeHover, isOpen, cardWidth }), [isOpen, cardWidth]);
 
   return (

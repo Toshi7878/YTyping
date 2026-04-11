@@ -48,6 +48,7 @@ export const TypingWords = () => {
     romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: マウント時のみ要素をatomにセットしたいため
   useEffect(() => {
     if (
       mainRefs.viewportRef.current &&
