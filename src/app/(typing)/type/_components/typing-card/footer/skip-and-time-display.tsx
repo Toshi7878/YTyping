@@ -4,7 +4,6 @@ import {
   useActiveSkipGuideKeyState,
   useBuiltMapState,
   useMediaSpeedState,
-  useMovieDurationState,
   useSceneGroupState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state";
@@ -59,10 +58,8 @@ const ElapsedMmSsDisplay = () => {
 const VideoDurationTime = () => {
   const map = useBuiltMapState();
   const playSpeed = useMediaSpeedState();
-  const movieDuration = useMovieDurationState();
   if (!map) return;
-  const duration = map.duration > movieDuration ? movieDuration : map?.duration;
-  const totalTime = formatTime(Number(duration) / playSpeed);
+  const totalTime = formatTime(map.duration / playSpeed);
 
   return <span id="constant_duration_count">{totalTime}</span>;
 };

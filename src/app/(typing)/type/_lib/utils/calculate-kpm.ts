@@ -5,6 +5,7 @@ export const calculateLineKpm = ({
   lineTypeCount: number;
   constantLineTime: number;
 }) => {
+  if (lineTypeCount === 0 && constantLineTime === 0) return 0;
   return Math.floor((lineTypeCount / constantLineTime) * 60);
 };
 

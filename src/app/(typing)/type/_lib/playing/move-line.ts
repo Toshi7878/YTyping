@@ -2,7 +2,7 @@ import { readLineCount, readLineProgress, readPracticeLineItems, writeLineCount 
 import { readBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { seekYTPlayer } from "../atoms/youtube-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
-import { setupLine, stopTimer } from "./timer/timer";
+import { setupNextLine, stopTimer } from "./timer/timer";
 
 const SEEK_BUFFER_TIME = 0.8;
 
@@ -35,7 +35,7 @@ export const movePrevLine = () => {
 
   const newCount = getLineCountByTime(prevTime);
   writeLineCount(newCount);
-  setupLine(newCount);
+  setupNextLine(map, newCount);
 
   const seekTargetTime = isTimeBuffer ? prevTime : (map.lines[prevCount]?.time ?? 0);
   seekYTPlayer(seekTargetTime);
@@ -78,7 +78,7 @@ export const moveNextLine = () => {
 
   const newCount = getLineCountByTime(nextTime) + (isTimeBuffer ? 0 : 1);
   writeLineCount(newCount);
-  setupLine(newCount);
+  setupNextLine(map, newCount);
 
   seekYTPlayer(nextTime);
   setNotify(Symbol("▷"));
@@ -100,7 +100,7 @@ export const moveSetLine = (seekCount: number) => {
   seekYTPlayer(seekTime);
   const newCount = getLineCountByTime(seekTime) + (isTimeBuffer ? 0 : 1);
   writeLineCount(newCount);
-  setupLine(newCount);
+  setupNextLine(map, newCount);
   stopTimer();
 
   const lineProgress = readLineProgress();

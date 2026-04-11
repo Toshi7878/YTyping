@@ -1,5 +1,5 @@
 import { executeTypingInput, type InputMode, type TypingWord } from "lyrics-typing-engine";
-import { readLineCount, writeLineSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
+import { readLineCount } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readMinMediaSpeed, readReplayRankingResult, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
@@ -28,8 +28,12 @@ export const simulateTypingInput = ({
   const typingWord = readTypingWord();
 
   evaluateInput(typeResult, inputMode, typingWord, isCaseSensitive, {
-    onSuccess: ({ nextTypingWord, successKey, updatePoint }) => {
-      triggerTypeSound();
+    onSuccess: ({ nextTypingWord, isCompleted, successKey, updatePoint }) => {
+      if (isCompleted) {
+        triggerTypeCompletedSound();
+      } else {
+        triggerTypeSound();
+      }
       setTypingWord(nextTypingWord);
       updateSuccessStatus({ constantRemainLineTime, updatePoint, constantLineTime });
       updateSuccessSubstatus({ constantLineTime, successKey });
@@ -40,14 +44,11 @@ export const simulateTypingInput = ({
       updateMissSubstatus({ constantLineTime, failKey });
     },
     onLineCompleted: () => {
-      triggerTypeCompletedSound();
-
       const lineResults = readAllLineResult();
       const count = readLineCount();
       const lineResult = lineResults[count];
 
       recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
-      writeLineSubstatus({ isCompleted: true });
       setCombo(lineResult?.status.combo ?? 0);
       setLineKpm(lineResult?.status.kpm ?? 0);
     },

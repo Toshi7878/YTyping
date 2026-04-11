@@ -6,7 +6,7 @@ import {
   writeTypingSubstatus,
 } from "../../atoms/ref";
 
-export const updateTypingTimeOnLineEnded = ({ constantLineTime }: { constantLineTime: number }) => {
+export const updateTypingTime = ({ constantLineTime }: { constantLineTime: number }) => {
   const { totalTypeTime } = readTypingSubstatus();
   writeTypingSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
 

@@ -39,7 +39,7 @@ import { setTimerMaxFPS } from "../../../_lib/playing/timer/timer";
 import { updateMissStatus, updateMissSubstatus } from "../../../_lib/playing/update-status/miss";
 import { recalculateStatusFromResults } from "../../../_lib/playing/update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../../../_lib/playing/update-status/success";
-import { updateTypingTimeOnLineEnded } from "../../../_lib/playing/update-status/update-kpm";
+import { updateTypingTime } from "../../../_lib/playing/update-status/update-kpm";
 import { getRemainLineTime } from "../../../_lib/youtube-player/get-youtube-time";
 import { ChangeCSS } from "./change-css-style";
 import { Lyrics } from "./lyrics";
@@ -148,8 +148,11 @@ const handleKeyDown = (event: KeyboardEvent) => {
       {
         onSuccess: ({ nextTypingWord, successKey, isCompleted, updatePoint, chunkType }) => {
           const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
-
-          triggerTypeSound();
+          if (isCompleted) {
+            triggerTypeCompletedSound();
+          } else {
+            triggerTypeSound();
+          }
           setTypingWord(nextTypingWord);
           updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
           updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
@@ -170,7 +173,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           triggerTypeCompletedSound();
 
           if (!isPaused) {
-            updateTypingTimeOnLineEnded({ constantLineTime });
+            updateTypingTime({ constantLineTime });
           }
 
           const count = readLineCount();

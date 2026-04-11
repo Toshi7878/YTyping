@@ -1,3 +1,4 @@
+import { readImeStats } from "../atoms/ref";
 import { readScene, setScene, setTextareaPlaceholderType } from "../atoms/state";
 import { playYTPlayer, stopYTPlayer } from "../atoms/yt-player";
 import { mutateImeStats } from "./mutate-stats";
@@ -18,5 +19,6 @@ export const handleSceneEnd = () => {
   setScene("end");
   setTextareaPlaceholderType("normal");
   pauseTimer();
-  void mutateImeStats();
+  const stats = readImeStats();
+  void mutateImeStats(stats);
 };

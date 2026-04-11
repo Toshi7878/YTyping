@@ -1,7 +1,10 @@
 import { Ticker } from "@pixi/ticker";
 import {
   readLineCount,
+  readLineProgress,
   readLineSubstatus,
+  readTotalProgress,
+  readTypingStats,
   readUtilityRefParams,
   resetLineSubstatus,
   setLineProgressValue,
@@ -11,35 +14,31 @@ import {
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
+  type BuiltMap,
   readBuiltMap,
   readMediaSpeed,
+  readScene,
   readUtilityParams,
   setActiveSkipGuideKey,
   setChangeCSSCount,
+  transitionToEndScene,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
+import { readMapId } from "../../atoms/hydrate";
 import { setAllTypingStatus } from "../../atoms/status";
-import { readElapsedSecTime, setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../atoms/sub-status";
+import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../atoms/sub-status";
 import { readTypingWord, setNewLine, setNextLyrics } from "../../atoms/typing-word";
-import {
-  cueYTVideoById,
-  getYTPlayerState,
-  getYTVideoId,
-  readYTPlayer,
-  setYTPlaybackRate,
-  stopYTPlayer,
-} from "../../atoms/youtube-player";
+import { readYTPlayer, setYTPlaybackRate } from "../../atoms/youtube-player";
+import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../mutate/stats";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
-import { onEnd } from "../../youtube-player/youtube-events";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
-import { updateTypingTimeOnLineEnded } from "../update-status/update-kpm";
+import { updateTypingTime } from "../update-status/update-kpm";
 import { simulateTypingInput } from "./simulate-typing-input";
 
 export const startTimer = () => {
@@ -57,9 +56,8 @@ export const stopTimer = () => {
 export const setTimerMaxFPS = (rate: number) => {
   typeTicker.maxFPS = rate;
 };
-let lastUpdateTime = 0;
 
-const timer = () => {
+const handleTimer = () => {
   const YTPlayer = readYTPlayer();
   const map = readBuiltMap();
   if (!YTPlayer || !map) {
@@ -68,128 +66,200 @@ const timer = () => {
   }
 
   const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getRemainLineTime();
-  const { movieDuration } = readUtilityParams();
-
   const count = readLineCount();
-  const nextLine = map.lines[count + 1];
-  const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
-  const hasReachedNextLineTime = currentTime >= nextLineTime;
-  const isVideoEnded = getYTPlayerState() === YT.PlayerState.ENDED;
-  if (hasReachedNextLineTime || isVideoEnded) {
-    proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count, isVideoEnded });
-    return;
-  }
+  timer(
+    {
+      currentTime,
+      constantTime,
+      constantLineTime,
+      constantRemainLineTime,
+      timeLimitState: { lines: map.lines, currentIndex: count },
+      endState: currentTime >= map.duration,
+    },
+    {
+      onUpdate: () => {
+        setLineProgressValue(currentLineTime);
+        const { scene } = readUtilityParams();
 
-  const shouldUpdate100ms = Math.abs(constantTime - lastUpdateTime) >= 0.1;
-  if (shouldUpdate100ms) {
-    updateEvery100ms({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
-    lastUpdateTime = constantTime;
-  }
+        if (scene === "replay" && count > 0) {
+          const lineResults = readAllLineResult();
 
-  setLineProgressValue(currentLineTime);
-  const { scene } = readUtilityParams();
+          const lineResult = lineResults[count];
+          if (!lineResult) return;
+          const { types } = lineResult;
+          if (types.length === 0) return;
+          const { replayKeyCount } = readUtilityRefParams();
+          const typeResult = types[replayKeyCount];
+          if (!typeResult) return;
+          const { time: keyTime } = typeResult;
+          if (constantLineTime >= keyTime) {
+            simulateTypingInput({ constantLineTime, constantRemainLineTime, typeResult });
+            writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
+          }
+        }
+      },
+      on100MsUpdate: ({ currentTime, constantLineTime, constantRemainLineTime }) => {
+        setLineRemainTime(constantRemainLineTime);
+        const typingWord = readTypingWord();
+        const isLineCompleted = typingWord.correct.roma && !typingWord.nextChunk.kana;
 
-  if (scene === "replay" && count > 0) {
-    const lineResults = readAllLineResult();
+        if (!isLineCompleted) {
+          const { typeCount: lineTypeCount } = readLineSubstatus();
+          const newLineKpm = calculateLineKpm({ lineTypeCount, constantLineTime });
+          setLineKpm(newLineKpm);
+        }
 
-    const lineResult = lineResults[count];
-    if (!lineResult) return;
-    const { types } = lineResult;
-    if (types.length === 0) return;
+        updateSkipGuideVisibility({
+          kana: readTypingWord().nextChunk.kana,
+          currentTime,
+          constantLineTime,
+          constantRemainLineTime,
+        });
 
-    const { replayKeyCount } = readUtilityRefParams();
-    const typeResult = types[replayKeyCount];
-    if (!typeResult) return;
-    const { time: keyTime } = typeResult;
-    if (constantLineTime >= keyTime) {
-      simulateTypingInput({ constantLineTime, constantRemainLineTime, typeResult: typeResult });
-      writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
-    }
-  }
+        setTotalProgressValue(currentTime);
+      },
+
+      on1000MsUpdate: ({ constantTime }) => {
+        setElapsedSecTime(constantTime);
+      },
+
+      onTimeLimitReach: ({ nextCount }) => {
+        const typingWord = readTypingWord();
+        const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
+        const scene = readScene();
+
+        if (!isLineCompleted && scene !== "replay") {
+          processIncompleteLineEnd({ map, constantLineTime, count });
+        }
+
+        setupNextLine(map, scene === "play" ? nextCount : getLineCountByTime(currentTime));
+      },
+
+      onTimerEnd: () => {
+        const { scene } = readUtilityParams();
+        const typingWord = readTypingWord();
+        const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
+
+        if (!isLineCompleted && scene !== "replay") {
+          processIncompleteLineEnd({ map, constantLineTime, count });
+        }
+
+        setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
+        setLineKpm(0);
+        transitionToEndScene(scene);
+        stopTimer();
+
+        const lineProgress = readLineProgress();
+        const totalProgress = readTotalProgress();
+
+        if (lineProgress) {
+          lineProgress.value = lineProgress.max;
+        }
+        if (totalProgress) {
+          totalProgress.value = totalProgress.max;
+        }
+
+        if (scene === "play") {
+          const stats = readTypingStats();
+          mutateTypingStats(stats);
+          const mapId = readMapId();
+          if (!mapId) return;
+          mutateIncrementMapCompletionPlayCountStats({ mapId });
+        } else if (scene === "practice") {
+          const stats = readTypingStats();
+          mutateTypingStats(stats);
+        }
+      },
+    },
+  );
 };
 
-const proceedToNextLine = ({
-  currentTime,
-  constantLineTime,
-  nextLine,
-  prevCount,
-  isVideoEnded,
-}: {
-  currentTime: number;
-  constantLineTime: number;
-  nextLine: BuiltMapLineWithOption | undefined;
-  prevCount: number;
-  isVideoEnded: boolean;
-}) => {
-  const { scene, movieDuration } = readUtilityParams();
-  const { isCompleted } = readLineSubstatus();
+let last100MsUpdateTime = 0;
+let last1000MsUpdateTime = 0;
 
-  if (!isCompleted && scene !== "replay") {
-    processIncompleteLineEnd({ constantLineTime, count: prevCount });
-  }
-
-  const isEnd = nextLine?.lyrics === "end" || currentTime >= movieDuration || isVideoEnded;
-
-  if (isEnd) {
-    onEnd();
-    stopTimer();
-    stopYTPlayer();
-    cueYTVideoById(getYTVideoId() ?? "");
-    return;
-  }
-
-  if (nextLine) {
-    const nextCount = scene === "play" ? prevCount + 1 : getLineCountByTime(currentTime);
-    setupLine(nextCount);
-  }
-};
-
-const updateEvery100ms = ({
-  currentTime,
-  constantLineTime,
-  constantRemainLineTime,
-  constantTime,
-}: {
-  currentTime: number;
-  constantTime: number;
-  constantLineTime: number;
-  constantRemainLineTime: number;
-}) => {
-  setLineRemainTime(constantRemainLineTime);
-
-  const { isCompleted } = readLineSubstatus();
-
-  if (!isCompleted) {
-    const { typeCount: lineTypeCount } = readLineSubstatus();
-    const newLineKpm = calculateLineKpm({ lineTypeCount, constantLineTime });
-    setLineKpm(newLineKpm);
-  }
-
-  updateSkipGuideVisibility({
-    kana: readTypingWord().nextChunk.kana,
+const timer = <T extends { time: number }>(
+  {
     currentTime,
+    constantTime,
     constantLineTime,
     constantRemainLineTime,
-  });
+    timeLimitState,
+    endState,
+  }: {
+    currentTime: number;
+    constantTime: number;
+    constantLineTime: number;
+    constantRemainLineTime: number;
+    timeLimitState: { lines: T[]; currentIndex: number };
+    endState: boolean;
+  },
+  {
+    onUpdate,
+    on100MsUpdate,
+    on1000MsUpdate,
+    onTimeLimitReach,
+    onTimerEnd,
+  }: {
+    onUpdate: () => void;
+    on100MsUpdate: ({
+      currentTime,
+      constantTime,
+      constantLineTime,
+      constantRemainLineTime,
+    }: {
+      currentTime: number;
+      constantTime: number;
+      constantLineTime: number;
+      constantRemainLineTime: number;
+    }) => void;
+    on1000MsUpdate: ({ constantTime }: { constantTime: number }) => void;
+    onTimeLimitReach: ({ nextCount }: { nextCount: number }) => void;
+    onTimerEnd: () => void;
+  },
+) => {
+  const { lines, currentIndex } = timeLimitState;
+  const nextLine = lines[currentIndex + 1];
+  if (!nextLine || endState) {
+    onTimerEnd();
+    return;
+  }
+  if (currentTime >= nextLine.time) {
+    onTimeLimitReach({ nextCount: currentIndex + 1 });
+    return;
+  }
+  onUpdate();
 
-  setTotalProgressValue(currentTime);
-  const elapsedSecTime = readElapsedSecTime();
-  if (Math.abs(constantTime - elapsedSecTime) >= 1) {
-    setElapsedSecTime(constantTime);
+  const shouldUpdate100ms = Math.abs(constantTime - last100MsUpdateTime) >= 0.1;
+  if (shouldUpdate100ms) {
+    on100MsUpdate({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
+
+    const shouldUpdate1000ms = Math.abs(constantTime - last1000MsUpdateTime) >= 1;
+    if (shouldUpdate1000ms) {
+      on1000MsUpdate({ constantTime });
+      last1000MsUpdateTime = constantTime;
+    }
+    last100MsUpdateTime = constantTime;
   }
 };
 
-const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
-  const map = readBuiltMap();
+const processIncompleteLineEnd = ({
+  map,
+  constantLineTime,
+  count,
+}: {
+  map: BuiltMap;
+  constantLineTime: number;
+  count: number;
+}) => {
   const currentLine = map?.lines[count];
-  if (!map || !currentLine) return;
+  if (!currentLine) return;
 
   const isTypingLine = count >= 0 && currentLine.kpm.roma > 0;
   const { scene } = readUtilityParams();
 
   if (isTypingLine) {
-    updateTypingTimeOnLineEnded({ constantLineTime });
+    updateTypingTime({ constantLineTime });
   }
 
   if (hasLineResultImproved(count)) {
@@ -207,11 +277,10 @@ const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTim
   }
 };
 
-export const setupLine = (nextCount: number) => {
-  const map = readBuiltMap();
+export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => {
   const newLine = map?.lines[nextCount];
   const newNextLine = map?.lines[nextCount + 1];
-  if (!map || !newLine || !newNextLine) return;
+  if (!newLine || !newNextLine) return;
 
   writeLineCount(nextCount);
   setNewLine(newLine);
@@ -224,13 +293,10 @@ export const setupLine = (nextCount: number) => {
     syncReplayLineSnapshot(nextCount);
     recalculateStatusFromResults({ count: nextCount, updateType: "lineUpdate" });
   }
-
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
   setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
-
   setNextLyrics(newNextLine);
-
   setChangeCSSCount(nextCount);
 };
 
@@ -299,4 +365,4 @@ const syncReplayLineSnapshot = (newCurrentCount: number) => {
 };
 
 const typeTicker = new Ticker();
-typeTicker.add(timer);
+typeTicker.add(handleTimer);

@@ -3,14 +3,15 @@ import { readReadyInputMode, readVolume } from "@/lib/atoms/global-atoms";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { windowFocus } from "@/utils/window-focus";
 import { readMapId } from "../atoms/hydrate";
-import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount } from "../atoms/ref";
+import { readUtilityRefParams, writeLineCount } from "../atoms/ref";
 import {
+  readBuiltMap,
   readMinMediaSpeed,
   readSceneGroup,
   readUtilityParams,
   setIsPaused,
+  setLastLineEndTime,
   setMediaSpeed,
-  setMovieDuration,
   setNotify,
   setPlayingInputMode,
   setScene,
@@ -18,12 +19,13 @@ import {
   setYTStarted,
 } from "../atoms/state";
 import { writeYTPlayer } from "../atoms/youtube-player";
-import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../mutate/stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
 
 const onStart = (player: YT.Player) => {
   const { scene } = readUtilityParams();
-  setMovieDuration(player.getDuration());
+  const map = readBuiltMap();
+  if (!map) return;
+  setLastLineEndTime(map, player.getDuration());
   const mapId = readMapId();
   if (mapId) {
     mutatePlayCountStats({ mapId });
@@ -66,33 +68,6 @@ export const onPlay = async ({ target: player }: { target: YT.Player }) => {
     if (scene !== "practice") {
       setNotify(Symbol("▶"));
     }
-  }
-};
-
-export const onEnd = () => {
-  console.log("終了");
-
-  const lineProgress = readLineProgress();
-  const totalProgress = readTotalProgress();
-
-  if (lineProgress) {
-    lineProgress.value = lineProgress.max;
-  }
-  if (totalProgress) {
-    totalProgress.value = totalProgress.max;
-  }
-
-  const { scene } = readUtilityParams();
-
-  if (scene === "play") {
-    setScene("play_end");
-    mutateTypingStats();
-    mutateIncrementMapCompletionPlayCountStats();
-  } else if (scene === "practice") {
-    setScene("practice_end");
-    mutateTypingStats();
-  } else if (scene === "replay") {
-    setScene("replay_end");
   }
 };
 

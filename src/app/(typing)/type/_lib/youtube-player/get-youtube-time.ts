@@ -1,6 +1,6 @@
 import { readTypingOptions } from "../atoms/hydrate";
 import { readLineCount, readUtilityRefParams } from "../atoms/ref";
-import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../atoms/state";
+import { readBuiltMap, readMediaSpeed } from "../atoms/state";
 import { getYTCurrentTime } from "../atoms/youtube-player";
 
 export const getLineTime = () => {
@@ -30,13 +30,14 @@ export const getRemainLineTime = () => {
 
 const getCurrentOffsettedYTTime = () => {
   const { timeOffset } = readUtilityRefParams();
-  const { movieDuration } = readUtilityParams();
+  const map = readBuiltMap();
+  if (!map) return 0;
   const typingOptions = readTypingOptions();
   const YTCurrentTime = getYTCurrentTime();
   if (!YTCurrentTime) return 0;
 
   const result = YTCurrentTime - typingOptions.timeOffset - timeOffset;
-  return Number.isNaN(result) ? movieDuration : result;
+  return Number.isNaN(result) ? map.duration : result;
 };
 
 const getConstantOffsettedYTTime = ({ currentTime }: { currentTime: number }) => {

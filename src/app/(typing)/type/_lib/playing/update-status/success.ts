@@ -111,7 +111,6 @@ export const updateSuccessSubstatus = ({
 
   // 5. 行完了時の処理
   if (isCompleted) {
-    diffLineSubstatus.isCompleted = true;
     diffSubstatus.completeCount = currentSubstatus.completeCount + 1;
 
     const { kanaToRomaConvertCount } = currentSubstatus;

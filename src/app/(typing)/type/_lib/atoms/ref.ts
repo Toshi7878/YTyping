@@ -50,7 +50,6 @@ const lineSubstatusRefAtom = atomWithReset({
   types: [] as TypeResult[],
   startSpeed: 1,
   startInputMode: "roma" as InputMode,
-  isCompleted: false,
   rkpm: 0,
 });
 

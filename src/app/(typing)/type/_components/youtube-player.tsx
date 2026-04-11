@@ -9,14 +9,7 @@ import { windowFocus } from "@/utils/window-focus";
 import { readUtilityParams } from "../_lib/atoms/state";
 import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/youtube-player";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
-import {
-  onEnd,
-  onPause,
-  onPlay,
-  onPlaybackRateChange,
-  onReady,
-  onStateChange,
-} from "../_lib/youtube-player/youtube-events";
+import { onPause, onPlay, onPlaybackRateChange, onReady, onStateChange } from "../_lib/youtube-player/youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -51,7 +44,6 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
         onReady={onReady}
         onPlay={onPlay}
         onPause={onPause}
-        onEnd={onEnd}
         onStateChange={onStateChange}
         onPlaybackRateChange={onPlaybackRateChange}
       />

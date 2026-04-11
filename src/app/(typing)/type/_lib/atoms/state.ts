@@ -32,6 +32,10 @@ export const setBuiltMap = (map: BuiltMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 //TODO: builitMapがnullの場合にエラーハンドリング
 export const readBuiltMap = () => store.get(builtMapAtom);
+export const setLastLineEndTime = (map: NonNullable<BuiltMap>, endTime: number) => {
+  const lines = map.lines.map((line, i) => (i === map.lines.length - 1 ? { ...line, time: endTime } : line));
+  store.set(builtMapAtom, { ...map, lines, duration: Math.min(map.duration, endTime) });
+};
 
 export const TAB_NAMES = ["ステータス", "ランキング"] as const;
 const utilityParamsAtom = atomWithReset({
@@ -43,7 +47,6 @@ const utilityParamsAtom = atomWithReset({
   changeCSSCount: null as number | null,
   isYTStarted: false,
   isPaused: false,
-  movieDuration: 0,
   lineSelectIndex: 0,
   mediaSpeed: 1,
   minMediaSpeed: 1,
@@ -57,7 +60,6 @@ const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("c
 export const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
-const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));
 const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
 const mediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("mediaSpeed"));
 const minMediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("minMediaSpeed"));
@@ -93,6 +95,19 @@ export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
 export const readSceneGroup = () => store.get(sceneGroupAtom);
 
 export const setScene = (value: ExtractAtomValue<typeof sceneAtom>) => store.set(sceneAtom, value);
+export const transitionToEndScene = (currentScene: SceneType) => {
+  switch (currentScene) {
+    case "play":
+      setScene("play_end");
+      break;
+    case "practice":
+      setScene("practice_end");
+      break;
+    case "replay":
+      setScene("replay_end");
+      break;
+  }
+};
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const setPlayingInputMode = (value: ExtractAtomValue<typeof playingInputModeAtom>) =>
@@ -119,10 +134,6 @@ export const setChangeCSSCount = (currentIndex: number) => {
 
 export const useIsPausedState = () => useAtomValue(isPausedAtom, { store });
 export const setIsPaused = (value: ExtractAtomValue<typeof isPausedAtom>) => store.set(isPausedAtom, value);
-
-export const useMovieDurationState = () => useAtomValue(movieDurationAtom, { store });
-export const setMovieDuration = (value: ExtractAtomValue<typeof movieDurationAtom>) =>
-  store.set(movieDurationAtom, value);
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom, { store });
 export const setLineSelectIndex = (lineIndex: number) => {
