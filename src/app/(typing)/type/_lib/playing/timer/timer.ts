@@ -136,7 +136,7 @@ const handleTimer = () => {
         setupNextLine(map, scene === "play" ? nextCount : getLineCountByTime(currentTime));
       },
 
-      onTimerEnd: () => {
+      onTimerEnd: ({ constantLineTime }) => {
         const { scene } = readUtilityParams();
         const typingWord = readTypingWord();
         const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
@@ -215,13 +215,13 @@ const timer = <T extends { time: number }>(
     }) => void;
     on1000MsUpdate: ({ constantTime }: { constantTime: number }) => void;
     onTimeLimitReach: ({ nextCount }: { nextCount: number }) => void;
-    onTimerEnd: () => void;
+    onTimerEnd: ({ constantLineTime }: { constantLineTime: number }) => void;
   },
 ) => {
   const { lines, currentIndex } = timeLimitState;
   const nextLine = lines[currentIndex + 1];
   if (!nextLine || endState) {
-    onTimerEnd();
+    onTimerEnd({ constantLineTime });
     return;
   }
   if (currentTime >= nextLine.time) {

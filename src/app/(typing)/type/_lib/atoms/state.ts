@@ -106,6 +106,8 @@ export const transitionToEndScene = (currentScene: SceneType) => {
     case "replay":
       setScene("replay_end");
       break;
+    default:
+      break;
   }
 };
 
