@@ -209,8 +209,6 @@ export const userStatsRouter = {
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
       if (!session) return;
-      const isAllZero = input.typingTime === 0 && input.imeTypeCount === 0;
-      if (isAllZero) return;
 
       await db
         .insert(UserStats)
@@ -251,18 +249,6 @@ export const userStatsRouter = {
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
       if (!session) return;
-
-      const isAllZero =
-        input.romaType === 0 &&
-        input.kanaType === 0 &&
-        input.flickType === 0 &&
-        input.englishType === 0 &&
-        input.spaceType === 0 &&
-        input.symbolType === 0 &&
-        input.numType === 0 &&
-        input.typingTime === 0 &&
-        input.maxCombo === 0;
-      if (isAllZero) return;
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },
