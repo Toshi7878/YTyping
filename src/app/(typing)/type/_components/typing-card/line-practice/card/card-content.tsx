@@ -20,7 +20,7 @@ export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord 
       </div>
 
       <div className={cn("word-outline-text break-all text-foreground uppercase tracking-wider")}>
-        {types.map((type: TypeResult, index: number) => {
+        {types.map((type: TypeResult) => {
           if (type.isCorrect) {
             correctCount++;
           }
@@ -29,7 +29,7 @@ export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord 
 
           return (
             type.char && (
-              <TooltipWrapper key={`${index}-${type.char}`} label={label} side="top" asChild>
+              <TooltipWrapper key={type.time.toString() + type.char} label={label} side="top" asChild>
                 <span
                   className={cn(
                     "typed break-all hover:bg-border/45",

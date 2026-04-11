@@ -26,6 +26,7 @@ export const getQueryClient = () => {
 };
 
 const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
+
 export { useTRPC };
 
 const trpcClient = createTRPCClient<AppRouter>({

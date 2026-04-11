@@ -1,5 +1,5 @@
 import { H1 } from "@/components/ui/typography";
-import { HydrateClient, prefetch, getCaller, trpc } from "@/trpc/server";
+import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { UserTabs } from "./_components/tabs";
 import { UserProfileCard } from "./_components/user-profile-card";
 import { loadUserPageSearchParams } from "./_lib/search-params";

@@ -76,7 +76,8 @@ const ResultWordsTable = () => {
             const isJudged = currentWordIndex > index || (currentWordIndex === index && result.evaluation !== "Skip");
 
             return (
-              <TableRow key={`${index}-${result.inputs.join("")}`} className="[&>td]:py-2">
+              // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
+              <TableRow key={index} className="[&>td]:py-2">
                 <TableCell className="text-center font-mono">{index + 1}</TableCell>
                 <TableCell className="text-center">
                   {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
@@ -84,7 +85,8 @@ const ResultWordsTable = () => {
                 <TableCell className="wrap-break-word px-4 leading-6">
                   <div className="space-y-1">
                     {result.inputs.map((input, i) => (
-                      <div key={`${i}-${input}`} className="text-sm">
+                      // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
+                      <div key={i} className="text-sm">
                         {input}
                       </div>
                     ))}

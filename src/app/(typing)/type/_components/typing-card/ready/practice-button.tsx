@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { readBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_lib/atoms/youtube-player";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
@@ -7,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { useSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
-import { useQueryClient } from "@tanstack/react-query";
 import { initializeAllLineResult } from "../../../_lib/atoms/family";
 import { readMapId } from "../../../_lib/atoms/hydrate";
 

@@ -48,6 +48,6 @@ export {
   handler as PUT,
   handler as PATCH,
   handler as DELETE,
-  optionsHandler as OPTIONS,
   handler as HEAD,
+  optionsHandler as OPTIONS,
 };

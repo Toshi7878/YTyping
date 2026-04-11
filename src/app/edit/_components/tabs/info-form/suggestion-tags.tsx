@@ -89,11 +89,11 @@ const TemplateTags = () => {
 
   return (
     <div className="flex flex-row flex-wrap gap-3">
-      {CHOICE_TAGS.map((label, index) => {
+      {CHOICE_TAGS.map((label) => {
         const isSelected = tags.some((tag: string) => tag === label);
         if (isSelected) return null;
 
-        return <SuggestionTagBadge key={`${index}-${label}`} label={label} variant="secondary-light" />;
+        return <SuggestionTagBadge key={label} label={label} variant="secondary-light" />;
       })}
     </div>
   );

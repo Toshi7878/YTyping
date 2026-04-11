@@ -5,14 +5,14 @@ import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState 
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
 import { SkipAndTimeDisplay } from "./footer/skip-and-time-display";
+import { TotalTimeProgress } from "./footer/total-time-progress";
 import { Combo } from "./header/combo";
+import { LineTimeProgress } from "./header/line-time-progress";
 import { LineRemainTimeAndKpm } from "./header/linekpm-and-remain-time";
 import { PlayingNotify } from "./header/notify";
 import { PracticeLineSheet } from "./line-practice/line-practice-sheet";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
-import { TotalTimeProgress } from "./footer/total-time-progress";
-import { LineTimeProgress } from "./header/line-time-progress";
 
 export const TypingCard = ({ className }: { className?: string }) => {
   return (

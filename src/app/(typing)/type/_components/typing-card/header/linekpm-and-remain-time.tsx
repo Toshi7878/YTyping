@@ -1,6 +1,6 @@
-import { lineKpmFormatAtom, lineRemainFormatTimeAtom } from "../../../_lib/atoms/sub-status";
 import { useStore } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
+import { lineKpmFormatAtom, lineRemainFormatTimeAtom } from "../../../_lib/atoms/sub-status";
 
 export const LineRemainTimeAndKpm = () => {
   return (

@@ -12,13 +12,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
+import { getCaller } from "@/trpc/server";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
 import { JotaiProvider } from "./_components/jotai-provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
 import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
-import { getCaller } from "@/trpc/server";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],

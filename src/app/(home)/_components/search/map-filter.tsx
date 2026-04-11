@@ -96,13 +96,13 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
         {filter.label}
       </div>
       <div className="flex flex-wrap items-center gap-1">
-        {filter.options.map((param: (typeof filter.options)[number], index: number) => {
+        {filter.options.map((param: (typeof filter.options)[number]) => {
           const currentValue = filter.name === "filterType" ? params.filterType : params.rankingStatus;
           const isActive = currentValue === param.value;
 
           return (
             <Button
-              key={`${filter.name}-${index}`}
+              key={param.value}
               variant="ghost"
               onClick={(e) => {
                 e.preventDefault();

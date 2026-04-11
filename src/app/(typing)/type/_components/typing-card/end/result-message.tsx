@@ -1,8 +1,8 @@
 import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { type Session, useSession } from "@/lib/auth-client";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
-import { RandomEmoji } from "./random-emoji";
 import type { SceneType } from "../../../_lib/type";
+import { RandomEmoji } from "./random-emoji";
 
 export const ResultMessage = ({ bestScore }: { bestScore: number | null }) => {
   const { data: session } = useSession();

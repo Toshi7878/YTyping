@@ -6,6 +6,7 @@ import { env } from "@/env";
 import { applyWordSymbolFilter } from "@/lib/word-symbol-filter";
 import type { DBType } from "@/server/drizzle/client";
 import { ReadingConversionDict } from "@/server/drizzle/schema";
+import { kanaToHira, normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 import {
   tokenizeSentenceResultSchema,
   type WordSymbolFilterOption,
@@ -13,7 +14,6 @@ import {
 } from "@/validator/morph/tokenize";
 import { OPENAPI_RATE_LIMITS } from "../lib/rate-limit-config";
 import { createRateLimitMiddleware, publicProcedure } from "../trpc";
-import { kanaToHira, normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 
 const sudachiCoreResponseSchema = z.object({
   lyrics: z.array(z.string()),

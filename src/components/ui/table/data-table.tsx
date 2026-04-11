@@ -10,7 +10,6 @@ import { Spinner } from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
 declare module "@tanstack/react-table" {
-  // biome-ignore lint/correctness/noUnusedVariables: TValue は react-table 本体との互換性のために宣言
   interface ColumnMeta<TData, TValue> {
     cellClassName?: (cell: Cell<TData, unknown>, index: number) => string;
     headerClassName?: string;

@@ -1,10 +1,10 @@
+import { useState } from "react";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useMapIdState } from "../../../_lib/atoms/hydrate";
+import { getRankingMyResult } from "../../../_lib/get-ranking-result";
 import { EndButtonContainer } from "./button-container";
 import { ResultMessage } from "./result-message";
-import { useSession } from "@/lib/auth-client";
-import { useState } from "react";
-import { getRankingMyResult } from "../../../_lib/get-ranking-result";
-import { useMapIdState } from "../../../_lib/atoms/hydrate";
 
 interface EndProps {
   className: string;

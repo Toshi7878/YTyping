@@ -64,7 +64,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
       label: "メイン設定",
       content: <MainSettingTab />,
     },
-  ];
+  ] as const;
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
@@ -85,7 +85,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
           <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
             {tabData.map((tab, index) => (
               <TabsTrigger
-                key={`${index}-${tab.label}`}
+                key={tab.label}
                 value={index === 0 ? "main" : `tab-${index}`}
                 className="rounded-md border border-border bg-card text-foreground text-sm hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
@@ -94,7 +94,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent key={`${index}-${tab.label}`} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
+            <TabsContent key={tab.label} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
               {tab.content}
             </TabsContent>
           ))}

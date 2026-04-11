@@ -16,12 +16,12 @@ import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
+import { initializeAllLineResult } from "../../../_lib/atoms/family";
+import { readMapId } from "../../../_lib/atoms/hydrate";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atoms/youtube-player";
 import { getRankingResultByResultId } from "../../../_lib/get-ranking-result";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { iosActiveSound } from "../../../_lib/playing/sound-effect";
-import { initializeAllLineResult } from "../../../_lib/atoms/family";
-import { readMapId } from "../../../_lib/atoms/hydrate";
 
 interface RankingMenuProps {
   resultId: number;

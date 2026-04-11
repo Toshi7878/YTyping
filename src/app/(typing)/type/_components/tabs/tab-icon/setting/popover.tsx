@@ -74,7 +74,7 @@ export const SettingPopover = () => {
       ),
     },
     { label: "キーボード設定", content: <HotKeySelectFields /> },
-  ];
+  ] as const;
 
   const handleReset = async () => {
     const isConfirmed = await confirmDialog.warning({
@@ -106,17 +106,13 @@ export const SettingPopover = () => {
         <Tabs defaultValue="0" className="w-full">
           <TabsList className="mb-4 grid w-full grid-cols-3">
             {tabData.map((tab, index) => (
-              <TabsTrigger key={`${index}-${tab.label}`} value={index.toString()}>
+              <TabsTrigger key={tab.label} value={index.toString()}>
                 {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent
-              key={`${index}-${tab.label}`}
-              value={index.toString()}
-              className={cn("max-h-[60vh] overflow-y-scroll px-2")}
-            >
+            <TabsContent key={tab.label} value={index.toString()} className={cn("max-h-[60vh] overflow-y-scroll px-2")}>
               {tab.content}
             </TabsContent>
           ))}

@@ -1,10 +1,10 @@
 "use client";
-import { TableCell } from "@/components/ui/table/table";
-import { cn } from "@/lib/utils";
-import type { LabelType } from "./status-table-card";
-import { typingStatusDisplayAtoms } from "../../../_lib/atoms/status";
 import { type Atom, useStore } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
+import { TableCell } from "@/components/ui/table/table";
+import { cn } from "@/lib/utils";
+import { typingStatusDisplayAtoms } from "../../../_lib/atoms/status";
+import type { LabelType } from "./status-table-card";
 
 interface StatusCellProps {
   label: LabelType;
