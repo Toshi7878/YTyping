@@ -9,6 +9,7 @@ import {
   useBuiltMapState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state";
+import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -37,11 +38,11 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        sendUserStats();
+        void sendUserStats();
       }
     };
     const handleBeforeunload = () => {
-      sendUserStats();
+      void sendUserStats();
     };
 
     if (scene === "play" || scene === "practice") {
@@ -137,7 +138,10 @@ const handleKeyDown = (event: KeyboardEvent) => {
   handlePlayHotKey(event);
 };
 
-const sendUserStats = () => {
+const sendUserStats = async () => {
+  const { data } = await getSession();
+  if (!data?.user) return;
+
   const sendStats = readUserStats();
   if (Object.values(sendStats).every((v) => v === 0)) return;
   const timezone = getTimezone();

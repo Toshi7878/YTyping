@@ -1,7 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
 import { and, asc, count, eq, gte, lte, sql } from "drizzle-orm";
-import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import {
   Maps,
@@ -12,7 +11,7 @@ import {
   UserStats,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
-import { createRateLimitMiddleware, publicProcedure } from "../../trpc";
+import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
 
 const userStatsWriteRateLimit = createRateLimitMiddleware({
@@ -142,12 +141,11 @@ export const userStatsRouter = {
     }).then((res) => (res?.date ?? new Date()).getUTCFullYear());
   }),
 
-  incrementMapCompletionPlayCount: publicProcedure
+  incrementMapCompletionPlayCount: protectedProcedure
     .use(userStatsWriteRateLimit)
     .input(z.object({ mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
-      if (!session) return;
       const { mapId } = input;
 
       await db
@@ -165,10 +163,6 @@ export const userStatsRouter = {
       openapi: {
         method: "POST",
         path: "/user-stats/play-count/increment",
-        protect: false,
-        tags: ["UserStats"],
-        summary: "Increment map play count and user total play count",
-        contentTypes: ["application/json" as OpenApiContentType],
       },
     })
     .input(z.object({ mapId: z.number() }))
@@ -192,23 +186,18 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementImeStats: publicProcedure
+  incrementImeStats: protectedProcedure
     .use(userStatsWriteRateLimit)
     .meta({
       openapi: {
         method: "POST",
         path: "/user-stats/ime/increment",
-        protect: true,
-        tags: ["UserStats"],
-        summary: "Increment IME typing stats",
-        contentTypes: ["application/json" as OpenApiContentType],
       },
     })
     .input(IncrementImeTypeCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
-      if (!session) return;
 
       await db
         .insert(UserStats)
@@ -232,23 +221,18 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementTypingStats: publicProcedure
+  incrementTypingStats: protectedProcedure
     .use(userStatsWriteRateLimit)
     .meta({
       openapi: {
         method: "POST",
         path: "/user-stats/typing/increment",
-        protect: true,
-        tags: ["UserStats"],
-        summary: "Increment typing stats",
-        contentTypes: ["application/json" as OpenApiContentType],
       },
     })
     .input(IncrementTypingCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
-      if (!session) return;
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },

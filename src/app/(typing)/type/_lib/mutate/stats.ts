@@ -1,9 +1,13 @@
+import { getSession } from "@/lib/auth-client";
 import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
 import { readMapId } from "../atoms/hydrate";
 import { readUserStats, resetUserStats } from "../atoms/ref";
 
-export const mutateTypingStats = () => {
+export const mutateTypingStats = async () => {
+  const { data } = await getSession();
+  if (!data?.user) return;
+
   const userStats = readUserStats();
   if (Object.values(userStats).every((v) => v === 0)) return;
 

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { readTypingTextarea, readUserStats, resetUserStats } from "../../_lib/atoms/ref";
 import { useBuiltMapState, useSceneState } from "../../_lib/atoms/state";
@@ -42,7 +43,6 @@ export const ViewArea = () => {
 const SceneView = () => {
   const scene = useSceneState();
   const map = useBuiltMapState();
-  const { data: session } = useSession();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -71,11 +71,11 @@ const SceneView = () => {
 
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        sendUserStats(Number(session?.user.id ?? 0));
+        void sendUserStats();
       }
     };
     const handleBeforeunload = () => {
-      sendUserStats(Number(session?.user.id ?? 0));
+      void sendUserStats();
     };
 
     if (scene === "play") {
@@ -92,7 +92,7 @@ const SceneView = () => {
       window.removeEventListener("beforeunload", handleBeforeunload);
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
-  }, [scene, map, session?.user.id]);
+  }, [scene, map]);
 
   return (
     <div className="ml-6 md:ml-20 xl:ml-32">
@@ -102,12 +102,16 @@ const SceneView = () => {
   );
 };
 
-const sendUserStats = (userId: number) => {
+const sendUserStats = async () => {
+  const { data } = await getSession();
+  if (!data?.user) return;
+
   const stats = readUserStats();
   if (Object.values(stats).every((v) => v === 0)) return;
 
   const url = `${getBaseUrl()}/api/internal/user-stats/ime/increment`;
-  const body = new Blob([JSON.stringify({ ...stats, userId })], {
+  const timezone = getTimezone();
+  const body = new Blob([JSON.stringify({ ...stats, timezone })], {
     type: "application/json",
   });
   navigator.sendBeacon(url, body);

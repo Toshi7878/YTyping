@@ -4,10 +4,10 @@ import { createContext, useContext } from "react";
 import type { auth } from "@/lib/auth";
 import type { USER_ROLE_TYPES } from "@/server/drizzle/schema";
 
-export const authClient = createAuthClient({
+const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>(), customSessionClient<typeof auth>()],
 });
-export const { signIn, signOut } = authClient;
+export const { signIn, signOut, getSession } = authClient;
 
 export type Session = Omit<typeof authClient.$Infer.Session, "user"> & {
   user: Omit<(typeof authClient.$Infer.Session)["user"], "id"> & { id: number; role: (typeof USER_ROLE_TYPES)[number] };
