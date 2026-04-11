@@ -103,8 +103,11 @@ const SceneView = () => {
 };
 
 const sendUserStats = (userId: number) => {
-  const url = `${getBaseUrl()}/api/user-stats/ime/increment`;
-  const body = new Blob([JSON.stringify({ ...readUserStats(), userId })], {
+  const stats = readUserStats();
+  if (Object.values(stats).every((v) => v === 0)) return;
+
+  const url = `${getBaseUrl()}/api/internal/user-stats/ime/increment`;
+  const body = new Blob([JSON.stringify({ ...stats, userId })], {
     type: "application/json",
   });
   navigator.sendBeacon(url, body);

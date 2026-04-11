@@ -9,8 +9,8 @@ import {
   useBuiltMapState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { env } from "@/env";
 import { cn } from "@/lib/utils";
+import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readTypingOptions } from "../../../_lib/atoms/hydrate";
@@ -44,7 +44,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       sendUserStats();
     };
 
-    if (env.NODE_ENV !== "development" && (scene === "play" || scene === "practice")) {
+    if (scene === "play" || scene === "practice") {
       window.addEventListener("beforeunload", handleBeforeunload);
       window.addEventListener("visibilitychange", handleVisibilitychange);
     }
@@ -139,8 +139,11 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
 const sendUserStats = () => {
   const sendStats = readUserStats();
-  const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
-  const body = new Blob([JSON.stringify({ ...sendStats })], {
+  if (Object.values(sendStats).every((v) => v === 0)) return;
+  const timezone = getTimezone();
+
+  const url = `${getBaseUrl()}/api/internal/user-stats/typing/increment`;
+  const body = new Blob([JSON.stringify({ ...sendStats, timezone })], {
     type: "application/json",
   });
   navigator.sendBeacon(url, body);

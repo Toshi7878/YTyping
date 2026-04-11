@@ -3,7 +3,10 @@ import { getTimezone } from "@/utils/date";
 import { readUserStats, resetUserStats } from "../atoms/ref";
 
 export const mutateImeStats = async () => {
-  const { imeTypeCount, typingTime } = readUserStats();
+  const stats = readUserStats();
+  if (Object.values(stats).every((v) => v === 0)) return;
+
+  const { imeTypeCount, typingTime } = stats;
 
   const trpc = getTRPCClient();
 

@@ -5,6 +5,8 @@ import { readUserStats, resetUserStats } from "../atoms/ref";
 
 export const mutateTypingStats = () => {
   const userStats = readUserStats();
+  if (Object.values(userStats).every((v) => v === 0)) return;
+
   const trpcClient = getTRPCClient();
 
   const timezone = getTimezone();
