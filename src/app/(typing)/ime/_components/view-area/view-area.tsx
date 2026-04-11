@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
-import { readTypingTextarea, readUserStats, resetUserStats } from "../../_lib/atoms/ref";
+import { type ImeStats, readImeStats, readTypingTextarea, resetImeStats } from "../../_lib/atoms/ref";
 import { useBuiltMapState, useSceneState } from "../../_lib/atoms/state";
 import { playYTPlayer } from "../../_lib/atoms/yt-player";
 import { ResultScore } from "./end/result-score";
@@ -71,11 +71,13 @@ const SceneView = () => {
 
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        void sendUserStats();
+        const stats = readImeStats();
+        void sendImeStats(stats);
       }
     };
     const handleBeforeunload = () => {
-      void sendUserStats();
+      const stats = readImeStats();
+      void sendImeStats(stats);
     };
 
     if (scene === "play") {
@@ -102,11 +104,9 @@ const SceneView = () => {
   );
 };
 
-const sendUserStats = async () => {
-  const { data } = await getSession();
-  if (!data?.user) return;
-
-  const stats = readUserStats();
+const sendImeStats = (stats: ImeStats) => {
+  const session = getSession();
+  if (!session) return;
   if (Object.values(stats).every((v) => v === 0)) return;
 
   const url = `${getBaseUrl()}/api/internal/user-stats/ime/increment`;
@@ -116,5 +116,5 @@ const sendUserStats = async () => {
   });
   navigator.sendBeacon(url, body);
 
-  resetUserStats();
+  resetImeStats();
 };

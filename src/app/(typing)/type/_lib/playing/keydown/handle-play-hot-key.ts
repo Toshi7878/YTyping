@@ -26,9 +26,16 @@ export const isHotKeyIgnored = (event: KeyboardEvent) => {
 
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
 
-export const handlePlayHotKey = (event: KeyboardEvent) => {
+export const playHotKey = (event: KeyboardEvent) => {
   const map = readBuiltMap();
   if (!map) return;
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    togglePause();
+    return;
+  }
+
   const typingOptions = readTypingOptions();
 
   const { scene, activeSkipKey } = readUtilityParams();

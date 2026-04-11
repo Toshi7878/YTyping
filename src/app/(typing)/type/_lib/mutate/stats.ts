@@ -1,28 +1,21 @@
 import { getSession } from "@/lib/auth-client";
 import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
-import { readMapId } from "../atoms/hydrate";
-import { readUserStats, resetUserStats } from "../atoms/ref";
+import { resetTypingStats, type TypingStats } from "../atoms/ref";
 
-export const mutateTypingStats = async () => {
-  const { data } = await getSession();
-  if (!data?.user) return;
-
-  const userStats = readUserStats();
-  if (Object.values(userStats).every((v) => v === 0)) return;
+export const mutateTypingStats = (stats: TypingStats) => {
+  const session = getSession();
+  if (!session) return;
+  if (Object.values(stats).every((v) => v === 0)) return;
 
   const trpcClient = getTRPCClient();
-
   const timezone = getTimezone();
 
-  void trpcClient.user.stats.incrementTypingStats.mutate({ ...userStats, timezone });
-  resetUserStats();
+  void trpcClient.user.stats.incrementTypingStats.mutate({ ...stats, timezone });
+  resetTypingStats();
 };
 
-export const mutateIncrementMapCompletionPlayCountStats = () => {
-  const mapId = readMapId();
-  if (!mapId) return;
-
+export const mutateIncrementMapCompletionPlayCountStats = ({ mapId }: { mapId: number }) => {
   const trpcClient = getTRPCClient();
   void trpcClient.user.stats.incrementMapCompletionPlayCount.mutate({ mapId });
 };

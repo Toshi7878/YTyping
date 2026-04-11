@@ -4,10 +4,11 @@ import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm"
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
+import type { DBType } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
-import { buildHasBookmarkedMapExists } from "../../lib/map";
+import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
@@ -27,7 +28,7 @@ export const resultListRouter = {
     const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
-    const baseSelect = buildBaseSelect(session);
+    const baseSelect = buildBaseSelect(db, session);
 
     const items = await buildResultWithMapBaseQuery(
       db.select(baseSelect).from(Results).$dynamic(),
@@ -60,7 +61,7 @@ export const resultListRouter = {
     const { db, session } = ctx;
     const { mapId } = input;
 
-    const { map: _, ...resultSelect } = buildBaseSelect(session);
+    const { map: _, ...resultSelect } = buildBaseSelect(db, session);
 
     return db
       .select(resultSelect)
@@ -78,7 +79,7 @@ export const resultListRouter = {
   }),
 } satisfies TRPCRouterRecord;
 
-const buildBaseSelect = (session: TRPCContext["session"]) =>
+const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
   ({
     id: Results.id,
     updatedAt: Results.updatedAt,
@@ -134,7 +135,7 @@ const buildBaseSelect = (session: TRPCContext["session"]) =>
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
       categories: Maps.category,
-      hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
       hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
       myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: session

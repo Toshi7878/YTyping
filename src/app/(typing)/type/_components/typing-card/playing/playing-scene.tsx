@@ -1,6 +1,13 @@
 "use client";
 
-import { evaluateKanaInput, evaluateRomaInput, isTypingKey } from "lyrics-typing-engine";
+import {
+  evaluateKanaInput,
+  evaluateRomaInput,
+  type InputMode,
+  isTypingKey,
+  type TypingWord,
+  type WordChunk,
+} from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
   readBuiltMap,
@@ -15,13 +22,25 @@ import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readTypingOptions } from "../../../_lib/atoms/hydrate";
-import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
-import { readTypingWord, resetCurrentLine, resetNextLyrics, setNextLyrics } from "../../../_lib/atoms/typing-word";
+import { readLineCount, readTypingStats, resetTypingStats, type TypingStats } from "../../../_lib/atoms/ref";
+import {
+  readTypingWord,
+  resetCurrentLine,
+  resetNextLyrics,
+  setNewLine,
+  setNextLyrics,
+  setTypingWord,
+} from "../../../_lib/atoms/typing-word";
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
-import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
-import { processTypingInputResult } from "../../../_lib/playing/keydown/process-typing-result";
+import { isHotKeyIgnored, playHotKey } from "../../../_lib/playing/keydown/handle-play-hot-key";
+import { hasLineResultImproved, saveLineResult } from "../../../_lib/playing/save-line-result";
+import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../_lib/playing/sound-effect";
 import { setTimerMaxFPS } from "../../../_lib/playing/timer/timer";
-import { togglePause } from "../../../_lib/playing/toggle-pause";
+import { updateMissStatus, updateMissSubstatus } from "../../../_lib/playing/update-status/miss";
+import { recalculateStatusFromResults } from "../../../_lib/playing/update-status/recalc-from-results";
+import { updateSuccessStatus, updateSuccessSubstatus } from "../../../_lib/playing/update-status/success";
+import { updateTypingTimeOnLineEnded } from "../../../_lib/playing/update-status/update-kpm";
+import { getRemainLineTime } from "../../../_lib/youtube-player/get-youtube-time";
 import { ChangeCSS } from "./change-css-style";
 import { Lyrics } from "./lyrics";
 import { NextLyrics } from "./next-lyrics";
@@ -38,11 +57,13 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        void sendUserStats();
+        const stats = readTypingStats();
+        sendTypingStats(stats);
       }
     };
     const handleBeforeunload = () => {
-      void sendUserStats();
+      const stats = readTypingStats();
+      sendTypingStats(stats);
     };
 
     if (scene === "play" || scene === "practice") {
@@ -115,41 +136,133 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const typingWord = readTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const map = readBuiltMap();
+    if (!map) return;
+
     const typingOptions = readTypingOptions();
     const { otherStatus } = readReplayRankingResult() ?? {};
-    const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map?.isCaseSensitive || typingOptions.isCaseSensitive);
+    const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
     const { inputMode } = readUtilityParams();
-    const typingInputResult =
-      inputMode === "roma"
-        ? evaluateRomaInput({ event, typingWord, isCaseSensitive })
-        : evaluateKanaInput({ event, typingWord, isCaseSensitive });
-    processTypingInputResult(typingInputResult);
+
+    evaluateInput(
+      { event, inputMode, isCaseSensitive, typingWord },
+      {
+        onSuccess: ({ nextTypingWord, successKey, isCompleted, updatePoint, chunkType }) => {
+          const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
+
+          triggerTypeSound();
+          setTypingWord(nextTypingWord);
+          updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
+          updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
+
+          return { constantLineTime };
+        },
+
+        onMiss: ({ failKey }) => {
+          if (!typingWord.correct.roma) return;
+          const { constantLineTime } = getRemainLineTime();
+
+          triggerMissSound();
+          updateMissStatus();
+          updateMissSubstatus({ constantLineTime, failKey });
+        },
+
+        onLineCompleted: ({ constantLineTime }) => {
+          triggerTypeCompletedSound();
+
+          if (!isPaused) {
+            updateTypingTimeOnLineEnded({ constantLineTime });
+          }
+
+          const count = readLineCount();
+          if (hasLineResultImproved(count)) {
+            saveLineResult(count);
+          }
+
+          if (scene === "practice") {
+            recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
+
+            if (isPaused) {
+              const newCurrentLine = map.lines[count];
+              if (!newCurrentLine) return;
+              setNewLine(newCurrentLine);
+            }
+          }
+        },
+      },
+    );
+
     event.preventDefault();
     return;
   }
 
-  if (event.key === "Escape") {
-    event.preventDefault();
-    togglePause();
-    return;
+  if (!isHotKeyIgnored(event)) {
+    playHotKey(event);
   }
-
-  if ((scene === "play" && isPaused) || isHotKeyIgnored(event)) return;
-  handlePlayHotKey(event);
 };
 
-const sendUserStats = async () => {
-  const { data } = await getSession();
-  if (!data?.user) return;
+const evaluateInput = (
+  {
+    event,
+    inputMode,
+    isCaseSensitive,
+    typingWord,
+  }: {
+    event: KeyboardEvent;
+    inputMode: InputMode;
+    isCaseSensitive: boolean;
+    typingWord: TypingWord;
+  },
+  {
+    onSuccess,
+    onMiss,
+    onLineCompleted,
+  }: {
+    onSuccess: (result: {
+      nextTypingWord: TypingWord;
+      successKey: string;
+      isCompleted: boolean;
+      updatePoint: number;
+      chunkType: WordChunk["type"];
+    }) => { constantLineTime: number };
+    onMiss: (result: { failKey: string }) => void;
+    onLineCompleted: (result: { constantLineTime: number }) => void;
+  },
+) => {
+  const result =
+    inputMode === "roma"
+      ? evaluateRomaInput({ event, typingWord, isCaseSensitive })
+      : evaluateKanaInput({ event, typingWord, isCaseSensitive });
 
-  const sendStats = readUserStats();
-  if (Object.values(sendStats).every((v) => v === 0)) return;
+  if (result.successKey) {
+    const { nextTypingWord, successKey, isCompleted, updatePoint, chunkType } = result;
+
+    const { constantLineTime } = onSuccess({
+      nextTypingWord,
+      successKey,
+      isCompleted,
+      updatePoint,
+      chunkType,
+    });
+
+    if (isCompleted) {
+      onLineCompleted({ constantLineTime });
+    }
+  } else if (result.failKey) {
+    onMiss({ failKey: result.failKey });
+  }
+};
+
+const sendTypingStats = (stats: TypingStats) => {
+  const session = getSession();
+  if (!session) return;
+  if (Object.values(stats).every((v) => v === 0)) return;
+
   const timezone = getTimezone();
 
   const url = `${getBaseUrl()}/api/internal/user-stats/typing/increment`;
-  const body = new Blob([JSON.stringify({ ...sendStats, timezone })], {
+  const body = new Blob([JSON.stringify({ ...stats, timezone })], {
     type: "application/json",
   });
   navigator.sendBeacon(url, body);
-  resetUserStats();
+  resetTypingStats();
 };

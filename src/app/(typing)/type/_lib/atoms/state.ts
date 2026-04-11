@@ -30,6 +30,7 @@ export type BuiltMap = ExtractAtomValue<typeof builtMapAtom>;
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
 export const setBuiltMap = (map: BuiltMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
+//TODO: builitMapがnullの場合にエラーハンドリング
 export const readBuiltMap = () => store.get(builtMapAtom);
 
 export const TAB_NAMES = ["ステータス", "ランキング"] as const;

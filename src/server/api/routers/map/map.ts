@@ -6,7 +6,7 @@ import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/item";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
-import { buildHasBookmarkedMapExists } from "../../lib/map";
+import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
@@ -51,7 +51,7 @@ export const mapRouter = {
           hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
         },
         bookmark: {
-          hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
+          hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
         },
         createdAt: Maps.createdAt,
         updatedAt: Maps.updatedAt,

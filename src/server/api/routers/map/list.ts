@@ -3,6 +3,7 @@ import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql 
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
+import type { DBType } from "@/server/drizzle/client";
 import {
   MapBookmarkListItems,
   MapBookmarkLists,
@@ -21,7 +22,7 @@ import {
   MapSearchFilterSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
-import { buildHasBookmarkedMapExists } from "../../lib/map";
+import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 
@@ -39,7 +40,11 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-    const maps = await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session, searchInput)
+    const maps = await buildBaseQuery(
+      db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(),
+      session,
+      searchInput,
+    )
       .limit(limit)
       .offset(offset)
       .orderBy(...mapOrderBy(sortValue, sortDesc, searchInput));
@@ -59,7 +64,7 @@ export const mapListRouter = {
     const { db, session } = ctx;
     const { videoId } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
+    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.videoId, videoId))
       .orderBy(desc(Maps.id));
   }),
@@ -68,7 +73,7 @@ export const mapListRouter = {
     const { db, session } = ctx;
     const { title } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
+    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.title, title))
       .orderBy(desc(Maps.id));
   }),
@@ -76,7 +81,7 @@ export const mapListRouter = {
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
 
-    const map = await buildBaseQuery(db.select(buildBaseSelect(session)).from(Maps).$dynamic(), session)
+    const map = await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
       .where(eq(Maps.id, input.mapId))
       .limit(1)
       .then((rows) => rows[0]);
@@ -87,7 +92,7 @@ export const mapListRouter = {
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildBaseSelect = (session: TRPCContext["session"]) =>
+const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
   ({
     id: Maps.id,
     updatedAt: Maps.updatedAt,
@@ -117,7 +122,7 @@ const buildBaseSelect = (session: TRPCContext["session"]) =>
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
     },
     bookmark: {
-      hasBookmarked: session ? buildHasBookmarkedMapExists(session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
     },
     like: {
       count: Maps.likeCount,

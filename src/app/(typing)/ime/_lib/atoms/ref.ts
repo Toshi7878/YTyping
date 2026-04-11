@@ -15,15 +15,16 @@ const inputTextareaAtom = atom<HTMLTextAreaElement | null>(null);
 export const readTypingTextarea = () => store.get(inputTextareaAtom);
 export const writeTypingTextarea = (element: HTMLTextAreaElement) => store.set(inputTextareaAtom, element);
 
-const userStatsAtom = atomWithReset({ imeTypeCount: 0, typingTime: 0 });
-const typingTimeStatsAtom = focusAtom(userStatsAtom, (optic) => optic.prop("typingTime"));
-const imeTypeCountStatsAtom = focusAtom(userStatsAtom, (optic) => optic.prop("imeTypeCount"));
+const imeStatsAtom = atomWithReset({ imeTypeCount: 0, typingTime: 0 });
+export type ImeStats = ExtractAtomValue<typeof imeStatsAtom>;
+const imeTimeStatsAtom = focusAtom(imeStatsAtom, (optic) => optic.prop("typingTime"));
+const imeTypeCountStatsAtom = focusAtom(imeStatsAtom, (optic) => optic.prop("imeTypeCount"));
 
-export const updateTypingTimeStats = (update: Updater<ExtractAtomValue<typeof typingTimeStatsAtom>>) => {
-  store.set(typingTimeStatsAtom, update);
+export const updateTypingTimeStats = (update: Updater<ExtractAtomValue<typeof imeTimeStatsAtom>>) => {
+  store.set(imeTimeStatsAtom, update);
 };
 export const updateImeTypeCountStats = (update: Updater<ExtractAtomValue<typeof imeTypeCountStatsAtom>>) => {
   store.set(imeTypeCountStatsAtom, update);
 };
-export const readUserStats = () => store.get(userStatsAtom);
-export const resetUserStats = () => store.set(userStatsAtom, RESET);
+export const readImeStats = () => store.get(imeStatsAtom);
+export const resetImeStats = () => store.set(imeStatsAtom, RESET);

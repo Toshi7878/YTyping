@@ -18,8 +18,9 @@ export default async function Page() {
 
 const ProfileSettingCard = async () => {
   const session = await getSession();
+  if (!session?.user.id) return null;
   const caller = getCaller();
-  const userProfile = await caller.user.profile.get({ userId: Number(session?.user.id) });
+  const userProfile = await caller.user.profile.get({ userId: session?.user.id });
 
   return (
     <Card className="mx-8">

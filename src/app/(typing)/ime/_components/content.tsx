@@ -19,6 +19,7 @@ import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
+import { readImeStats } from "../_lib/atoms/ref";
 import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
 import { ensureLyricsWithReadings } from "../_lib/core/ensure-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
@@ -61,18 +62,20 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mapJsonが変更されたら再読み込みする
   useEffect(() => {
     if (mapJson) {
       void loadMap(mapJson);
     } else {
       overlay.loading("譜面読み込み中...");
     }
-  }, [mapJson, loadMap]);
+  }, [mapJson]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
   useEffect(() => {
     return () => {
-      void mutateImeStats();
+      const stats = readImeStats();
+      mutateImeStats(stats);
       pathChangeAtomReset();
       overlay.hide();
     };

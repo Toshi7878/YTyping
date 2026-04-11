@@ -27,7 +27,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { ThumbnailImage } from "@/components/ui/image";
 import { Small } from "@/components/ui/typography";
-import { useSession } from "@/lib/auth-client";
+import { getSession, useSession } from "@/lib/auth-client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
@@ -126,13 +126,13 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
 
 const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const deleteListMutation = useMutation(
     trpc.map.bookmark.lists.delete.mutationOptions({
       onSuccess: () => {
+        const session = getSession();
         queryClient.invalidateQueries(
           trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
         );
@@ -186,7 +186,6 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
   const [open, setOpen] = useState(false);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
 
   const form = useForm({
     resolver: zodResolver(MapBookmarkListFormSchema),
@@ -202,9 +201,8 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
   const updateListMutation = useMutation(
     trpc.map.bookmark.lists.update.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(
-          trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
-        );
+        const session = getSession();
+        queryClient.invalidateQueries(trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: session?.user?.id }));
         setOpen(false);
         toast.success("リストを編集しました");
       },

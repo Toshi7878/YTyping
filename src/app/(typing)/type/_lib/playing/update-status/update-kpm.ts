@@ -1,9 +1,9 @@
 import {
   readLineSubstatus,
+  readTypingStats,
   readTypingSubstatus,
-  readUserStats,
+  writeTypingStats,
   writeTypingSubstatus,
-  writeUserStats,
 } from "../../atoms/ref";
 
 export const updateTypingTimeOnLineEnded = ({ constantLineTime }: { constantLineTime: number }) => {
@@ -11,9 +11,8 @@ export const updateTypingTimeOnLineEnded = ({ constantLineTime }: { constantLine
   writeTypingSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
 
   const { typeCount: lineTypeCount } = readLineSubstatus();
-
   if (lineTypeCount !== 0) {
-    const { typingTime } = readUserStats();
-    writeUserStats({ typingTime: typingTime + constantLineTime });
+    const { typingTime } = readTypingStats();
+    writeTypingStats({ typingTime: typingTime + constantLineTime });
   }
 };

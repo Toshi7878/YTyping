@@ -59,7 +59,7 @@ export const writeLineSubstatus = (newLineSubstatus: Partial<ExtractAtomValue<ty
   store.set(lineSubstatusRefAtom, (prev) => ({ ...prev, ...newLineSubstatus }));
 export const resetLineSubstatus = () => store.set(lineSubstatusRefAtom, RESET);
 
-const userStatsRefAtom = atomWithReset({
+const typingStatsRefAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -70,11 +70,12 @@ const userStatsRefAtom = atomWithReset({
   typingTime: 0,
   maxCombo: 0,
 });
+export type TypingStats = ExtractAtomValue<typeof typingStatsRefAtom>;
 
-export const readUserStats = () => store.get(userStatsRefAtom);
-export const writeUserStats = (newUserStats: Partial<ExtractAtomValue<typeof userStatsRefAtom>>) =>
-  store.set(userStatsRefAtom, (prev) => ({ ...prev, ...newUserStats }));
-export const resetUserStats = () => store.set(userStatsRefAtom, RESET);
+export const readTypingStats = () => store.get(typingStatsRefAtom);
+export const writeTypingStats = (newUserStats: Partial<TypingStats>) =>
+  store.set(typingStatsRefAtom, (prev) => ({ ...prev, ...newUserStats }));
+export const resetTypingStats = () => store.set(typingStatsRefAtom, RESET);
 
 const utilityRefParamsAtom = atomWithReset({
   isRetrySkip: false,

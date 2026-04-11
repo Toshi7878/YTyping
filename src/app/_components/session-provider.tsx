@@ -1,5 +1,3 @@
-// session-provider.ts
-
 "use client";
 
 import type { getSession } from "@/lib/auth";

@@ -1,9 +1,10 @@
 import { and, eq, exists, type SQLWrapper, sql } from "drizzle-orm";
-import { db } from "@/server/drizzle/client";
+import type { DBType } from "@/server/drizzle/client";
 import { MapBookmarkListItems, MapBookmarkLists, Maps } from "@/server/drizzle/schema";
 import type { TRPCContext } from "../trpc";
 
-export const buildHasBookmarkedMapExists = (
+export const bookmarkedMapExists = (
+  db: DBType,
   session: NonNullable<TRPCContext["session"]>,
   mapIdColumn: SQLWrapper = Maps.id,
 ) => {

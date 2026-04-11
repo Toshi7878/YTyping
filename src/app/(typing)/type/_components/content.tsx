@@ -18,7 +18,7 @@ import {
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
-import { readTotalProgress } from "../_lib/atoms/ref";
+import { readTotalProgress, readTypingStats } from "../_lib/atoms/ref";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "../_lib/atoms/state";
 import { resetAllTypingStatus, setLineStatus } from "../_lib/atoms/status";
@@ -91,7 +91,8 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     return () => {
       const scene = readScene();
       if (scene === "play" || scene === "practice") {
-        mutateTypingStats();
+        const stats = readTypingStats();
+        mutateTypingStats(stats);
       }
       resetAllStateOnCleanup();
     };

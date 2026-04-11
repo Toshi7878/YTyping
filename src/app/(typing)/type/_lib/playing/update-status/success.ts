@@ -1,11 +1,11 @@
 import type { WordChunk } from "lyrics-typing-engine";
 import {
   readLineSubstatus,
+  readTypingStats,
   readTypingSubstatus,
-  readUserStats,
   writeLineSubstatus,
+  writeTypingStats,
   writeTypingSubstatus,
-  writeUserStats,
 } from "../../atoms/ref";
 import { readMediaSpeed, readUtilityParams } from "../../atoms/state";
 import { setAllTypingStatus } from "../../atoms/status";
@@ -76,7 +76,7 @@ export const updateSuccessSubstatus = ({
   // 現在の状態を一度だけ読み込む
   const currentLineSubstatus = readLineSubstatus();
   const currentSubstatus = readTypingSubstatus();
-  const currentUserStats = readUserStats();
+  const currentUserStats = readTypingStats();
 
   // 更新用の一時オブジェクト（差分のみ保持）
   const diffLineSubstatus: Partial<typeof currentLineSubstatus> = {};
@@ -158,6 +158,6 @@ export const updateSuccessSubstatus = ({
     writeLineSubstatus(diffLineSubstatus);
   }
   if (Object.keys(diffUserStats).length > 0) {
-    writeUserStats(diffUserStats);
+    writeTypingStats(diffUserStats);
   }
 };

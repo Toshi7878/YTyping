@@ -12,15 +12,19 @@ const manifest = [
 
 type SoundAlias = (typeof manifest)[number]["alias"];
 
-export const triggerTypeSound = ({ isCompleted }: { isCompleted: boolean }) => {
+export const triggerTypeSound = () => {
   const typingOptions = readTypingOptions();
 
-  if (isCompleted) {
-    if (typingOptions.completedTypeSound) {
-      playSound("typeCompleted");
-    } else if (typingOptions.typeSound) {
-      playSound("type");
-    }
+  if (typingOptions.typeSound) {
+    playSound("type");
+  }
+};
+
+export const triggerTypeCompletedSound = () => {
+  const typingOptions = readTypingOptions();
+
+  if (typingOptions.completedTypeSound) {
+    playSound("typeCompleted");
   } else if (typingOptions.typeSound) {
     playSound("type");
   }

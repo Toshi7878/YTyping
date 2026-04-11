@@ -6,14 +6,13 @@ import { iosActiveSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/update-status/recalc-from-results";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
-import { useSession } from "@/lib/auth-client";
+import { getSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
 import { initializeAllLineResult } from "../../../_lib/atoms/family";
 import { readMapId } from "../../../_lib/atoms/hydrate";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();
-  const { data: session } = useSession();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
@@ -24,6 +23,7 @@ export const ReadyPracticeButton = () => {
       overlay.loading("リザルトデータを読込中...");
       setScene("practice");
       const mapId = readMapId();
+      const session = getSession();
       const resultId = mapId && session ? getRankingMyResult({ mapId, session })?.id : null;
 
       try {

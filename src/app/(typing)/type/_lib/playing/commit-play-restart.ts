@@ -3,6 +3,7 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { initializeAllLineResult } from "../atoms/family";
 import { readMapId } from "../atoms/hydrate";
 import {
+  readTypingStats,
   readUtilityRefParams,
   resetLineCount,
   resetLineSubstatus,
@@ -43,8 +44,9 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   const { scene } = readUtilityParams();
   const { type: totalTypeCount } = readTypingStatus();
 
-  if (totalTypeCount && (scene === "play" || scene === "practice")) {
-    mutateTypingStats();
+  if (scene === "play" || scene === "practice") {
+    const stats = readTypingStats();
+    mutateTypingStats(stats);
   }
 
   const mapId = readMapId();

@@ -40,7 +40,7 @@ import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateTypingTimeOnLineEnded } from "../update-status/update-kpm";
-import { processReplayKeyAtTimestamp } from "./replay-processor";
+import { simulateTypingInput } from "./simulate-typing-input";
 
 export const startTimer = () => {
   if (!typeTicker.started) {
@@ -90,8 +90,22 @@ const timer = () => {
   setLineProgressValue(currentLineTime);
   const { scene } = readUtilityParams();
 
-  if (scene === "replay") {
-    processReplayKeyAtTimestamp({ constantLineTime, constantRemainLineTime });
+  if (scene === "replay" && count > 0) {
+    const lineResults = readAllLineResult();
+
+    const lineResult = lineResults[count];
+    if (!lineResult) return;
+    const { types } = lineResult;
+    if (types.length === 0) return;
+
+    const { replayKeyCount } = readUtilityRefParams();
+    const typeResult = types[replayKeyCount];
+    if (!typeResult) return;
+    const { time: keyTime } = typeResult;
+    if (constantLineTime >= keyTime) {
+      simulateTypingInput({ constantLineTime, constantRemainLineTime, typeResult: typeResult });
+      writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
+    }
   }
 };
 

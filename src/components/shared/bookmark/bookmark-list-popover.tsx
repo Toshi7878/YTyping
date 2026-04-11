@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H4, Small } from "@/components/ui/typography";
-import { useSession } from "@/lib/auth-client";
+import { getSession, useSession } from "@/lib/auth-client";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/lib/mutations/bookmark-list-item";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -39,7 +39,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
 
   const { data: lists, isLoading } = useQuery(
     trpc.map.bookmark.lists.getByUserId.queryOptions(
-      { userId: Number(session?.user?.id), includeMapId: mapId },
+      { userId: session?.user?.id ?? 0, includeMapId: mapId },
       { enabled: !!session?.user?.id && isOpen },
     ),
   );
@@ -132,13 +132,13 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   });
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
   const createListMutation = useMutation(
     trpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
+        const session = getSession();
         queryClient.invalidateQueries(
           trpc.map.bookmark.lists.getByUserId.queryOptions({
-            userId: Number(session?.user?.id),
+            userId: session?.user?.id ?? 0,
             includeMapId: mapId,
           }),
         );

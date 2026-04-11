@@ -1,22 +1,15 @@
 import { getSession } from "@/lib/auth-client";
 import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
-import { readUserStats, resetUserStats } from "../atoms/ref";
+import { type ImeStats, resetImeStats } from "../atoms/ref";
 
-export const mutateImeStats = async () => {
-  const { data } = await getSession();
-  if (!data?.user) return;
-
-  const stats = readUserStats();
+export const mutateImeStats = (stats: ImeStats) => {
+  const session = getSession();
+  if (!session) return;
   if (Object.values(stats).every((v) => v === 0)) return;
 
-  const { imeTypeCount, typingTime } = stats;
-
   const trpc = getTRPCClient();
-
   const timezone = getTimezone();
-
-  void trpc.user.stats.incrementImeStats.mutate({ imeTypeCount, typingTime, timezone });
-
-  resetUserStats();
+  void trpc.user.stats.incrementImeStats.mutate({ ...stats, timezone });
+  resetImeStats();
 };

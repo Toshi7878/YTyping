@@ -24,7 +24,7 @@ const CreateTypingResultJsonSchema = z.array(
       z.object({
         isCorrect: z.boolean().optional(),
         char: z.string().optional(),
-        option: z.string().optional(),
+        option: z.enum(["roma", "kana", "speedChange"]).optional(),
         time: z.number(),
       }),
     ),

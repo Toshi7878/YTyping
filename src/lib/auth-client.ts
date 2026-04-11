@@ -7,7 +7,7 @@ import type { USER_ROLE_TYPES } from "@/server/drizzle/schema";
 const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>(), customSessionClient<typeof auth>()],
 });
-export const { signIn, signOut, getSession } = authClient;
+export const { signIn, signOut } = authClient;
 
 export type Session = Omit<typeof authClient.$Infer.Session, "user"> & {
   user: Omit<(typeof authClient.$Infer.Session)["user"], "id"> & { id: number; role: (typeof USER_ROLE_TYPES)[number] };
@@ -23,6 +23,16 @@ const toSession = (raw: typeof authClient.$Infer.Session): Session => ({
 type UseSessionReturn = Omit<ReturnType<typeof authClient.useSession>, "data"> & {
   data: Session | null;
 };
+
+export function getSession() {
+  if (typeof window === "undefined") return null;
+  const sessionAtom = authClient.$store.atoms.session;
+  if (!sessionAtom) return null;
+  const snapshot = sessionAtom.get() as { data: typeof authClient.$Infer.Session | null };
+
+  if (!snapshot.data) return null;
+  return toSession(snapshot.data);
+}
 
 // Custom useSession hook to check both server and client session
 export function useSession(): UseSessionReturn {
