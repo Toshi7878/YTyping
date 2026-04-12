@@ -97,7 +97,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   }, [pathname]);
 
   return (
-    <div className="fixed flex h-screen w-screen flex-col items-center">
+    <div className="fixed flex h-screen w-screen flex-col items-center max-sm:-mt-1.5">
       <TypingLayout isLoading={isLoading} videoId={videoId} />
     </div>
   );
