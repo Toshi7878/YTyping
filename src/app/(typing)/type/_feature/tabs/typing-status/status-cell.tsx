@@ -62,7 +62,7 @@ export const StatusCell = ({ label }: StatusCellProps) => {
     <div id={label} className={cn("w-full", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}>
       <div
         className={cn(
-          "status-label relative text-muted-foreground capitalize md:text-[60%]",
+          "status-label text-muted-foreground capitalize md:text-[60%]",
           label === "kpm" && "tracking-[0.2em]",
         )}
       >

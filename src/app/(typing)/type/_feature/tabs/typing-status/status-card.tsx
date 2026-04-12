@@ -11,7 +11,7 @@ export const StatusCard = ({ className }: { className: string }) => {
       className={{
         card: cn("tab-card", className),
         cardContent:
-          "my-auto flex flex-col gap-8 overflow-hidden px-16 font-bold font-mono text-4xl sm:px-10 md:text-[2rem]",
+          "my-auto flex flex-col gap-8 overflow-hidden px-[6%] font-bold font-mono text-4xl sm:px-10 md:text-[2rem]",
       }}
     >
       <div className="flex justify-between">
