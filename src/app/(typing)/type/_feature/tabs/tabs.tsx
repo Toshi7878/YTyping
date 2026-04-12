@@ -21,11 +21,11 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
     >
       <TabLists />
       <TabsContent forceMount value="ステータス" className="tab-card">
-        <StatusCard className="h-96 md:h-56" />
+        <StatusCard className="h-80 md:h-56" />
       </TabsContent>
 
       <TabsContent value="ランキング" className="tab-card">
-        <RankingTableCard className="h-96 md:h-56" />
+        <RankingTableCard className="h-80 md:h-56" />
       </TabsContent>
     </Tabs>
   );
