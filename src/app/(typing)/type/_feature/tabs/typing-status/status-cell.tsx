@@ -59,13 +59,10 @@ export const StatusCell = ({ label }: StatusCellProps) => {
   const atom = typingStatusViewAtoms[label];
 
   return (
-    <div
-      id={label}
-      className={cn("w-full space-y-0.5", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}
-    >
+    <div id={label} className={cn("w-full", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}>
       <div
         className={cn(
-          "status-label text-muted-foreground capitalize md:text-[60%]",
+          "status-label mb-0.5 text-muted-foreground capitalize md:text-[60%]",
           label === "kpm" && "tracking-[0.2em]",
         )}
       >
@@ -81,7 +78,7 @@ export const StatusCell = ({ label }: StatusCellProps) => {
           <uncontrolled.span atomStore={store}>{atom}</uncontrolled.span>
         )}
       </div>
-      <div id="status_underline" className="h-0.5 w-full shrink-0 bg-card-foreground" aria-hidden={true} />
+      <div id="status_underline" className="-mt-0.5 h-0.5 w-full shrink-0 bg-card-foreground" aria-hidden={true} />
     </div>
   );
 };
