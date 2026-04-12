@@ -21,13 +21,13 @@ export const WindowDisplayField = () => {
         <CounterInput
           onChange={(value) => setTypingOptions({ windowScaleWidth: value })}
           step={10}
-          min={1100}
           max={1400}
+          min={1000}
           valueDigits={0}
           value={windowScaleWidth}
           label="画面幅"
-          incrementTooltip="画面の幅を広くします。"
-          decrementTooltip="画面の幅を狭くします。"
+          incrementTooltip="画面の幅を広くします。(1400pxまで)"
+          decrementTooltip="画面の幅を狭くします。(1000pxまで)"
           size="lg"
           unit="px"
         />
