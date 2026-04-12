@@ -17,6 +17,7 @@ import {
 } from "@/lib/build-map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
+import { useTypingOptionsState } from "../_atoms/hydrate";
 import { initializeAllLineResult } from "../_atoms/line-result";
 import { readTypingStats } from "../_atoms/ref";
 import { resetAllStateOnCleanup } from "../_atoms/reset";
@@ -24,7 +25,7 @@ import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "
 import { CHAR_POINT } from "../_lib/const";
 import { useLoadSoundEffects } from "../_lib/sound-effect";
 import { mutateTypingStats } from "../_lib/stats";
-import { CONTENT_WIDTH, useWindowScale } from "../_utils/use-window-scale";
+import { useWindowScale } from "../_utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
@@ -103,6 +104,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 };
 
 const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: string }) => {
+  const { windowScaleWidth } = useTypingOptionsState();
   const { isSmScreen } = useBreakPoint();
   const [layout, setLayout] = useState<"column" | "row">("row");
   const sceneGroup = useSceneGroupState();
@@ -111,12 +113,12 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
       setLayout(isSmScreen ? "column" : "row");
     }
   }, [isSmScreen, sceneGroup]);
-  const { scale, ready } = useWindowScale();
+  const { scale, ready } = useWindowScale({ contentWidth: windowScaleWidth });
 
   const style: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: "top",
-    width: `${CONTENT_WIDTH}px`,
+    width: `${windowScaleWidth}px`,
     visibility: ready ? "visible" : "hidden",
   };
 

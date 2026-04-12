@@ -24,6 +24,7 @@ import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
 import { HotKeySelectFields } from "./options/hot-key-select-fields";
 import { SoundEffectFields } from "./options/sound-effect-fields";
 import { TimeOffsetCounter } from "./options/time-offset-conter";
+import { WindowDisplayField } from "./options/window-display-field";
 import { WordDisplayFields } from "./options/word-display-fields";
 import { WordScrollFields } from "./options/word-scroll-fields";
 
@@ -70,6 +71,8 @@ export const SettingPopover = () => {
           <WordScrollFields />
           <Separator className="my-4 bg-foreground/20" />
           <WordDisplayFields />
+          <Separator className="my-4 bg-foreground/20" />
+          <WindowDisplayField />
         </>
       ),
     },
@@ -112,7 +115,11 @@ export const SettingPopover = () => {
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent key={tab.label} value={index.toString()} className={cn("max-h-[60vh] overflow-y-scroll px-2")}>
+            <TabsContent
+              key={tab.label}
+              value={index.toString()}
+              className={cn("max-h-[60vh] overflow-y-scroll px-2 pb-4")}
+            >
               {tab.content}
             </TabsContent>
           ))}

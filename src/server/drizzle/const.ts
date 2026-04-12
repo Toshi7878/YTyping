@@ -33,4 +33,5 @@ export const DEFAULT_TYPING_OPTIONS = {
   InputModeToggleKey: "ALT_KANA" as (typeof InputModeToggleKeyEnum.enumValues)[number],
   wordDisplay: "KANA_ROMA_UPPERCASE" as (typeof mainWordDisplayEnum.enumValues)[number],
   isCaseSensitive: false,
+  windowScaleWidth: 1160,
 };

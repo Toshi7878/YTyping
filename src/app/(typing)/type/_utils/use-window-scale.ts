@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 
-export const CONTENT_WIDTH = 1160;
 const CONTENT_HEIGHT = 900;
 
-export const useWindowScale = () => {
+export const useWindowScale = ({ contentWidth = 1160 }: { contentWidth: number }) => {
   const [scale, setScale] = useState(1);
   const [ready, setReady] = useState(false);
 
@@ -12,7 +11,7 @@ export const useWindowScale = () => {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
 
-      const scaleX = windowWidth / CONTENT_WIDTH;
+      const scaleX = windowWidth / contentWidth;
       const scaleY = windowHeight / CONTENT_HEIGHT;
 
       // 横幅と高さの縮小比率の中で最小のものを選ぶ
