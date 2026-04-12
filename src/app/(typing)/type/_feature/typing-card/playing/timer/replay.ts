@@ -8,7 +8,7 @@ import {
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../../../_atoms/line-result";
 import { setCombo, setLineKpm } from "../../../../_atoms/substatus";
-import { readTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
+import { getTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../../_atoms/youtube-player";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../../_lib/sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
@@ -28,7 +28,7 @@ export const simulateTypingInput = ({
   const isCaseSensitive = replayRankingResult?.otherStatus.isCaseSensitive ?? false;
 
   const { inputMode } = readUtilityParams();
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
 
   evaluateInput(typeResult, inputMode, typingWord, isCaseSensitive, {
     onSuccess: ({ nextTypingWord, isCompleted, successKey, updatePoint }) => {

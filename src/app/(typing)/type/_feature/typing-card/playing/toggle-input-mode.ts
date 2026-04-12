@@ -1,8 +1,9 @@
 import { recreateTypingWord } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../../../_atoms/ref";
 import { readBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../../../_atoms/state";
-import { readTypingWord, setNextLyrics, setTypingWord } from "../../../_atoms/typing-word";
+import { getTypingWord, setTypingWord } from "../../../_atoms/typing-word";
 import { getLineTime } from "../../youtube/get-youtube-time";
+import { setNextLyricsAndKpm } from "./next-lyrics";
 
 export const togglePlayInputMode = () => {
   const { inputMode } = readUtilityParams();
@@ -37,7 +38,7 @@ export const applyKanaInputMode = () => {
 export const applyRomaInputMode = () => {
   setPlayingInputMode("roma");
   setNotify(Symbol("Romaji"));
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
 
   setTypingWord(recreateTypingWord(typingWord));
 
@@ -52,6 +53,6 @@ const updateNextLyrics = () => {
   const nextLine = map.lines[count + 1];
 
   if (nextLine?.kanaLyrics) {
-    setNextLyrics(nextLine);
+    setNextLyricsAndKpm(nextLine);
   }
 };

@@ -10,7 +10,7 @@ import {
 import { readMediaSpeed, readUtilityParams } from "../../../../_atoms/state";
 import { setAllTypingStatus } from "../../../../_atoms/status";
 import { readCombo, setCombo, setLineKpm } from "../../../../_atoms/substatus";
-import { readTypingWord } from "../../../../_atoms/typing-word";
+import { getTypingWord } from "../../../../_atoms/typing-word";
 import { calculateLineKpm, calculateLineRkpm, calculateTotalKpm } from "../../../../_utils/calculate-kpm";
 import { calcCurrentRank } from "./calc-current-rank";
 
@@ -114,7 +114,7 @@ export const updateSuccessSubstatus = ({
     diffSubstatus.completeCount = currentSubstatus.completeCount + 1;
 
     const { kanaToRomaConvertCount } = currentSubstatus;
-    diffSubstatus.kanaToRomaConvertCount = kanaToRomaConvertCount + readTypingWord().correct.roma.length;
+    diffSubstatus.kanaToRomaConvertCount = kanaToRomaConvertCount + getTypingWord().correct.roma.length;
   }
 
   // 6. 統計情報の詳細更新（Replay以外）

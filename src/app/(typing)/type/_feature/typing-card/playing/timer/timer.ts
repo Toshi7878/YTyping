@@ -1,4 +1,5 @@
 import { Ticker } from "@pixi/ticker";
+import { createTypingWord } from "lyrics-typing-engine";
 import {
   readLineCount,
   readLineSubstatus,
@@ -19,19 +20,22 @@ import {
   setChangeCSSCount,
   transitionToEndScene,
 } from "@/app/(typing)/type/_atoms/state";
+import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readMapId } from "../../../../_atoms/hydrate";
 import { readAllLineResult } from "../../../../_atoms/line-result";
 import { setAllTypingStatus } from "../../../../_atoms/status";
 import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../../../_atoms/substatus";
-import { readTypingWord, setNewLine, setNextLyrics } from "../../../../_atoms/typing-word";
+import { getTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
 import { readYTPlayer, setYTPlaybackRate } from "../../../../_atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../../_lib/stats";
 import { calculateLineKpm } from "../../../../_utils/calculate-kpm";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
-import { getLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
+import { getLineProgressMax, setLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
 import { getLineCountByTime } from "../get-line-count-by-time";
+import { setLyrics } from "../lyrics";
+import { setNextLyricsAndKpm } from "../next-lyrics";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
@@ -99,7 +103,7 @@ const handleTimer = () => {
       },
       on100MsUpdate: ({ currentTime, constantLineTime, constantRemainLineTime }) => {
         setLineRemainTime(constantRemainLineTime);
-        const typingWord = readTypingWord();
+        const typingWord = getTypingWord();
         const isLineCompleted = typingWord.correct.roma && !typingWord.nextChunk.kana;
 
         if (!isLineCompleted) {
@@ -109,7 +113,7 @@ const handleTimer = () => {
         }
 
         updateSkipGuideVisibility({
-          kana: readTypingWord().nextChunk.kana,
+          kana: getTypingWord().nextChunk.kana,
           currentTime,
           constantLineTime,
           constantRemainLineTime,
@@ -123,7 +127,7 @@ const handleTimer = () => {
       },
 
       onTimeLimitReach: ({ nextCount }) => {
-        const typingWord = readTypingWord();
+        const typingWord = getTypingWord();
         const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
         const scene = readScene();
 
@@ -136,7 +140,7 @@ const handleTimer = () => {
 
       onTimerEnd: ({ constantLineTime }) => {
         const { scene } = readUtilityParams();
-        const typingWord = readTypingWord();
+        const typingWord = getTypingWord();
         const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
 
         if (!isLineCompleted && scene !== "replay") {
@@ -287,8 +291,16 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
   setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
-  setNextLyrics(newNextLine);
+  setNextLyricsAndKpm(newNextLine);
   setChangeCSSCount(nextCount);
+};
+
+const setNewLine = (newLine: BuiltMapLineWithOption) => {
+  setTypingWord(createTypingWord(newLine));
+  setLyrics(newLine.lyrics);
+
+  setLineProgressValue(0);
+  setLineProgressMax(newLine.duration);
 };
 
 interface updateSkipGuideVisibilityparams {

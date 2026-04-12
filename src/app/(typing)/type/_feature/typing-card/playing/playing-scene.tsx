@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  createTypingWord,
   evaluateKanaInput,
   evaluateRomaInput,
   type InputMode,
@@ -23,20 +24,14 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readTypingOptions } from "../../../_atoms/hydrate";
 import { readLineCount, readTypingStats, resetTypingStats, type TypingStats } from "../../../_atoms/ref";
-import {
-  readTypingWord,
-  resetCurrentLine,
-  resetNextLyrics,
-  setNewLine,
-  setNextLyrics,
-  setTypingWord,
-} from "../../../_atoms/typing-word";
+import { getTypingWord, setTypingWord } from "../../../_atoms/typing-word";
+import { resetCurrentLine } from "../../../_lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../_lib/sound-effect";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
 import { ChangeCSS } from "./change-css-style";
 import { commitLineSkip, isHotKeyIgnored, playHotkey } from "./hotkey";
 import { Lyrics } from "./lyrics";
-import { NextLyrics } from "./next-lyrics";
+import { NextLyrics, setNextLyricsAndKpm } from "./next-lyrics";
 import { hasLineResultImproved, saveLineResult } from "./save-line-result";
 import { setTimerMaxFPS } from "./timer/timer";
 import { TypingWords } from "./typing-words";
@@ -87,10 +82,8 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     const count = readLineCount();
     const nextLine = map?.lines[1];
     if (count === 0 && map && nextLine) {
-      setNextLyrics(nextLine);
-      resetCurrentLine();
-    } else {
-      resetNextLyrics();
+      setNextLyricsAndKpm(nextLine);
+      resetCurrentLine(map);
     }
   }, [scene, map]);
 
@@ -132,7 +125,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const map = readBuiltMap();
     if (!map) return;
@@ -186,7 +179,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             if (isPaused) {
               const newCurrentLine = map.lines[count];
               if (!newCurrentLine) return;
-              setNewLine(newCurrentLine);
+              setTypingWord(createTypingWord(newCurrentLine));
             }
           }
         },

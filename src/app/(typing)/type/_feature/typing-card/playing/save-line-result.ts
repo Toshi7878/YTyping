@@ -5,7 +5,7 @@ import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "..
 import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../../../_atoms/state";
 import { readTypingStatus, setAllTypingStatus } from "../../../_atoms/status";
 import { readCombo, readLineKpm } from "../../../_atoms/substatus";
-import { readTypingWord } from "../../../_atoms/typing-word";
+import { getTypingWord } from "../../../_atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../../../_lib/const";
 
 export const hasLineResultImproved = (count: number) => {
@@ -42,7 +42,7 @@ export const saveLineResult = (count: number) => {
   const { totalTypeTime } = readTypingSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
   const lostHiraganaJoined = typingWord.nextChunk.kana
     ? `${typingWord.nextChunk.kana}${typingWord.wordChunks
         .slice(typingWord.wordChunksIndex)
@@ -85,7 +85,7 @@ export const saveLineResult = (count: number) => {
 };
 
 const generateLostWord = () => {
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
 
   const isCompleted = !typingWord.nextChunk.kana;
 

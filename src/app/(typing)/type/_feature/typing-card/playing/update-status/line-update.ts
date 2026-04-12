@@ -1,13 +1,13 @@
 import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../../../_atoms/ref";
 import { readBuiltMap } from "../../../../_atoms/state";
 import { setAllTypingStatus } from "../../../../_atoms/status";
-import { readTypingWord } from "../../../../_atoms/typing-word";
+import { getTypingWord } from "../../../../_atoms/typing-word";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
   const map = readBuiltMap();
   if (!map) return;
-  const typingWord = readTypingWord();
+  const typingWord = getTypingWord();
 
   // 現在の状態を取得
   const currentSubstatus = readTypingSubstatus();

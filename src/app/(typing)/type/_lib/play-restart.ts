@@ -11,6 +11,7 @@ import {
   writeUtilityRefParams,
 } from "../_atoms/ref";
 import {
+  type BuiltMap,
   type PlayMode,
   readBuiltMap,
   readUtilityParams,
@@ -21,8 +22,11 @@ import {
 } from "../_atoms/state";
 import { readTypingStatus, resetAllTypingStatus } from "../_atoms/status";
 import { setCombo } from "../_atoms/substatus";
-import { resetCurrentLine, setNextLyrics } from "../_atoms/typing-word";
+import { resetTypingWord } from "../_atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../_atoms/youtube-player";
+import { setLineProgressMax, setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
+import { setLyrics } from "../_feature/typing-card/playing/lyrics";
+import { setNextLyricsAndKpm } from "../_feature/typing-card/playing/next-lyrics";
 import { stopTimer } from "../_feature/typing-card/playing/timer/timer";
 import { mutateTypingStats } from "./stats";
 
@@ -32,8 +36,8 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   if (!map || !nextLine) return;
   const startLine = getStartLine(map.lines);
   if (!startLine) return;
-  resetCurrentLine();
-  setNextLyrics(nextLine);
+  resetCurrentLine(map);
+  setNextLyricsAndKpm(nextLine);
   resetLineCount();
   resetLineSubstatus();
 
@@ -97,4 +101,14 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   seekYTPlayer(0);
   stopTimer();
   playYTPlayer();
+};
+
+export const resetCurrentLine = (map: BuiltMap) => {
+  resetTypingWord();
+  setLyrics("");
+
+  setLineProgressValue(0);
+  if (map?.lines[1]) {
+    setLineProgressMax(map.lines[1].time);
+  }
 };

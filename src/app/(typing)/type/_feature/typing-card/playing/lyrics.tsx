@@ -1,10 +1,16 @@
+"use client";
 import parse from "html-react-parser";
+import { atom, useAtomValue } from "jotai";
 import { useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
 import { cn } from "@/lib/utils";
-import { useLyricsState } from "../../../_atoms/typing-word";
+import { getTypeAtomStore } from "../../../_atoms/store";
 
+const lyricsAtom = atom("");
+const store = getTypeAtomStore();
+
+export const setLyrics = (value: string) => store.set(lyricsAtom, value);
 export const Lyrics = () => {
-  const lyrics = useLyricsState();
+  const lyrics = useAtomValue(lyricsAtom, { store });
   const typingOptions = useTypingOptionsState();
 
   return (

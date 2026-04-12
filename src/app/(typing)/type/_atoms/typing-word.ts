@@ -1,82 +1,25 @@
-import { useAtomValue } from "jotai";
 import { atom, type ExtractAtomValue } from "jotai/vanilla";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
-import { focusAtom } from "jotai-optics";
-import {
-  type BuiltMapLine,
-  createDisplayWord,
-  createTypingWord,
-  replaceAllSpaceWithThreePerEmSpace,
-  type TypingWord,
-} from "lyrics-typing-engine";
-import type { BuiltMapLineWithOption } from "@/lib/types";
+import { createDisplayWord, replaceAllSpaceWithThreePerEmSpace, type TypingWord } from "lyrics-typing-engine";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
-import { setLineProgressMax, setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
 import { readLineCount } from "./ref";
-import { playingInputModeAtom, readBuiltMap, readMediaSpeed, readUtilityParams } from "./state";
+import { playingInputModeAtom, readBuiltMap, readUtilityParams } from "./state";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
-const nextLyricsAtom = atomWithReset({
-  lyrics: "",
-  kpm: "",
+const typingWordAtom = atomWithReset<TypingWord>({
+  correct: { kana: "", roma: "" },
+  nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },
+  wordChunks: [{ kana: "", romaPatterns: [], point: 0, type: undefined }],
+  wordChunksIndex: 1,
+  tempRomaPatterns: undefined,
 });
-export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const setNextLyrics = (line: BuiltMapLine) => {
-  const typingOptions = readTypingOptions();
-  const inputMode = store.get(playingInputModeAtom);
-  const playSpeed = readMediaSpeed();
-  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * playSpeed;
-  store.set(nextLyricsAtom, () => {
-    if (line.kanaLyrics) {
-      return {
-        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics,
-        kpm: nextKpm.toFixed(0),
-      };
-    }
 
-    return RESET;
-  });
-};
-export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
-
-const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
-  typingWord: {
-    correct: { kana: "", roma: "" },
-    nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },
-    wordChunks: [{ kana: "", romaPatterns: [], point: 0, type: undefined }],
-    wordChunksIndex: 1,
-    tempRomaPatterns: undefined,
-  },
-  lyrics: "",
-});
-const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
-const lyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
-
-export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) => store.set(typingWordAtom, value);
-export const readTypingWord = () => store.get(typingWordAtom);
-export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
-export const setNewLine = (newLine: BuiltMapLineWithOption) => {
-  store.set(lineAtom, { typingWord: createTypingWord(newLine), lyrics: newLine.lyrics });
-
-  const { isPaused } = readUtilityParams();
-
-  if (!isPaused) {
-    setLineProgressValue(0);
-    setLineProgressMax(newLine.duration);
-  }
-};
-export const resetCurrentLine = () => {
-  store.set(lineAtom, RESET);
-  const map = readBuiltMap();
-
-  setLineProgressValue(0);
-  if (map?.lines[1]) {
-    setLineProgressMax(map.lines[1].time);
-  }
-};
+export const setTypingWord = (value: TypingWord) => store.set(typingWordAtom, value);
+export const getTypingWord = () => store.get(typingWordAtom);
+export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
 const mainWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;

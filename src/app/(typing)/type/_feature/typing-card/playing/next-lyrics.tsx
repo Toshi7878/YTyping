@@ -1,10 +1,30 @@
 import parse from "html-react-parser";
+import { useAtomValue } from "jotai/react";
+import { atomWithReset } from "jotai/vanilla/utils";
+import type { BuiltMapLine } from "lyrics-typing-engine";
 import { cn } from "@/lib/utils";
-import { useNextLyricsState } from "../../../_atoms/typing-word";
+import { readTypingOptions } from "../../../_atoms/hydrate";
+import { getPlayingInputMode, readMediaSpeed } from "../../../_atoms/state";
+import { getTypeAtomStore } from "../../../_atoms/store";
+
+const nextLyricsAtom = atomWithReset("");
+
+const nextKpmAtom = atomWithReset(0);
+
+const store = getTypeAtomStore();
+export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
+  const typingOptions = readTypingOptions();
+  const inputMode = getPlayingInputMode();
+  const playSpeed = readMediaSpeed();
+  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * playSpeed;
+  store.set(nextKpmAtom, nextKpm);
+  const nextLyrics = typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics;
+  store.set(nextLyricsAtom, nextLyrics);
+};
 
 export const NextLyrics = () => {
-  const { lyrics, kpm } = useNextLyricsState();
-
+  const nextKpm = useAtomValue(nextKpmAtom, { store });
+  const nextLyrics = useAtomValue(nextLyricsAtom, { store });
   return (
     <div
       id="next_lyrics_kpm"
@@ -13,14 +33,13 @@ export const NextLyrics = () => {
       )}
     >
       <div id="next_lyrics" className={"flex items-end whitespace-nowrap font-bold text-[110%]"}>
-        {"\u200B"}
-        {parse(lyrics)}
+        {parse(nextLyrics)}
         <ruby className="invisible">
           あ<rt>あ</rt>
         </ruby>
       </div>
       <div id="next_kpm" className="text-[90%]">
-        {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : "\u00A0"}
+        {nextKpm > 0 ? `NEXT: ${nextKpm}kpm` : "\u200B"}
       </div>
     </div>
   );

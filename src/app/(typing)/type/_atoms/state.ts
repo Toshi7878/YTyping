@@ -113,6 +113,7 @@ export const transitionToEndScene = (currentScene: SceneType) => {
 };
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
+export const getPlayingInputMode = () => store.get(playingInputModeAtom);
 export const setPlayingInputMode = (value: ExtractAtomValue<typeof playingInputModeAtom>) =>
   store.set(playingInputModeAtom, value);
 
