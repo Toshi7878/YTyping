@@ -28,6 +28,15 @@ export const auth = betterAuth({
       verifications: schema.Verifications,
     },
   }),
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => ({
+          data: { ...user, name: undefined },
+        }),
+      },
+    },
+  },
   account: {
     accountLinking: {
       enabled: true,
