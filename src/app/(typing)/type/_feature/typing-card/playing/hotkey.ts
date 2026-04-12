@@ -60,9 +60,6 @@ export const playHotkey = (event: KeyboardEvent) => {
   }
 
   switch (event.code) {
-    case "Escape": //Escでポーズ
-      togglePause();
-      break;
     case "ArrowUp":
       break;
     case "ArrowDown":

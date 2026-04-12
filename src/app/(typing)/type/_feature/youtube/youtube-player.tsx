@@ -69,7 +69,7 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 };
 
 const MobileCover = () => {
-  const handleStart = () => {
+  const handleTouchStart = () => {
     const { scene, isPaused } = readUtilityParams();
     iosActiveSound();
     if (isPaused || scene === "ready") {
@@ -85,7 +85,7 @@ const MobileCover = () => {
     <div
       id="mobile_cover"
       className="absolute inset-0 z-5 cursor-pointer items-center rounded-lg transition-opacity duration-300"
-      onClick={handleStart}
+      onClick={handleTouchStart}
     />
   );
 };
