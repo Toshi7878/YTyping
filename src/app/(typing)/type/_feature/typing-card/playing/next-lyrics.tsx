@@ -17,9 +17,14 @@ export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
   const inputMode = getPlayingInputMode();
   const playSpeed = readMediaSpeed();
   const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * playSpeed;
-  store.set(nextKpmAtom, nextKpm);
   const nextLyrics = typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics;
-  store.set(nextLyricsAtom, nextLyrics);
+  if (line.kanaLyrics) {
+    store.set(nextKpmAtom, nextKpm);
+    store.set(nextLyricsAtom, nextLyrics);
+  } else {
+    store.set(nextKpmAtom, 0);
+    store.set(nextLyricsAtom, "");
+  }
 };
 
 export const NextLyrics = () => {
