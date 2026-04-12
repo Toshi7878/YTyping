@@ -78,7 +78,7 @@ export const StatusCell = ({ label }: StatusCellProps) => {
           <uncontrolled.span atomStore={store}>{atom}</uncontrolled.span>
         )}
       </div>
-      <div id="status_underline" className="-mt-0.5 h-0.5 w-full shrink-0 bg-card-foreground" aria-hidden={true} />
+      <div id="status_underline" className="h-0.5 w-full shrink-0 bg-card-foreground" aria-hidden={true} />
     </div>
   );
 };
