@@ -1,5 +1,4 @@
 import { CardWithContent } from "@/components/ui/card";
-import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import { StatusCell } from "./status-cell";
 
@@ -10,30 +9,23 @@ export const StatusCard = ({ className }: { className: string }) => {
     <CardWithContent
       id="tab-status-card"
       className={{
-        card: cn("tab-card py-0", className),
-        cardContent: "my-auto overflow-auto pr-0 max-md:pl-[8%]",
+        card: cn("tab-card", className),
+        cardContent:
+          "my-auto flex flex-col gap-8 overflow-hidden px-16 font-bold font-mono text-4xl sm:px-10 md:text-[2rem]",
       }}
     >
-      <Table className="h-64 table-fixed overflow-hidden md:h-48">
-        <TableBody className="font-bold font-mono text-4xl md:text-[2rem]">
-          <StatusTableRow labels={["score", "type", "kpm", "rank"]} />
-          <StatusTableRow labels={["point", "miss", "lost", "line"]} />
-        </TableBody>
-      </Table>
+      <div className="flex justify-between">
+        <StatusCell label="score" />
+        <StatusCell label="type" />
+        <StatusCell label="kpm" />
+        <StatusCell label="rank" />
+      </div>
+      <div className="flex justify-between">
+        <StatusCell label="point" />
+        <StatusCell label="miss" />
+        <StatusCell label="lost" />
+        <StatusCell label="line" />
+      </div>
     </CardWithContent>
-  );
-};
-
-interface StatusTableRowProps {
-  labels: LabelType[];
-}
-
-const StatusTableRow = ({ labels }: StatusTableRowProps) => {
-  return (
-    <TableRow className="border-b-0 hover:bg-transparent">
-      {labels.map((label) => (
-        <StatusCell key={label} label={label} />
-      ))}
-    </TableRow>
   );
 };

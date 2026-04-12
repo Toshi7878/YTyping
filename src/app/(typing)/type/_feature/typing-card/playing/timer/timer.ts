@@ -279,6 +279,9 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
 
   writeLineCount(nextCount);
   setNewLine(newLine);
+  if (newNextLine.kanaLyrics) {
+    setNextLyricsAndKpm(newNextLine);
+  }
   resetLineSubstatus();
 
   const { inputMode, scene } = readUtilityParams();
@@ -291,7 +294,6 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
   setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
-  setNextLyricsAndKpm(newNextLine);
   setChangeCSSCount(nextCount);
 };
 

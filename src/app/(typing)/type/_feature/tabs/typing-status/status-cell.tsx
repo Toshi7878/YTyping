@@ -1,9 +1,8 @@
 "use client";
-import { type Atom, atom, type ExtractAtomValue, useAtomValue, useStore } from "jotai";
+import { atom, type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
-import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import type { Updater } from "@/utils/types";
 import { getUtilityRefParams } from "../../../_atoms/ref";
@@ -60,58 +59,26 @@ export const StatusCell = ({ label }: StatusCellProps) => {
   const atom = typingStatusViewAtoms[label];
 
   return (
-    <TableCell id={label} className={cn("px-4", label === "score" || label === "point" ? "w-[20%]" : "w-[14%]")}>
+    <div id={label} className={cn("w-full", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}>
       <div
         className={cn(
-          "status-label relative mr-2 text-muted-foreground capitalize md:text-[60%]",
+          "status-label relative text-muted-foreground capitalize md:text-[60%]",
           label === "kpm" && "tracking-[0.2em]",
         )}
       >
         {label}
       </div>
-      <div className="value text-6xl md:text-[2.2rem]">
+      <div className={cn("value text-6xl md:text-[2.2rem]")}>
         {label === "point" ? (
-          <PointStatusValue pointAtom={typingStatusViewAtoms.point} timeBonusAtom={typingStatusViewAtoms.timeBonus} />
+          <>
+            <uncontrolled.span atomStore={store}>{typingStatusViewAtoms.point}</uncontrolled.span>
+            <uncontrolled.small atomStore={store}>{typingStatusViewAtoms.timeBonus}</uncontrolled.small>
+          </>
         ) : (
-          <StatusValue atom={atom} />
+          <uncontrolled.span atomStore={store}>{atom}</uncontrolled.span>
         )}
       </div>
-      <StatusUnderline label={label} />
-    </TableCell>
-  );
-};
-
-interface PointStatusValueProps {
-  pointAtom: Atom<number>;
-  timeBonusAtom: Atom<string>;
-}
-
-const PointStatusValue = ({ pointAtom, timeBonusAtom }: PointStatusValueProps) => {
-  const store = useStore();
-  return (
-    <>
-      <uncontrolled.span atomStore={store}>{pointAtom}</uncontrolled.span>
-      <uncontrolled.small atomStore={store}>{timeBonusAtom}</uncontrolled.small>
-    </>
-  );
-};
-
-const StatusValue = ({ atom }: { atom: Atom<number> }) => {
-  const store = useStore();
-  return <uncontrolled.span atomStore={store}>{atom}</uncontrolled.span>;
-};
-
-const StatusUnderline = ({ label }: { label: LabelType }) => {
-  const isMainWidth = label === "score" || label === "point";
-
-  const underlineWidthClass = isMainWidth ? "w-64 md:w-36" : "w-28 md:w-20";
-
-  return (
-    <span className="relative">
-      <span
-        id="status_underline"
-        className={cn("absolute bottom-0 left-0.5 h-0.5 bg-card-foreground", underlineWidthClass)}
-      />
-    </span>
+      <div id="status_underline" className="h-0.5 w-full shrink-0 bg-card-foreground" aria-hidden={true} />
+    </div>
   );
 };
