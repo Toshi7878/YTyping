@@ -18,7 +18,7 @@ import {
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_atoms/line-result";
-import { readTotalProgress, readTypingStats } from "../_atoms/ref";
+import { readTypingStats } from "../_atoms/ref";
 import { resetAllStateOnCleanup } from "../_atoms/reset";
 import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "../_atoms/state";
 import { resetAllTypingStatus, setLineStatus } from "../_atoms/status";
@@ -27,6 +27,7 @@ import { useLoadSoundEffects } from "../_lib/sound-effect";
 import { mutateTypingStats } from "../_lib/stats";
 import { CONTENT_WIDTH, useWindowScale } from "../_utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
+import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
 import { TypingCard } from "./typing-card/typing-card";
 import { YouTubePlayer } from "./youtube/youtube-player";
 
@@ -78,11 +79,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
       setLineStatus(builtMapLines.length);
       resetAllTypingStatus();
-
-      const totalProgress = readTotalProgress();
-      if (totalProgress) {
-        totalProgress.max = builtMap.duration;
-      }
+      setTotalProgressMax(builtMap.duration);
     }
   }, [rawMapLines]);
 

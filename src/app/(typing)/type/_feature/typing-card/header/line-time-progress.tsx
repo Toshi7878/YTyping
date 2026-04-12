@@ -1,27 +1,28 @@
-import React, { useEffect } from "react";
-import { writeLineProgress } from "../../../_atoms/ref";
+import { atom } from "jotai";
+import { uncontrolled } from "jotai-uncontrolled";
+import { getTypeAtomStore } from "../../../_atoms/store";
+
+const lineProgressValueAtom = atom(0);
+const lineProgressMaxAtom = atom(0);
+const store = getTypeAtomStore();
+
+export const getLineProgressMax = () => store.get(lineProgressMaxAtom);
+export const setLineProgressValue = (value: number) => store.set(lineProgressValueAtom, value);
+export const setLineProgressMax = (max: number) => store.set(lineProgressMaxAtom, max);
 
 interface LineTimeProgressProps {
   id: string;
 }
 export const LineTimeProgress = (props: LineTimeProgressProps) => {
-  const progressRef = React.useRef<HTMLProgressElement>(null);
-
-  useEffect(() => {
-    if (progressRef.current) {
-      writeLineProgress(progressRef.current);
-    }
-  }, []);
-
   return (
-    <section className="w-full">
-      <progress
-        id={props.id}
-        ref={progressRef}
-        className={
-          "h-[16px] w-full max-sm:my-2 md:h-[10px] [&::-moz-progress-bar]:rounded-lg [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-value]:bg-primary"
-        }
-      />
-    </section>
+    <uncontrolled.progress
+      id={props.id}
+      value={lineProgressValueAtom}
+      max={lineProgressMaxAtom}
+      atomStore={store}
+      className={
+        "h-[16px] w-full max-sm:my-2 md:h-[10px] [&::-moz-progress-bar]:rounded-lg [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-value]:bg-primary"
+      }
+    />
   );
 };

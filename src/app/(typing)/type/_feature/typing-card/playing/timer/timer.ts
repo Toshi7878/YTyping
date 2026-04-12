@@ -1,14 +1,10 @@
 import { Ticker } from "@pixi/ticker";
 import {
   readLineCount,
-  readLineProgress,
   readLineSubstatus,
-  readTotalProgress,
   readTypingStats,
   readUtilityRefParams,
   resetLineSubstatus,
-  setLineProgressValue,
-  setTotalProgressValue,
   writeLineCount,
   writeLineSubstatus,
   writeUtilityRefParams,
@@ -33,6 +29,8 @@ import { readYTPlayer, setYTPlaybackRate } from "../../../../_atoms/youtube-play
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../../_lib/stats";
 import { calculateLineKpm } from "../../../../_utils/calculate-kpm";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
+import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
+import { getLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
@@ -150,15 +148,8 @@ const handleTimer = () => {
         transitionToEndScene(scene);
         stopTimer();
 
-        const lineProgress = readLineProgress();
-        const totalProgress = readTotalProgress();
-
-        if (lineProgress) {
-          lineProgress.value = lineProgress.max;
-        }
-        if (totalProgress) {
-          totalProgress.value = totalProgress.max;
-        }
+        setLineProgressValue(getLineProgressMax());
+        setTotalProgressValue(getTotalProgressMax());
 
         if (scene === "play") {
           const stats = readTypingStats();

@@ -1,6 +1,7 @@
-import { readLineCount, readLineProgress, readPracticeLineItems, writeLineCount } from "../../../_atoms/ref";
+import { readLineCount, readPracticeLineItems, writeLineCount } from "../../../_atoms/ref";
 import { readBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../../_atoms/state";
 import { seekYTPlayer } from "../../../_atoms/youtube-player";
+import { setLineProgressValue } from "../header/line-time-progress";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupNextLine, stopTimer } from "./timer/timer";
 
@@ -42,10 +43,8 @@ export const movePrevLine = () => {
   setNotify(Symbol("◁"));
   scrollToTable(newLineSelectIndex);
   const newLine = map.lines[newCount];
-  const lineProgress = readLineProgress();
-  if (lineProgress) {
-    lineProgress.value = isTimeBuffer ? prevTime - (newLine?.time ?? 0) : 0;
-  }
+
+  setLineProgressValue(isTimeBuffer ? prevTime - (newLine?.time ?? 0) : 0);
 };
 
 export const moveNextLine = () => {
@@ -83,10 +82,7 @@ export const moveNextLine = () => {
   seekYTPlayer(nextTime);
   setNotify(Symbol("▷"));
   scrollToTable(newLineSelectIndex);
-  const lineProgress = readLineProgress();
-  if (lineProgress) {
-    lineProgress.value = nextTime - (map.lines[newCount]?.time ?? 0);
-  }
+  setLineProgressValue(nextTime - (map.lines[newCount]?.time ?? 0));
 };
 
 export const moveSetLine = (seekCount: number) => {
@@ -103,10 +99,7 @@ export const moveSetLine = (seekCount: number) => {
   setupNextLine(map, newCount);
   stopTimer();
 
-  const lineProgress = readLineProgress();
-  if (lineProgress) {
-    lineProgress.value = seekTime - (map.lines[newCount]?.time ?? 0);
-  }
+  setLineProgressValue(seekTime - (map.lines[newCount]?.time ?? 0));
 };
 
 const scrollToTable = (newIndex: number) => {

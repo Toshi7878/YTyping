@@ -91,26 +91,6 @@ export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typ
   store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
 
-const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
-export const readLineProgress = () => store.get(lineProgressAtom);
-export const writeLineProgress = (newYTPlayer: HTMLProgressElement) => store.set(lineProgressAtom, newYTPlayer);
-export const setLineProgressValue = (value: number) => {
-  const lineProgress = store.get(lineProgressAtom);
-  if (lineProgress) {
-    lineProgress.value = value;
-  }
-};
-
-const totalProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
-export const readTotalProgress = () => store.get(totalProgressAtom);
-export const writeTotalProgress = (newYTPlayer: HTMLProgressElement) => store.set(totalProgressAtom, newYTPlayer);
-export const setTotalProgressValue = (value: number) => {
-  const totalProgress = store.get(totalProgressAtom);
-  if (totalProgress) {
-    totalProgress.value = value;
-  }
-};
-
 const practiceLineListItemsAtom = atomWithReset<HTMLElement[]>([]);
 export const readPracticeLineItems = () => store.get(practiceLineListItemsAtom);
 export const writePracticeLineItems = (newItems: HTMLElement[]) => store.set(practiceLineListItemsAtom, newItems);

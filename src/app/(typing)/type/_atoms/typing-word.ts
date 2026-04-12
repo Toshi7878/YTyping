@@ -11,8 +11,9 @@ import {
 } from "lyrics-typing-engine";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
+import { setLineProgressMax, setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
-import { readLineCount, readLineProgress } from "./ref";
+import { readLineCount } from "./ref";
 import { playingInputModeAtom, readBuiltMap, readMediaSpeed, readUtilityParams } from "./state";
 import { getTypeAtomStore } from "./store";
 
@@ -60,22 +61,20 @@ export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
 export const setNewLine = (newLine: BuiltMapLineWithOption) => {
   store.set(lineAtom, { typingWord: createTypingWord(newLine), lyrics: newLine.lyrics });
 
-  const lineProgress = readLineProgress();
   const { isPaused } = readUtilityParams();
 
-  if (lineProgress && !isPaused) {
-    lineProgress.value = 0;
-    lineProgress.max = newLine.duration;
+  if (!isPaused) {
+    setLineProgressValue(0);
+    setLineProgressMax(newLine.duration);
   }
 };
 export const resetCurrentLine = () => {
   store.set(lineAtom, RESET);
   const map = readBuiltMap();
-  const lineProgress = readLineProgress();
 
-  if (lineProgress && map?.lines[1]) {
-    lineProgress.value = 0;
-    lineProgress.max = map.lines[1].time;
+  setLineProgressValue(0);
+  if (map?.lines[1]) {
+    setLineProgressMax(map.lines[1].time);
   }
 };
 
