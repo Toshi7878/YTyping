@@ -15,10 +15,11 @@ import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
 
 export const TypingCard = ({ className }: { className?: string }) => {
+  const sceneGroup = useSceneGroupState();
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />
-      <GameCardContent className="block px-12 py-2" />
+      <GameCardContent className={cn("block py-2", sceneGroup === "Playing" ? "pr-0 pl-12" : "px-12")} />
       <GameCardFooter className="mx-3 select-none flex-col py-0" />
     </Card>
   );
