@@ -1,3 +1,5 @@
+import { setTotalProgressValue } from "../_feature/typing-card/footer/total-time-progress";
+import { setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
 import { setLyrics } from "../_feature/typing-card/playing/lyrics";
 import { clearAllLineResult } from "./line-result";
 import { resetLineCount, resetLineSubstatus, resetTypingSubstatus, resetUtilityRefParams } from "./ref";
@@ -21,4 +23,6 @@ export const resetAllStateOnCleanup = () => {
   resetLineSubstatus();
   resetLineCount();
   resetReplayRankingResult();
+  setLineProgressValue(0);
+  setTotalProgressValue(0);
 };
