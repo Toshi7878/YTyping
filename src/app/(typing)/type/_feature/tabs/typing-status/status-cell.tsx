@@ -59,7 +59,10 @@ export const StatusCell = ({ label }: StatusCellProps) => {
   const atom = typingStatusViewAtoms[label];
 
   return (
-    <div id={label} className={cn("w-full", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}>
+    <div
+      id={label}
+      className={cn("w-full space-y-0.5", label === "score" || label === "point" ? "w-64 md:w-36" : "w-28 md:w-20")}
+    >
       <div
         className={cn(
           "status-label text-muted-foreground capitalize md:text-[60%]",
