@@ -4,10 +4,9 @@ import { cache } from "react";
 import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { toLocaleDateString } from "@/utils/date";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { Content } from "../_components/content";
-import { JotaiProvider } from "../_components/provider";
+import { Content } from "../_feature/content";
+import { JotaiProvider } from "../_feature/provider";
 
-// React cache でメモ化：同じmapIdでの複数回の呼び出しでもDBクエリは1回のみ
 const getMapInfo = cache(async (caller: ReturnType<typeof getCaller>, mapId: number) => {
   return await caller.map.getById({ mapId });
 });
