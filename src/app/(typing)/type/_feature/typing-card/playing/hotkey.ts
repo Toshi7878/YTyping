@@ -1,8 +1,8 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { readTypingOptions } from "../../../_atoms/hydrate";
-import { readLineCount, readUtilityRefParams, writeUtilityRefParams } from "../../../_atoms/ref";
+import { getUtilityRefParams, readLineCount, writeUtilityRefParams } from "../../../_atoms/ref";
 import {
-  readBuiltMap,
+  getBuiltMap,
   readMediaSpeed,
   readMinMediaSpeed,
   readUtilityParams,
@@ -38,7 +38,7 @@ export const isHotKeyIgnored = (event: KeyboardEvent) => {
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
 
 export const playHotkey = (event: KeyboardEvent) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   if (event.key === "Escape") {
@@ -66,7 +66,7 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "ArrowRight":
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
-        const { timeOffset } = readUtilityRefParams();
+        const { timeOffset } = getUtilityRefParams();
         const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
         writeUtilityRefParams({ timeOffset: newTimeOffset });
         setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
@@ -77,7 +77,7 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "ArrowLeft":
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
-        const { timeOffset } = readUtilityRefParams();
+        const { timeOffset } = getUtilityRefParams();
         const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
         writeUtilityRefParams({ timeOffset: newTimeOffset });
         setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
@@ -138,9 +138,9 @@ export const playHotkey = (event: KeyboardEvent) => {
 };
 
 export const commitLineSkip = () => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
-  const { timeOffset, isRetrySkip } = readUtilityRefParams();
+  const { timeOffset, isRetrySkip } = getUtilityRefParams();
   const count = readLineCount();
 
   const startLine = map.lines[map.typingLineIndexes[0] ?? 0];

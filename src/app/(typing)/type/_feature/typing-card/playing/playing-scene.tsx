@@ -11,7 +11,7 @@ import {
 } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
-  readBuiltMap,
+  getBuiltMap,
   readReplayRankingResult,
   readUtilityParams,
   useBuiltMapState,
@@ -127,7 +127,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   const typingWord = getTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
-    const map = readBuiltMap();
+    const map = getBuiltMap();
     if (!map) return;
 
     const typingOptions = readTypingOptions();

@@ -1,10 +1,10 @@
 import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getTypeAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../../_atoms/store";
 
 const lineProgressValueAtom = atom(0);
 const lineProgressMaxAtom = atom(0);
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 export const getLineProgressMax = () => store.get(lineProgressMaxAtom);
 export const setLineProgressValue = (value: number) => store.set(lineProgressValueAtom, value);

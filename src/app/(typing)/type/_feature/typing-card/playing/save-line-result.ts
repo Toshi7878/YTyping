@@ -2,17 +2,17 @@ import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../../../_atoms/line-result";
 import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../../_atoms/ref";
-import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../../../_atoms/state";
-import { readTypingStatus, setAllTypingStatus } from "../../../_atoms/status";
+import { getBuiltMap, readMediaSpeed, readUtilityParams } from "../../../_atoms/state";
 import { readCombo, readLineKpm } from "../../../_atoms/substatus";
 import { getTypingWord } from "../../../_atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../../../_lib/const";
+import { getTypingStatus, setTypingStatus } from "../../tabs/typing-status/status-cell";
 
 export const hasLineResultImproved = (count: number) => {
   const lineResults = readAllLineResult();
   const { missCount } = readLineSubstatus();
   const savedLineResult = lineResults[count];
-  const typingStatus = readTypingStatus();
+  const typingStatus = getTypingStatus();
 
   const currentLineScore = typingStatus.point + typingStatus.timeBonus + missCount * MISS_PENALTY_POINT;
   const savedLineScore =
@@ -27,16 +27,16 @@ export const hasLineResultImproved = (count: number) => {
 
 export const saveLineResult = (count: number) => {
   const { lostWord, actualLostNotes, pointLostNotes } = generateLostWord();
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
-  if (actualLostNotes > 0) setAllTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
+  if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
   if (pointLostNotes > 0) {
     const { clearRate } = readTypingSubstatus();
     writeTypingSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
   }
 
-  const typingStatus = readTypingStatus();
+  const typingStatus = getTypingStatus();
   const { missCount, typeCount, types, startSpeed, startInputMode, rkpm } = readLineSubstatus();
   const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
   const { totalTypeTime } = readTypingSubstatus();

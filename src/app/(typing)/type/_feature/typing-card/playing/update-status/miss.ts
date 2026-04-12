@@ -4,24 +4,24 @@ import {
   writeLineSubstatus,
   writeTypingSubstatus,
 } from "../../../../_atoms/ref";
-import { readBuiltMap } from "../../../../_atoms/state";
-import { readTypingStatus, setAllTypingStatus } from "../../../../_atoms/status";
+import { getBuiltMap } from "../../../../_atoms/state";
 import { setCombo } from "../../../../_atoms/substatus";
 import { MISS_PENALTY_POINT } from "../../../../_lib/const";
+import { getTypingStatus, setTypingStatus } from "../../../tabs/typing-status/status-cell";
 
 export const updateMissStatus = () => {
-  const status = readTypingStatus();
+  const status = getTypingStatus();
   const newStatus = { ...status };
 
   newStatus.miss++;
   newStatus.point -= MISS_PENALTY_POINT;
 
   setCombo(0);
-  setAllTypingStatus(newStatus);
+  setTypingStatus(newStatus);
 };
 
 export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLineTime: number; failKey: string }) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   const { clearRate, missCombo } = readTypingSubstatus();

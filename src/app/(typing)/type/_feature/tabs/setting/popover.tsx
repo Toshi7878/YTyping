@@ -7,7 +7,7 @@ import {
   setTypingOptions,
   useTypingOptionsState,
 } from "@/app/(typing)/type/_atoms/hydrate";
-import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_atoms/ref";
+import { getUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_atoms/ref";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { SettingIconButton } from "@/components/ui/icon-button";
@@ -37,7 +37,7 @@ export const SettingPopover = () => {
     setIsOpen(open);
 
     if (!open) {
-      const { isOptionEdited } = readUtilityRefParams();
+      const { isOptionEdited } = getUtilityRefParams();
 
       if (isOptionEdited) {
         const typingOptions = readTypingOptions();

@@ -4,13 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { readAllLineResult } from "@/app/(typing)/type/_atoms/line-result";
 import { readTypingSubstatus, type TypingSubstatus } from "@/app/(typing)/type/_atoms/ref";
-import { type BuiltMap, readBuiltMap, setTabName } from "@/app/(typing)/type/_atoms/state";
+import { type BuiltMap, getBuiltMap, setTabName } from "@/app/(typing)/type/_atoms/state";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
 import type { TypingLineResult } from "@/validator/result";
 import { readMapId, readTypingOptions, type TypingOptions } from "../../../_atoms/hydrate";
-import { readTypingStatus, type TypingStatus } from "../../../_atoms/status";
+import { getTypingStatus, type TypingStatus } from "../../tabs/typing-status/status-cell";
 import { useRegisterRankingMutation } from "./register-ranking";
 
 interface RegisterRankingButtonProps {
@@ -51,8 +51,8 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     if (isConfirmed) {
       const typingSubStatus = readTypingSubstatus();
       const lineResults = readAllLineResult();
-      const typingStatus = readTypingStatus();
-      const builtMap = readBuiltMap();
+      const typingStatus = getTypingStatus();
+      const builtMap = getBuiltMap();
       const typingOptions = readTypingOptions();
 
       registerRanking.mutate({

@@ -8,10 +8,10 @@ import {
   writeTypingSubstatus,
 } from "../../../../_atoms/ref";
 import { readMediaSpeed, readUtilityParams } from "../../../../_atoms/state";
-import { setAllTypingStatus } from "../../../../_atoms/status";
 import { readCombo, setCombo, setLineKpm } from "../../../../_atoms/substatus";
 import { getTypingWord } from "../../../../_atoms/typing-word";
 import { calculateLineKpm, calculateLineRkpm, calculateTotalKpm } from "../../../../_utils/calculate-kpm";
+import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -39,7 +39,7 @@ export const updateSuccessStatus = ({
     setLineKpm(newLineKpm);
   }
 
-  setAllTypingStatus((prev) => {
+  setTypingStatus((prev) => {
     const type = prev.type + 1;
     const point = prev.point + updatePoint;
 

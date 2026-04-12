@@ -3,9 +3,9 @@ import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { writeUtilityRefParams } from "./ref";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 export const mapIdAtom = atomWithReset<number | null>(null);
 export const useMapIdState = () => useAtomValue(mapIdAtom, { store });

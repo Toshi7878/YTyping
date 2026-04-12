@@ -3,8 +3,8 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { readMapId } from "../_atoms/hydrate";
 import { initializeAllLineResult } from "../_atoms/line-result";
 import {
+  getUtilityRefParams,
   readTypingStats,
-  readUtilityRefParams,
   resetLineCount,
   resetLineSubstatus,
   resetTypingSubstatus,
@@ -12,18 +12,18 @@ import {
 } from "../_atoms/ref";
 import {
   type BuiltMap,
+  getBuiltMap,
   type PlayMode,
-  readBuiltMap,
   readUtilityParams,
   resetReplayRankingResult,
   setNotify,
   setScene,
   setTabName,
 } from "../_atoms/state";
-import { readTypingStatus, resetAllTypingStatus } from "../_atoms/status";
 import { setCombo } from "../_atoms/substatus";
 import { resetTypingWord } from "../_atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../_atoms/youtube-player";
+import { getTypingStatus, resetTypingStatus } from "../_feature/tabs/typing-status/status-cell";
 import { setLineProgressMax, setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
 import { setLyrics } from "../_feature/typing-card/playing/lyrics";
 import { setNextLyricsAndKpm } from "../_feature/typing-card/playing/next-lyrics";
@@ -31,7 +31,7 @@ import { stopTimer } from "../_feature/typing-card/playing/timer/timer";
 import { mutateTypingStats } from "./stats";
 
 export const restartPlay = (newPlayMode: PlayMode) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   const nextLine = map?.lines[1];
   if (!map || !nextLine) return;
   const startLine = getStartLine(map.lines);
@@ -46,7 +46,7 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: isEnableRetrySkip });
 
   const { scene } = readUtilityParams();
-  const { type: totalTypeCount } = readTypingStatus();
+  const { type: totalTypeCount } = getTypingStatus();
 
   if (scene === "play" || scene === "practice") {
     const stats = readTypingStats();
@@ -58,14 +58,14 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   switch (scene) {
     case "play": {
       if (totalTypeCount) {
-        const { retryCount } = readUtilityRefParams();
+        const { retryCount } = getUtilityRefParams();
         writeUtilityRefParams({ retryCount: retryCount + 1 });
         if (totalTypeCount >= 10 && mapId) {
           mutatePlayCountStats({ mapId });
         }
       }
 
-      const { retryCount } = readUtilityRefParams();
+      const { retryCount } = getUtilityRefParams();
       setNotify(Symbol(`Retry(${retryCount})`));
       break;
     }
@@ -89,7 +89,7 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   }
 
   if (newPlayMode !== "practice") {
-    resetAllTypingStatus();
+    resetTypingStatus();
     setCombo(0);
     resetTypingSubstatus();
   }

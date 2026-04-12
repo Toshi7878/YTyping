@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { mapIdAtom, typingOptionsAtom } from "../_atoms/hydrate";
-import { getTypeAtomStore } from "../_atoms/store";
+import { getTypingGameAtomStore } from "../_atoms/store";
 
 interface JotaiProviderProps {
   userTypingOptions: RouterOutputs["user"]["typingOption"]["getForSession"];
@@ -13,7 +13,7 @@ interface JotaiProviderProps {
 }
 
 export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
-  const store = getTypeAtomStore();
+  const store = getTypingGameAtomStore();
 
   return (
     <Provider store={store}>

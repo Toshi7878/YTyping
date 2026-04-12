@@ -1,10 +1,10 @@
 import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getTypeAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../../_atoms/store";
 
 const totalProgressValueAtom = atom(0);
 const totalProgressMaxAtom = atom(0);
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 export const getTotalProgressMax = () => store.get(totalProgressMaxAtom);
 export const setTotalProgressValue = (value: number) => store.set(totalProgressValueAtom, value);

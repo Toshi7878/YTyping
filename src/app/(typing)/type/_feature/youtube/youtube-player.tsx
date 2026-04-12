@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { readMapId } from "../../_atoms/hydrate";
-import { readUtilityRefParams, writeLineCount } from "../../_atoms/ref";
+import { getUtilityRefParams, writeLineCount } from "../../_atoms/ref";
 import {
-  readBuiltMap,
+  getBuiltMap,
   readMinMediaSpeed,
   readSceneGroup,
   readUtilityParams,
@@ -92,7 +92,7 @@ const MobileCover = () => {
 
 const handleStart = (player: YT.Player) => {
   const { scene } = readUtilityParams();
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   setLastLineEndTime(map, player.getDuration());
   const mapId = readMapId();
@@ -156,7 +156,7 @@ const handlePause = () => {
 const handleSeeked = (player: YT.Player) => {
   const time = player.getCurrentTime();
 
-  const { isRetrySkip } = readUtilityRefParams();
+  const { isRetrySkip } = getUtilityRefParams();
 
   if (isRetrySkip && time === 0) {
     writeLineCount(0);

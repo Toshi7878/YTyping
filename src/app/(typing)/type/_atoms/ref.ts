@@ -3,9 +3,9 @@ import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { InputMode } from "lyrics-typing-engine";
 import type { TypeResult } from "@/validator/result";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const lineCountAtom = atomWithReset(0);
 export const readLineCount = () => store.get(lineCountAtom);
@@ -86,7 +86,7 @@ const utilityRefParamsAtom = atomWithReset({
   isOptionEdited: false,
 });
 
-export const readUtilityRefParams = () => store.get(utilityRefParamsAtom);
+export const getUtilityRefParams = () => store.get(utilityRefParamsAtom);
 export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typeof utilityRefParamsAtom>>) =>
   store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);

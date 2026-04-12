@@ -9,9 +9,9 @@ import { findClosestLowerOrEqual } from "@/utils/array";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResult } from "@/validator/result";
 import { setLineResultSelected } from "./line-result";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const builtMapAtom = atomWithReset<{
   lines: BuiltMapLine<z.infer<typeof LineOptionSchema>>[];
@@ -30,7 +30,7 @@ export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
 export const setBuiltMap = (map: BuiltMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 //TODO: builitMapがnullの場合にエラーハンドリング
-export const readBuiltMap = () => store.get(builtMapAtom);
+export const getBuiltMap = () => store.get(builtMapAtom);
 export const setLastLineEndTime = (map: NonNullable<BuiltMap>, endTime: number) => {
   const lines = map.lines.map((line, i) => (i === map.lines.length - 1 ? { ...line, time: endTime } : line));
   store.set(builtMapAtom, { ...map, lines, duration: Math.min(map.duration, endTime) });
@@ -126,7 +126,7 @@ export const setNotify = (value: ExtractAtomValue<typeof notifyAtom>) => store.s
 
 export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
 export const setChangeCSSCount = (currentIndex: number) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   if (map.changeCSSIndexes.length === 0) {
     store.set(changeCSSCountAtom, null);
@@ -141,7 +141,7 @@ export const setIsPaused = (value: ExtractAtomValue<typeof isPausedAtom>) => sto
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom, { store });
 export const setLineSelectIndex = (lineIndex: number) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   const count = map.typingLineIndexes[lineIndex - 1];

@@ -1,7 +1,7 @@
 import { readAllLineResult } from "../../../../_atoms/line-result";
 import { writeTypingSubstatus } from "../../../../_atoms/ref";
-import { readBuiltMap, readUtilityParams } from "../../../../_atoms/state";
-import { setAllTypingStatus } from "../../../../_atoms/status";
+import { getBuiltMap, readUtilityParams } from "../../../../_atoms/state";
+import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const recalculateStatusFromResults = ({
@@ -11,7 +11,7 @@ export const recalculateStatusFromResults = ({
   count: number;
   updateType: "lineUpdate" | "completed";
 }) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   const newStatus = {
@@ -72,5 +72,5 @@ export const recalculateStatusFromResults = ({
     completeCount: completeLineCount,
     failureCount: failureLineCount,
   });
-  setAllTypingStatus(newStatus);
+  setTypingStatus(newStatus);
 };

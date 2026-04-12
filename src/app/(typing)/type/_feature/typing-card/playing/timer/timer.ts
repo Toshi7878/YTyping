@@ -1,10 +1,10 @@
 import { Ticker } from "@pixi/ticker";
 import { createTypingWord } from "lyrics-typing-engine";
 import {
+  getUtilityRefParams,
   readLineCount,
   readLineSubstatus,
   readTypingStats,
-  readUtilityRefParams,
   resetLineSubstatus,
   writeLineCount,
   writeLineSubstatus,
@@ -12,7 +12,7 @@ import {
 } from "@/app/(typing)/type/_atoms/ref";
 import {
   type BuiltMap,
-  readBuiltMap,
+  getBuiltMap,
   readMediaSpeed,
   readScene,
   readUtilityParams,
@@ -24,12 +24,12 @@ import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readMapId } from "../../../../_atoms/hydrate";
 import { readAllLineResult } from "../../../../_atoms/line-result";
-import { setAllTypingStatus } from "../../../../_atoms/status";
 import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../../../_atoms/substatus";
 import { getTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
 import { readYTPlayer, setYTPlaybackRate } from "../../../../_atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../../_lib/stats";
 import { calculateLineKpm } from "../../../../_utils/calculate-kpm";
+import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
 import { getLineProgressMax, setLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
@@ -61,7 +61,7 @@ export const setTimerMaxFPS = (rate: number) => {
 
 const handleTimer = () => {
   const YTPlayer = readYTPlayer();
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!YTPlayer || !map) {
     typeTicker.stop();
     return;
@@ -91,7 +91,7 @@ const handleTimer = () => {
           if (!lineResult) return;
           const { types } = lineResult;
           if (types.length === 0) return;
-          const { replayKeyCount } = readUtilityRefParams();
+          const { replayKeyCount } = getUtilityRefParams();
           const typeResult = types[replayKeyCount];
           if (!typeResult) return;
           const { time: keyTime } = typeResult;
@@ -147,7 +147,7 @@ const handleTimer = () => {
           processIncompleteLineEnd({ map, constantLineTime, count });
         }
 
-        setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
+        setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
         setLineKpm(0);
         transitionToEndScene(scene);
         stopTimer();
@@ -289,7 +289,7 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
     recalculateStatusFromResults({ count: nextCount, updateType: "lineUpdate" });
   }
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
-  setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
+  setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
   setNextLyricsAndKpm(newNextLine);
   setChangeCSSCount(nextCount);
@@ -319,9 +319,9 @@ const updateSkipGuideVisibility = ({
   constantLineTime,
   constantRemainLineTime,
 }: updateSkipGuideVisibilityparams) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
-  const { isRetrySkip } = readUtilityRefParams();
+  const { isRetrySkip } = getUtilityRefParams();
   const playSpeed = readMediaSpeed();
   const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
 

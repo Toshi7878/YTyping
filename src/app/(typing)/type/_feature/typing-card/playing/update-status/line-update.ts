@@ -1,39 +1,33 @@
 import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../../../_atoms/ref";
-import { readBuiltMap } from "../../../../_atoms/state";
-import { setAllTypingStatus } from "../../../../_atoms/status";
+import { getBuiltMap } from "../../../../_atoms/state";
 import { getTypingWord } from "../../../../_atoms/typing-word";
+import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   const typingWord = getTypingWord();
 
-  // 現在の状態を取得
   const currentSubstatus = readTypingSubstatus();
   const diffSubstatus: Partial<typeof currentSubstatus> = {};
 
-  // 1. kanaToRomaConvertCount の更新
   diffSubstatus.kanaToRomaConvertCount = currentSubstatus.kanaToRomaConvertCount + typingWord.correct.roma.length;
 
   const isFailed = typingWord.nextChunk.kana;
 
-  // 2. 失敗時の Substatus 更新
   if (isFailed) {
     diffSubstatus.failureCount = currentSubstatus.failureCount + 1;
 
     const { typeCount: lineTypeCount } = readLineSubstatus();
     if (lineTypeCount === 0) {
-      // lineType === 0 の場合のみ更新
       diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
     }
   }
 
-  // Substatus を一度に更新
   writeTypingSubstatus(diffSubstatus);
 
-  // 3. TypingStatus の更新
-  setAllTypingStatus((prev) => {
+  setTypingStatus((prev) => {
     let { score, line, rank } = prev;
 
     if (isFailed) {

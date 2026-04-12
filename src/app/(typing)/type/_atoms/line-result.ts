@@ -2,9 +2,9 @@ import deepEqual from "fast-deep-equal";
 import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai-family";
 import type { TypingLineResult } from "@/validator/result";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const lineResultAtomFamily = atomFamily(
   () => atom<{ isSelected: boolean; lineResult: TypingLineResult } | undefined>(),

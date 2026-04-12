@@ -1,20 +1,24 @@
 import { type SceneType, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_atoms/state";
 import { type Session, useSession } from "@/lib/auth-client";
-import { useTypingStatusState } from "../../../_atoms/status";
 import { RandomEmoji } from "./random-emoji";
 
-export const ResultMessage = ({ bestScore }: { bestScore: number | null }) => {
+export const ResultMessage = ({
+  bestScore,
+  status,
+}: {
+  bestScore: number | null;
+  status: { score: number; miss: number; lost: number };
+}) => {
   const { data: session } = useSession();
-  const { score, miss, lost } = useTypingStatusState();
   const scene = useSceneState();
   const minMediaSpeed = useMinMediaSpeedState();
-  const isPerfect = miss === 0 && lost === 0;
+  const isPerfect = status.miss === 0 && status.lost === 0;
 
   return (
     <div className="mx-2 text-left text-5xl md:text-3xl" id="end_text">
       {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
       <span>
-        <Message bestScore={bestScore} score={score} scene={scene} session={session} />
+        <Message bestScore={bestScore} score={status.score} scene={scene} session={session} />
       </span>
       {minMediaSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>

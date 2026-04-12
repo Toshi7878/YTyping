@@ -18,7 +18,7 @@ import { useTRPC } from "@/trpc/provider";
 import { useMapIdState } from "../../../_atoms/hydrate";
 import { writeUtilityRefParams } from "../../../_atoms/ref";
 import { useSceneGroupState } from "../../../_atoms/state";
-import { setRankStatus } from "../../../_atoms/status";
+import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
 
 type RankingResult = RouterOutputs["result"]["list"]["getRanking"][number];
@@ -41,7 +41,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     writeUtilityRefParams({ rankingScores: scores });
 
     if (sceneGroup !== "Ready") return;
-    setRankStatus(scores.length + 1);
+    setTypingStatus((prev) => ({ ...prev, rank: scores.length + 1 }));
   }, [data, sceneGroup]);
 
   const columns: ColumnDef<RankingResult, unknown>[] = [
@@ -92,7 +92,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     {
       id: "name",
       header: () => "名前",
-      size: 110,
+      size: 90,
       cell: ({ row }) => {
         const { name } = row.original.player;
         return <span className="pointer-events-none truncate">{name}</span>;
@@ -107,7 +107,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     {
       id: "mode",
       header: () => "モード",
-      size: 60,
+      size: 55,
       cell: ({ row }) => {
         const { typeCounts } = row.original;
         return <InputModeText typeCounts={typeCounts} />;
@@ -118,6 +118,10 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       header: () => "時間",
       size: 40,
       cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} className="pointer-events-none" />,
+      meta: {
+        cellClassName: () => "hidden sm:table-cell",
+        headerClassName: "hidden sm:table-cell",
+      },
     },
     {
       id: "clap",
@@ -157,9 +161,10 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       id="tab-ranking-card"
       className={{
         card: cn("tab-card overflow-y-scroll py-0", className),
+        cardContent: "px-4",
       }}
     >
-      <DataTable<RankingResult, unknown>
+      <DataTable
         loading={isPending}
         columns={columns}
         data={data ?? []}

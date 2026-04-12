@@ -21,12 +21,12 @@ import { initializeAllLineResult } from "../_atoms/line-result";
 import { readTypingStats } from "../_atoms/ref";
 import { resetAllStateOnCleanup } from "../_atoms/reset";
 import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "../_atoms/state";
-import { resetAllTypingStatus, setLineStatus } from "../_atoms/status";
 import { CHAR_POINT } from "../_lib/const";
 import { useLoadSoundEffects } from "../_lib/sound-effect";
 import { mutateTypingStats } from "../_lib/stats";
 import { CONTENT_WIDTH, useWindowScale } from "../_utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
+import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
 import { TypingCard } from "./typing-card/typing-card";
 import { YouTubePlayer } from "./youtube/youtube-player";
@@ -77,8 +77,8 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       setBuiltMap(builtMap);
       initializeAllLineResult(builtMap.initialLineResults);
       setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
-      setLineStatus(builtMapLines.length);
-      resetAllTypingStatus();
+      setTypingStatus((prev) => ({ ...prev, line: builtMapLines.length }));
+      resetTypingStatus();
       setTotalProgressMax(builtMap.duration);
     }
   }, [rawMapLines]);
@@ -123,8 +123,8 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
   return (
     <div style={style} className="space-y-8 md:space-y-5" id="content_container">
       <section className="flex w-full gap-6 md:flex-row">
-        {layout === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
-        <TabsArea className="flex flex-8 flex-col" />
+        {layout === "row" && <YouTubePlayer className="w-[460px]" isMapLoading={isLoading} videoId={videoId} />}
+        <TabsArea className="flex w-full flex-col" />
       </section>
 
       <TypingCard />

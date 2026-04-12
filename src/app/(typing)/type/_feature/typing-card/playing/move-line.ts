@@ -1,5 +1,5 @@
 import { readLineCount, readPracticeLineItems, writeLineCount } from "../../../_atoms/ref";
-import { readBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../../_atoms/state";
+import { getBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../../_atoms/state";
 import { seekYTPlayer } from "../../../_atoms/youtube-player";
 import { setLineProgressValue } from "../header/line-time-progress";
 import { getLineCountByTime } from "./get-line-count-by-time";
@@ -8,7 +8,7 @@ import { setupNextLine, stopTimer } from "./timer/timer";
 const SEEK_BUFFER_TIME = 0.8;
 
 export const movePrevLine = () => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   const { scene, isPaused } = readUtilityParams();
@@ -48,7 +48,7 @@ export const movePrevLine = () => {
 };
 
 export const moveNextLine = () => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   const { lineSelectIndex } = readUtilityParams();
   const count = readLineCount();
@@ -86,7 +86,7 @@ export const moveNextLine = () => {
 };
 
 export const moveSetLine = (seekCount: number) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   const playSpeed = readMediaSpeed();
   const { scene, isPaused } = readUtilityParams();

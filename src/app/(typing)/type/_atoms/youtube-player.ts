@@ -3,9 +3,9 @@ import { atomWithReset, RESET } from "jotai/utils";
 import { readIsDesktopDevice } from "@/lib/atoms/user-agent";
 import { cycleMediaSpeed, getNextMediaSpeed } from "@/utils/media-speed-change";
 import { setMinMediaSpeed } from "./state";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
 export const useYTPlayer = () => useAtomValue(YTPlayerAtom);

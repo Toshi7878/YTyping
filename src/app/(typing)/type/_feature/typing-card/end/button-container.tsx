@@ -5,13 +5,16 @@ import { restartPlay } from "@/app/(typing)/type/_lib/play-restart";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { type Session, useSession } from "@/lib/auth-client";
-import { useTypingStatusState } from "../../../_atoms/status";
 import { EndResultLineSheet } from "../line-result/line-result-sheet";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
-export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) => {
+interface EndButtonContainerProps {
+  bestScore: number | null;
+  status: { score: number; miss: number; lost: number };
+}
+
+export const EndButtonContainer = ({ bestScore, status }: EndButtonContainerProps) => {
   const { data: session } = useSession();
-  const status = useTypingStatusState();
   const scene = useSceneState();
   const [isSubmitRankingButtonDisabled, setIsSubmitRankingButtonDisabled] = useState(false);
   const minMediaSpeed = useMinMediaSpeedState();
@@ -46,6 +49,7 @@ export const EndButtonContainer = ({ bestScore }: { bestScore: number | null }) 
 const canRankingRegistration = ({
   session,
   status,
+
   bestScore,
   scene,
   minMediaSpeed,

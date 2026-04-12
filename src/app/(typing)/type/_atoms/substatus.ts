@@ -3,9 +3,9 @@ import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
 import { formatTime } from "@/utils/format-time";
 import type { Updater } from "@/utils/types";
-import { getTypeAtomStore } from "./store";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const substatusAtom = atomWithReset({
   elapsedSecTime: 0,

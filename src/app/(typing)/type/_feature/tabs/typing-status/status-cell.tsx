@@ -1,42 +1,83 @@
 "use client";
-import { type Atom, useStore } from "jotai";
+import { type Atom, atom, type ExtractAtomValue, useAtomValue, useStore } from "jotai";
+import { atomWithReset, RESET } from "jotai/vanilla/utils";
+import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { typingStatusDisplayAtoms } from "../../../_atoms/status";
+import type { Updater } from "@/utils/types";
+import { getUtilityRefParams } from "../../../_atoms/ref";
+import { getBuiltMap } from "../../../_atoms/state";
+import { getTypingGameAtomStore } from "../../../_atoms/store";
 import type { LabelType } from "./status-card";
+
+const store = getTypingGameAtomStore();
+
+const typingStatusAtom = atomWithReset({
+  score: 0,
+  type: 0,
+  kpm: 0,
+  rank: 0,
+  point: 0,
+  miss: 0,
+  lost: 0,
+  line: 0,
+  timeBonus: 0,
+});
+export type TypingStatus = ExtractAtomValue<typeof typingStatusAtom>;
+
+const typingStatusViewAtoms = {
+  score: focusAtom(typingStatusAtom, (optic) => optic.prop("score")),
+  point: focusAtom(typingStatusAtom, (optic) => optic.prop("point")),
+  timeBonus: atom((get) => {
+    const timeBonus = get(focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")));
+    return timeBonus === 0 ? "" : `+${String(timeBonus)}`;
+  }),
+  type: focusAtom(typingStatusAtom, (optic) => optic.prop("type")),
+  kpm: focusAtom(typingStatusAtom, (optic) => optic.prop("kpm")),
+  miss: focusAtom(typingStatusAtom, (optic) => optic.prop("miss")),
+  lost: focusAtom(typingStatusAtom, (optic) => optic.prop("lost")),
+  rank: focusAtom(typingStatusAtom, (optic) => optic.prop("rank")),
+  line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
+};
+export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
+export const getTypingStatus = () => store.get(typingStatusAtom);
+
+export const setTypingStatus = (update: Updater<TypingStatus>) => store.set(typingStatusAtom, update);
+export const resetTypingStatus = () => {
+  store.set(typingStatusAtom, RESET);
+  const map = getBuiltMap();
+  setTypingStatus((prev) => ({ ...prev, line: map?.typingLineIndexes.length ?? 0 }));
+  const { rankingScores } = getUtilityRefParams();
+  setTypingStatus((prev) => ({ ...prev, rank: rankingScores.length + 1 }));
+};
 
 interface StatusCellProps {
   label: LabelType;
 }
 
 export const StatusCell = ({ label }: StatusCellProps) => {
-  const atom = typingStatusDisplayAtoms[label];
+  const atom = typingStatusViewAtoms[label];
 
   return (
-    <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
-      <StatusLabel label={label} />
-      <StatusUnderline label={label} />
-
-      <span className="value text-6xl md:text-[2.2rem]">
+    <TableCell id={label} className={cn("px-4", label === "score" || label === "point" ? "w-[20%]" : "w-[14%]")}>
+      <div
+        className={cn(
+          "status-label relative mr-2 text-muted-foreground capitalize md:text-[60%]",
+          label === "kpm" && "tracking-[0.2em]",
+        )}
+      >
+        {label}
+      </div>
+      <div className="value text-6xl md:text-[2.2rem]">
         {label === "point" ? (
-          <PointStatusValue
-            pointAtom={typingStatusDisplayAtoms.point}
-            timeBonusAtom={typingStatusDisplayAtoms.timeBonus}
-          />
+          <PointStatusValue pointAtom={typingStatusViewAtoms.point} timeBonusAtom={typingStatusViewAtoms.timeBonus} />
         ) : (
           <StatusValue atom={atom} />
         )}
-      </span>
+      </div>
+      <StatusUnderline label={label} />
     </TableCell>
-  );
-};
-
-const StatusLabel = ({ label }: { label: LabelType }) => {
-  return (
-    <span className={cn("status-label relative mr-2 capitalize md:text-[80%]", label === "kpm" && "tracking-[0.2em]")}>
-      {label}
-    </span>
   );
 };
 
@@ -63,7 +104,7 @@ const StatusValue = ({ atom }: { atom: Atom<number> }) => {
 const StatusUnderline = ({ label }: { label: LabelType }) => {
   const isMainWidth = label === "score" || label === "point";
 
-  const underlineWidthClass = isMainWidth ? "w-[240px] md:w-[159px]" : "w-28 md:w-20";
+  const underlineWidthClass = isMainWidth ? "w-64 md:w-36" : "w-28 md:w-20";
 
   return (
     <span className="relative">

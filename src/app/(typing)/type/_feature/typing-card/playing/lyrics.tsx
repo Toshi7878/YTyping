@@ -3,10 +3,10 @@ import parse from "html-react-parser";
 import { atom, useAtomValue } from "jotai";
 import { useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
 import { cn } from "@/lib/utils";
-import { getTypeAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../../_atoms/store";
 
 const lyricsAtom = atom("");
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 export const setLyrics = (value: string) => store.set(lyricsAtom, value);
 export const Lyrics = () => {

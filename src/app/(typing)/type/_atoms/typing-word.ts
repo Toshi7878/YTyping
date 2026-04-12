@@ -4,10 +4,10 @@ import { createDisplayWord, replaceAllSpaceWithThreePerEmSpace, type TypingWord 
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
 import { readLineCount } from "./ref";
-import { playingInputModeAtom, readBuiltMap, readUtilityParams } from "./state";
-import { getTypeAtomStore } from "./store";
+import { getBuiltMap, playingInputModeAtom, readUtilityParams } from "./state";
+import { getTypingGameAtomStore } from "./store";
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 
 const typingWordAtom = atomWithReset<TypingWord>({
   correct: { kana: "", roma: "" },
@@ -171,7 +171,7 @@ const updateWordDisplay = (
     wordContainer?.classList.toggle("word-area-completed", isCompleted);
 
     if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
-      const builtMap = readBuiltMap();
+      const builtMap = getBuiltMap();
       const count = readLineCount();
       const nextLine = builtMap?.lines[count + 1];
       if (nextLine && main && sub) {

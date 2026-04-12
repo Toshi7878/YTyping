@@ -1,6 +1,6 @@
 import { readTypingOptions } from "../../_atoms/hydrate";
-import { readLineCount, readUtilityRefParams } from "../../_atoms/ref";
-import { readBuiltMap, readMediaSpeed } from "../../_atoms/state";
+import { getUtilityRefParams, readLineCount } from "../../_atoms/ref";
+import { getBuiltMap, readMediaSpeed } from "../../_atoms/state";
 import { getYTCurrentTime } from "../../_atoms/youtube-player";
 
 export const getLineTime = () => {
@@ -29,8 +29,8 @@ export const getRemainLineTime = () => {
 };
 
 const getCurrentOffsettedYTTime = () => {
-  const { timeOffset } = readUtilityRefParams();
-  const map = readBuiltMap();
+  const { timeOffset } = getUtilityRefParams();
+  const map = getBuiltMap();
   if (!map) return 0;
   const typingOptions = readTypingOptions();
   const YTCurrentTime = getYTCurrentTime();
@@ -46,7 +46,7 @@ const getConstantOffsettedYTTime = ({ currentTime }: { currentTime: number }) =>
 };
 
 const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return 0;
   const count = readLineCount();
 
@@ -62,7 +62,7 @@ const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) =
 };
 
 const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return 0;
 
   const count = readLineCount();

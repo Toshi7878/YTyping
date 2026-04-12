@@ -1,4 +1,3 @@
-import type { RefObject } from "react";
 import { CardWithContent } from "@/components/ui/card";
 import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
@@ -6,17 +5,13 @@ import { StatusCell } from "./status-cell";
 
 export type LabelType = "score" | "type" | "kpm" | "rank" | "point" | "miss" | "lost" | "line";
 
-export type StatusValueElementRefs = {
-  [key in LabelType | "timeBonus"]: RefObject<HTMLSpanElement | null>;
-};
-
 export const StatusCard = ({ className }: { className: string }) => {
   return (
     <CardWithContent
       id="tab-status-card"
       className={{
         card: cn("tab-card py-0", className),
-        cardContent: "my-auto overflow-auto pl-[4%]",
+        cardContent: "my-auto overflow-auto pr-0 max-md:pl-[8%]",
       }}
     >
       <Table className="h-64 table-fixed overflow-hidden md:h-48">

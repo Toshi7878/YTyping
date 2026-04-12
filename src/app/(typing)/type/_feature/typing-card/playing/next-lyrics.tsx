@@ -5,13 +5,13 @@ import type { BuiltMapLine } from "lyrics-typing-engine";
 import { cn } from "@/lib/utils";
 import { readTypingOptions } from "../../../_atoms/hydrate";
 import { getPlayingInputMode, readMediaSpeed } from "../../../_atoms/state";
-import { getTypeAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../../_atoms/store";
 
 const nextLyricsAtom = atomWithReset("");
 
 const nextKpmAtom = atomWithReset(0);
 
-const store = getTypeAtomStore();
+const store = getTypingGameAtomStore();
 export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
   const typingOptions = readTypingOptions();
   const inputMode = getPlayingInputMode();
