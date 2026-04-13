@@ -107,7 +107,7 @@ export const SettingPopover = () => {
         alignOffset={isMdScreen ? -100 : 0}
       >
         <Tabs defaultValue="0" className="w-full">
-          <TabsList className="mb-4 grid w-full grid-cols-3">
+          <TabsList id="setting-tabs-list" className="mb-4 grid w-full grid-cols-3">
             {tabData.map((tab, index) => (
               <TabsTrigger key={tab.label} value={index.toString()}>
                 {tab.label}
