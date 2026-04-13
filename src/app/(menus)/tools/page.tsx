@@ -33,7 +33,7 @@ const TOOLS = [
     title: "YTyping Equalizer",
     description: "YTyping上にイコライザー設定を追加し音質を調整可能にする",
     href: "/manual/ytyping-equalizer",
-    byUserId: "21",
+    byUserId: "1",
   },
 ] as const;
 
