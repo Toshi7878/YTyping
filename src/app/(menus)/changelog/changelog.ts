@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-4-13",
+    descriptions: ["ツールページにYTyping Equalizerを追加"],
+  },
+  {
     date: "2026-4-12",
     descriptions: ["ユーザー登録に失敗する不具合を修正", "タイピングページの表示設定に画面幅調整を追加"],
   },
