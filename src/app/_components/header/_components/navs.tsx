@@ -30,13 +30,15 @@ export const RightNav = () => {
 
   return (
     <div className="flex select-none items-center gap-2">
-      {session?.user?.name && (
-        <div className="flex items-center gap-2">
-          <ActiveUsersSheet />
-          <NotificationSheet />
-          <NewMapPopover />
-        </div>
-      )}
+      <div id="right-nav-icons" className="flex items-center gap-2">
+        {session?.user?.name && (
+          <>
+            <ActiveUsersSheet />
+            <NotificationSheet />
+            <NewMapPopover />
+          </>
+        )}
+      </div>
       {!isRegisterPage && (
         <>
           <HamburgerMenu className="md:hidden" />
