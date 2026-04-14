@@ -77,7 +77,6 @@ export const writeTypingStats = (newUserStats: Partial<TypingStats>) =>
 export const resetTypingStats = () => store.set(typingStatsRefAtom, RESET);
 
 const utilityRefParamsAtom = atomWithReset({
-  isRetrySkip: false,
   retryCount: 1,
   timeOffset: 0,
   startPlaySpeed: 1,

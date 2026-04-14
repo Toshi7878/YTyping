@@ -5,7 +5,7 @@ import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState 
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
 import { PlaybackTimeDisplay } from "./footer/playback-time";
-import { SkipGuideText } from "./footer/skip";
+import { SkipGuideMessage } from "./footer/skip";
 import { TotalTimeProgress } from "./footer/total-time-progress";
 import { Combo } from "./header/combo";
 import { LineTimeProgress } from "./header/line-time-progress";
@@ -91,7 +91,7 @@ const GameCardFooter = ({ className }: { className?: string }) => {
           !isPlayed && "invisible",
         )}
       >
-        <SkipGuideText />
+        <SkipGuideMessage />
         <PlaybackTimeDisplay />
       </section>
       <TotalTimeProgress id="total_progress" />

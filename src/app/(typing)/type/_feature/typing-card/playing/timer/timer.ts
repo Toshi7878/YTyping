@@ -16,7 +16,6 @@ import {
   readMediaSpeed,
   readScene,
   readUtilityParams,
-  setActiveSkipGuideKey,
   setChangeCSSCount,
   transitionToEndScene,
 } from "@/app/(typing)/type/_atoms/state";
@@ -31,6 +30,7 @@ import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from ".
 import { calculateLineKpm } from "../../../../_utils/calculate-kpm";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
+import { setActiveSkipKey } from "../../footer/skip";
 import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
 import { getLineProgressMax, setLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
 import { getLineCountByTime } from "../get-line-count-by-time";
@@ -112,12 +112,17 @@ const handleTimer = () => {
           setLineKpm(newLineKpm);
         }
 
-        updateSkipGuideVisibility({
-          kana: getTypingWord().nextChunk.kana,
-          currentTime,
-          constantLineTime,
-          constantRemainLineTime,
-        });
+        const startCount = map.typingLineIndexes[0] ?? 0;
+
+        if (startCount > count) {
+          firstUpdateSkipGuideVisibility({ currentTime, startCount });
+        } else {
+          updateSkipGuideVisibility({
+            isNotTypingLine: !getTypingWord().nextChunk.kana,
+            constantLineTime,
+            constantRemainLineTime,
+          });
+        }
 
         setTotalProgressValue(currentTime);
       },
@@ -304,37 +309,40 @@ const setNewLine = (newLine: BuiltMapLineWithOption) => {
 };
 
 interface updateSkipGuideVisibilityparams {
-  kana: string;
-  currentTime: number;
+  isNotTypingLine: boolean;
   constantLineTime: number;
   constantRemainLineTime: number;
 }
 
-const SKIP_IN = 0.4; //ラインが切り替わり後、指定のtimeが経過したら表示
-const SKIP_OUT = 4; //ラインの残り時間が指定のtimeを切ったら非表示
+const SKIP_IN = 0.4;
+const SKIP_OUT = 4;
 const SKIP_KEY = "Space" as const;
 const updateSkipGuideVisibility = ({
-  kana,
-  currentTime,
+  isNotTypingLine,
   constantLineTime,
   constantRemainLineTime,
 }: updateSkipGuideVisibilityparams) => {
-  const map = getBuiltMap();
-  if (!map) return;
-  const { isRetrySkip } = getUtilityRefParams();
-  const playSpeed = readMediaSpeed();
-  const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
+  const isSkipGuideVisible = isNotTypingLine && constantLineTime >= SKIP_IN && constantRemainLineTime >= SKIP_OUT;
 
-  if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
-    writeUtilityRefParams({ isRetrySkip: false });
-  }
-
-  const IS_SKIP_DISPLAY = (!kana && constantLineTime >= SKIP_IN && constantRemainLineTime >= SKIP_OUT) || isRetrySkip;
-
-  if (IS_SKIP_DISPLAY) {
-    setActiveSkipGuideKey(SKIP_KEY);
+  if (isSkipGuideVisible) {
+    setActiveSkipKey(SKIP_KEY);
   } else {
-    setActiveSkipGuideKey(null);
+    setActiveSkipKey(null);
+  }
+};
+
+const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTime: number; startCount: number }) => {
+  const map = getBuiltMap();
+  const startLine = map?.lines[startCount];
+  if (!startLine) return;
+
+  const playSpeed = readMediaSpeed();
+  const skipOutTime = startLine.time - 3 * playSpeed;
+
+  if (startLine.time > 5 && skipOutTime > currentTime) {
+    setActiveSkipKey(SKIP_KEY);
+  } else {
+    setActiveSkipKey(null);
   }
 };
 

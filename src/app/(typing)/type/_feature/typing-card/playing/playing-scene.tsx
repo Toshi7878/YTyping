@@ -28,8 +28,9 @@ import { getTypingWord, setTypingWord } from "../../../_atoms/typing-word";
 import { resetCurrentLine } from "../../../_lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../_lib/sound-effect";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
+import { getActiveSkipKey, skipLine } from "../footer/skip";
 import { ChangeCSS } from "./change-css-style";
-import { commitLineSkip, isHotKeyIgnored, playHotkey } from "./hotkey";
+import { isHotKeyIgnored, playHotkey } from "./hotkey";
 import { Lyrics } from "./lyrics";
 import { NextLyrics, setNextLyricsAndKpm } from "./next-lyrics";
 import { hasLineResultImproved, saveLineResult } from "./save-line-result";
@@ -105,10 +106,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
       id="typing_scene"
       onTouchStart={() => {
-        const { activeSkipKey } = readUtilityParams();
-
-        if (activeSkipKey) {
-          commitLineSkip();
+        if (getActiveSkipKey()) {
+          const count = readLineCount();
+          skipLine(count);
         }
       }}
     >

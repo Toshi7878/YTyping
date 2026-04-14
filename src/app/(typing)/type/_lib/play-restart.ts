@@ -1,4 +1,3 @@
-import { getStartLine } from "@/lib/build-map/built-map-helper";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { readMapId } from "../_atoms/hydrate";
 import { initializeAllLineResult } from "../_atoms/line-result";
@@ -34,16 +33,12 @@ export const restartPlay = (newPlayMode: PlayMode) => {
   const map = getBuiltMap();
   const nextLine = map?.lines[1];
   if (!map || !nextLine) return;
-  const startLine = getStartLine(map.lines);
-  if (!startLine) return;
   resetCurrentLine(map);
   setNextLyricsAndKpm(nextLine);
   resetLineCount();
   resetLineSubstatus();
 
-  const isEnableRetrySkip = startLine.time > 5;
-
-  writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: isEnableRetrySkip });
+  writeUtilityRefParams({ replayKeyCount: 0 });
 
   const { scene } = readUtilityParams();
   const { type: totalTypeCount } = getTypingStatus();

@@ -1,22 +1,10 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { readTypingOptions } from "../../../_atoms/hydrate";
 import { getUtilityRefParams, readLineCount, writeUtilityRefParams } from "../../../_atoms/ref";
-import {
-  getBuiltMap,
-  readMediaSpeed,
-  readMinMediaSpeed,
-  readUtilityParams,
-  setActiveSkipGuideKey,
-  setNotify,
-} from "../../../_atoms/state";
-import {
-  cycleYTPlaybackRate,
-  pauseYTPlayer,
-  playYTPlayer,
-  seekYTPlayer,
-  stepYTPlaybackRate,
-} from "../../../_atoms/youtube-player";
+import { getBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "../../../_atoms/state";
+import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../../_atoms/youtube-player";
 import { restartPlay } from "../../../_lib/play-restart";
+import { getActiveSkipKey, skipLine } from "../footer/skip";
 import { moveNextLine, movePrevLine, moveSetLine } from "./move-line";
 import { commitPlayModeChange } from "./play-scene-change";
 import { togglePlayInputMode } from "./toggle-input-mode";
@@ -49,21 +37,21 @@ export const playHotkey = (event: KeyboardEvent) => {
 
   const typingOptions = readTypingOptions();
 
-  const { scene, activeSkipKey } = readUtilityParams();
+  const { scene } = readUtilityParams();
+  const activeSkipKey = getActiveSkipKey();
 
   const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
   const isCtrlAltLeftRight =
     typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
   if (event.code === activeSkipKey) {
-    commitLineSkip();
+    event.preventDefault();
+    const count = readLineCount();
+    skipLine(count);
+    return;
   }
 
   switch (event.code) {
-    case "ArrowUp":
-      break;
-    case "ArrowDown":
-      break;
     case "ArrowRight":
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
         const { timeOffset } = getUtilityRefParams();
@@ -135,31 +123,6 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
   }
   event.preventDefault();
-};
-
-export const commitLineSkip = () => {
-  const map = getBuiltMap();
-  if (!map) return;
-  const { timeOffset, isRetrySkip } = getUtilityRefParams();
-  const count = readLineCount();
-
-  const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
-  const nextLine = map.lines[count + 1];
-
-  if (!startLine || !nextLine) return;
-
-  const userOptions = readTypingOptions();
-  const skippedTime =
-    (isRetrySkip ? Number(startLine.time) : Number(nextLine.time)) + userOptions.timeOffset + timeOffset;
-
-  const playSpeed = readMediaSpeed();
-
-  const seekTime = nextLine.lyrics === "end" ? map.duration - 2 : skippedTime - 1 + (1 - playSpeed);
-
-  seekYTPlayer(seekTime);
-
-  writeUtilityRefParams({ isRetrySkip: false });
-  setActiveSkipGuideKey(null);
 };
 
 const togglePause = () => {

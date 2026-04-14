@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { readMapId } from "../../_atoms/hydrate";
-import { getUtilityRefParams, writeLineCount } from "../../_atoms/ref";
+import { writeLineCount } from "../../_atoms/ref";
 import {
   getBuiltMap,
   readMinMediaSpeed,
@@ -156,9 +156,7 @@ const handlePause = () => {
 const handleSeeked = (player: YT.Player) => {
   const time = player.getCurrentTime();
 
-  const { isRetrySkip } = getUtilityRefParams();
-
-  if (isRetrySkip && time === 0) {
+  if (time === 0) {
     writeLineCount(0);
   }
 

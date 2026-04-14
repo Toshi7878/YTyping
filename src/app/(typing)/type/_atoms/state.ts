@@ -44,7 +44,6 @@ const utilityParamsAtom = atomWithReset({
   tabName: "ランキング" as (typeof TAB_NAMES)[number],
   inputMode: "roma" as InputMode,
   notify: Symbol(""),
-  activeSkipKey: null as "Space" | null,
   changeCSSCount: null as number | null,
   isYTStarted: false,
   isPaused: false,
@@ -56,7 +55,6 @@ const utilityParamsAtom = atomWithReset({
 const sceneAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("scene"));
 const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"));
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
-const activeSkipKeyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
 export const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
@@ -116,10 +114,6 @@ export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom,
 export const getPlayingInputMode = () => store.get(playingInputModeAtom);
 export const setPlayingInputMode = (value: ExtractAtomValue<typeof playingInputModeAtom>) =>
   store.set(playingInputModeAtom, value);
-
-export const useActiveSkipGuideKeyState = () => useAtomValue(activeSkipKeyAtom, { store });
-export const setActiveSkipGuideKey = (value: ExtractAtomValue<typeof activeSkipKeyAtom>) =>
-  store.set(activeSkipKeyAtom, value);
 
 export const useNotifyState = () => useAtomValue(notifyAtom, { store });
 export const setNotify = (value: ExtractAtomValue<typeof notifyAtom>) => store.set(notifyAtom, value);
