@@ -164,7 +164,7 @@ interface WordProps {
 
 const Word = ({ refs, className, style }: WordProps) => {
   return (
-    <div className={cn("relative w-full", className)} style={style}>
+    <div className={cn("relative w-full leading-normal", className)} style={style}>
       <span ref={refs.nextWordRef} className="next-line-word hidden text-word-nextWord"></span>
       <div ref={refs.viewportRef} className="overflow-hidden contain-content">
         {"\u200B"}

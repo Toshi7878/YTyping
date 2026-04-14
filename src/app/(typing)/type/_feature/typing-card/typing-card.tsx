@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_atoms/state";
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
-import { SkipAndTimeDisplay } from "./footer/skip-and-time-display";
+import { PlaybackTimeDisplay } from "./footer/playback-time";
+import { SkipGuideText } from "./footer/skip";
 import { TotalTimeProgress } from "./footer/total-time-progress";
 import { Combo } from "./header/combo";
 import { LineTimeProgress } from "./header/line-time-progress";
@@ -19,7 +20,7 @@ export const TypingCard = ({ className }: { className?: string }) => {
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />
-      <GameCardContent className={cn("block py-2", sceneGroup === "Playing" ? "pr-0 pl-12" : "px-12")} />
+      <GameCardContent className={cn("block", sceneGroup === "Playing" ? "pt-0 pr-0 pb-4 pl-12" : "px-12 py-2")} />
       <GameCardFooter className="mx-3 select-none flex-col py-0" />
     </Card>
   );
@@ -79,9 +80,20 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
 };
 
 const GameCardFooter = ({ className }: { className?: string }) => {
+  const isYTStarted = useYTStartedState();
+  const sceneGroup = useSceneGroupState();
+  const isPlayed = isYTStarted && sceneGroup === "Playing";
   return (
     <CardFooter className={className}>
-      <SkipAndTimeDisplay />
+      <section
+        className={cn(
+          "bottom-card-text flex w-full items-center justify-between px-4 pb-1 font-bold text-4xl md:text-xl",
+          !isPlayed && "invisible",
+        )}
+      >
+        <SkipGuideText />
+        <PlaybackTimeDisplay />
+      </section>
       <TotalTimeProgress id="total_progress" />
       <FooterButtons />
     </CardFooter>
