@@ -1,5 +1,5 @@
 import { readReadyInputMode } from "@/lib/atoms/global-atoms";
-import { writeUtilityRefParams } from "../../../_atoms/ref";
+import { writeUtilityRefParams } from "../../atoms/ref";
 import {
   readMediaSpeed,
   readUtilityParams,
@@ -8,9 +8,9 @@ import {
   setNotify,
   setPlayingInputMode,
   setScene,
-} from "../../../_atoms/state";
-import { setYTPlaybackRate } from "../../../_atoms/youtube-player";
-import { restartPlay } from "../../../_lib/play-restart";
+} from "../../atoms/state";
+import { setYTPlaybackRate } from "../../atoms/youtube-player";
+import { restartPlay } from "../../lib/play-restart";
 
 export const commitPlayModeChange = () => {
   const { scene } = readUtilityParams();

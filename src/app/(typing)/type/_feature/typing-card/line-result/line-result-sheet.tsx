@@ -1,7 +1,7 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
 import { type RefObject, useRef, useState } from "react";
-import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_atoms/state";
+import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { TypingLineResult } from "@/validator/result";
 import { moveSetLine } from "../playing/move-line";

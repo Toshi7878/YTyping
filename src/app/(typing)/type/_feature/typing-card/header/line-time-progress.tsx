@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getTypingGameAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../atoms/store";
 
 const lineProgressValueAtom = atom(0);
 const lineProgressMaxAtom = atom(0);

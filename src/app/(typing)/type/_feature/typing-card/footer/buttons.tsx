@@ -11,14 +11,14 @@ import {
   useSceneGroupState,
   useSceneState,
   useYTStartedState,
-} from "@/app/(typing)/type/_atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
-import { useTypingOptionsState } from "../../../_atoms/hydrate";
-import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../../_atoms/youtube-player";
-import { restartPlay } from "../../../_lib/play-restart";
+import { useTypingOptionsState } from "../../atoms/hydrate";
+import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../atoms/youtube-player";
+import { restartPlay } from "../../lib/play-restart";
 import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";

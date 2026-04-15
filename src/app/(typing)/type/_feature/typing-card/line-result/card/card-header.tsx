@@ -1,6 +1,6 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
-import { useBuiltMapState } from "@/app/(typing)/type/_atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";

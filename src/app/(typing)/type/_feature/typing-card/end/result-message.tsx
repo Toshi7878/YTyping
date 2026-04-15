@@ -1,4 +1,4 @@
-import { type SceneType, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_atoms/state";
+import { type SceneType, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_feature/atoms/state";
 import { type Session, useSession } from "@/lib/auth-client";
 import { RandomEmoji } from "./random-emoji";
 

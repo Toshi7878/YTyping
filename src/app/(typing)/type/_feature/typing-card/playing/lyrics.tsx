@@ -1,9 +1,9 @@
 "use client";
 import parse from "html-react-parser";
 import { atom, useAtomValue } from "jotai";
-import { useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
+import { useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { cn } from "@/lib/utils";
-import { getTypingGameAtomStore } from "../../../_atoms/store";
+import { getTypingGameAtomStore } from "../../atoms/store";
 
 const lyricsAtom = atom("");
 const store = getTypingGameAtomStore();

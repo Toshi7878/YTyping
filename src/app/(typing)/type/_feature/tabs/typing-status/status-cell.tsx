@@ -5,9 +5,9 @@ import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
 import { cn } from "@/lib/utils";
 import type { Updater } from "@/utils/types";
-import { getUtilityRefParams } from "../../../_atoms/ref";
-import { getBuiltMap } from "../../../_atoms/state";
-import { getTypingGameAtomStore } from "../../../_atoms/store";
+import { getUtilityRefParams } from "../../atoms/ref";
+import { getBuiltMap } from "../../atoms/state";
+import { getTypingGameAtomStore } from "../../atoms/store";
 import type { LabelType } from "./status-card";
 
 const store = getTypingGameAtomStore();

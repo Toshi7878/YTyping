@@ -1,6 +1,6 @@
 import { useStore } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { comboAtom } from "../../../_atoms/substatus";
+import { comboAtom } from "../../atoms/substatus";
 
 export const Combo = () => {
   const store = useStore();

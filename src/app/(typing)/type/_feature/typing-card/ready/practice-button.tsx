@@ -1,14 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { getBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_atoms/state";
-import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_atoms/youtube-player";
+import { getBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
+import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";
-import { iosActiveSound } from "@/app/(typing)/type/_lib/sound-effect";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { getSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
-import { readMapId } from "../../../_atoms/hydrate";
-import { initializeAllLineResult } from "../../../_atoms/line-result";
+import { readMapId } from "../../atoms/hydrate";
+import { initializeAllLineResult } from "../../atoms/line-result";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 
 export const ReadyPracticeButton = () => {

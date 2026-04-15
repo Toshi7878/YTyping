@@ -1,4 +1,4 @@
-import { getBuiltMap } from "../../../_atoms/state";
+import { getBuiltMap } from "../../atoms/state";
 
 export const getLineCountByTime = (time: number): number => {
   const map = getBuiltMap();

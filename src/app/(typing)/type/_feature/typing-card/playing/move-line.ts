@@ -1,6 +1,6 @@
-import { readLineCount, readPracticeLineItems, writeLineCount } from "../../../_atoms/ref";
-import { getBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../../_atoms/state";
-import { seekYTPlayer } from "../../../_atoms/youtube-player";
+import { readLineCount, readPracticeLineItems, writeLineCount } from "../../atoms/ref";
+import { getBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../atoms/state";
+import { seekYTPlayer } from "../../atoms/youtube-player";
 import { setLineProgressValue } from "../header/line-time-progress";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupNextLine, stopTimer } from "./timer/timer";

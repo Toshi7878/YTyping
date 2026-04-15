@@ -3,8 +3,8 @@ import { Provider } from "jotai";
 import type { ReactNode } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { mapIdAtom, typingOptionsAtom } from "../_atoms/hydrate";
-import { getTypingGameAtomStore } from "../_atoms/store";
+import { mapIdAtom, typingOptionsAtom } from "./atoms/hydrate";
+import { getTypingGameAtomStore } from "./atoms/store";
 
 interface JotaiProviderProps {
   userTypingOptions: RouterOutputs["user"]["typingOption"]["getForSession"];

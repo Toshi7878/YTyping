@@ -16,7 +16,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { formatDate } from "@/utils/date";
 import { formatTime } from "@/utils/format-time";
-import { useMapIdState } from "../../_atoms/hydrate";
+import { useMapIdState } from "../atoms/hydrate";
 import { SettingPopover } from "./setting/popover";
 
 export const MapActionIconButtons = ({ className }: { className: string }) => {

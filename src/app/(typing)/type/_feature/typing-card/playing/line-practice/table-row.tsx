@@ -1,7 +1,7 @@
 "use client";
 import type { RefObject } from "react";
-import { useLineResultState } from "@/app/(typing)/type/_atoms/line-result";
-import { useBuiltMapState, useMediaSpeedState, useSceneState } from "@/app/(typing)/type/_atoms/state";
+import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
+import { useBuiltMapState, useMediaSpeedState, useSceneState } from "@/app/(typing)/type/_feature/atoms/state";
 import { TableCell, TableRow } from "@/components/ui/table/table";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";

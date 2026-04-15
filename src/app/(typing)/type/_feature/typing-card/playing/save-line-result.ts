@@ -1,11 +1,11 @@
 import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
-import { readAllLineResult, setLineResult } from "../../../_atoms/line-result";
-import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../../_atoms/ref";
-import { getBuiltMap, readMediaSpeed, readUtilityParams } from "../../../_atoms/state";
-import { readCombo, readLineKpm } from "../../../_atoms/substatus";
-import { getTypingWord } from "../../../_atoms/typing-word";
-import { CHAR_POINT, MISS_PENALTY_POINT } from "../../../_lib/const";
+import { readAllLineResult, setLineResult } from "../../atoms/line-result";
+import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../atoms/ref";
+import { getBuiltMap, readMediaSpeed, readUtilityParams } from "../../atoms/state";
+import { readCombo, readLineKpm } from "../../atoms/substatus";
+import { getTypingWord } from "../../atoms/typing-word";
+import { CHAR_POINT, MISS_PENALTY_POINT } from "../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../tabs/typing-status/status-cell";
 
 export const hasLineResultImproved = (count: number) => {

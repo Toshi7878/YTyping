@@ -1,4 +1,4 @@
-import { getUtilityRefParams } from "../../../../_atoms/ref";
+import { getUtilityRefParams } from "../../../atoms/ref";
 
 export const calcCurrentRank = (currentScore: number) => {
   const { rankingScores } = getUtilityRefParams();

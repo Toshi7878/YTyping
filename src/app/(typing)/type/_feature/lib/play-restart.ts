@@ -1,6 +1,6 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
-import { readMapId } from "../_atoms/hydrate";
-import { initializeAllLineResult } from "../_atoms/line-result";
+import { readMapId } from "../atoms/hydrate";
+import { initializeAllLineResult } from "../atoms/line-result";
 import {
   getUtilityRefParams,
   readTypingStats,
@@ -8,7 +8,7 @@ import {
   resetLineSubstatus,
   resetTypingSubstatus,
   writeUtilityRefParams,
-} from "../_atoms/ref";
+} from "../atoms/ref";
 import {
   type BuiltMap,
   getBuiltMap,
@@ -18,15 +18,15 @@ import {
   setNotify,
   setScene,
   setTabName,
-} from "../_atoms/state";
-import { setCombo } from "../_atoms/substatus";
-import { resetTypingWord } from "../_atoms/typing-word";
-import { playYTPlayer, seekYTPlayer } from "../_atoms/youtube-player";
-import { getTypingStatus, resetTypingStatus } from "../_feature/tabs/typing-status/status-cell";
-import { setLineProgressMax, setLineProgressValue } from "../_feature/typing-card/header/line-time-progress";
-import { setLyrics } from "../_feature/typing-card/playing/lyrics";
-import { setNextLyricsAndKpm } from "../_feature/typing-card/playing/next-lyrics";
-import { stopTimer } from "../_feature/typing-card/playing/timer/timer";
+} from "../atoms/state";
+import { setCombo } from "../atoms/substatus";
+import { resetTypingWord } from "../atoms/typing-word";
+import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
+import { getTypingStatus, resetTypingStatus } from "../tabs/typing-status/status-cell";
+import { setLineProgressMax, setLineProgressValue } from "../typing-card/header/line-time-progress";
+import { setLyrics } from "../typing-card/playing/lyrics";
+import { setNextLyricsAndKpm } from "../typing-card/playing/next-lyrics";
+import { stopTimer } from "../typing-card/playing/timer/timer";
 import { mutateTypingStats } from "./stats";
 
 export const restartPlay = (newPlayMode: PlayMode) => {

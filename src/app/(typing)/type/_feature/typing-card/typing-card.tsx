@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_atoms/state";
+import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../atoms/state";
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
 import { PlaybackTimeDisplay } from "./footer/playback-time";

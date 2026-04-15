@@ -1,6 +1,6 @@
-import { readAllLineResult } from "../../../../_atoms/line-result";
-import { writeTypingSubstatus } from "../../../../_atoms/ref";
-import { getBuiltMap, readUtilityParams } from "../../../../_atoms/state";
+import { readAllLineResult } from "../../../atoms/line-result";
+import { writeTypingSubstatus } from "../../../atoms/ref";
+import { getBuiltMap, readUtilityParams } from "../../../atoms/state";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 

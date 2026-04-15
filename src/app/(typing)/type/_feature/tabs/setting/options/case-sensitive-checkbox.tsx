@@ -1,6 +1,6 @@
 "use client";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
-import { useSceneState } from "@/app/(typing)/type/_atoms/state";
+import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
+import { useSceneState } from "@/app/(typing)/type/_feature/atoms/state";
 import { CheckboxCardGroup } from "@/components/ui/checkbox/checkbox";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 

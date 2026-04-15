@@ -1,11 +1,11 @@
 import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
 import type { BuiltMapLine } from "lyrics-typing-engine";
-import { readTypingOptions } from "../../../_atoms/hydrate";
-import { getUtilityRefParams } from "../../../_atoms/ref";
-import { getBuiltMap, readMediaSpeed } from "../../../_atoms/state";
-import { getTypingGameAtomStore } from "../../../_atoms/store";
-import { seekYTPlayer } from "../../../_atoms/youtube-player";
+import { readTypingOptions } from "../../atoms/hydrate";
+import { getUtilityRefParams } from "../../atoms/ref";
+import { getBuiltMap, readMediaSpeed } from "../../atoms/state";
+import { getTypingGameAtomStore } from "../../atoms/store";
+import { seekYTPlayer } from "../../atoms/youtube-player";
 
 type SkipKey = "Space" | null;
 

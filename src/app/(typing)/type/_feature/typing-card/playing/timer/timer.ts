@@ -9,7 +9,7 @@ import {
   writeLineCount,
   writeLineSubstatus,
   writeUtilityRefParams,
-} from "@/app/(typing)/type/_atoms/ref";
+} from "@/app/(typing)/type/_feature/atoms/ref";
 import {
   type BuiltMap,
   getBuiltMap,
@@ -18,16 +18,16 @@ import {
   readUtilityParams,
   setChangeCSSCount,
   transitionToEndScene,
-} from "@/app/(typing)/type/_atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/state";
 import type { BuiltMapLineWithOption } from "@/lib/types";
+import { countPerMinute } from "@/utils/math";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readMapId } from "../../../../_atoms/hydrate";
-import { readAllLineResult } from "../../../../_atoms/line-result";
-import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../../../_atoms/substatus";
-import { getTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
-import { readYTPlayer, setYTPlaybackRate } from "../../../../_atoms/youtube-player";
-import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../../_lib/stats";
-import { calculateLineKpm } from "../../../../_utils/calculate-kpm";
+import { readMapId } from "../../../atoms/hydrate";
+import { readAllLineResult } from "../../../atoms/line-result";
+import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../../atoms/substatus";
+import { getTypingWord, setTypingWord } from "../../../atoms/typing-word";
+import { readYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
+import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { setActiveSkipKey } from "../../footer/skip";
@@ -108,7 +108,7 @@ const handleTimer = () => {
 
         if (!isLineCompleted) {
           const { typeCount: lineTypeCount } = readLineSubstatus();
-          const newLineKpm = calculateLineKpm({ lineTypeCount, constantLineTime });
+          const newLineKpm = countPerMinute(lineTypeCount, constantLineTime);
           setLineKpm(newLineKpm);
         }
 

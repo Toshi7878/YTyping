@@ -1,4 +1,5 @@
 import type { WordChunk } from "lyrics-typing-engine";
+import { countPerMinute } from "@/utils/math";
 import {
   readLineSubstatus,
   readTypingStats,
@@ -6,11 +7,10 @@ import {
   writeLineSubstatus,
   writeTypingStats,
   writeTypingSubstatus,
-} from "../../../../_atoms/ref";
-import { readMediaSpeed, readUtilityParams } from "../../../../_atoms/state";
-import { readCombo, setCombo, setLineKpm } from "../../../../_atoms/substatus";
-import { getTypingWord } from "../../../../_atoms/typing-word";
-import { calculateLineKpm, calculateLineRkpm, calculateTotalKpm } from "../../../../_utils/calculate-kpm";
+} from "../../../atoms/ref";
+import { readMediaSpeed, readUtilityParams } from "../../../atoms/state";
+import { readCombo, setCombo, setLineKpm } from "../../../atoms/substatus";
+import { getTypingWord } from "../../../atoms/typing-word";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 
@@ -35,7 +35,7 @@ export const updateSuccessStatus = ({
   const { totalTypeTime } = readTypingSubstatus();
 
   if (!isPaused) {
-    const newLineKpm = calculateLineKpm({ lineTypeCount: lineTypeCount + 1, constantLineTime });
+    const newLineKpm = countPerMinute(lineTypeCount + 1, constantLineTime);
     setLineKpm(newLineKpm);
   }
 
@@ -45,7 +45,7 @@ export const updateSuccessStatus = ({
 
     let kpm = prev.kpm;
     if (!isPaused) {
-      kpm = calculateTotalKpm({ totalTypeCount: type, totalTypeTime, constantLineTime });
+      kpm = countPerMinute(type, totalTypeTime + constantLineTime);
     }
 
     if (isCompleted) {
@@ -92,7 +92,7 @@ export const updateSuccessSubstatus = ({
     diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
     if (isCompleted) {
       const { latency: lineLatency, typeCount: lineTypeCount } = readLineSubstatus();
-      const lineRkpm = calculateLineRkpm({ lineLatency, lineTypeCount, constantLineTime });
+      const lineRkpm = countPerMinute(lineTypeCount, constantLineTime - lineLatency);
       diffSubstatus.rkpm = lineRkpm;
     }
   }

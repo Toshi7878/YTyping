@@ -1,12 +1,7 @@
-import {
-  readLineSubstatus,
-  readTypingSubstatus,
-  writeLineSubstatus,
-  writeTypingSubstatus,
-} from "../../../../_atoms/ref";
-import { getBuiltMap } from "../../../../_atoms/state";
-import { setCombo } from "../../../../_atoms/substatus";
-import { MISS_PENALTY_POINT } from "../../../../_lib/const";
+import { readLineSubstatus, readTypingSubstatus, writeLineSubstatus, writeTypingSubstatus } from "../../../atoms/ref";
+import { getBuiltMap } from "../../../atoms/state";
+import { setCombo } from "../../../atoms/substatus";
+import { MISS_PENALTY_POINT } from "../../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../../tabs/typing-status/status-cell";
 
 export const updateMissStatus = () => {

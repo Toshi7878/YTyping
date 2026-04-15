@@ -1,14 +1,14 @@
 "use client";
 import type { RefObject } from "react";
-import { useLineResultState } from "@/app/(typing)/type/_atoms/line-result";
+import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
 import {
   useBuiltMapState,
   useMediaSpeedState,
   useMinMediaSpeedState,
   usePlayingInputModeState,
   useSceneState,
-} from "@/app/(typing)/type/_atoms/state";
-import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
+} from "@/app/(typing)/type/_feature/atoms/state";
+import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { BuiltMapLineWithOption } from "@/lib/types";

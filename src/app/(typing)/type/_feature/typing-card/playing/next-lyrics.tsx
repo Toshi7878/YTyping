@@ -3,9 +3,9 @@ import { useAtomValue } from "jotai/react";
 import { atomWithReset } from "jotai/vanilla/utils";
 import type { BuiltMapLine } from "lyrics-typing-engine";
 import { cn } from "@/lib/utils";
-import { readTypingOptions } from "../../../_atoms/hydrate";
-import { getPlayingInputMode, readMediaSpeed } from "../../../_atoms/state";
-import { getTypingGameAtomStore } from "../../../_atoms/store";
+import { readTypingOptions } from "../../atoms/hydrate";
+import { getPlayingInputMode, readMediaSpeed } from "../../atoms/state";
+import { getTypingGameAtomStore } from "../../atoms/store";
 
 const nextLyricsAtom = atomWithReset("");
 

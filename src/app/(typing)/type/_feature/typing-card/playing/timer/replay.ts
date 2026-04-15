@@ -1,16 +1,20 @@
 import { executeTypingInput, type InputMode, type TypingWord } from "lyrics-typing-engine";
-import { readLineCount } from "@/app/(typing)/type/_atoms/ref";
-import { readMinMediaSpeed, readReplayRankingResult, readUtilityParams } from "@/app/(typing)/type/_atoms/state";
+import { readLineCount } from "@/app/(typing)/type/_feature/atoms/ref";
+import {
+  readMinMediaSpeed,
+  readReplayRankingResult,
+  readUtilityParams,
+} from "@/app/(typing)/type/_feature/atoms/state";
 import {
   applyKanaInputMode,
   applyRomaInputMode,
 } from "@/app/(typing)/type/_feature/typing-card/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
-import { readAllLineResult } from "../../../../_atoms/line-result";
-import { setCombo, setLineKpm } from "../../../../_atoms/substatus";
-import { getTypingWord, setTypingWord } from "../../../../_atoms/typing-word";
-import { cycleYTPlaybackRate } from "../../../../_atoms/youtube-player";
-import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../../_lib/sound-effect";
+import { readAllLineResult } from "../../../atoms/line-result";
+import { setCombo, setLineKpm } from "../../../atoms/substatus";
+import { getTypingWord, setTypingWord } from "../../../atoms/typing-word";
+import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
+import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../lib/sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";

@@ -16,17 +16,17 @@ import {
   readUtilityParams,
   useBuiltMapState,
   useSceneState,
-} from "@/app/(typing)/type/_atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/state";
 import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
-import { readTypingOptions } from "../../../_atoms/hydrate";
-import { readLineCount, readTypingStats, resetTypingStats, type TypingStats } from "../../../_atoms/ref";
-import { getTypingWord, setTypingWord } from "../../../_atoms/typing-word";
-import { resetCurrentLine } from "../../../_lib/play-restart";
-import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../_lib/sound-effect";
+import { readTypingOptions } from "../../atoms/hydrate";
+import { readLineCount, readTypingStats, resetTypingStats, type TypingStats } from "../../atoms/ref";
+import { getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import { resetCurrentLine } from "../../lib/play-restart";
+import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
 import { ChangeCSS } from "./change-css-style";

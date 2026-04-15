@@ -8,8 +8,8 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
-import { readMapId } from "../../_atoms/hydrate";
-import { writeLineCount } from "../../_atoms/ref";
+import { readMapId } from "../atoms/hydrate";
+import { writeLineCount } from "../atoms/ref";
 import {
   getBuiltMap,
   readMinMediaSpeed,
@@ -23,9 +23,9 @@ import {
   setScene,
   setTabName,
   setYTStarted,
-} from "../../_atoms/state";
-import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../../_atoms/youtube-player";
-import { iosActiveSound } from "../../_lib/sound-effect";
+} from "../atoms/state";
+import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../atoms/youtube-player";
+import { iosActiveSound } from "../lib/sound-effect";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
 
 interface YouTubePlayerProps {

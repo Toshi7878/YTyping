@@ -1,9 +1,9 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useBuiltMapState } from "@/app/(typing)/type/_atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { playYTPlayer } from "../../../_atoms/youtube-player";
+import { playYTPlayer } from "../../atoms/youtube-player";
 import { ReadyInputModeRadioCards } from "./input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./min-play-speed-counter";
 import { ReadyPracticeButton } from "./practice-button";

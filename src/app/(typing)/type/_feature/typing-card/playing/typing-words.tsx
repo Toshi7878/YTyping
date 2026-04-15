@@ -1,13 +1,13 @@
 import type { InputMode } from "lyrics-typing-engine";
 import { useEffect, useRef } from "react";
-import { useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
+import { useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import {
   useBuiltMapState,
   usePlayingInputModeState,
   useReplayRankingResultState,
-} from "@/app/(typing)/type/_atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/state";
 import { cn } from "@/lib/utils";
-import { setMainWordElements, setSubWordElements, setWordContainerElement } from "../../../_atoms/typing-word";
+import { setMainWordElements, setSubWordElements, setWordContainerElement } from "../../atoms/typing-word";
 
 export const TypingWords = () => {
   const inputMode = usePlayingInputModeState();

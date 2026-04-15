@@ -1,5 +1,5 @@
 "use client";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
+import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { CounterInput } from "@/components/ui/counter";
 
 const MAX_TIME_OFFSET = 1;

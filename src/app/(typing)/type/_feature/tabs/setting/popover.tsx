@@ -6,8 +6,8 @@ import {
   resetTypingOptions,
   setTypingOptions,
   useTypingOptionsState,
-} from "@/app/(typing)/type/_atoms/hydrate";
-import { getUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_atoms/ref";
+} from "@/app/(typing)/type/_feature/atoms/hydrate";
+import { getUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_feature/atoms/ref";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { SettingIconButton } from "@/components/ui/icon-button";

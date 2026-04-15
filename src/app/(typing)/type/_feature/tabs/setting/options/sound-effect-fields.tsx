@@ -1,6 +1,6 @@
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_atoms/hydrate";
-import { useYTPlayer } from "@/app/(typing)/type/_atoms/youtube-player";
-import { playSound } from "@/app/(typing)/type/_lib/sound-effect";
+import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
+import { useYTPlayer } from "@/app/(typing)/type/_feature/atoms/youtube-player";
+import { playSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { CheckboxCardGroup } from "@/components/ui/checkbox/checkbox";
 import { H4 } from "@/components/ui/typography";

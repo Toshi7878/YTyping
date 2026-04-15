@@ -1,7 +1,7 @@
-import { readTypingOptions } from "../../_atoms/hydrate";
-import { getUtilityRefParams, readLineCount } from "../../_atoms/ref";
-import { getBuiltMap, readMediaSpeed } from "../../_atoms/state";
-import { getYTCurrentTime } from "../../_atoms/youtube-player";
+import { readTypingOptions } from "../atoms/hydrate";
+import { getUtilityRefParams, readLineCount } from "../atoms/ref";
+import { getBuiltMap, readMediaSpeed } from "../atoms/state";
+import { getYTCurrentTime } from "../atoms/youtube-player";
 
 export const getLineTime = () => {
   const currentTime = getCurrentOffsettedYTTime();

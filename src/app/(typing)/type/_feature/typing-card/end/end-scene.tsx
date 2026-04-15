@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { useMapIdState } from "../../../_atoms/hydrate";
+import { useMapIdState } from "../../atoms/hydrate";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 import { useTypingStatusState } from "../../tabs/typing-status/status-cell";
 import { EndButtonContainer } from "./button-container";

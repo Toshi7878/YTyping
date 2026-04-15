@@ -2,9 +2,13 @@ import { DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSenso
 import { CSS } from "@dnd-kit/utilities";
 
 import { useState } from "react";
-import { useLineResultState } from "@/app/(typing)/type/_atoms/line-result";
-import { useBuiltMapState, useLineSelectIndexState, usePlayingInputModeState } from "@/app/(typing)/type/_atoms/state";
-import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
+import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
+import {
+  useBuiltMapState,
+  useLineSelectIndexState,
+  usePlayingInputModeState,
+} from "@/app/(typing)/type/_feature/atoms/state";
+import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { moveSetLine } from "../../move-line";

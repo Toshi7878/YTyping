@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/auth-client";
 import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
-import { resetTypingStats, type TypingStats } from "../_atoms/ref";
+import { resetTypingStats, type TypingStats } from "../atoms/ref";
 
 export const mutateTypingStats = (stats: TypingStats) => {
   const session = getSession();

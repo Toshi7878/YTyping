@@ -1,7 +1,7 @@
 import { recreateTypingWord } from "lyrics-typing-engine";
-import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../../../_atoms/ref";
-import { getBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../../../_atoms/state";
-import { getTypingWord, setTypingWord } from "../../../_atoms/typing-word";
+import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../../atoms/ref";
+import { getBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../../atoms/state";
+import { getTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { getLineTime } from "../../youtube/get-youtube-time";
 import { setNextLyricsAndKpm } from "./next-lyrics";
 

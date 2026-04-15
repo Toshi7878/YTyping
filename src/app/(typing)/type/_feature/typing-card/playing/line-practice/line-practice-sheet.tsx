@@ -1,7 +1,7 @@
 "use client";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { useLineFailureCountState, writePracticeLineItems } from "@/app/(typing)/type/_atoms/ref";
-import { type BuiltMap, setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_atoms/state";
+import { useLineFailureCountState, writePracticeLineItems } from "@/app/(typing)/type/_feature/atoms/ref";
+import { type BuiltMap, setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Table, TableBody } from "@/components/ui/table/table";

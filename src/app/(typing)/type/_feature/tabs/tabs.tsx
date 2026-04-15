@@ -1,6 +1,6 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { setTabName, TAB_NAMES, useTabNameState } from "../../_atoms/state";
+import { setTabName, TAB_NAMES, useTabNameState } from "../atoms/state";
 import { MapActionIconButtons } from "./action-buttons";
 import { RankingTableCard } from "./ranking/ranking-card";
 import { StatusCard } from "./typing-status/status-card";

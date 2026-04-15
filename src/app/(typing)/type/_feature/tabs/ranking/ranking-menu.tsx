@@ -8,7 +8,7 @@ import {
   setScene,
   setTabName,
   useSceneGroupState,
-} from "@/app/(typing)/type/_atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
@@ -16,11 +16,11 @@ import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { readMapId } from "../../../_atoms/hydrate";
-import { initializeAllLineResult } from "../../../_atoms/line-result";
-import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_atoms/youtube-player";
-import { restartPlay } from "../../../_lib/play-restart";
-import { iosActiveSound } from "../../../_lib/sound-effect";
+import { readMapId } from "../../atoms/hydrate";
+import { initializeAllLineResult } from "../../atoms/line-result";
+import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../atoms/youtube-player";
+import { restartPlay } from "../../lib/play-restart";
+import { iosActiveSound } from "../../lib/sound-effect";
 import { getRankingResultByResultId } from "./get-ranking-result";
 
 interface RankingMenuProps {

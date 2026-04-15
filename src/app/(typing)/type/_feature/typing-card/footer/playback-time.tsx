@@ -1,8 +1,8 @@
 import { useStore } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { useBuiltMapState, useMediaSpeedState } from "@/app/(typing)/type/_atoms/state";
+import { useBuiltMapState, useMediaSpeedState } from "@/app/(typing)/type/_feature/atoms/state";
 import { formatTime } from "@/utils/format-time";
-import { elapsedSecFormatTimeAtom } from "../../../_atoms/substatus";
+import { elapsedSecFormatTimeAtom } from "../../atoms/substatus";
 
 export const PlaybackTimeDisplay = () => {
   return (

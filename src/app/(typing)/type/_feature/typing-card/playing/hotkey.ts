@@ -1,9 +1,9 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { readTypingOptions } from "../../../_atoms/hydrate";
-import { getUtilityRefParams, readLineCount, writeUtilityRefParams } from "../../../_atoms/ref";
-import { getBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "../../../_atoms/state";
-import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../../_atoms/youtube-player";
-import { restartPlay } from "../../../_lib/play-restart";
+import { readTypingOptions } from "../../atoms/hydrate";
+import { getUtilityRefParams, readLineCount, writeUtilityRefParams } from "../../atoms/ref";
+import { getBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "../../atoms/state";
+import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../atoms/youtube-player";
+import { restartPlay } from "../../lib/play-restart";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
 import { moveNextLine, movePrevLine, moveSetLine } from "./move-line";
 import { commitPlayModeChange } from "./play-scene-change";
