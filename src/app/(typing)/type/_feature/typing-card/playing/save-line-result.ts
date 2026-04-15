@@ -7,6 +7,7 @@ import { readCombo, readLineKpm } from "../../atoms/substatus";
 import { getTypingWord } from "../../atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../tabs/typing-status/status-cell";
+import { getScene } from "../typing-card";
 
 export const hasLineResultImproved = (count: number) => {
   const lineResults = readAllLineResult();
@@ -20,7 +21,9 @@ export const hasLineResultImproved = (count: number) => {
     (savedLineResult?.status.timeBonus ?? 0) +
     (savedLineResult?.status.missCount ?? 0) * MISS_PENALTY_POINT;
 
-  const { scene, isPaused } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
+
   const playSpeed = readMediaSpeed();
   return currentLineScore >= savedLineScore && !isPaused && scene !== "replay" && playSpeed >= 1;
 };

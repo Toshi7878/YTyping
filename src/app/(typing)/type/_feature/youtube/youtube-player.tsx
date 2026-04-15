@@ -13,20 +13,19 @@ import { writeLineCount } from "../atoms/ref";
 import {
   getBuiltMap,
   readMinMediaSpeed,
-  readSceneGroup,
   readUtilityParams,
   setIsPaused,
   setLastLineEndTime,
   setMediaSpeed,
   setNotify,
   setPlayingInputMode,
-  setScene,
-  setTabName,
   setYTStarted,
 } from "../atoms/state";
 import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../atoms/youtube-player";
 import { iosActiveSound } from "../lib/sound-effect";
+import { setTabName } from "../tabs/tabs";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
+import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -70,7 +69,8 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 
 const MobileCover = () => {
   const handleTouchStart = () => {
-    const { scene, isPaused } = readUtilityParams();
+    const { isPaused } = readUtilityParams();
+    const scene = getScene();
     iosActiveSound();
     if (isPaused || scene === "ready") {
       playYTPlayer();
@@ -91,7 +91,7 @@ const MobileCover = () => {
 };
 
 const handleStart = (player: YT.Player) => {
-  const { scene } = readUtilityParams();
+  const scene = getScene();
   const map = getBuiltMap();
   if (!map) return;
   setLastLineEndTime(map, player.getDuration());
@@ -120,8 +120,9 @@ const handlePlay = async ({ target: player }: { target: YT.Player }) => {
 
   console.log("再生 1");
 
-  const { scene, isYTStarted, isPaused } = readUtilityParams();
-  const sceneGroup = readSceneGroup();
+  const { isYTStarted, isPaused } = readUtilityParams();
+  const scene = getScene();
+  const sceneGroup = getSceneGroup();
 
   if (sceneGroup === "Ready" || sceneGroup === "Playing") {
     startTimer();
@@ -145,7 +146,8 @@ const handlePause = () => {
 
   stopTimer();
 
-  const { isPaused, scene } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
   if (!isPaused) {
     setIsPaused(true);
     if (scene === "practice") return;

@@ -6,13 +6,13 @@ import {
   useMediaSpeedState,
   useMinMediaSpeedState,
   usePlayingInputModeState,
-  useSceneState,
 } from "@/app/(typing)/type/_feature/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useSceneState } from "../../typing-card";
 import { ResultCardContent } from "./card-body";
 import { ResultCardFooter } from "./card-footer";
 import { ResultCardHeader } from "./card-header";

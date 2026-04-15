@@ -2,7 +2,8 @@ import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
-import { setNotify, useNotifyState, useReplayRankingResultState, useSceneState } from "../../atoms/state";
+import { setNotify, useNotifyState, useReplayRankingResultState } from "../../atoms/state";
+import { useSceneState } from "../typing-card";
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 

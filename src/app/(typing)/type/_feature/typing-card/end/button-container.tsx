@@ -1,16 +1,12 @@
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import {
-  type PlayMode,
-  type SceneType,
-  useMinMediaSpeedState,
-  useSceneState,
-} from "@/app/(typing)/type/_feature/atoms/state";
+import { useMinMediaSpeedState } from "@/app/(typing)/type/_feature/atoms/state";
 import { restartPlay } from "@/app/(typing)/type/_feature/lib/play-restart";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { type Session, useSession } from "@/lib/auth-client";
 import { EndResultLineSheet } from "../line-result/line-result-sheet";
+import { type EndSceneType, type PlayingSceneType, type SceneType, useSceneState } from "../typing-card";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
 interface EndButtonContainerProps {
@@ -82,11 +78,12 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
   useHotkeys("F4", () => buttonRef.current?.click(), { enableOnFormTags: false, preventDefault: true });
 
   const handleRetry = async () => {
-    const nextModeMap: Record<string, PlayMode> = {
+    const nextModeMap: Record<string, PlayingSceneType> = {
       practice_end: "practice",
       replay_end: "replay",
       play_end: "play",
-    };
+    } satisfies Record<EndSceneType, PlayingSceneType>;
+
     const nextMode = nextModeMap[scene] ?? "play";
 
     if (!showAlert) {

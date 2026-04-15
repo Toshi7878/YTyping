@@ -1,7 +1,8 @@
 import { readAllLineResult } from "../../../atoms/line-result";
 import { writeTypingSubstatus } from "../../../atoms/ref";
-import { getBuiltMap, readUtilityParams } from "../../../atoms/state";
+import { getBuiltMap } from "../../../atoms/state";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
+import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const recalculateStatusFromResults = ({
@@ -28,7 +29,7 @@ export const recalculateStatusFromResults = ({
 
   const lineResults = readAllLineResult();
   let totalTypeTime = 0;
-  const { scene } = readUtilityParams();
+  const scene = getScene();
 
   let completeLineCount = 0;
   let failureLineCount = 0;

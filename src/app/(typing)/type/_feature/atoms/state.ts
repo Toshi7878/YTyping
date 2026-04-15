@@ -1,11 +1,10 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuiltMapLine, InputMode } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { findClosestLowerOrEqual } from "@/utils/array";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResult } from "@/validator/result";
 import { setLineResultSelected } from "./line-result";
@@ -36,15 +35,9 @@ export const setLastLineEndTime = (map: NonNullable<BuiltMap>, endTime: number) 
   store.set(builtMapAtom, { ...map, lines, duration: Math.min(map.duration, endTime) });
 };
 
-export const TAB_NAMES = ["ステータス", "ランキング"] as const;
-export type PlayMode = "play" | "replay" | "practice";
-export type SceneType = "ready" | PlayMode | "play_end" | "practice_end" | "replay_end";
 const utilityParamsAtom = atomWithReset({
-  scene: "ready" as SceneType,
-  tabName: "ランキング" as (typeof TAB_NAMES)[number],
   inputMode: "roma" as InputMode,
   notify: Symbol(""),
-  changeCSSCount: null as number | null,
   isYTStarted: false,
   isPaused: false,
   lineSelectIndex: 0,
@@ -52,10 +45,7 @@ const utilityParamsAtom = atomWithReset({
   minMediaSpeed: 1,
 });
 
-const sceneAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("scene"));
-const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"));
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
-const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
 export const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
@@ -63,52 +53,8 @@ const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("
 const mediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("mediaSpeed"));
 const minMediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("minMediaSpeed"));
 
-const sceneGroupAtom = atom((get) => {
-  const scene = get(sceneAtom);
-  switch (scene) {
-    case "ready": {
-      return "Ready";
-    }
-    case "play":
-    case "practice":
-    case "replay": {
-      return "Playing";
-    }
-    case "play_end":
-    case "practice_end":
-    case "replay_end": {
-      return "End";
-    }
-  }
-});
-
 export const readUtilityParams = () => store.get(utilityParamsAtom);
 export const resetUtilityParams = () => store.set(utilityParamsAtom, RESET);
-
-export const useTabNameState = () => useAtomValue(tabNameAtom);
-export const setTabName = (value: ExtractAtomValue<typeof tabNameAtom>) => store.set(tabNameAtom, value);
-
-export const useSceneState = () => useAtomValue(sceneAtom, { store });
-export const readScene = () => store.get(sceneAtom);
-export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
-export const readSceneGroup = () => store.get(sceneGroupAtom);
-
-export const setScene = (value: ExtractAtomValue<typeof sceneAtom>) => store.set(sceneAtom, value);
-export const transitionToEndScene = (currentScene: SceneType) => {
-  switch (currentScene) {
-    case "play":
-      setScene("play_end");
-      break;
-    case "practice":
-      setScene("practice_end");
-      break;
-    case "replay":
-      setScene("replay_end");
-      break;
-    default:
-      break;
-  }
-};
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const getPlayingInputMode = () => store.get(playingInputModeAtom);
@@ -117,18 +63,6 @@ export const setPlayingInputMode = (value: ExtractAtomValue<typeof playingInputM
 
 export const useNotifyState = () => useAtomValue(notifyAtom, { store });
 export const setNotify = (value: ExtractAtomValue<typeof notifyAtom>) => store.set(notifyAtom, value);
-
-export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
-export const setChangeCSSCount = (currentIndex: number) => {
-  const map = getBuiltMap();
-  if (!map) return;
-  if (map.changeCSSIndexes.length === 0) {
-    store.set(changeCSSCountAtom, null);
-    return;
-  }
-
-  store.set(changeCSSCountAtom, findClosestLowerOrEqual(map.changeCSSIndexes, currentIndex));
-};
 
 export const useIsPausedState = () => useAtomValue(isPausedAtom, { store });
 export const setIsPaused = (value: ExtractAtomValue<typeof isPausedAtom>) => store.set(isPausedAtom, value);

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { getBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";
@@ -10,6 +10,7 @@ import { useTRPC } from "@/trpc/provider";
 import { readMapId } from "../../atoms/hydrate";
 import { initializeAllLineResult } from "../../atoms/line-result";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
+import { getScene, setScene } from "../typing-card";
 
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();
@@ -35,7 +36,7 @@ export const ReadyPracticeButton = () => {
         overlay.hide();
         playYTPlayer();
         const map = getBuiltMap();
-        const scene = readScene();
+        const scene = getScene();
         if (map && scene === "practice") {
           recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "lineUpdate" });
         }

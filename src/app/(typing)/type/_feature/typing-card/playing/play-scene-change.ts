@@ -2,18 +2,17 @@ import { readReadyInputMode } from "@/lib/atoms/global-atoms";
 import { writeUtilityRefParams } from "../../atoms/ref";
 import {
   readMediaSpeed,
-  readUtilityParams,
   resetReplayRankingResult,
   setMinMediaSpeed,
   setNotify,
   setPlayingInputMode,
-  setScene,
 } from "../../atoms/state";
 import { setYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
+import { getScene, setScene } from "../typing-card";
 
 export const commitPlayModeChange = () => {
-  const { scene } = readUtilityParams();
+  const scene = getScene();
   if (scene === "play") {
     const confirmMessage = "練習モードに移動しますか？";
     if (window.confirm(confirmMessage)) {

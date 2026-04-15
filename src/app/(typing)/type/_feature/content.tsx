@@ -17,19 +17,19 @@ import {
 } from "@/lib/build-map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { useWindowScale } from "./_utils/use-window-scale";
 import { useTypingOptionsState } from "./atoms/hydrate";
 import { initializeAllLineResult } from "./atoms/line-result";
 import { readTypingStats } from "./atoms/ref";
 import { resetAllStateOnCleanup } from "./atoms/reset";
-import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "./atoms/state";
+import { setBuiltMap, setLineSelectIndex } from "./atoms/state";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { mutateTypingStats } from "./lib/stats";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
-import { TypingCard } from "./typing-card/typing-card";
+import { getScene, TypingCard, useSceneGroupState } from "./typing-card/typing-card";
+import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
 
 interface ContentProps {
@@ -87,7 +87,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
   useEffect(() => {
     return () => {
-      const scene = readScene();
+      const scene = getScene();
       if (scene === "play" || scene === "practice") {
         const stats = readTypingStats();
         mutateTypingStats(stats);

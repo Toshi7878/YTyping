@@ -5,11 +5,8 @@ import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
   readMinMediaSpeed,
-  readUtilityParams,
   useIsPausedState,
   useMediaSpeedState,
-  useSceneGroupState,
-  useSceneState,
   useYTStartedState,
 } from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
@@ -22,6 +19,7 @@ import { restartPlay } from "../../lib/play-restart";
 import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";
+import { getScene, useSceneGroupState, useSceneState } from "../typing-card";
 
 export const FooterButtons = () => {
   const isYTStarted = useYTStartedState();
@@ -106,7 +104,7 @@ const RetryButton = () => {
       buttonLabel="やり直し"
       kbdLabel="F4"
       onClick={() => {
-        const { scene } = readUtilityParams();
+        const scene = getScene();
 
         if (scene === "play" || scene === "practice" || scene === "replay") {
           restartPlay(scene);

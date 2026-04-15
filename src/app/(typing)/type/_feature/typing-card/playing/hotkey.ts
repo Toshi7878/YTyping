@@ -5,6 +5,7 @@ import { getBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "..
 import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
+import { getScene } from "../typing-card";
 import { moveNextLine, movePrevLine, moveSetLine } from "./move-line";
 import { commitPlayModeChange } from "./play-scene-change";
 import { togglePlayInputMode } from "./toggle-input-mode";
@@ -37,7 +38,7 @@ export const playHotkey = (event: KeyboardEvent) => {
 
   const typingOptions = readTypingOptions();
 
-  const { scene } = readUtilityParams();
+  const scene = getScene();
   const activeSkipKey = getActiveSkipKey();
 
   const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;

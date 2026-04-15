@@ -1,5 +1,6 @@
-import { type SceneType, useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_feature/atoms/state";
+import { useMinMediaSpeedState } from "@/app/(typing)/type/_feature/atoms/state";
 import { type Session, useSession } from "@/lib/auth-client";
+import { type SceneType, useSceneState } from "../typing-card";
 import { RandomEmoji } from "./random-emoji";
 
 export const ResultMessage = ({

@@ -1,7 +1,11 @@
 "use client";
+import { useAtomValue } from "jotai/react";
+import { atom } from "jotai/vanilla";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useBuiltMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../atoms/state";
+import { useBuiltMapState, useYTStartedState } from "../atoms/state";
+import { getTypingGameAtomStore } from "../atoms/store";
+import { EternalCustomStyle, LineCustomStyle } from "./custom-style";
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
 import { PlaybackTimeDisplay } from "./footer/playback-time";
@@ -14,6 +18,53 @@ import { PlayingNotify } from "./header/notify";
 import { PracticeLineSheet } from "./playing/line-practice/line-practice-sheet";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
+
+export type PlayingSceneType = "play" | "replay" | "practice";
+export type EndSceneType = "play_end" | "practice_end" | "replay_end";
+export type SceneType = "ready" | PlayingSceneType | EndSceneType;
+
+const store = getTypingGameAtomStore();
+const sceneAtom = atom<SceneType>("ready");
+const sceneGroupAtom = atom((get) => {
+  const scene = get(sceneAtom);
+  switch (scene) {
+    case "ready": {
+      return "Ready";
+    }
+    case "play":
+    case "practice":
+    case "replay": {
+      return "Playing";
+    }
+    case "play_end":
+    case "practice_end":
+    case "replay_end": {
+      return "End";
+    }
+  }
+});
+
+export const useSceneState = () => useAtomValue(sceneAtom, { store });
+export const getScene = () => store.get(sceneAtom);
+export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
+export const getSceneGroup = () => store.get(sceneGroupAtom);
+
+export const setScene = (value: Extract<SceneType, "play" | "practice" | "replay">) => store.set(sceneAtom, value);
+export const transitionToEndScene = (currentScene: SceneType) => {
+  switch (currentScene) {
+    case "play":
+      store.set(sceneAtom, "play_end");
+      break;
+    case "practice":
+      store.set(sceneAtom, "practice_end");
+      break;
+    case "replay":
+      store.set(sceneAtom, "replay_end");
+      break;
+    default:
+      break;
+  }
+};
 
 export const TypingCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
@@ -72,8 +123,11 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
       )}
 
       {scene === "practice" && <PracticeLineSheet />}
-      {(sceneGroup === "Playing" || sceneGroup === "End") && map?.lines[0]?.options?.eternalCSS && (
-        <style>{map.lines[0].options?.eternalCSS}</style>
+      {(sceneGroup === "Playing" || sceneGroup === "End") && (
+        <>
+          <EternalCustomStyle />
+          <LineCustomStyle />
+        </>
       )}
     </CardContent>
   );

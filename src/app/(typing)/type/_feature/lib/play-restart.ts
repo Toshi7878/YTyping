@@ -9,27 +9,20 @@ import {
   resetTypingSubstatus,
   writeUtilityRefParams,
 } from "../atoms/ref";
-import {
-  type BuiltMap,
-  getBuiltMap,
-  type PlayMode,
-  readUtilityParams,
-  resetReplayRankingResult,
-  setNotify,
-  setScene,
-  setTabName,
-} from "../atoms/state";
+import { type BuiltMap, getBuiltMap, resetReplayRankingResult, setNotify } from "../atoms/state";
 import { setCombo } from "../atoms/substatus";
 import { resetTypingWord } from "../atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
+import { setTabName } from "../tabs/tabs";
 import { getTypingStatus, resetTypingStatus } from "../tabs/typing-status/status-cell";
 import { setLineProgressMax, setLineProgressValue } from "../typing-card/header/line-time-progress";
 import { setLyrics } from "../typing-card/playing/lyrics";
 import { setNextLyricsAndKpm } from "../typing-card/playing/next-lyrics";
 import { stopTimer } from "../typing-card/playing/timer/timer";
+import { getScene, type PlayingSceneType, setScene } from "../typing-card/typing-card";
 import { mutateTypingStats } from "./stats";
 
-export const restartPlay = (newPlayMode: PlayMode) => {
+export const restartPlay = (newPlayMode: PlayingSceneType) => {
   const map = getBuiltMap();
   const nextLine = map?.lines[1];
   if (!map || !nextLine) return;
@@ -40,7 +33,7 @@ export const restartPlay = (newPlayMode: PlayMode) => {
 
   writeUtilityRefParams({ replayKeyCount: 0 });
 
-  const { scene } = readUtilityParams();
+  const scene = getScene();
   const { type: totalTypeCount } = getTypingStatus();
 
   if (scene === "play" || scene === "practice") {

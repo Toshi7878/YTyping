@@ -4,12 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { readAllLineResult } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { readTypingSubstatus, type TypingSubstatus } from "@/app/(typing)/type/_feature/atoms/ref";
-import { type BuiltMap, getBuiltMap, setTabName } from "@/app/(typing)/type/_feature/atoms/state";
+import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
 import type { TypingLineResult } from "@/validator/result";
 import { readMapId, readTypingOptions, type TypingOptions } from "../../atoms/hydrate";
+import { setTabName } from "../../tabs/tabs";
 import { getTypingStatus, type TypingStatus } from "../../tabs/typing-status/status-cell";
 import { useRegisterRankingMutation } from "./register-ranking";
 

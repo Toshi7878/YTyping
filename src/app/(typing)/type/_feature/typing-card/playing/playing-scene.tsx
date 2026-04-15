@@ -15,7 +15,6 @@ import {
   readReplayRankingResult,
   readUtilityParams,
   useBuiltMapState,
-  useSceneState,
 } from "@/app/(typing)/type/_feature/atoms/state";
 import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,7 @@ import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
-import { ChangeCSS } from "./change-css-style";
+import { getScene, useSceneState } from "../typing-card";
 import { isHotKeyIgnored, playHotkey } from "./hotkey";
 import { Lyrics } from "./lyrics";
 import { NextLyrics, setNextLyricsAndKpm } from "./next-lyrics";
@@ -115,13 +114,13 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       <TypingWords />
       <Lyrics />
       <NextLyrics />
-      <ChangeCSS />
     </div>
   );
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  const { scene, isPaused } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
 
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 

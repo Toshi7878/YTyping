@@ -2,13 +2,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import {
-  setPlayingInputMode,
-  setReplayRankingResult,
-  setScene,
-  setTabName,
-  useSceneGroupState,
-} from "@/app/(typing)/type/_feature/atoms/state";
+import { setPlayingInputMode, setReplayRankingResult } from "@/app/(typing)/type/_feature/atoms/state";
+import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
@@ -21,6 +16,7 @@ import { initializeAllLineResult } from "../../atoms/line-result";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
 import { iosActiveSound } from "../../lib/sound-effect";
+import { setScene, useSceneGroupState } from "../../typing-card/typing-card";
 import { getRankingResultByResultId } from "./get-ranking-result";
 
 interface RankingMenuProps {

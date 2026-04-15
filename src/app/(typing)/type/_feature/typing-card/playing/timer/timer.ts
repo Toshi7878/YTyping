@@ -14,10 +14,7 @@ import {
   type BuiltMap,
   getBuiltMap,
   readMediaSpeed,
-  readScene,
   readUtilityParams,
-  setChangeCSSCount,
-  transitionToEndScene,
 } from "@/app/(typing)/type/_feature/atoms/state";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { countPerMinute } from "@/utils/math";
@@ -30,9 +27,11 @@ import { readYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
+import { setLineCustomStyleIndex } from "../../custom-style";
 import { setActiveSkipKey } from "../../footer/skip";
 import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
 import { getLineProgressMax, setLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
+import { getScene, transitionToEndScene } from "../../typing-card";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { setLyrics } from "../lyrics";
 import { setNextLyricsAndKpm } from "../next-lyrics";
@@ -82,7 +81,7 @@ const handleTimer = () => {
     {
       onUpdate: () => {
         setLineProgressValue(currentLineTime);
-        const { scene } = readUtilityParams();
+        const scene = getScene();
 
         if (scene === "replay" && count > 0) {
           const lineResults = readAllLineResult();
@@ -134,7 +133,7 @@ const handleTimer = () => {
       onTimeLimitReach: ({ nextCount }) => {
         const typingWord = getTypingWord();
         const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
-        const scene = readScene();
+        const scene = getScene();
 
         if (!isLineCompleted && scene !== "replay") {
           processIncompleteLineEnd({ map, constantLineTime, count });
@@ -144,7 +143,7 @@ const handleTimer = () => {
       },
 
       onTimerEnd: ({ constantLineTime }) => {
-        const { scene } = readUtilityParams();
+        const scene = getScene();
         const typingWord = getTypingWord();
         const isLineCompleted = !!typingWord.correct.roma && !typingWord.nextChunk.kana;
 
@@ -256,7 +255,7 @@ const processIncompleteLineEnd = ({
   if (!currentLine) return;
 
   const isTypingLine = count >= 0 && currentLine.kpm.roma > 0;
-  const { scene } = readUtilityParams();
+  const scene = getScene();
 
   if (isTypingLine) {
     updateTypingTime({ constantLineTime });
@@ -287,7 +286,8 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
   setNextLyricsAndKpm(newNextLine);
   resetLineSubstatus();
 
-  const { inputMode, scene } = readUtilityParams();
+  const { inputMode } = readUtilityParams();
+  const scene = getScene();
   const playSpeed = readMediaSpeed();
 
   if (scene === "replay") {
@@ -297,7 +297,7 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
   setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
-  setChangeCSSCount(nextCount);
+  setLineCustomStyleIndex(nextCount);
 };
 
 const setNewLine = (newLine: BuiltMapLineWithOption) => {

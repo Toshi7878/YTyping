@@ -1,10 +1,11 @@
 "use client";
 import type { RefObject } from "react";
 import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
-import { useBuiltMapState, useMediaSpeedState, useSceneState } from "@/app/(typing)/type/_feature/atoms/state";
+import { useBuiltMapState, useMediaSpeedState } from "@/app/(typing)/type/_feature/atoms/state";
 import { TableCell, TableRow } from "@/components/ui/table/table";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useSceneState } from "../../typing-card";
 
 interface PracticeLineTableRowProps {
   count: number;

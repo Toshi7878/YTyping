@@ -12,6 +12,7 @@ import { readMediaSpeed, readUtilityParams } from "../../../atoms/state";
 import { readCombo, setCombo, setLineKpm } from "../../../atoms/substatus";
 import { getTypingWord } from "../../../atoms/typing-word";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
+import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -71,7 +72,7 @@ export const updateSuccessSubstatus = ({
   chunkType?: WordChunk["type"];
   successKey: string;
 }) => {
-  const { scene } = readUtilityParams();
+  const scene = getScene();
 
   // 現在の状態を一度だけ読み込む
   const currentLineSubstatus = readLineSubstatus();

@@ -17,7 +17,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useMapIdState } from "../../atoms/hydrate";
 import { writeUtilityRefParams } from "../../atoms/ref";
-import { useSceneGroupState } from "../../atoms/state";
+import { useSceneGroupState } from "../../typing-card/typing-card";
 import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
 

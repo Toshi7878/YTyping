@@ -2,6 +2,7 @@ import { readLineCount, readPracticeLineItems, writeLineCount } from "../../atom
 import { getBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../../atoms/state";
 import { seekYTPlayer } from "../../atoms/youtube-player";
 import { setLineProgressValue } from "../header/line-time-progress";
+import { getScene } from "../typing-card";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupNextLine, stopTimer } from "./timer/timer";
 
@@ -11,7 +12,8 @@ export const movePrevLine = () => {
   const map = getBuiltMap();
   if (!map) return;
 
-  const { scene, isPaused } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
   const isPracticeScene = scene === "practice";
   const isTimeBuffer = isPracticeScene && !isPaused;
 
@@ -65,7 +67,8 @@ export const moveNextLine = () => {
   const nextLine = map.lines[nextCount];
   if (!prevLine || !nextLine) return;
   const playSpeed = readMediaSpeed();
-  const { scene, isPaused } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
   const prevLineTime = (nextLine.time - prevLine.time) / playSpeed;
   const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
 
@@ -89,7 +92,8 @@ export const moveSetLine = (seekCount: number) => {
   const map = getBuiltMap();
   if (!map) return;
   const playSpeed = readMediaSpeed();
-  const { scene, isPaused } = readUtilityParams();
+  const { isPaused } = readUtilityParams();
+  const scene = getScene();
   const isTimeBuffer = scene === "practice" && !isPaused;
   const seekTime = Number(map.lines[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
