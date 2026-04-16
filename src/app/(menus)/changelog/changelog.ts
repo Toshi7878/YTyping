@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-4-16",
+    descriptions: ["タイミング調整をプラスにしていると、タイピング終了時にリザルト画面に移動しなくなる問題を修正"],
+  },
+  {
     date: "2026-4-13",
     descriptions: ["ツールページにYTyping Equalizerを追加"],
   },
