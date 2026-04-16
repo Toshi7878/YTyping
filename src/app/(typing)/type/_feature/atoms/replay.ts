@@ -1,9 +1,8 @@
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { getTypingGameAtomStore } from "./store";
+import { store } from "./store";
 
-const store = getTypingGameAtomStore();
 const replayRankingResultAtom = atomWithReset<RouterOutputs["result"]["list"]["getRanking"][number] | null>(null);
 
 export const useReplayRankingResultState = () => useAtomValue(replayRankingResultAtom);

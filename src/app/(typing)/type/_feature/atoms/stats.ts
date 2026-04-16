@@ -1,8 +1,6 @@
 import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store } from "./store";
 
 const typingStatsAtom = atomWithReset({
   romaType: 0,

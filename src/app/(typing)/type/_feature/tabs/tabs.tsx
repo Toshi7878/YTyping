@@ -2,12 +2,11 @@
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getTypingGameAtomStore } from "../atoms/store";
+import { store } from "../atoms/store";
 import { MapActionIconButtons } from "./action-buttons";
 import { RankingTableCard } from "./ranking/ranking-card";
 import { StatusCard } from "./typing-status/status-card";
 
-const store = getTypingGameAtomStore();
 const TAB_NAMES = ["ステータス", "ランキング"] as const;
 const tabNameAtom = atom<(typeof TAB_NAMES)[number]>("ステータス");
 export const setTabName = (value: (typeof TAB_NAMES)[number]) => store.set(tabNameAtom, value);

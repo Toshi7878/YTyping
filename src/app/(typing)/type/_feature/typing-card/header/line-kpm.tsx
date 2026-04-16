@@ -1,8 +1,6 @@
 import { atom, type ExtractAtomValue } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getTypingGameAtomStore } from "../../atoms/store";
-
-const store = getTypingGameAtomStore();
+import { store } from "../../atoms/store";
 
 const lineKpmAtom = atom(0);
 

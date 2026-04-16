@@ -8,12 +8,10 @@ import {
   type TypingWord,
 } from "lyrics-typing-engine";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
-import { getTypingOptions, wordDisplayOptionAtom } from "../tabs/setting/popover";
+import { getTypingOptions } from "../tabs/setting/popover";
 import { getLineCount } from "../typing-card/playing/playing-scene";
 import { getBuiltMap } from "./built-map";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store, subscribeTypingGameStoreChange } from "./store";
 
 const playingInputModeAtom = atom<InputMode>("roma");
 
@@ -53,41 +51,57 @@ export const setWordContainerElement = (element: ExtractAtomValue<typeof wordCon
   store.set(wordContainerElementAtom, element);
 };
 
-store.sub(typingWordAtom, () => {
-  const typingWord = store.get(typingWordAtom);
-  const main = store.get(mainWordElementsAtom);
-  const sub = store.get(subWordElementsAtom);
+let unsubscribeTypingWordDisplaySubs: (() => void) | undefined;
 
-  if (main && sub) {
-    const { correct } = updateWordDisplay(typingWord, main, sub);
-    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
+function bindTypingWordDisplaySubs() {
+  unsubscribeTypingWordDisplaySubs?.();
 
-    applyScroll(main, sub, correct.kana, correct.roma, {
-      isSmoothScroll,
-      mainScrollStart: mainWordScrollStart,
-      subScrollStart: subWordScrollStart,
-    });
-  }
-});
+  const u1 = store.sub(typingWordAtom, () => {
+    const typingWord = store.get(typingWordAtom);
+    const main = store.get(mainWordElementsAtom);
+    const sub = store.get(subWordElementsAtom);
 
-store.sub(playingInputModeAtom, () => {
-  const typingWord = store.get(typingWordAtom);
-  const main = store.get(mainWordElementsAtom);
-  const sub = store.get(subWordElementsAtom);
+    if (main && sub) {
+      const { correct } = updateWordDisplay(typingWord, main, sub);
+      const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
 
-  if (main && sub) {
-    updateWordDisplay(typingWord, main, sub);
-  }
-});
-store.sub(wordDisplayOptionAtom, () => {
-  const typingWord = store.get(typingWordAtom);
-  const main = store.get(mainWordElementsAtom);
-  const sub = store.get(subWordElementsAtom);
+      applyScroll(main, sub, correct.kana, correct.roma, {
+        isSmoothScroll,
+        mainScrollStart: mainWordScrollStart,
+        subScrollStart: subWordScrollStart,
+      });
+    }
+  });
 
-  if (main && sub) {
-    updateWordDisplay(typingWord, main, sub);
-  }
-});
+  const u2 = store.sub(playingInputModeAtom, () => {
+    const typingWord = store.get(typingWordAtom);
+    const main = store.get(mainWordElementsAtom);
+    const sub = store.get(subWordElementsAtom);
+
+    if (main && sub) {
+      updateWordDisplay(typingWord, main, sub);
+    }
+  });
+
+  // const u3 = store.sub(wordDisplayOptionAtom, () => {
+  //   const typingWord = store.get(typingWordAtom);
+  //   const main = store.get(mainWordElementsAtom);
+  //   const sub = store.get(subWordElementsAtom);
+
+  //   if (main && sub) {
+  //     updateWordDisplay(typingWord, main, sub);
+  //   }
+  // });
+
+  unsubscribeTypingWordDisplaySubs = () => {
+    u1();
+    u2();
+    // u3();
+  };
+}
+
+bindTypingWordDisplaySubs();
+subscribeTypingGameStoreChange(bindTypingWordDisplaySubs);
 
 export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
   store.set(mainWordElementsAtom, elements);

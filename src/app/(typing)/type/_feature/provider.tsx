@@ -1,10 +1,11 @@
 "use client";
 import { Provider } from "jotai";
 import type { ReactNode } from "react";
+import { useSyncExternalStore } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { mapIdAtom } from "./atoms/hydrate";
-import { getTypingGameAtomStore } from "./atoms/store";
+import { getTypingGameStoreVersion, store, subscribeTypingGameStoreChange } from "./atoms/store";
 import { typingOptionsAtom } from "./tabs/setting/popover";
 
 interface JotaiProviderProps {
@@ -14,10 +15,10 @@ interface JotaiProviderProps {
 }
 
 export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
-  const store = getTypingGameAtomStore();
+  const storeVersion = useSyncExternalStore(subscribeTypingGameStoreChange, getTypingGameStoreVersion, () => 0);
 
   return (
-    <Provider store={store}>
+    <Provider key={storeVersion} store={store}>
       <AtomsHydrator
         atomValues={[
           [mapIdAtom, mapId],

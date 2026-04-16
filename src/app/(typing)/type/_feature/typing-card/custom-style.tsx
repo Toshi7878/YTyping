@@ -2,9 +2,8 @@ import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
 import { getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { findClosestLowerOrEqual } from "@/utils/array";
-import { getTypingGameAtomStore } from "../atoms/store";
+import { store } from "../atoms/store";
 
-const store = getTypingGameAtomStore();
 const lineStyleIndexAtom = atom<number | null>(null);
 const lineStyleAtom = atom((get): string => {
   const lineStyleIndex = get(lineStyleIndexAtom);

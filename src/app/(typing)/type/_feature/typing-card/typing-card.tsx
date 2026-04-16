@@ -4,7 +4,7 @@ import { atom } from "jotai/vanilla";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useBuiltMapState } from "../atoms/built-map";
-import { getTypingGameAtomStore } from "../atoms/store";
+import { store } from "../atoms/store";
 import { useYTStartedState } from "../youtube/youtube-player";
 import { EternalCustomStyle, LineCustomStyle } from "./custom-style";
 import { EndScene } from "./end/end-scene";
@@ -25,7 +25,6 @@ export type PlayingSceneType = "play" | "replay" | "practice";
 export type EndSceneType = "play_end" | "practice_end" | "replay_end";
 export type SceneType = "ready" | PlayingSceneType | EndSceneType;
 
-const store = getTypingGameAtomStore();
 const sceneAtom = atom<SceneType>("ready");
 const sceneGroupAtom = atom((get) => {
   const scene = get(sceneAtom);

@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { formatTime } from "@/utils/format-time";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { useMediaSpeedState } from "../../youtube/youtube-player";
 
 export const PlaybackTimeDisplay = () => {
@@ -12,8 +12,6 @@ export const PlaybackTimeDisplay = () => {
     </div>
   );
 };
-
-const store = getTypingGameAtomStore();
 
 const elapsedSecTimeAtom = atom(0);
 

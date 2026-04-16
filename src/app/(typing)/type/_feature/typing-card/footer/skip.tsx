@@ -2,15 +2,13 @@ import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
 import type { BuiltMapLine } from "lyrics-typing-engine";
 import { getBuiltMap } from "../../atoms/built-map";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { seekYTPlayer } from "../../atoms/youtube-player";
 import { getTypingOptions } from "../../tabs/setting/popover";
 import { getMediaSpeed } from "../../youtube/youtube-player";
 import { getTimeOffset } from "../playing/playing-scene";
 
 type SkipKey = "Space" | null;
-
-const store = getTypingGameAtomStore();
 
 const skipKeyAtom = atom<SkipKey>(null);
 const skipGuideMessageAtom = atom<string>((get) => {

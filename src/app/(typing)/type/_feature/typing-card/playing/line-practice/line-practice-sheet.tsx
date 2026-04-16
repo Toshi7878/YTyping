@@ -7,12 +7,11 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Table, TableBody } from "@/components/ui/table/table";
 import type { TypingLineResult } from "@/validator/result";
 import { setSelectLineIndex } from "../../../atoms/line-result";
-import { getTypingGameAtomStore } from "../../../atoms/store";
+import { store } from "../../../atoms/store";
 import { useLineFailureCountState } from "../../../atoms/substatus";
 import { moveSetLine } from "../move-line";
 import { PracticeLineTableRow } from "./table-row";
 
-const store = getTypingGameAtomStore();
 const practiceLineElementsAtom = atom<HTMLElement[]>([]);
 export const getPracticeLineElements = () => store.get(practiceLineElementsAtom);
 const setPracticeLineElements = (elements: HTMLElement[]) => store.set(practiceLineElementsAtom, elements);

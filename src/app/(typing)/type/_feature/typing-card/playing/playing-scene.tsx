@@ -11,7 +11,7 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
@@ -31,7 +31,6 @@ import { recalculateStatusFromResults } from "./update-status/recalc-from-result
 import { updateSuccessStatus, updateSuccessSubstatus } from "./update-status/success";
 import { updateTypingTime } from "./update-status/update-kpm";
 
-const store = getTypingGameAtomStore();
 const timeOffsetAtom = atom(0);
 export const getTimeOffset = () => store.get(timeOffsetAtom);
 export const setTimeOffset = (updater: SetStateAction<number>) => store.set(timeOffsetAtom, updater);

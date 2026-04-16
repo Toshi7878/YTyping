@@ -6,11 +6,9 @@ import { uncontrolled } from "jotai-uncontrolled";
 import { cn } from "@/lib/utils";
 import type { Updater } from "@/utils/types";
 import { getBuiltMap } from "../../atoms/built-map";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { getRankingData } from "../ranking/get-ranking-result";
 import type { LabelType } from "./status-card";
-
-const store = getTypingGameAtomStore();
 
 const typingStatusAtom = atomWithReset({
   score: 0,

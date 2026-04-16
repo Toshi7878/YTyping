@@ -3,9 +3,7 @@ import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai-family";
 import type { TypingLineResult } from "@/validator/result";
 import { getBuiltMap } from "./built-map";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store } from "./store";
 
 const lineResultAtomFamily = atomFamily(
   () => atom<{ isSelected: boolean; lineResult: TypingLineResult } | undefined>(),

@@ -2,15 +2,14 @@
 import parse from "html-react-parser";
 import { atom, useAtomValue } from "jotai";
 import { cn } from "@/lib/utils";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { useTypingOptionsState } from "../../tabs/setting/popover";
 
 const lyricsAtom = atom("");
-const store = getTypingGameAtomStore();
-
 export const setLyrics = (value: string) => store.set(lyricsAtom, value);
+
 export const Lyrics = () => {
-  const lyrics = useAtomValue(lyricsAtom, { store });
+  const lyrics = useAtomValue(lyricsAtom);
   const typingOptions = useTypingOptionsState();
 
   return (

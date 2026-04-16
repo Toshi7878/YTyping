@@ -1,9 +1,7 @@
 import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
 import { cn } from "@/lib/utils";
-import { getTypingGameAtomStore } from "../../atoms/store";
-
-const store = getTypingGameAtomStore();
+import { store } from "../../atoms/store";
 
 const lineRemainTimeAtom = atom(0);
 

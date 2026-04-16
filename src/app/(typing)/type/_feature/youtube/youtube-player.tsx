@@ -11,7 +11,7 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";
 import { readMapId } from "../atoms/hydrate";
-import { getTypingGameAtomStore } from "../atoms/store";
+import { store } from "../atoms/store";
 import { setPlayingInputMode } from "../atoms/typing-word";
 import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../atoms/youtube-player";
 import { iosActiveSound } from "../lib/sound-effect";
@@ -21,7 +21,6 @@ import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
 import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
 
-const store = getTypingGameAtomStore();
 const isYTStartedAtom = atom(false);
 const isPausedAtom = atom(false);
 const mediaSpeedAtom = atom(1);

@@ -5,10 +5,9 @@ import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { useReplayRankingResultState } from "../../atoms/replay";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { useSceneState } from "../typing-card";
 
-const store = getTypingGameAtomStore();
 const notifyAtom = atom(Symbol(""));
 export const setNotify = (value: symbol) => store.set(notifyAtom, value);
 

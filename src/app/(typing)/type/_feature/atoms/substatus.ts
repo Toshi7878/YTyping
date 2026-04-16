@@ -1,9 +1,7 @@
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store } from "./store";
 
 const typingSubstatusAtom = atomWithReset({
   romaType: 0,

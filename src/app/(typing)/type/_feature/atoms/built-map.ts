@@ -5,9 +5,7 @@ import type { BuiltMapLine } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResult } from "@/validator/result";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store } from "./store";
 
 const builtMapAtom = atomWithReset<{
   lines: BuiltMapLine<z.infer<typeof LineOptionSchema>>[];
@@ -22,7 +20,7 @@ const builtMapAtom = atomWithReset<{
   isCaseSensitive: boolean;
 } | null>(null);
 export type BuiltMap = ExtractAtomValue<typeof builtMapAtom>;
-export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
+export const useBuiltMapState = () => useAtomValue(builtMapAtom);
 export const setBuiltMap = (map: BuiltMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 //TODO: builitMapがnullの場合にエラーハンドリング

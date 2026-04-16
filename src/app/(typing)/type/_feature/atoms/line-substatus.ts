@@ -2,9 +2,7 @@ import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { InputMode } from "lyrics-typing-engine";
 import type { TypeResult } from "@/validator/result";
-import { getTypingGameAtomStore } from "./store";
-
-const store = getTypingGameAtomStore();
+import { store } from "./store";
 
 const lineSubstatusAtom = atomWithReset({
   // TODO: typeCount / missCountはtypesで求めても問題ないか

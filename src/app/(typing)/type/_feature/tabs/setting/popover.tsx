@@ -2,7 +2,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { focusAtom } from "jotai-optics";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { getTypingGameAtomStore } from "../../atoms/store";
+import { store } from "../../atoms/store";
 import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
 import { HotKeySelectFields } from "./options/hot-key-select-fields";
 import { SoundEffectFields } from "./options/sound-effect-fields";
@@ -29,10 +28,9 @@ import { WordScrollFields } from "./options/word-scroll-fields";
 
 let isOptionEdited = false;
 
-const store = getTypingGameAtomStore();
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 export type TypingOptions = ExtractAtomValue<typeof typingOptionsAtom>;
-export const wordDisplayOptionAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
+// export const wordDisplayOptionAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
 
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom);
 export const getTypingOptions = () => store.get(typingOptionsAtom);
