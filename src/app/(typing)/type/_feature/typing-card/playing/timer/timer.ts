@@ -76,7 +76,7 @@ const handleTimer = () => {
       constantLineTime,
       constantRemainLineTime,
       timeLimitState: { lines: map.lines, currentIndex: count },
-      endState: currentTime >= map.duration,
+      endState: currentTime >= map.duration || YTPlayer.getPlayerState() === YT.PlayerState.ENDED,
     },
     {
       onUpdate: () => {
