@@ -30,7 +30,6 @@ let isOptionEdited = false;
 
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 export type TypingOptions = ExtractAtomValue<typeof typingOptionsAtom>;
-// export const wordDisplayOptionAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
 
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom);
 export const getTypingOptions = () => store.get(typingOptionsAtom);

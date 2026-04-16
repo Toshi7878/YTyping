@@ -83,20 +83,9 @@ function bindTypingWordDisplaySubs() {
     }
   });
 
-  // const u3 = store.sub(wordDisplayOptionAtom, () => {
-  //   const typingWord = store.get(typingWordAtom);
-  //   const main = store.get(mainWordElementsAtom);
-  //   const sub = store.get(subWordElementsAtom);
-
-  //   if (main && sub) {
-  //     updateWordDisplay(typingWord, main, sub);
-  //   }
-  // });
-
   unsubscribeTypingWordDisplaySubs = () => {
     u1();
     u2();
-    // u3();
   };
 }
 
