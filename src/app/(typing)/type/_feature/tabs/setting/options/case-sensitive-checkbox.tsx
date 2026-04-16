@@ -1,8 +1,8 @@
 "use client";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { CheckboxCardGroup } from "@/components/ui/checkbox/checkbox";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { useSceneState } from "../../../typing-card/typing-card";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const CaseSensitiveCheckbox = () => {
   const { isCaseSensitive } = useTypingOptionsState();

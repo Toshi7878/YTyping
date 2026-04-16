@@ -1,8 +1,9 @@
-import { readLineSubstatus, readTypingSubstatus, writeLineSubstatus, writeTypingSubstatus } from "../../../atoms/ref";
-import { getBuiltMap } from "../../../atoms/state";
-import { setCombo } from "../../../atoms/substatus";
+import { getBuiltMap } from "../../../atoms/built-map";
+import { readLineSubstatus, writeLineSubstatus } from "../../../atoms/line-substatus";
+import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 import { MISS_PENALTY_POINT } from "../../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../../tabs/typing-status/status-cell";
+import { setCombo } from "../../header/combo";
 
 export const updateMissStatus = () => {
   const status = getTypingStatus();
@@ -19,8 +20,8 @@ export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLin
   const map = getBuiltMap();
   if (!map) return;
 
-  const { clearRate, missCombo } = readTypingSubstatus();
-  writeTypingSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
+  const { clearRate, missCombo } = getTypingSubstatus();
+  setTypingSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
 
   const { missCount: lineMissCount, types } = readLineSubstatus();
 

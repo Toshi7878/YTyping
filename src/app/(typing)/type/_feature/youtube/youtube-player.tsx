@@ -1,5 +1,6 @@
 "use client";
 
+import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { readReadyInputMode, readVolume } from "@/lib/atoms/global-atoms";
@@ -8,24 +9,39 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
+import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";
 import { readMapId } from "../atoms/hydrate";
-import { writeLineCount } from "../atoms/ref";
-import {
-  getBuiltMap,
-  readMinMediaSpeed,
-  readUtilityParams,
-  setIsPaused,
-  setLastLineEndTime,
-  setMediaSpeed,
-  setNotify,
-  setPlayingInputMode,
-  setYTStarted,
-} from "../atoms/state";
+import { getTypingGameAtomStore } from "../atoms/store";
+import { setPlayingInputMode } from "../atoms/typing-word";
 import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../atoms/youtube-player";
 import { iosActiveSound } from "../lib/sound-effect";
 import { setTabName } from "../tabs/tabs";
+import { setNotify } from "../typing-card/header/notify";
+import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
 import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
+
+const store = getTypingGameAtomStore();
+const isYTStartedAtom = atom(false);
+const isPausedAtom = atom(false);
+const mediaSpeedAtom = atom(1);
+const minMediaSpeedAtom = atom(1);
+
+export const useIsPausedState = () => useAtomValue(isPausedAtom);
+export const getIsPaused = () => store.get(isPausedAtom);
+export const setIsPaused = (updater: SetStateAction<boolean>) => store.set(isPausedAtom, updater);
+
+export const useMediaSpeedState = () => useAtomValue(mediaSpeedAtom);
+export const getMediaSpeed = () => store.get(mediaSpeedAtom);
+export const setMediaSpeed = (updater: SetStateAction<number>) => store.set(mediaSpeedAtom, updater);
+
+export const useMinMediaSpeedState = () => useAtomValue(minMediaSpeedAtom);
+export const getMinMediaSpeed = () => store.get(minMediaSpeedAtom);
+export const setMinMediaSpeed = (value: number) => store.set(minMediaSpeedAtom, value);
+
+export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
+export const getIsYTStarted = () => store.get(isYTStartedAtom);
+export const setYTStarted = (value: boolean) => store.set(isYTStartedAtom, value);
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -69,7 +85,7 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 
 const MobileCover = () => {
   const handleTouchStart = () => {
-    const { isPaused } = readUtilityParams();
+    const isPaused = getIsPaused();
     const scene = getScene();
     iosActiveSound();
     if (isPaused || scene === "ready") {
@@ -104,7 +120,7 @@ const handleStart = (player: YT.Player) => {
   player.seekTo(0, true);
   if (scene === "replay") return;
 
-  const minMediaSpeed = readMinMediaSpeed();
+  const minMediaSpeed = getMinMediaSpeed();
   if (minMediaSpeed < 1) {
     setScene("practice");
   } else if (scene === "ready") {
@@ -120,7 +136,8 @@ const handlePlay = async ({ target: player }: { target: YT.Player }) => {
 
   console.log("再生 1");
 
-  const { isYTStarted, isPaused } = readUtilityParams();
+  const isYTStarted = getIsYTStarted();
+  const isPaused = getIsPaused();
   const scene = getScene();
   const sceneGroup = getSceneGroup();
 
@@ -146,7 +163,7 @@ const handlePause = () => {
 
   stopTimer();
 
-  const { isPaused } = readUtilityParams();
+  const isPaused = getIsPaused();
   const scene = getScene();
   if (!isPaused) {
     setIsPaused(true);
@@ -159,7 +176,7 @@ const handleSeeked = (player: YT.Player) => {
   const time = player.getCurrentTime();
 
   if (time === 0) {
-    writeLineCount(0);
+    setLineCount(0);
   }
 
   console.log("シーク");

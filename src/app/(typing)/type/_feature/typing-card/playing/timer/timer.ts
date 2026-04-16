@@ -1,40 +1,35 @@
 import { Ticker } from "@pixi/ticker";
 import { createTypingWord } from "lyrics-typing-engine";
+import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import {
-  getUtilityRefParams,
-  readLineCount,
   readLineSubstatus,
-  readTypingStats,
   resetLineSubstatus,
-  writeLineCount,
   writeLineSubstatus,
-  writeUtilityRefParams,
-} from "@/app/(typing)/type/_feature/atoms/ref";
-import {
-  type BuiltMap,
-  getBuiltMap,
-  readMediaSpeed,
-  readUtilityParams,
-} from "@/app/(typing)/type/_feature/atoms/state";
+} from "@/app/(typing)/type/_feature/atoms/line-substatus";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { countPerMinute } from "@/utils/math";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readMapId } from "../../../atoms/hydrate";
 import { readAllLineResult } from "../../../atoms/line-result";
-import { setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../../atoms/substatus";
-import { getTypingWord, setTypingWord } from "../../../atoms/typing-word";
+import { getTypingStats } from "../../../atoms/stats";
+import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { readYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
+import { getMediaSpeed } from "../../../youtube/youtube-player";
 import { setLineCustomStyleIndex } from "../../custom-style";
+import { setElapsedSecTime } from "../../footer/playback-time";
 import { setActiveSkipKey } from "../../footer/skip";
 import { getTotalProgressMax, setTotalProgressValue } from "../../footer/total-time-progress";
+import { setLineKpm } from "../../header/line-kpm";
 import { getLineProgressMax, setLineProgressMax, setLineProgressValue } from "../../header/line-time-progress";
+import { setLineRemainTime } from "../../header/remain-time";
 import { getScene, transitionToEndScene } from "../../typing-card";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { setLyrics } from "../lyrics";
 import { setNextLyricsAndKpm } from "../next-lyrics";
+import { getLineCount, setLineCount } from "../playing-scene";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
@@ -58,6 +53,7 @@ export const setTimerMaxFPS = (rate: number) => {
   typeTicker.maxFPS = rate;
 };
 
+let replayKeyCount = 0;
 const handleTimer = () => {
   const YTPlayer = readYTPlayer();
   const map = getBuiltMap();
@@ -67,7 +63,7 @@ const handleTimer = () => {
   }
 
   const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getRemainLineTime();
-  const count = readLineCount();
+  const count = getLineCount();
 
   timer(
     {
@@ -90,13 +86,12 @@ const handleTimer = () => {
           if (!lineResult) return;
           const { types } = lineResult;
           if (types.length === 0) return;
-          const { replayKeyCount } = getUtilityRefParams();
           const typeResult = types[replayKeyCount];
           if (!typeResult) return;
           const { time: keyTime } = typeResult;
           if (constantLineTime >= keyTime) {
             simulateTypingInput({ constantLineTime, constantRemainLineTime, typeResult });
-            writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
+            replayKeyCount++;
           }
         }
       },
@@ -160,13 +155,13 @@ const handleTimer = () => {
         setTotalProgressValue(getTotalProgressMax());
 
         if (scene === "play") {
-          const stats = readTypingStats();
+          const stats = getTypingStats();
           mutateTypingStats(stats);
           const mapId = readMapId();
           if (!mapId) return;
           mutateIncrementMapCompletionPlayCountStats({ mapId });
         } else if (scene === "practice") {
-          const stats = readTypingStats();
+          const stats = getTypingStats();
           mutateTypingStats(stats);
         }
       },
@@ -262,13 +257,13 @@ const processIncompleteLineEnd = ({
   }
 
   if (hasLineResultImproved(count)) {
-    saveLineResult(count);
+    saveLineResult(count, constantLineTime);
   }
 
   switch (scene) {
     case "play":
     case "play_end":
-      updateStatusForLineUpdate({ constantLineTime });
+      updateStatusForLineUpdate();
       break;
     case "practice":
       recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "lineUpdate" });
@@ -281,14 +276,14 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
   const newNextLine = map?.lines[nextCount + 1];
   if (!newLine || !newNextLine) return;
 
-  writeLineCount(nextCount);
+  setLineCount(nextCount);
   setNewLine(newLine);
   setNextLyricsAndKpm(newNextLine);
   resetLineSubstatus();
 
-  const { inputMode } = readUtilityParams();
+  const inputMode = getPlayingInputMode();
   const scene = getScene();
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
 
   if (scene === "replay") {
     syncReplayLineSnapshot(nextCount);
@@ -336,7 +331,7 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
   const startLine = map?.lines[startCount];
   if (!startLine) return;
 
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
   const skipOutTime = startLine.time - 3 * playSpeed;
 
   if (startLine.time > 5 && skipOutTime > currentTime) {
@@ -348,7 +343,7 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
 
 const syncReplayLineSnapshot = (newCurrentCount: number) => {
   const lineResults = readAllLineResult();
-  const { inputMode } = readUtilityParams();
+  const inputMode = getPlayingInputMode();
 
   const lineResult = lineResults[newCurrentCount];
 
@@ -366,9 +361,8 @@ const syncReplayLineSnapshot = (newCurrentCount: number) => {
     }
   }
 
-  writeUtilityRefParams({ replayKeyCount: 0 });
-
-  const playSpeed = readMediaSpeed();
+  replayKeyCount = 0;
+  const playSpeed = getMediaSpeed();
   const speed = lineResult.status.speed as YouTubeSpeed;
 
   if (playSpeed === speed) return;

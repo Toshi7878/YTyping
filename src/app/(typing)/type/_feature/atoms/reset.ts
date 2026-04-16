@@ -4,10 +4,11 @@ import { setTotalProgressValue } from "../typing-card/footer/total-time-progress
 import { setLineProgressValue } from "../typing-card/header/line-time-progress";
 import { setLyrics } from "../typing-card/playing/lyrics";
 import { setScene } from "../typing-card/typing-card";
+import { resetBuiltMap } from "./built-map";
 import { clearAllLineResult } from "./line-result";
-import { resetLineCount, resetLineSubstatus, resetTypingSubstatus, resetUtilityRefParams } from "./ref";
-import { resetBuiltMap, resetReplayRankingResult, resetUtilityParams } from "./state";
-import { resetSubstatusState } from "./substatus";
+import { resetLineSubstatus } from "./line-substatus";
+import { resetReplayRankingResult } from "./replay";
+import { resetTypingSubstatus } from "./substatus";
 import { resetTypingWord } from "./typing-word";
 import { resetYTPlayer } from "./youtube-player";
 
@@ -16,14 +17,10 @@ export const resetAllStateOnCleanup = () => {
   resetTypingWord();
   setLyrics("");
   clearAllLineResult();
-  resetUtilityParams();
   resetBuiltMap();
   resetTypingStatus();
-  resetUtilityRefParams();
-  resetSubstatusState();
   resetTypingSubstatus();
   resetLineSubstatus();
-  resetLineCount();
   resetReplayRankingResult();
   setLineProgressValue(0);
   setTotalProgressValue(0);

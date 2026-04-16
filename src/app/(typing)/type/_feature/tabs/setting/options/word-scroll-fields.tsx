@@ -1,8 +1,8 @@
 "use client";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { H4 } from "@/components/ui/typography";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const MAX_SCROLL = 80;
 const MIN_SCROLL = 5;

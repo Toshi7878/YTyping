@@ -5,9 +5,9 @@ import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
 import { cn } from "@/lib/utils";
 import type { Updater } from "@/utils/types";
-import { getUtilityRefParams } from "../../atoms/ref";
-import { getBuiltMap } from "../../atoms/state";
+import { getBuiltMap } from "../../atoms/built-map";
 import { getTypingGameAtomStore } from "../../atoms/store";
+import { getRankingData } from "../ranking/get-ranking-result";
 import type { LabelType } from "./status-card";
 
 const store = getTypingGameAtomStore();
@@ -47,8 +47,9 @@ export const resetTypingStatus = () => {
   store.set(typingStatusAtom, RESET);
   const map = getBuiltMap();
   setTypingStatus((prev) => ({ ...prev, line: map?.typingLineIndexes.length ?? 0 }));
-  const { rankingScores } = getUtilityRefParams();
-  setTypingStatus((prev) => ({ ...prev, rank: rankingScores.length + 1 }));
+
+  const ranking = getRankingData();
+  setTypingStatus((prev) => ({ ...prev, rank: ranking.length + 1 }));
 };
 
 interface StatusCellProps {

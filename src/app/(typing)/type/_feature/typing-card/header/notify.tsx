@@ -1,14 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
+import { useAtomValue } from "jotai/react";
+import { atom } from "jotai/vanilla";
 import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
-import { setNotify, useNotifyState, useReplayRankingResultState } from "../../atoms/state";
+import { useReplayRankingResultState } from "../../atoms/replay";
+import { getTypingGameAtomStore } from "../../atoms/store";
 import { useSceneState } from "../typing-card";
+
+const store = getTypingGameAtomStore();
+const notifyAtom = atom(Symbol(""));
+export const setNotify = (value: symbol) => store.set(notifyAtom, value);
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 export const PlayingNotify = () => {
-  const notify = useNotifyState();
+  const notify = useAtomValue(notifyAtom);
   const scene = useSceneState();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -78,13 +85,13 @@ export const PlayingNotify = () => {
 };
 
 const NonAnimatedNotifyText = ({ description }: { description: string }) => {
-  const replayUserRankingResult = useReplayRankingResultState();
+  const replayRankingResult = useReplayRankingResultState();
 
   switch (description) {
     case "ll":
       return <FaPause />;
     case "Replay":
-      return `${replayUserRankingResult?.player.name ?? "Unknown"} Replay`;
+      return `${replayRankingResult?.player.name ?? "Unknown"} Replay`;
     case "Practice":
       return "Practice";
   }

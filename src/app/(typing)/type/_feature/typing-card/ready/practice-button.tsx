@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";

@@ -3,8 +3,9 @@ import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useBuiltMapState, useYTStartedState } from "../atoms/state";
+import { useBuiltMapState } from "../atoms/built-map";
 import { getTypingGameAtomStore } from "../atoms/store";
+import { useYTStartedState } from "../youtube/youtube-player";
 import { EternalCustomStyle, LineCustomStyle } from "./custom-style";
 import { EndScene } from "./end/end-scene";
 import { FooterButtons } from "./footer/buttons";
@@ -12,9 +13,10 @@ import { PlaybackTimeDisplay } from "./footer/playback-time";
 import { SkipGuideMessage } from "./footer/skip";
 import { TotalTimeProgress } from "./footer/total-time-progress";
 import { Combo } from "./header/combo";
+import { LineKpm } from "./header/line-kpm";
 import { LineTimeProgress } from "./header/line-time-progress";
-import { LineRemainTimeAndKpm } from "./header/linekpm-and-remain-time";
 import { PlayingNotify } from "./header/notify";
+import { LineRemainTime } from "./header/remain-time";
 import { PracticeLineSheet } from "./playing/line-practice/line-practice-sheet";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
@@ -44,9 +46,9 @@ const sceneGroupAtom = atom((get) => {
   }
 });
 
-export const useSceneState = () => useAtomValue(sceneAtom, { store });
+export const useSceneState = () => useAtomValue(sceneAtom);
 export const getScene = () => store.get(sceneAtom);
-export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
+export const useSceneGroupState = () => useAtomValue(sceneGroupAtom);
 export const getSceneGroup = () => store.get(sceneGroupAtom);
 
 export const setScene = (value: Extract<SceneType, "ready" | "play" | "practice" | "replay">) =>
@@ -93,7 +95,13 @@ const GameCardHeader = ({ className }: { className?: string }) => {
       >
         <Combo />
         <PlayingNotify />
-        <LineRemainTimeAndKpm />
+        <div className="whitespace-nowrap">
+          <LineKpm />
+          <span className="ml-1 tracking-widest">kpm</span>
+          <span className="mx-3">-</span>
+          残り
+          <LineRemainTime className="mr-1" />秒
+        </div>
       </section>
       <LineTimeProgress id="line_progress" />
     </CardHeader>

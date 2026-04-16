@@ -1,7 +1,7 @@
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H4 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const HotKeySelectFields = () => {
   const { timeOffsetAdjustKey, InputModeToggleKey } = useTypingOptionsState();

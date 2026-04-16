@@ -1,24 +1,23 @@
 "use client";
 
+import { atom, type SetStateAction } from "jotai";
 import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
-import {
-  getBuiltMap,
-  readReplayRankingResult,
-  readUtilityParams,
-  useBuiltMapState,
-} from "@/app/(typing)/type/_feature/atoms/state";
+import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
-import { readTypingOptions } from "../../atoms/hydrate";
-import { readLineCount, readTypingStats, resetTypingStats, type TypingStats } from "../../atoms/ref";
-import { getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import { getReplayRankingResult } from "../../atoms/replay";
+import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
+import { getTypingGameAtomStore } from "../../atoms/store";
+import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
+import { getTypingOptions } from "../../tabs/setting/popover";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
+import { getIsPaused } from "../../youtube/youtube-player";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
 import { getScene, useSceneState } from "../typing-card";
 import { isHotKeyIgnored, playHotkey } from "./hotkey";
@@ -32,6 +31,14 @@ import { recalculateStatusFromResults } from "./update-status/recalc-from-result
 import { updateSuccessStatus, updateSuccessSubstatus } from "./update-status/success";
 import { updateTypingTime } from "./update-status/update-kpm";
 
+const store = getTypingGameAtomStore();
+const timeOffsetAtom = atom(0);
+export const getTimeOffset = () => store.get(timeOffsetAtom);
+export const setTimeOffset = (updater: SetStateAction<number>) => store.set(timeOffsetAtom, updater);
+const lineCountAtom = atom(0);
+export const getLineCount = () => store.get(lineCountAtom);
+export const setLineCount = (updater: SetStateAction<number>) => store.set(lineCountAtom, updater);
+
 interface PlayingProps {
   className: string;
 }
@@ -43,12 +50,12 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        const stats = readTypingStats();
+        const stats = getTypingStats();
         sendTypingStats(stats);
       }
     };
     const handleBeforeunload = () => {
-      const stats = readTypingStats();
+      const stats = getTypingStats();
       sendTypingStats(stats);
     };
 
@@ -71,7 +78,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       setTimerMaxFPS(59.99);
     }
 
-    const count = readLineCount();
+    const count = getLineCount();
     const nextLine = map?.lines[1];
     if (count === 0 && map && nextLine) {
       setNextLyricsAndKpm(nextLine);
@@ -98,7 +105,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       id="typing_scene"
       onTouchStart={() => {
         if (getActiveSkipKey()) {
-          const count = readLineCount();
+          const count = getLineCount();
           skipLine(count);
         }
       }}
@@ -111,7 +118,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  const { isPaused } = readUtilityParams();
+  const isPaused = getIsPaused();
   const scene = getScene();
 
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
@@ -121,10 +128,10 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const map = getBuiltMap();
     if (!map) return;
 
-    const typingOptions = readTypingOptions();
-    const { otherStatus } = readReplayRankingResult() ?? {};
+    const typingOptions = getTypingOptions();
+    const { otherStatus } = getReplayRankingResult() ?? {};
     const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
-    const { inputMode } = readUtilityParams();
+    const inputMode = getPlayingInputMode();
 
     handleTyping(
       { event, inputMode, isCaseSensitive, typingWord },
@@ -159,9 +166,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
             updateTypingTime({ constantLineTime });
           }
 
-          const count = readLineCount();
+          const count = getLineCount();
           if (hasLineResultImproved(count)) {
-            saveLineResult(count);
+            saveLineResult(count, constantLineTime);
           }
 
           if (scene === "practice") {

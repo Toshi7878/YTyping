@@ -2,15 +2,12 @@ import { DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSenso
 import { CSS } from "@dnd-kit/utilities";
 
 import { useState } from "react";
-import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
-import {
-  useBuiltMapState,
-  useLineSelectIndexState,
-  usePlayingInputModeState,
-} from "@/app/(typing)/type/_feature/atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
+import { useLineResultState, useSelectLineIndexState } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { usePlayingInputModeState } from "../../../../atoms/typing-word";
 import { moveSetLine } from "../../move-line";
 import { ResultCardContent } from "./card-content";
 import { ResultCardFooter } from "./card-footer";
@@ -44,7 +41,7 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
     id: "practice-line-card",
   });
   const map = useBuiltMapState();
-  const lineSelectIndex = useLineSelectIndexState();
+  const lineSelectIndex = useSelectLineIndexState();
   const inputMode = usePlayingInputModeState();
 
   const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0] ?? 0;

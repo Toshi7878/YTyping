@@ -1,17 +1,14 @@
 "use client";
 import type { RefObject } from "react";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
-import {
-  useBuiltMapState,
-  useMediaSpeedState,
-  useMinMediaSpeedState,
-  usePlayingInputModeState,
-} from "@/app/(typing)/type/_feature/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { usePlayingInputModeState } from "../../../atoms/typing-word";
+import { useMediaSpeedState } from "../../../youtube/youtube-player";
 import { useSceneState } from "../../typing-card";
 import { ResultCardContent } from "./card-body";
 import { ResultCardFooter } from "./card-footer";
@@ -31,7 +28,6 @@ export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineD
   const map = useBuiltMapState();
   const scene = useSceneState();
   const playSpeed = useMediaSpeedState();
-  const minMediaSpeed = useMinMediaSpeedState();
   const inputMode = usePlayingInputModeState();
   const currentLine = map?.lines[count];
 
@@ -39,7 +35,7 @@ export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineD
 
   const { isSelected, lineResult } = _lineResult;
 
-  const lineSpeed = lineResult.status.speed > minMediaSpeed ? lineResult.status.speed : minMediaSpeed;
+  const lineSpeed = lineResult.status.speed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
   const lineTypeWord =

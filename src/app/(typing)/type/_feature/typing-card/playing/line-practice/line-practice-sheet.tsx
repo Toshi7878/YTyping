@@ -1,13 +1,21 @@
 "use client";
+import { atom } from "jotai";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { useLineFailureCountState, writePracticeLineItems } from "@/app/(typing)/type/_feature/atoms/ref";
-import { type BuiltMap, setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Table, TableBody } from "@/components/ui/table/table";
 import type { TypingLineResult } from "@/validator/result";
+import { setSelectLineIndex } from "../../../atoms/line-result";
+import { getTypingGameAtomStore } from "../../../atoms/store";
+import { useLineFailureCountState } from "../../../atoms/substatus";
 import { moveSetLine } from "../move-line";
 import { PracticeLineTableRow } from "./table-row";
+
+const store = getTypingGameAtomStore();
+const practiceLineElementsAtom = atom<HTMLElement[]>([]);
+export const getPracticeLineElements = () => store.get(practiceLineElementsAtom);
+const setPracticeLineElements = (elements: HTMLElement[]) => store.set(practiceLineElementsAtom, elements);
 
 const HOVER_EXTRA_WIDTH = 200;
 
@@ -25,14 +33,14 @@ export const PracticeLineSheet = () => {
   const lineItemsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
-    writePracticeLineItems(lineItemsRef.current);
+    setPracticeLineElements(lineItemsRef.current);
   }, []);
 
   const handleItemClick = (lineIndex: number) => {
     if (!map) return;
     const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
     moveSetLine(seekCount);
-    setLineSelectIndex(lineIndex);
+    setSelectLineIndex(lineIndex);
   };
 
   if (!width) return null;

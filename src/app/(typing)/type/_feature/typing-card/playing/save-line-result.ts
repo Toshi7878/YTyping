@@ -1,12 +1,16 @@
 import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
+import { countPerMinute } from "@/utils/math";
+import { getBuiltMap } from "../../atoms/built-map";
 import { readAllLineResult, setLineResult } from "../../atoms/line-result";
-import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../atoms/ref";
-import { getBuiltMap, readMediaSpeed, readUtilityParams } from "../../atoms/state";
-import { readCombo, readLineKpm } from "../../atoms/substatus";
-import { getTypingWord } from "../../atoms/typing-word";
+import { readLineSubstatus } from "../../atoms/line-substatus";
+import { getTypingSubstatus, setTypingSubstatus } from "../../atoms/substatus";
+import { getPlayingInputMode, getTypingWord } from "../../atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../tabs/typing-status/status-cell";
+import { getIsPaused, getMediaSpeed } from "../../youtube/youtube-player";
+import { getCombo } from "../header/combo";
+import { getLineKpm } from "../header/line-kpm";
 import { getScene } from "../typing-card";
 
 export const hasLineResultImproved = (count: number) => {
@@ -21,28 +25,30 @@ export const hasLineResultImproved = (count: number) => {
     (savedLineResult?.status.timeBonus ?? 0) +
     (savedLineResult?.status.missCount ?? 0) * MISS_PENALTY_POINT;
 
-  const { isPaused } = readUtilityParams();
+  const isPaused = getIsPaused();
+
   const scene = getScene();
 
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
   return currentLineScore >= savedLineScore && !isPaused && scene !== "replay" && playSpeed >= 1;
 };
 
-export const saveLineResult = (count: number) => {
+export const saveLineResult = (count: number, constantLineTime: number) => {
   const { lostWord, actualLostNotes, pointLostNotes } = generateLostWord();
   const map = getBuiltMap();
   if (!map) return;
 
   if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
   if (pointLostNotes > 0) {
-    const { clearRate } = readTypingSubstatus();
-    writeTypingSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
+    const { clearRate } = getTypingSubstatus();
+    setTypingSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
   }
 
   const typingStatus = getTypingStatus();
-  const { missCount, typeCount, types, startSpeed, startInputMode, rkpm } = readLineSubstatus();
+  const { missCount, typeCount, types, startSpeed, startInputMode } = readLineSubstatus();
+  const lineRkpm = countPerMinute(typeCount, Math.max(0, constantLineTime - (types[0]?.time ?? 0)));
   const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
-  const { totalTypeTime } = readTypingSubstatus();
+  const { totalTypeTime } = getTypingSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 
   const typingWord = getTypingWord();
@@ -64,11 +70,11 @@ export const saveLineResult = (count: number) => {
             missCount,
             typedHiragana: map.isCaseSensitive ? typingWord.correct.kana : typingWord.correct.kana.toLowerCase(),
             lostHiragana: lostHiraganaJoined,
-            rkpm,
-            kpm: readLineKpm(),
+            rkpm: lineRkpm,
+            kpm: getLineKpm(),
             lostWord,
             lostCount: actualLostNotes,
-            combo: readCombo(),
+            combo: getCombo(),
             typingTime: roundedTotalTypeTime,
             mode: startInputMode,
             speed: startSpeed,
@@ -77,7 +83,7 @@ export const saveLineResult = (count: number) => {
         }
       : {
           status: {
-            combo: readCombo(),
+            combo: getCombo(),
             typingTime: roundedTotalTypeTime,
             mode: startInputMode,
             speed: startSpeed,
@@ -99,7 +105,7 @@ const generateLostWord = () => {
   const { nextChar, remainWord } = createDisplayWord(typingWord);
   const pointLostNotes = !isCompleted ? typingWord.nextChunk.point / CHAR_POINT + remainWord.roma.length : 0;
 
-  const { inputMode } = readUtilityParams();
+  const inputMode = getPlayingInputMode();
   switch (inputMode) {
     case "roma": {
       const romaLostWord = nextChar.roma + remainWord.roma;

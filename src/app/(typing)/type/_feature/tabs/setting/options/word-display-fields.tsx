@@ -1,12 +1,12 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const WORD_OPTIONS_CONFIG = {
   fontSize: {

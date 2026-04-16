@@ -1,6 +1,6 @@
+import { getBuiltMap } from "../../../atoms/built-map";
 import { readAllLineResult } from "../../../atoms/line-result";
-import { writeTypingSubstatus } from "../../../atoms/ref";
-import { getBuiltMap } from "../../../atoms/state";
+import { setTypingSubstatus } from "../../../atoms/substatus";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
@@ -68,7 +68,7 @@ export const recalculateStatusFromResults = ({
     newStatus.timeBonus = 0;
   }
 
-  writeTypingSubstatus({
+  setTypingSubstatus({
     totalTypeTime: lineResult?.status.typingTime,
     completeCount: completeLineCount,
     failureCount: failureLineCount,

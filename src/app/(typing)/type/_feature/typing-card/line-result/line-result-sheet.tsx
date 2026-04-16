@@ -1,9 +1,10 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
 import { type RefObject, useRef, useState } from "react";
-import { setLineSelectIndex, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { TypingLineResult } from "@/validator/result";
+import { setSelectLineIndex } from "../../atoms/line-result";
 import { moveSetLine } from "../playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 
@@ -14,7 +15,7 @@ export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpe
     const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
 
     moveSetLine(seekCount);
-    setLineSelectIndex(lineIndex);
+    setSelectLineIndex(lineIndex);
   };
 
   return (
@@ -70,7 +71,7 @@ export const EndResultLineSheet = ({ trigger }: { trigger: React.ReactNode }) =>
     if (!ticker.started) {
       ticker.add(handleTick);
       ticker.start();
-      setLineSelectIndex(lineIndex);
+      setSelectLineIndex(lineIndex);
     }
   };
 

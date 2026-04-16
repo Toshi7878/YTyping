@@ -1,14 +1,10 @@
 import { readReadyInputMode } from "@/lib/atoms/global-atoms";
-import { writeUtilityRefParams } from "../../atoms/ref";
-import {
-  readMediaSpeed,
-  resetReplayRankingResult,
-  setMinMediaSpeed,
-  setNotify,
-  setPlayingInputMode,
-} from "../../atoms/state";
+import { resetReplayRankingResult } from "../../atoms/replay";
+import { setPlayingInputMode } from "../../atoms/typing-word";
 import { setYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
+import { getMediaSpeed, setMinMediaSpeed } from "../../youtube/youtube-player";
+import { setNotify } from "../header/notify";
 import { getScene, setScene } from "../typing-card";
 
 export const commitPlayModeChange = () => {
@@ -21,14 +17,13 @@ export const commitPlayModeChange = () => {
   } else {
     const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
     if (window.confirm(confirmMessage)) {
-      writeUtilityRefParams({ replayKeyCount: 0 });
       resetReplayRankingResult();
 
       if (scene === "replay") {
         const readyInputMode = readReadyInputMode();
         setPlayingInputMode(readyInputMode);
       }
-      const mediaSpeed = readMediaSpeed();
+      const mediaSpeed = getMediaSpeed();
 
       const newMediaSpeed = mediaSpeed < 1 ? 1 : mediaSpeed;
       setMinMediaSpeed(newMediaSpeed);

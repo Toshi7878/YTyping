@@ -1,7 +1,8 @@
-import { readTypingOptions } from "../atoms/hydrate";
-import { getUtilityRefParams, readLineCount } from "../atoms/ref";
-import { getBuiltMap, readMediaSpeed } from "../atoms/state";
+import { getBuiltMap } from "../atoms/built-map";
 import { getYTCurrentTime } from "../atoms/youtube-player";
+import { getTypingOptions } from "../tabs/setting/popover";
+import { getLineCount, getTimeOffset } from "../typing-card/playing/playing-scene";
+import { getMediaSpeed } from "./youtube-player";
 
 export const getLineTime = () => {
   const currentTime = getCurrentOffsettedYTTime();
@@ -29,10 +30,10 @@ export const getRemainLineTime = () => {
 };
 
 const getCurrentOffsettedYTTime = () => {
-  const { timeOffset } = getUtilityRefParams();
+  const timeOffset = getTimeOffset();
   const map = getBuiltMap();
   if (!map) return 0;
-  const typingOptions = readTypingOptions();
+  const typingOptions = getTypingOptions();
   const YTCurrentTime = getYTCurrentTime();
   if (!YTCurrentTime) return 0;
 
@@ -41,21 +42,21 @@ const getCurrentOffsettedYTTime = () => {
 };
 
 const getConstantOffsettedYTTime = ({ currentTime }: { currentTime: number }) => {
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
   return currentTime / playSpeed;
 };
 
 const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
   const map = getBuiltMap();
   if (!map) return 0;
-  const count = readLineCount();
+  const count = getLineCount();
 
   const currentLine = map.lines[count];
   return currentTime - Number(currentLine?.time);
 };
 
 const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) => {
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
 
   const lineConstantTime = Math.floor((currentLineTime / playSpeed) * 1000) / 1000;
   return lineConstantTime;
@@ -65,11 +66,11 @@ const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: num
   const map = getBuiltMap();
   if (!map) return 0;
 
-  const count = readLineCount();
+  const count = getLineCount();
   const currentLine = map.lines[count];
   if (!currentLine) return 0;
 
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
 
   const constantLineDuration = currentLine.duration / playSpeed;
   return constantLineDuration - constantLineTime;

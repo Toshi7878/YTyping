@@ -1,13 +1,25 @@
+import { useAtomValue } from "jotai";
 import { atom, type ExtractAtomValue } from "jotai/vanilla";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
-import { createDisplayWord, replaceAllSpaceWithThreePerEmSpace, type TypingWord } from "lyrics-typing-engine";
+import {
+  createDisplayWord,
+  type InputMode,
+  replaceAllSpaceWithThreePerEmSpace,
+  type TypingWord,
+} from "lyrics-typing-engine";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
-import { readTypingOptions, wordDisplayAtom } from "./hydrate";
-import { readLineCount } from "./ref";
-import { getBuiltMap, playingInputModeAtom, readUtilityParams } from "./state";
+import { getTypingOptions, wordDisplayOptionAtom } from "../tabs/setting/popover";
+import { getLineCount } from "../typing-card/playing/playing-scene";
+import { getBuiltMap } from "./built-map";
 import { getTypingGameAtomStore } from "./store";
 
 const store = getTypingGameAtomStore();
+
+const playingInputModeAtom = atom<InputMode>("roma");
+
+export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom);
+export const getPlayingInputMode = () => store.get(playingInputModeAtom);
+export const setPlayingInputMode = (value: InputMode) => store.set(playingInputModeAtom, value);
 
 const typingWordAtom = atomWithReset<TypingWord>({
   correct: { kana: "", roma: "" },
@@ -48,7 +60,7 @@ store.sub(typingWordAtom, () => {
 
   if (main && sub) {
     const { correct } = updateWordDisplay(typingWord, main, sub);
-    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = readTypingOptions();
+    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
 
     applyScroll(main, sub, correct.kana, correct.roma, {
       isSmoothScroll,
@@ -67,7 +79,7 @@ store.sub(playingInputModeAtom, () => {
     updateWordDisplay(typingWord, main, sub);
   }
 });
-store.sub(wordDisplayAtom, () => {
+store.sub(wordDisplayOptionAtom, () => {
   const typingWord = store.get(typingWordAtom);
   const main = store.get(mainWordElementsAtom);
   const sub = store.get(subWordElementsAtom);
@@ -109,8 +121,8 @@ const updateWordDisplay = (
     nextWordRef: HTMLSpanElement;
   },
 ) => {
-  const { wordDisplay, lineCompletedDisplay } = readTypingOptions();
-  const { inputMode } = readUtilityParams();
+  const { wordDisplay, lineCompletedDisplay } = getTypingOptions();
+  const inputMode = getPlayingInputMode();
   const isMainKana = wordDisplay.startsWith("KANA_") || inputMode === "kana";
   const { correct, nextChar, remainWord } = createDisplayWord(typingWord, { remainWord: { maxLength: 60 } });
 
@@ -172,7 +184,7 @@ const updateWordDisplay = (
 
     if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
       const builtMap = getBuiltMap();
-      const count = readLineCount();
+      const count = getLineCount();
       const nextLine = builtMap?.lines[count + 1];
       if (nextLine && main && sub) {
         const { kanaLyrics, romaLyrics } = nextLine;

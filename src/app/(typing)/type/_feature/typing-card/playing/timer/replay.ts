@@ -1,20 +1,18 @@
 import { executeTypingInput, type InputMode, type TypingWord } from "lyrics-typing-engine";
-import { readLineCount } from "@/app/(typing)/type/_feature/atoms/ref";
-import {
-  readMinMediaSpeed,
-  readReplayRankingResult,
-  readUtilityParams,
-} from "@/app/(typing)/type/_feature/atoms/state";
 import {
   applyKanaInputMode,
   applyRomaInputMode,
 } from "@/app/(typing)/type/_feature/typing-card/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../../atoms/line-result";
-import { setCombo, setLineKpm } from "../../../atoms/substatus";
-import { getTypingWord, setTypingWord } from "../../../atoms/typing-word";
+import { getReplayRankingResult } from "../../../atoms/replay";
+import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../lib/sound-effect";
+import { getMinMediaSpeed } from "../../../youtube/youtube-player";
+import { setCombo } from "../../header/combo";
+import { setLineKpm } from "../../header/line-kpm";
+import { getLineCount } from "../playing-scene";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";
@@ -28,10 +26,10 @@ export const simulateTypingInput = ({
   constantLineTime: number;
   constantRemainLineTime: number;
 }) => {
-  const replayRankingResult = readReplayRankingResult();
+  const replayRankingResult = getReplayRankingResult();
   const isCaseSensitive = replayRankingResult?.otherStatus.isCaseSensitive ?? false;
 
-  const { inputMode } = readUtilityParams();
+  const inputMode = getPlayingInputMode();
   const typingWord = getTypingWord();
 
   evaluateInput(typeResult, inputMode, typingWord, isCaseSensitive, {
@@ -52,7 +50,7 @@ export const simulateTypingInput = ({
     },
     onLineCompleted: () => {
       const lineResults = readAllLineResult();
-      const count = readLineCount();
+      const count = getLineCount();
       const lineResult = lineResults[count];
 
       recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
@@ -68,7 +66,7 @@ export const simulateTypingInput = ({
           applyKanaInputMode();
           break;
         case "speedChange": {
-          const minPlaySpeed = readMinMediaSpeed();
+          const minPlaySpeed = getMinMediaSpeed();
           cycleYTPlaybackRate({ minSpeed: minPlaySpeed });
           break;
         }

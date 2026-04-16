@@ -1,17 +1,13 @@
 import type { WordChunk } from "lyrics-typing-engine";
 import { countPerMinute } from "@/utils/math";
-import {
-  readLineSubstatus,
-  readTypingStats,
-  readTypingSubstatus,
-  writeLineSubstatus,
-  writeTypingStats,
-  writeTypingSubstatus,
-} from "../../../atoms/ref";
-import { readMediaSpeed, readUtilityParams } from "../../../atoms/state";
-import { readCombo, setCombo, setLineKpm } from "../../../atoms/substatus";
-import { getTypingWord } from "../../../atoms/typing-word";
+import { readLineSubstatus, writeLineSubstatus } from "../../../atoms/line-substatus";
+import { getTypingStats, setTypingStats } from "../../../atoms/stats";
+import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
+import { getPlayingInputMode, getTypingWord } from "../../../atoms/typing-word";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
+import { getIsPaused, getMediaSpeed } from "../../../youtube/youtube-player";
+import { getCombo, setCombo } from "../../header/combo";
+import { setLineKpm } from "../../header/line-kpm";
 import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
 
@@ -26,14 +22,14 @@ export const updateSuccessStatus = ({
   updatePoint: number;
   constantLineTime: number;
 }) => {
-  const playSpeed = readMediaSpeed();
-  const { isPaused } = readUtilityParams();
+  const playSpeed = getMediaSpeed();
+  const isPaused = getIsPaused();
 
   // KPM計算用の状態取得
   // Note: updateSuccessSubstatusより先に実行されるため、現在のlineTypeCountは加算前の値です。
   // そのため、計算には +1 した値を使用します。
   const { typeCount: lineTypeCount } = readLineSubstatus();
-  const { totalTypeTime } = readTypingSubstatus();
+  const { totalTypeTime } = getTypingSubstatus();
 
   if (!isPaused) {
     const newLineKpm = countPerMinute(lineTypeCount + 1, constantLineTime);
@@ -76,8 +72,8 @@ export const updateSuccessSubstatus = ({
 
   // 現在の状態を一度だけ読み込む
   const currentLineSubstatus = readLineSubstatus();
-  const currentSubstatus = readTypingSubstatus();
-  const currentUserStats = readTypingStats();
+  const currentSubstatus = getTypingSubstatus();
+  const currentUserStats = getTypingStats();
 
   // 更新用の一時オブジェクト（差分のみ保持）
   const diffLineSubstatus: Partial<typeof currentLineSubstatus> = {};
@@ -88,18 +84,18 @@ export const updateSuccessSubstatus = ({
   diffSubstatus.missCombo = 0;
 
   // 2. 行開始時の処理
-  if (currentLineSubstatus.typeCount === 0) {
-    diffLineSubstatus.latency = constantLineTime;
-    diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
-    if (isCompleted) {
-      const { latency: lineLatency, typeCount: lineTypeCount } = readLineSubstatus();
-      const lineRkpm = countPerMinute(lineTypeCount, constantLineTime - lineLatency);
-      diffSubstatus.rkpm = lineRkpm;
-    }
-  }
+  // if (currentLineSubstatus.typeCount === 0) {
+  //   diffLineSubstatus.latency = constantLineTime;
+  //   diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
+  //   if (isCompleted) {
+  //     const { latency: lineLatency, typeCount: lineTypeCount } = readLineSubstatus();
+  //     const lineRkpm = countPerMinute(lineTypeCount, constantLineTime - lineLatency);
+  //     diffSubstatus.rkpm = lineRkpm;
+  //   }
+  // }
 
   // 3. MaxComboの更新
-  const newCombo = readCombo() + 1;
+  const newCombo = getCombo() + 1;
   if (scene === "play") {
     if (newCombo > currentSubstatus.maxCombo) {
       diffSubstatus.maxCombo = newCombo;
@@ -124,7 +120,7 @@ export const updateSuccessSubstatus = ({
     diffLineSubstatus.types = [...currentTypes, { char: successKey, isCorrect: true, time: constantLineTime }];
 
     if (chunkType === "kana") {
-      const { inputMode } = readUtilityParams();
+      const inputMode = getPlayingInputMode();
       if (inputMode === "roma") {
         diffUserStats.romaType = currentUserStats.romaType + 1;
         diffSubstatus.romaType = currentSubstatus.romaType + 1;
@@ -152,12 +148,12 @@ export const updateSuccessSubstatus = ({
 
   // まとめてAtomを更新する（回数を削減）
   if (Object.keys(diffSubstatus).length > 0) {
-    writeTypingSubstatus(diffSubstatus);
+    setTypingSubstatus(diffSubstatus);
   }
   if (Object.keys(diffLineSubstatus).length > 0) {
     writeLineSubstatus(diffLineSubstatus);
   }
   if (Object.keys(diffUserStats).length > 0) {
-    writeTypingStats(diffUserStats);
+    setTypingStats(diffUserStats);
   }
 };

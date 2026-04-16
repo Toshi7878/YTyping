@@ -4,8 +4,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { useMediaSpeedState } from "../../atoms/state";
 import { stepYTPlaybackRate } from "../../atoms/youtube-player";
+import { useMediaSpeedState } from "../../youtube/youtube-player";
 
 const hotKeyOptions = {
   enableOnFormTags: false,

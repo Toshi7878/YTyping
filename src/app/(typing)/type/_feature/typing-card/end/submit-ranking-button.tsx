@@ -2,14 +2,15 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { readAllLineResult } from "@/app/(typing)/type/_feature/atoms/line-result";
-import { readTypingSubstatus, type TypingSubstatus } from "@/app/(typing)/type/_feature/atoms/ref";
-import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
 import type { TypingLineResult } from "@/validator/result";
-import { readMapId, readTypingOptions, type TypingOptions } from "../../atoms/hydrate";
+import { readMapId } from "../../atoms/hydrate";
+import { getTypingSubstatus, type TypingSubstatus } from "../../atoms/substatus";
+import { getTypingOptions, type TypingOptions } from "../../tabs/setting/popover";
 import { setTabName } from "../../tabs/tabs";
 import { getTypingStatus, type TypingStatus } from "../../tabs/typing-status/status-cell";
 import { useRegisterRankingMutation } from "./register-ranking";
@@ -50,11 +51,11 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
         });
 
     if (isConfirmed) {
-      const typingSubStatus = readTypingSubstatus();
+      const typingSubStatus = getTypingSubstatus();
       const lineResults = readAllLineResult();
       const typingStatus = getTypingStatus();
       const builtMap = getBuiltMap();
-      const typingOptions = readTypingOptions();
+      const typingOptions = getTypingOptions();
 
       registerRanking.mutate({
         mapId,
@@ -87,7 +88,6 @@ const buildResultData = (
 ) => {
   const {
     totalTypeTime,
-    totalLatency,
     kanaToRomaConvertCount,
     clearRate,
     romaType,
@@ -99,6 +99,7 @@ const buildResultData = (
     numType,
     maxCombo,
   } = typingSubStatus;
+  const totalLatency = getTotalLatency(lineResults);
   const minPlaySpeed = Math.min(...lineResults.flatMap(({ status }) => (status?.typingTime ? [status.speed] : [])));
   const rkpmTime = totalTypeTime - totalLatency;
 
@@ -123,3 +124,6 @@ const buildResultData = (
     isCaseSensitive: !!builtMap?.hasAlphabet && (builtMap.isCaseSensitive || typingOptions.isCaseSensitive),
   };
 };
+
+const getTotalLatency = (lineResults: TypingLineResult[]) =>
+  lineResults.reduce((acc, { types }) => acc + (types[0]?.time ?? 0), 0);

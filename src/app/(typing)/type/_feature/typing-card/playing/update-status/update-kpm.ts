@@ -1,18 +1,14 @@
-import {
-  readLineSubstatus,
-  readTypingStats,
-  readTypingSubstatus,
-  writeTypingStats,
-  writeTypingSubstatus,
-} from "../../../atoms/ref";
+import { readLineSubstatus } from "../../../atoms/line-substatus";
+import { getTypingStats, setTypingStats } from "../../../atoms/stats";
+import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 
 export const updateTypingTime = ({ constantLineTime }: { constantLineTime: number }) => {
-  const { totalTypeTime } = readTypingSubstatus();
-  writeTypingSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
+  const { totalTypeTime } = getTypingSubstatus();
+  setTypingSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
 
   const { typeCount: lineTypeCount } = readLineSubstatus();
   if (lineTypeCount !== 0) {
-    const { typingTime } = readTypingStats();
-    writeTypingStats({ typingTime: typingTime + constantLineTime });
+    const { typingTime } = getTypingStats();
+    setTypingStats({ typingTime: typingTime + constantLineTime });
   }
 };

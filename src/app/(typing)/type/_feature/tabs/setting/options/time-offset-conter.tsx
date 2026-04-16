@@ -1,6 +1,6 @@
 "use client";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { CounterInput } from "@/components/ui/counter";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const MAX_TIME_OFFSET = 1;
 const MIN_TIME_OFFSET = -1;

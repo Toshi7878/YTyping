@@ -1,11 +1,12 @@
 import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
 import type { BuiltMapLine } from "lyrics-typing-engine";
-import { readTypingOptions } from "../../atoms/hydrate";
-import { getUtilityRefParams } from "../../atoms/ref";
-import { getBuiltMap, readMediaSpeed } from "../../atoms/state";
+import { getBuiltMap } from "../../atoms/built-map";
 import { getTypingGameAtomStore } from "../../atoms/store";
 import { seekYTPlayer } from "../../atoms/youtube-player";
+import { getTypingOptions } from "../../tabs/setting/popover";
+import { getMediaSpeed } from "../../youtube/youtube-player";
+import { getTimeOffset } from "../playing/playing-scene";
 
 type SkipKey = "Space" | null;
 
@@ -61,11 +62,11 @@ const getSkipSeekTimeWithEnd = (nextLine: BuiltMapLine) => {
   if (!map) throw new Error("not found map");
   if (nextLine.lyrics !== "end") throw new Error("not end line");
 
-  const { timeOffset } = getUtilityRefParams();
-  const userOptions = readTypingOptions();
-  const playSpeed = readMediaSpeed();
+  const timeOffset = getTimeOffset();
+  const typingOptions = getTypingOptions();
+  const playSpeed = getMediaSpeed();
 
-  const skippedTime = nextLine.time + userOptions.timeOffset + timeOffset;
+  const skippedTime = nextLine.time + typingOptions.timeOffset + timeOffset;
 
   return skippedTime - 2 + 2 - playSpeed;
 };
@@ -74,11 +75,11 @@ const getSeekTimeWithLineIndex = (lineIndex: number) => {
   const map = getBuiltMap();
   const line = map?.lines[lineIndex];
   if (!line) throw new Error("not found line");
-  const { timeOffset } = getUtilityRefParams();
-  const userOptions = readTypingOptions();
-  const playSpeed = readMediaSpeed();
+  const timeOffset = getTimeOffset();
+  const typingOptions = getTypingOptions();
+  const playSpeed = getMediaSpeed();
 
-  const skippedTime = line.time + userOptions.timeOffset + timeOffset;
+  const skippedTime = line.time + typingOptions.timeOffset + timeOffset;
 
   return skippedTime - 1 + 1 - playSpeed;
 };

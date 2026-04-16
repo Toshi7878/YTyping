@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useMapIdState } from "../../atoms/hydrate";
-import { writeUtilityRefParams } from "../../atoms/ref";
 import { useSceneGroupState } from "../../typing-card/typing-card";
 import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
@@ -38,7 +37,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     if (!data) return;
 
     const scores = data.map((result) => result.score);
-    writeUtilityRefParams({ rankingScores: scores });
 
     if (sceneGroup !== "Ready") return;
     setTypingStatus((prev) => ({ ...prev, rank: scores.length + 1 }));

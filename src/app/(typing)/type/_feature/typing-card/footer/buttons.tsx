@@ -3,19 +3,19 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import {
-  readMinMediaSpeed,
-  useIsPausedState,
-  useMediaSpeedState,
-  useYTStartedState,
-} from "@/app/(typing)/type/_feature/atoms/state";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
-import { useTypingOptionsState } from "../../atoms/hydrate";
 import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
+import { useTypingOptionsState } from "../../tabs/setting/popover";
+import {
+  getMinMediaSpeed,
+  useIsPausedState,
+  useMediaSpeedState,
+  useYTStartedState,
+} from "../../youtube/youtube-player";
 import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";
@@ -89,7 +89,7 @@ const SpeedButton = () => {
       buttonLabel={`${playSpeed.toFixed(2)}倍速`}
       kbdLabel="F10"
       onClick={() => {
-        const minMediaSpeed = readMinMediaSpeed();
+        const minMediaSpeed = getMinMediaSpeed();
         cycleYTPlaybackRate({ minSpeed: minMediaSpeed });
       }}
       disabled={isPaused || scene === "replay"}

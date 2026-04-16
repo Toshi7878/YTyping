@@ -17,14 +17,14 @@ import {
 } from "@/lib/build-map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { useTypingOptionsState } from "./atoms/hydrate";
-import { initializeAllLineResult } from "./atoms/line-result";
-import { readTypingStats } from "./atoms/ref";
-import { resetAllStateOnCleanup } from "./atoms/reset";
-import { setBuiltMap, setLineSelectIndex } from "./atoms/state";
+import { setBuiltMap } from "./atoms/built-map";
+import { initializeAllLineResult, setSelectLineIndex } from "./atoms/line-result";
+import { getTypingStats } from "./atoms/stats";
+import { resetTypingGameStore } from "./atoms/store";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { mutateTypingStats } from "./lib/stats";
+import { useTypingOptionsState } from "./tabs/setting/popover";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
@@ -77,7 +77,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       };
       setBuiltMap(builtMap);
       initializeAllLineResult(builtMap.initialLineResults);
-      setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
+      setSelectLineIndex(builtMap.typingLineIndexes?.[0] ?? 0);
       setTypingStatus((prev) => ({ ...prev, line: builtMapLines.length }));
       resetTypingStatus();
       setTotalProgressMax(builtMap.duration);
@@ -89,10 +89,10 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     return () => {
       const scene = getScene();
       if (scene === "play" || scene === "practice") {
-        const stats = readTypingStats();
+        const stats = getTypingStats();
         mutateTypingStats(stats);
       }
-      resetAllStateOnCleanup();
+      resetTypingGameStore();
     };
   }, [pathname]);
 

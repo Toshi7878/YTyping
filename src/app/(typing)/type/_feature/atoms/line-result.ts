@@ -2,6 +2,7 @@ import deepEqual from "fast-deep-equal";
 import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai-family";
 import type { TypingLineResult } from "@/validator/result";
+import { getBuiltMap } from "./built-map";
 import { getTypingGameAtomStore } from "./store";
 
 const store = getTypingGameAtomStore();
@@ -57,4 +58,26 @@ export const clearAllLineResult = () => {
       break;
     }
   }
+};
+
+const lineSelectIndexAtom = atom(0);
+export const useSelectLineIndexState = () => useAtomValue(lineSelectIndexAtom);
+export const getSelectLineIndex = () => store.get(lineSelectIndexAtom);
+export const setSelectLineIndex = (lineIndex: number) => {
+  const map = getBuiltMap();
+  if (!map) return;
+
+  const count = map.typingLineIndexes[lineIndex - 1];
+  if (count === undefined) return;
+
+  const prevSelectedIndex = store.get(lineSelectIndexAtom);
+  if (prevSelectedIndex !== null && prevSelectedIndex !== lineIndex) {
+    const prevCount = map.typingLineIndexes[prevSelectedIndex - 1];
+    if (prevCount !== undefined) {
+      setLineResultSelected({ index: prevCount, isSelected: false });
+    }
+  }
+
+  store.set(lineSelectIndexAtom, lineIndex);
+  setLineResultSelected({ index: count, isSelected: true });
 };

@@ -3,9 +3,10 @@ import { useAtomValue } from "jotai/react";
 import { atomWithReset } from "jotai/vanilla/utils";
 import type { BuiltMapLine } from "lyrics-typing-engine";
 import { cn } from "@/lib/utils";
-import { readTypingOptions } from "../../atoms/hydrate";
-import { getPlayingInputMode, readMediaSpeed } from "../../atoms/state";
 import { getTypingGameAtomStore } from "../../atoms/store";
+import { getPlayingInputMode } from "../../atoms/typing-word";
+import { getTypingOptions } from "../../tabs/setting/popover";
+import { getMediaSpeed } from "../../youtube/youtube-player";
 
 const nextLyricsAtom = atomWithReset("");
 
@@ -13,9 +14,9 @@ const nextKpmAtom = atomWithReset(0);
 
 const store = getTypingGameAtomStore();
 export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
-  const typingOptions = readTypingOptions();
+  const typingOptions = getTypingOptions();
   const inputMode = getPlayingInputMode();
-  const playSpeed = readMediaSpeed();
+  const playSpeed = getMediaSpeed();
   const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * playSpeed;
   const nextLyrics = typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics;
   if (line.kanaLyrics) {

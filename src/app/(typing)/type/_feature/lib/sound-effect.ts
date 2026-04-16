@@ -2,7 +2,7 @@ import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { readIsMobileDevice } from "@/lib/atoms/user-agent";
-import { readTypingOptions } from "../atoms/hydrate";
+import { getTypingOptions } from "../tabs/setting/popover";
 
 const manifest = [
   { alias: "type", src: "/wav/type.wav" },
@@ -13,7 +13,7 @@ const manifest = [
 type SoundAlias = (typeof manifest)[number]["alias"];
 
 export const triggerTypeSound = () => {
-  const typingOptions = readTypingOptions();
+  const typingOptions = getTypingOptions();
 
   if (typingOptions.typeSound) {
     playSound("type");
@@ -21,7 +21,7 @@ export const triggerTypeSound = () => {
 };
 
 export const triggerTypeCompletedSound = () => {
-  const typingOptions = readTypingOptions();
+  const typingOptions = getTypingOptions();
 
   if (typingOptions.completedTypeSound) {
     playSound("typeCompleted");
@@ -31,7 +31,7 @@ export const triggerTypeCompletedSound = () => {
 };
 
 export const triggerMissSound = () => {
-  if (readTypingOptions().missSound) {
+  if (getTypingOptions().missSound) {
     playSound("miss");
   }
 };

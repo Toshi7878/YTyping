@@ -1,10 +1,10 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_feature/atoms/hydrate";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const WindowDisplayField = () => {
   const { windowScaleWidth } = useTypingOptionsState();

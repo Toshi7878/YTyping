@@ -1,26 +1,31 @@
+import { atom, type SetStateAction } from "jotai";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
+import { type BuiltMap, getBuiltMap } from "../atoms/built-map";
 import { readMapId } from "../atoms/hydrate";
 import { initializeAllLineResult } from "../atoms/line-result";
-import {
-  getUtilityRefParams,
-  readTypingStats,
-  resetLineCount,
-  resetLineSubstatus,
-  resetTypingSubstatus,
-  writeUtilityRefParams,
-} from "../atoms/ref";
-import { type BuiltMap, getBuiltMap, resetReplayRankingResult, setNotify } from "../atoms/state";
-import { setCombo } from "../atoms/substatus";
+import { resetLineSubstatus } from "../atoms/line-substatus";
+import { resetReplayRankingResult } from "../atoms/replay";
+import { getTypingStats } from "../atoms/stats";
+import { getTypingGameAtomStore } from "../atoms/store";
+import { resetTypingSubstatus } from "../atoms/substatus";
 import { resetTypingWord } from "../atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
 import { setTabName } from "../tabs/tabs";
 import { getTypingStatus, resetTypingStatus } from "../tabs/typing-status/status-cell";
+import { setCombo } from "../typing-card/header/combo";
 import { setLineProgressMax, setLineProgressValue } from "../typing-card/header/line-time-progress";
+import { setNotify } from "../typing-card/header/notify";
 import { setLyrics } from "../typing-card/playing/lyrics";
 import { setNextLyricsAndKpm } from "../typing-card/playing/next-lyrics";
+import { setLineCount } from "../typing-card/playing/playing-scene";
 import { stopTimer } from "../typing-card/playing/timer/timer";
 import { getScene, type PlayingSceneType, setScene } from "../typing-card/typing-card";
 import { mutateTypingStats } from "./stats";
+
+const store = getTypingGameAtomStore();
+const retryCountAtom = atom(1);
+const getRetryCount = () => store.get(retryCountAtom);
+const setRetryCount = (updater: SetStateAction<number>) => store.set(retryCountAtom, updater);
 
 export const restartPlay = (newPlayMode: PlayingSceneType) => {
   const map = getBuiltMap();
@@ -28,16 +33,14 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
   if (!map || !nextLine) return;
   resetCurrentLine(map);
   setNextLyricsAndKpm(nextLine);
-  resetLineCount();
+  setLineCount(0);
   resetLineSubstatus();
-
-  writeUtilityRefParams({ replayKeyCount: 0 });
 
   const scene = getScene();
   const { type: totalTypeCount } = getTypingStatus();
 
   if (scene === "play" || scene === "practice") {
-    const stats = readTypingStats();
+    const stats = getTypingStats();
     mutateTypingStats(stats);
   }
 
@@ -46,14 +49,13 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
   switch (scene) {
     case "play": {
       if (totalTypeCount) {
-        const { retryCount } = getUtilityRefParams();
-        writeUtilityRefParams({ retryCount: retryCount + 1 });
+        setRetryCount((prev) => prev + 1);
         if (totalTypeCount >= 10 && mapId) {
           mutatePlayCountStats({ mapId });
         }
       }
 
-      const { retryCount } = getUtilityRefParams();
+      const retryCount = getRetryCount();
       setNotify(Symbol(`Retry(${retryCount})`));
       break;
     }

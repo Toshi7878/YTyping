@@ -1,12 +1,14 @@
 import { recreateTypingWord } from "lyrics-typing-engine";
-import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../../atoms/ref";
-import { getBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../../atoms/state";
-import { getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import { getBuiltMap } from "../../atoms/built-map";
+import { readLineSubstatus, writeLineSubstatus } from "../../atoms/line-substatus";
+import { getPlayingInputMode, getTypingWord, setPlayingInputMode, setTypingWord } from "../../atoms/typing-word";
 import { getLineTime } from "../../youtube/get-youtube-time";
+import { setNotify } from "../header/notify";
 import { setNextLyricsAndKpm } from "./next-lyrics";
+import { getLineCount } from "./playing-scene";
 
 export const togglePlayInputMode = () => {
-  const { inputMode } = readUtilityParams();
+  const inputMode = getPlayingInputMode();
 
   const newInputMode = inputMode === "kana" ? "roma" : "kana";
 
@@ -49,7 +51,7 @@ const updateNextLyrics = () => {
   const map = getBuiltMap();
   if (!map) return;
 
-  const count = readLineCount();
+  const count = getLineCount();
   const nextLine = map.lines[count + 1];
 
   if (nextLine?.kanaLyrics) {

@@ -1,15 +1,15 @@
-import { readLineSubstatus, readTypingSubstatus, writeTypingSubstatus } from "../../../atoms/ref";
-import { getBuiltMap } from "../../../atoms/state";
+import { getBuiltMap } from "../../../atoms/built-map";
+import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 import { getTypingWord } from "../../../atoms/typing-word";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { calcCurrentRank } from "./calc-current-rank";
 
-export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
+export const updateStatusForLineUpdate = () => {
   const map = getBuiltMap();
   if (!map) return;
   const typingWord = getTypingWord();
 
-  const currentSubstatus = readTypingSubstatus();
+  const currentSubstatus = getTypingSubstatus();
   const diffSubstatus: Partial<typeof currentSubstatus> = {};
 
   diffSubstatus.kanaToRomaConvertCount = currentSubstatus.kanaToRomaConvertCount + typingWord.correct.roma.length;
@@ -18,14 +18,9 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
 
   if (isFailed) {
     diffSubstatus.failureCount = currentSubstatus.failureCount + 1;
-
-    const { typeCount: lineTypeCount } = readLineSubstatus();
-    if (lineTypeCount === 0) {
-      diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
-    }
   }
 
-  writeTypingSubstatus(diffSubstatus);
+  setTypingSubstatus(diffSubstatus);
 
   setTypingStatus((prev) => {
     let { score, line, rank } = prev;

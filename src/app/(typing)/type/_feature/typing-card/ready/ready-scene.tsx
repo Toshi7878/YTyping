@@ -1,5 +1,5 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";

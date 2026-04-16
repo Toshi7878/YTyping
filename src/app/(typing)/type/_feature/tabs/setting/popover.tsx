@@ -1,13 +1,10 @@
+"use client";
 import { useMutation } from "@tanstack/react-query";
+import { type ExtractAtomValue, useAtomValue } from "jotai";
+import { atomWithReset, RESET } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  readTypingOptions,
-  resetTypingOptions,
-  setTypingOptions,
-  useTypingOptionsState,
-} from "@/app/(typing)/type/_feature/atoms/hydrate";
-import { getUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_feature/atoms/ref";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { SettingIconButton } from "@/components/ui/icon-button";
@@ -17,9 +14,11 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
+import { getTypingGameAtomStore } from "../../atoms/store";
 import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
 import { HotKeySelectFields } from "./options/hot-key-select-fields";
 import { SoundEffectFields } from "./options/sound-effect-fields";
@@ -27,6 +26,24 @@ import { TimeOffsetCounter } from "./options/time-offset-conter";
 import { WindowDisplayField } from "./options/window-display-field";
 import { WordDisplayFields } from "./options/word-display-fields";
 import { WordScrollFields } from "./options/word-scroll-fields";
+
+let isOptionEdited = false;
+
+const store = getTypingGameAtomStore();
+export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
+export type TypingOptions = ExtractAtomValue<typeof typingOptionsAtom>;
+export const wordDisplayOptionAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
+
+export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom);
+export const getTypingOptions = () => store.get(typingOptionsAtom);
+export const setTypingOptions = (newTypingOptions: Partial<TypingOptions>) => {
+  store.set(typingOptionsAtom, (prev) => ({ ...prev, ...newTypingOptions }));
+  isOptionEdited = true;
+};
+export const resetTypingOptions = () => {
+  store.set(typingOptionsAtom, RESET);
+  isOptionEdited = true;
+};
 
 export const SettingPopover = () => {
   const trpc = useTRPC();
@@ -38,12 +55,10 @@ export const SettingPopover = () => {
     setIsOpen(open);
 
     if (!open) {
-      const { isOptionEdited } = getUtilityRefParams();
-
       if (isOptionEdited) {
-        const typingOptions = readTypingOptions();
+        const typingOptions = getTypingOptions();
         updateTypingOptions.mutate(typingOptions);
-        writeUtilityRefParams({ isOptionEdited: false });
+        isOptionEdited = false;
       }
     }
   };

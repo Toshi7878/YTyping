@@ -1,6 +1,6 @@
 import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getBuiltMap } from "@/app/(typing)/type/_feature/atoms/state";
+import { getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { findClosestLowerOrEqual } from "@/utils/array";
 import { getTypingGameAtomStore } from "../atoms/store";
 

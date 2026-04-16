@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { readIsDesktopDevice } from "@/lib/atoms/user-agent";
 import { cycleMediaSpeed, getNextMediaSpeed } from "@/utils/media-speed-change";
-import { setMinMediaSpeed } from "./state";
+import { setMinMediaSpeed } from "../youtube/youtube-player";
 import { getTypingGameAtomStore } from "./store";
 
 const store = getTypingGameAtomStore();

@@ -1,4 +1,7 @@
 import { createStore } from "jotai";
 
-const store = createStore();
+let store = createStore();
 export const getTypingGameAtomStore = () => store;
+export const resetTypingGameStore = () => {
+ store = createStore()
+}

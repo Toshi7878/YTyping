@@ -1,8 +1,9 @@
-import { useStore } from "jotai";
+import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { useBuiltMapState, useMediaSpeedState } from "@/app/(typing)/type/_feature/atoms/state";
+import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { formatTime } from "@/utils/format-time";
-import { elapsedSecFormatTimeAtom } from "../../atoms/substatus";
+import { getTypingGameAtomStore } from "../../atoms/store";
+import { useMediaSpeedState } from "../../youtube/youtube-player";
 
 export const PlaybackTimeDisplay = () => {
   return (
@@ -12,11 +13,21 @@ export const PlaybackTimeDisplay = () => {
   );
 };
 
-const ElapsedTimeDisplay = () => {
-  const store = useStore();
+const store = getTypingGameAtomStore();
 
+const elapsedSecTimeAtom = atom(0);
+
+export const elapsedSecFormatTimeAtom = atom((get) => {
+  const elapsedSecTime = get(elapsedSecTimeAtom);
+  return formatTime(elapsedSecTime);
+});
+
+export const getElapsedSecTime = () => store.get(elapsedSecTimeAtom);
+export const setElapsedSecTime = (value: number) => store.set(elapsedSecTimeAtom, value);
+
+const ElapsedTimeDisplay = () => {
   return (
-    <uncontrolled.span id="elapsed_sec_time" atomStore={store}>
+    <uncontrolled.span id="media_elapsed_time" atomStore={store}>
       {elapsedSecFormatTimeAtom}
     </uncontrolled.span>
   );
@@ -28,5 +39,5 @@ const DurationDisplay = () => {
   if (!map) return;
   const totalTime = formatTime(map.duration / playSpeed);
 
-  return <span id="constant_duration_count">{totalTime}</span>;
+  return <span id="media_duration_time">{totalTime}</span>;
 };

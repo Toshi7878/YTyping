@@ -1,13 +1,16 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { readTypingOptions } from "../../atoms/hydrate";
-import { getUtilityRefParams, readLineCount, writeUtilityRefParams } from "../../atoms/ref";
-import { getBuiltMap, readMinMediaSpeed, readUtilityParams, setNotify } from "../../atoms/state";
+import { getBuiltMap } from "../../atoms/built-map";
+import { getSelectLineIndex } from "../../atoms/line-result";
 import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
+import { getTypingOptions } from "../../tabs/setting/popover";
+import { getIsPaused, getMinMediaSpeed } from "../../youtube/youtube-player";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
+import { setNotify } from "../header/notify";
 import { getScene } from "../typing-card";
 import { moveNextLine, movePrevLine, moveSetLine } from "./move-line";
 import { commitPlayModeChange } from "./play-scene-change";
+import { getLineCount, getTimeOffset, setTimeOffset } from "./playing-scene";
 import { togglePlayInputMode } from "./toggle-input-mode";
 
 const KEY_WHITE_LIST = ["F5"];
@@ -36,7 +39,7 @@ export const playHotkey = (event: KeyboardEvent) => {
     return;
   }
 
-  const typingOptions = readTypingOptions();
+  const typingOptions = getTypingOptions();
 
   const scene = getScene();
   const activeSkipKey = getActiveSkipKey();
@@ -47,7 +50,7 @@ export const playHotkey = (event: KeyboardEvent) => {
 
   if (event.code === activeSkipKey) {
     event.preventDefault();
-    const count = readLineCount();
+    const count = getLineCount();
     skipLine(count);
     return;
   }
@@ -55,10 +58,10 @@ export const playHotkey = (event: KeyboardEvent) => {
   switch (event.code) {
     case "ArrowRight":
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
-        const { timeOffset } = getUtilityRefParams();
-        const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-        writeUtilityRefParams({ timeOffset: newTimeOffset });
-        setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
+        setTimeOffset((prev) => Math.round((prev + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100);
+
+        const timeOffset = getTimeOffset();
+        setNotify(Symbol(`時間調整: ${(timeOffset + typingOptions.timeOffset).toFixed(2)}`));
       } else if (scene === "replay" || scene === "practice") {
         moveNextLine();
       }
@@ -66,10 +69,9 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "ArrowLeft":
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
-        const { timeOffset } = getUtilityRefParams();
-        const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-        writeUtilityRefParams({ timeOffset: newTimeOffset });
-        setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
+        setTimeOffset((prev) => Math.round((prev - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100);
+        const timeOffset = getTimeOffset();
+        setNotify(Symbol(`時間調整: ${(timeOffset + typingOptions.timeOffset).toFixed(2)}`));
       } else if (scene === "replay" || scene === "practice") {
         movePrevLine();
       }
@@ -92,7 +94,7 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "F10":
       if (scene === "play") {
-        const minMediaSpeed = readMinMediaSpeed();
+        const minMediaSpeed = getMinMediaSpeed();
         cycleYTPlaybackRate({ minSpeed: minMediaSpeed });
       } else if (scene === "practice") {
         stepYTPlaybackRate("up");
@@ -108,8 +110,9 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "Backspace":
       if (scene === "replay" || scene === "practice") {
-        const { lineSelectIndex } = readUtilityParams();
-        const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
+        const selectLineIndex = getSelectLineIndex();
+
+        const seekCount = map.typingLineIndexes[selectLineIndex - 1];
         if (!seekCount) return;
         moveSetLine(seekCount);
       }
@@ -127,7 +130,7 @@ export const playHotkey = (event: KeyboardEvent) => {
 };
 
 const togglePause = () => {
-  const { isPaused } = readUtilityParams();
+  const isPaused = getIsPaused();
   if (isPaused) {
     playYTPlayer();
   } else {
