@@ -49,7 +49,8 @@ export const getScene = () => store.get(sceneAtom);
 export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
 export const getSceneGroup = () => store.get(sceneGroupAtom);
 
-export const setScene = (value: Extract<SceneType, "play" | "practice" | "replay">) => store.set(sceneAtom, value);
+export const setScene = (value: Extract<SceneType, "ready" | "play" | "practice" | "replay">) =>
+  store.set(sceneAtom, value);
 export const transitionToEndScene = (currentScene: SceneType) => {
   switch (currentScene) {
     case "play":

@@ -1,7 +1,9 @@
+import { setTabName } from "../tabs/tabs";
 import { resetTypingStatus } from "../tabs/typing-status/status-cell";
 import { setTotalProgressValue } from "../typing-card/footer/total-time-progress";
 import { setLineProgressValue } from "../typing-card/header/line-time-progress";
 import { setLyrics } from "../typing-card/playing/lyrics";
+import { setScene } from "../typing-card/typing-card";
 import { clearAllLineResult } from "./line-result";
 import { resetLineCount, resetLineSubstatus, resetTypingSubstatus, resetUtilityRefParams } from "./ref";
 import { resetBuiltMap, resetReplayRankingResult, resetUtilityParams } from "./state";
@@ -25,4 +27,6 @@ export const resetAllStateOnCleanup = () => {
   resetReplayRankingResult();
   setLineProgressValue(0);
   setTotalProgressValue(0);
+  setTabName("ランキング");
+  setScene("ready");
 };
