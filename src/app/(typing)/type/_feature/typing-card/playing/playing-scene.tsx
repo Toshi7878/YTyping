@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  createTypingWord,
-  evaluateKanaInput,
-  evaluateRomaInput,
-  type InputMode,
-  isTypingKey,
-  type TypingWord,
-  type WordChunk,
-} from "lyrics-typing-engine";
+import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
   getBuiltMap,
@@ -134,7 +126,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
     const { inputMode } = readUtilityParams();
 
-    evaluateInput(
+    handleTyping(
       { event, inputMode, isCaseSensitive, typingWord },
       {
         onSuccess: ({ nextTypingWord, successKey, isCompleted, updatePoint, chunkType }) => {
@@ -160,7 +152,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           updateMissSubstatus({ constantLineTime, failKey });
         },
 
-        onLineCompleted: ({ constantLineTime }) => {
+        onCompleted: ({ constantLineTime }) => {
           triggerTypeCompletedSound();
 
           if (!isPaused) {
@@ -191,58 +183,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   if (!isHotKeyIgnored(event)) {
     playHotkey(event);
-  }
-};
-
-const evaluateInput = (
-  {
-    event,
-    inputMode,
-    isCaseSensitive,
-    typingWord,
-  }: {
-    event: KeyboardEvent;
-    inputMode: InputMode;
-    isCaseSensitive: boolean;
-    typingWord: TypingWord;
-  },
-  {
-    onSuccess,
-    onMiss,
-    onLineCompleted,
-  }: {
-    onSuccess: (result: {
-      nextTypingWord: TypingWord;
-      successKey: string;
-      isCompleted: boolean;
-      updatePoint: number;
-      chunkType: WordChunk["type"];
-    }) => { constantLineTime: number };
-    onMiss: (result: { failKey: string }) => void;
-    onLineCompleted: (result: { constantLineTime: number }) => void;
-  },
-) => {
-  const result =
-    inputMode === "roma"
-      ? evaluateRomaInput({ event, typingWord, isCaseSensitive })
-      : evaluateKanaInput({ event, typingWord, isCaseSensitive });
-
-  if (result.successKey) {
-    const { nextTypingWord, successKey, isCompleted, updatePoint, chunkType } = result;
-
-    const { constantLineTime } = onSuccess({
-      nextTypingWord,
-      successKey,
-      isCompleted,
-      updatePoint,
-      chunkType,
-    });
-
-    if (isCompleted) {
-      onLineCompleted({ constantLineTime });
-    }
-  } else if (result.failKey) {
-    onMiss({ failKey: result.failKey });
   }
 };
 
