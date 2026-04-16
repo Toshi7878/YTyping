@@ -10,7 +10,7 @@ const lineResultAtomFamily = atomFamily(
   deepEqual,
 );
 
-export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
+export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index));
 export const setLineResult = ({ index, lineResult }: { index: number; lineResult: TypingLineResult }) => {
   const prev = store.get(lineResultAtomFamily(index));
   if (!prev) return;

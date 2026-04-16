@@ -26,8 +26,8 @@ export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
 };
 
 export const NextLyrics = () => {
-  const nextKpm = useAtomValue(nextKpmAtom, { store });
-  const nextLyrics = useAtomValue(nextLyricsAtom, { store });
+  const nextKpm = useAtomValue(nextKpmAtom);
+  const nextLyrics = useAtomValue(nextLyricsAtom);
   return (
     <div
       id="next_lyrics_kpm"

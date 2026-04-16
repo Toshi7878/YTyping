@@ -37,7 +37,7 @@ const typingStatusViewAtoms = {
   rank: focusAtom(typingStatusAtom, (optic) => optic.prop("rank")),
   line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
 };
-export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
+export const useTypingStatusState = () => useAtomValue(typingStatusAtom);
 export const getTypingStatus = () => store.get(typingStatusAtom);
 
 export const setTypingStatus = (update: Updater<TypingStatus>) => store.set(typingStatusAtom, update);
