@@ -1,5 +1,5 @@
 import type { YouTubeEvent } from "react-youtube";
-import { readVolume } from "@/lib/atoms/global-atoms";
+import { getVolume } from "@/lib/atoms/global-atoms";
 import { readMapId } from "../atoms/hydrate";
 import { readRawMap } from "../atoms/map-reducer";
 import { preventEditortabAutoFocus } from "../atoms/ref";
@@ -33,7 +33,7 @@ export const onReady = ({ target: player }: { target: YT.Player }) => {
   setIsYTStarted(false);
   const duration = player.getDuration();
   setYTDuration(duration);
-  player.setVolume(readVolume());
+  player.setVolume(getVolume());
 };
 
 const onStart = (player: YT.Player) => {

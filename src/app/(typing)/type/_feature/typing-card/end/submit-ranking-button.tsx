@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { readAllLineResult } from "@/app/(typing)/type/_feature/atoms/line-result";
+import { getAllLineResult } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
@@ -52,7 +52,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
 
     if (isConfirmed) {
       const typingSubStatus = getTypingSubstatus();
-      const lineResults = readAllLineResult();
+      const lineResults = getAllLineResult();
       const typingStatus = getTypingStatus();
       const builtMap = getBuiltMap();
       const typingOptions = getTypingOptions();

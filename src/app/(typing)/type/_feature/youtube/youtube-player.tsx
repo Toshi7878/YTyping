@@ -3,7 +3,7 @@
 import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
-import { readReadyInputMode, readVolume } from "@/lib/atoms/global-atoms";
+import { getReadyInputMode, getVolume } from "@/lib/atoms/global-atoms";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { cn } from "@/lib/utils";
@@ -42,7 +42,7 @@ export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const getIsYTStarted = () => store.get(isYTStartedAtom);
 export const setYTStarted = (value: boolean) => store.set(isYTStartedAtom, value);
 
-export const resetYoutubeUiAtoms = () => {
+export const resetYoutubeStatus = () => {
   store.set(isYTStartedAtom, false);
   store.set(isPausedAtom, false);
   store.set(mediaSpeedAtom, 1);
@@ -133,7 +133,7 @@ const handleStart = (player: YT.Player) => {
     setScene("play");
   }
 
-  const readyInputMode = readReadyInputMode();
+  const readyInputMode = getReadyInputMode();
   setPlayingInputMode(readyInputMode);
 };
 
@@ -189,7 +189,7 @@ const handleSeeked = (player: YT.Player) => {
 };
 
 const handleReady = ({ target: player }: { target: YT.Player }) => {
-  player.setVolume(readVolume());
+  player.setVolume(getVolume());
   writeYTPlayer(player);
 };
 

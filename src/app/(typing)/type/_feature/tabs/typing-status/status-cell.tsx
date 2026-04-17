@@ -41,7 +41,6 @@ export const useTypingStatusState = () => useAtomValue(typingStatusAtom);
 export const getTypingStatus = () => store.get(typingStatusAtom);
 
 export const setTypingStatus = (update: Updater<TypingStatus>) => store.set(typingStatusAtom, update);
-export const resetTypingStatusHard = () => store.set(typingStatusAtom, RESET);
 
 export const resetTypingStatus = () => {
   store.set(typingStatusAtom, RESET);

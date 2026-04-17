@@ -10,7 +10,7 @@ import { useSceneState } from "../typing-card";
 
 const notifyAtom = atom(Symbol(""));
 export const setNotify = (value: symbol) => store.set(notifyAtom, value);
-export const resetNotifyAtom = () => store.set(notifyAtom, Symbol(""));
+export const resetNotify = () => store.set(notifyAtom, Symbol(""));
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 

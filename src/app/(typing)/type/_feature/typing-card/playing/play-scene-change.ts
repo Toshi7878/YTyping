@@ -1,4 +1,4 @@
-import { readReadyInputMode } from "@/lib/atoms/global-atoms";
+import { getReadyInputMode } from "@/lib/atoms/global-atoms";
 import { resetReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
 import { setYTPlaybackRate } from "../../atoms/youtube-player";
@@ -20,7 +20,7 @@ export const commitPlayModeChange = () => {
       resetReplayRankingResult();
 
       if (scene === "replay") {
-        const readyInputMode = readReadyInputMode();
+        const readyInputMode = getReadyInputMode();
         setPlayingInputMode(readyInputMode);
       }
       const mediaSpeed = getMediaSpeed();

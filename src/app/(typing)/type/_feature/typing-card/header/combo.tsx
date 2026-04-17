@@ -6,7 +6,7 @@ import { store } from "../../atoms/store";
 const comboAtom = atom(0);
 export const setCombo = (update: Updater<number>) => store.set(comboAtom, update);
 export const getCombo = () => store.get(comboAtom);
-export const resetComboAtom = () => store.set(comboAtom, 0);
+export const resetCombo = () => store.set(comboAtom, 0);
 
 export const Combo = () => {
   return (

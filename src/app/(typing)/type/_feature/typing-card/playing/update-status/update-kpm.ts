@@ -1,4 +1,4 @@
-import { readLineSubstatus } from "../../../atoms/line-substatus";
+import { getLineSubstatus } from "../../../atoms/line-substatus";
 import { getTypingStats, setTypingStats } from "../../../atoms/stats";
 import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 
@@ -6,7 +6,7 @@ export const updateTypingTime = ({ constantLineTime }: { constantLineTime: numbe
   const { totalTypeTime } = getTypingSubstatus();
   setTypingSubstatus({ totalTypeTime: totalTypeTime + constantLineTime });
 
-  const { typeCount: lineTypeCount } = readLineSubstatus();
+  const { typeCount: lineTypeCount } = getLineSubstatus();
   if (lineTypeCount !== 0) {
     const { typingTime } = getTypingStats();
     setTypingStats({ typingTime: typingTime + constantLineTime });

@@ -10,7 +10,7 @@ import { StatusCard } from "./typing-status/status-card";
 const TAB_NAMES = ["ステータス", "ランキング"] as const;
 const tabNameAtom = atom<(typeof TAB_NAMES)[number]>("ランキング");
 export const setTabName = (value: (typeof TAB_NAMES)[number]) => store.set(tabNameAtom, value);
-export const resetTabNameAtom = () => store.set(tabNameAtom, "ランキング");
+export const resetTabName = () => store.set(tabNameAtom, "ランキング");
 
 interface TabsAreaProps {
   className?: string;

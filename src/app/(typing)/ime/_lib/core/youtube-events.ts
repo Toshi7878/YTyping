@@ -1,4 +1,4 @@
-import { readVolume } from "@/lib/atoms/global-atoms";
+import { getVolume } from "@/lib/atoms/global-atoms";
 import { readScene } from "../atoms/state";
 import { seekYTPlayer, setYTPlayer, stopYTPlayer } from "../atoms/yt-player";
 import { initializePlayScene } from "./reset";
@@ -37,6 +37,6 @@ export const onPause = () => {
 
 export const onReady = (event: { target: YT.Player }) => {
   const player = event.target as YT.Player;
-  player.setVolume(readVolume());
+  player.setVolume(getVolume());
   setYTPlayer(player);
 };

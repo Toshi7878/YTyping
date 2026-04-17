@@ -4,7 +4,7 @@ import {
   applyRomaInputMode,
 } from "@/app/(typing)/type/_feature/typing-card/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
-import { readAllLineResult } from "../../../atoms/line-result";
+import { getAllLineResult } from "../../../atoms/line-result";
 import { getReplayRankingResult } from "../../../atoms/replay";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
@@ -49,7 +49,7 @@ export const simulateTypingInput = ({
       updateMissSubstatus({ constantLineTime, failKey });
     },
     onLineCompleted: () => {
-      const lineResults = readAllLineResult();
+      const lineResults = getAllLineResult();
       const count = getLineCount();
       const lineResult = lineResults[count];
 

@@ -14,7 +14,7 @@ const lineSubstatusAtom = atomWithReset({
   startInputMode: "roma" as InputMode,
 });
 
-export const readLineSubstatus = () => store.get(lineSubstatusAtom);
-export const writeLineSubstatus = (newLineSubstatus: Partial<ExtractAtomValue<typeof lineSubstatusAtom>>) =>
+export const getLineSubstatus = () => store.get(lineSubstatusAtom);
+export const setLineSubstatus = (newLineSubstatus: Partial<ExtractAtomValue<typeof lineSubstatusAtom>>) =>
   store.set(lineSubstatusAtom, (prev) => ({ ...prev, ...newLineSubstatus }));
 export const resetLineSubstatus = () => store.set(lineSubstatusAtom, RESET);

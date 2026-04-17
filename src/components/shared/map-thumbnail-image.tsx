@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { useIsPreviewEnabled } from "@/app/_components/preview-youtube-player";
 import {
-  readPreviewYTPlayer,
+  getPreviewYTPlayer,
   resetPreviewVideoInfo,
   setPreviewVideoInfo,
   usePreviewPlayerState,
@@ -70,7 +70,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
 
   const previewYouTube = () => {
     if (videoId !== mapVideoId) {
-      if (!readPreviewYTPlayer()) return;
+      if (!getPreviewYTPlayer()) return;
       setPreviewVideoInfo({
         videoId: mapVideoId,
         previewTime: mapPreviewTime,

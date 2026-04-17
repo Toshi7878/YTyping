@@ -18,11 +18,11 @@ export const useIsDesktopDeviceState = () => {
   return userAgent?.getDevice().type === "desktop";
 };
 
-export const readIsMobileDevice = () => {
+export const getIsMobileDevice = () => {
   const userAgent = store.get(userAgentAtom);
   return userAgent?.getDevice().type === "mobile";
 };
-export const readIsDesktopDevice = () => {
+export const getIsDesktopDevice = () => {
   const userAgent = store.get(userAgentAtom);
   return userAgent?.getDevice().type === "desktop";
 };

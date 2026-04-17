@@ -1,6 +1,6 @@
 import type { WordChunk } from "lyrics-typing-engine";
 import { countPerMinute } from "@/utils/math";
-import { readLineSubstatus, writeLineSubstatus } from "../../../atoms/line-substatus";
+import { getLineSubstatus, setLineSubstatus } from "../../../atoms/line-substatus";
 import { getTypingStats, setTypingStats } from "../../../atoms/stats";
 import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 import { getPlayingInputMode, getTypingWord } from "../../../atoms/typing-word";
@@ -28,7 +28,7 @@ export const updateSuccessStatus = ({
   // KPM計算用の状態取得
   // Note: updateSuccessSubstatusより先に実行されるため、現在のlineTypeCountは加算前の値です。
   // そのため、計算には +1 した値を使用します。
-  const { typeCount: lineTypeCount } = readLineSubstatus();
+  const { typeCount: lineTypeCount } = getLineSubstatus();
   const { totalTypeTime } = getTypingSubstatus();
 
   if (!isPaused) {
@@ -71,7 +71,7 @@ export const updateSuccessSubstatus = ({
   const scene = getScene();
 
   // 現在の状態を一度だけ読み込む
-  const currentLineSubstatus = readLineSubstatus();
+  const currentLineSubstatus = getLineSubstatus();
   const currentSubstatus = getTypingSubstatus();
   const currentUserStats = getTypingStats();
 
@@ -82,17 +82,6 @@ export const updateSuccessSubstatus = ({
 
   // 1. missComboのリセット
   diffSubstatus.missCombo = 0;
-
-  // 2. 行開始時の処理
-  // if (currentLineSubstatus.typeCount === 0) {
-  //   diffLineSubstatus.latency = constantLineTime;
-  //   diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
-  //   if (isCompleted) {
-  //     const { latency: lineLatency, typeCount: lineTypeCount } = readLineSubstatus();
-  //     const lineRkpm = countPerMinute(lineTypeCount, constantLineTime - lineLatency);
-  //     diffSubstatus.rkpm = lineRkpm;
-  //   }
-  // }
 
   // 3. MaxComboの更新
   const newCombo = getCombo() + 1;
@@ -151,7 +140,7 @@ export const updateSuccessSubstatus = ({
     setTypingSubstatus(diffSubstatus);
   }
   if (Object.keys(diffLineSubstatus).length > 0) {
-    writeLineSubstatus(diffLineSubstatus);
+    setLineSubstatus(diffLineSubstatus);
   }
   if (Object.keys(diffUserStats).length > 0) {
     setTypingStats(diffUserStats);

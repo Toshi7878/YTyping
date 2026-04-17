@@ -11,7 +11,7 @@ const lineKpmFormatAtom = atom((get) => {
 
 export const getLineKpm = () => store.get(lineKpmAtom);
 export const setLineKpm = (value: ExtractAtomValue<typeof lineKpmAtom>) => store.set(lineKpmAtom, value);
-export const resetLineKpmAtom = () => store.set(lineKpmAtom, 0);
+export const resetLineKpm = () => store.set(lineKpmAtom, 0);
 
 export const LineKpm = () => {
   return (

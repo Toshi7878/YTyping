@@ -24,7 +24,7 @@ export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
     store.set(nextLyricsAtom, "");
   }
 };
-export const resetNextLyricsAtoms = () => {
+export const resetNextLyrics = () => {
   store.set(nextLyricsAtom, RESET);
   store.set(nextKpmAtom, RESET);
 };

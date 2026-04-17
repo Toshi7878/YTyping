@@ -10,12 +10,12 @@ const store = getDefaultStore();
 const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma");
 export const useReadyInputModeState = () => useAtomValue(readyRadioInputModeAtom, { store });
 export const setReadyInputMode = (value: InputMode) => store.set(readyRadioInputModeAtom, value);
-export const readReadyInputMode = () => store.get(readyRadioInputModeAtom);
+export const getReadyInputMode = () => store.get(readyRadioInputModeAtom);
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, { getOnInit: true });
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
-export const readVolume = () => store.get(volumeAtom);
+export const getVolume = () => store.get(volumeAtom);
 export const setVolume = (value: number) => store.set(volumeAtom, value);
 
 const previewVideoInfoAtom = atomWithReset<{
@@ -26,13 +26,13 @@ const previewVideoInfoAtom = atomWithReset<{
 const previewYTPlayerAtom = atomWithReset<YT.Player | null>(null);
 
 export const usePreviewVideoInfoState = () => useAtomValue(previewVideoInfoAtom, { store });
-export const readPreviewVideoInfo = () => store.get(previewVideoInfoAtom);
+export const getPreviewVideoInfo = () => store.get(previewVideoInfoAtom);
 export const setPreviewVideoInfo = (info: ExtractAtomValue<typeof previewVideoInfoAtom>) => {
   store.set(previewVideoInfoAtom, info);
 
   const { videoId, previewTime } = info;
   if (videoId) {
-    const player = readPreviewYTPlayer();
+    const player = getPreviewYTPlayer();
     if (videoId) {
       player?.cueVideoById({ videoId, startSeconds: previewTime ?? 0 });
     }
@@ -40,12 +40,12 @@ export const setPreviewVideoInfo = (info: ExtractAtomValue<typeof previewVideoIn
 };
 export const resetPreviewVideoInfo = () => {
   store.set(previewVideoInfoAtom, RESET);
-  const YTPlayer = readPreviewYTPlayer();
+  const YTPlayer = getPreviewYTPlayer();
   YTPlayer?.cueVideoById({ videoId: "" });
 };
 
 export const usePreviewPlayerState = () => useAtomValue(previewYTPlayerAtom, { store });
-export const readPreviewYTPlayer = () => store.get(previewYTPlayerAtom);
+export const getPreviewYTPlayer = () => store.get(previewYTPlayerAtom);
 export const setPreviewYTPlayer = (newYTPlayer: YT.Player) => store.set(previewYTPlayerAtom, newYTPlayer);
 export const resetPreviewYTPlayer = () => store.set(previewYTPlayerAtom, RESET);
 

@@ -1,6 +1,6 @@
 import { recreateTypingWord } from "lyrics-typing-engine";
 import { getBuiltMap } from "../../atoms/built-map";
-import { readLineSubstatus, writeLineSubstatus } from "../../atoms/line-substatus";
+import { getLineSubstatus, setLineSubstatus } from "../../atoms/line-substatus";
 import { getPlayingInputMode, getTypingWord, setPlayingInputMode, setTypingWord } from "../../atoms/typing-word";
 import { getLineTime } from "../../youtube/get-youtube-time";
 import { setNotify } from "../header/notify";
@@ -19,8 +19,8 @@ export const togglePlayInputMode = () => {
   }
 
   const { currentLineTime } = getLineTime();
-  const { types } = readLineSubstatus();
-  writeLineSubstatus({
+  const { types } = getLineSubstatus();
+  setLineSubstatus({
     types: [
       ...types,
       {

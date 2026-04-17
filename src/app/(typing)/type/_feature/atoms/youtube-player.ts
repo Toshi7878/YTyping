@@ -1,13 +1,13 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { readIsDesktopDevice } from "@/lib/atoms/user-agent";
+import { getIsDesktopDevice } from "@/lib/atoms/user-agent";
 import { cycleMediaSpeed, getNextMediaSpeed } from "@/utils/media-speed-change";
 import { setMinMediaSpeed } from "../youtube/youtube-player";
 import { store } from "./store";
 
 const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
 export const useYTPlayer = () => useAtomValue(YTPlayerAtom);
-export const readYTPlayer = () => store.get(YTPlayerAtom);
+export const getYTPlayer = () => store.get(YTPlayerAtom);
 export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
 export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);
 export const playYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
@@ -39,7 +39,7 @@ export const getYTCurrentTime = () => store.get(YTPlayerAtom)?.getCurrentTime();
 export const cueYTVideoById = (videoId: string) => store.get(YTPlayerAtom)?.cueVideoById(videoId);
 
 export const primeYTPlayerForMobilePlayback = () => {
-  const isDesktop = readIsDesktopDevice();
+  const isDesktop = getIsDesktopDevice();
   if (!isDesktop) {
     playYTPlayer();
     pauseYTPlayer();

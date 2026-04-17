@@ -51,70 +51,32 @@ export const setWordContainerElement = (element: ExtractAtomValue<typeof wordCon
   store.set(wordContainerElementAtom, element);
 };
 
-let unsubscribeTypingWordDisplaySubs: (() => void) | undefined;
+store.sub(typingWordAtom, () => {
+  const typingWord = store.get(typingWordAtom);
+  const main = store.get(mainWordElementsAtom);
+  const sub = store.get(subWordElementsAtom);
 
-function bindTypingWordDisplaySubs() {
-  unsubscribeTypingWordDisplaySubs?.();
+  if (main && sub) {
+    const { correct } = updateWordDisplay(typingWord, main, sub);
+    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
 
-  const u1 = store.sub(typingWordAtom, () => {
-    const typingWord = store.get(typingWordAtom);
-    const main = store.get(mainWordElementsAtom);
-    const sub = store.get(subWordElementsAtom);
+    applyScroll(main, sub, correct.kana, correct.roma, {
+      isSmoothScroll,
+      mainScrollStart: mainWordScrollStart,
+      subScrollStart: subWordScrollStart,
+    });
+  }
+});
 
-    if (main && sub) {
-      const { correct } = updateWordDisplay(typingWord, main, sub);
-      const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
+store.sub(playingInputModeAtom, () => {
+  const typingWord = store.get(typingWordAtom);
+  const main = store.get(mainWordElementsAtom);
+  const sub = store.get(subWordElementsAtom);
 
-      applyScroll(main, sub, correct.kana, correct.roma, {
-        isSmoothScroll,
-        mainScrollStart: mainWordScrollStart,
-        subScrollStart: subWordScrollStart,
-      });
-    }
-  });
-
-  const u2 = store.sub(playingInputModeAtom, () => {
-    const typingWord = store.get(typingWordAtom);
-    const main = store.get(mainWordElementsAtom);
-    const sub = store.get(subWordElementsAtom);
-
-    if (main && sub) {
-      updateWordDisplay(typingWord, main, sub);
-    }
-  });
-
-  unsubscribeTypingWordDisplaySubs = () => {
-    u1();
-    u2();
-  };
-}
-
-bindTypingWordDisplaySubs();
-
-/** createStore 差し替え時の DOM 表示キャッシュ。resetAllTypingFeatureAtoms からも呼ぶ */
-export function resetTypingWordModuleCaches() {
-  prevMainCorrect = "";
-  prevMainNextChar = "";
-  prevMainRemain = "";
-  prevSubCorrect = "";
-  prevSubNextChar = "";
-  prevSubRemain = "";
-  prevMainShift = -1;
-  prevSubShift = -1;
-  prevMainCorrectTextForScroll = "";
-  prevSubCorrectTextForScroll = "";
-  unsubscribeTypingWordDisplaySubs?.();
-  bindTypingWordDisplaySubs();
-}
-
-export function resetTypingWordAtoms() {
-  store.set(typingWordAtom, RESET);
-  store.set(mainWordElementsAtom, RESET);
-  store.set(subWordElementsAtom, RESET);
-  store.set(wordContainerElementAtom, null);
-  store.set(playingInputModeAtom, "roma");
-  resetTypingWordModuleCaches();
-}
+  if (main && sub) {
+    updateWordDisplay(typingWord, main, sub);
+  }
+});
 
 export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
   store.set(mainWordElementsAtom, elements);

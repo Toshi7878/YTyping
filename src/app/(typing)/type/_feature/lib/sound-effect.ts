@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { readVolume } from "@/lib/atoms/global-atoms";
-import { readIsMobileDevice } from "@/lib/atoms/user-agent";
+import { getVolume } from "@/lib/atoms/global-atoms";
+import { getIsMobileDevice } from "@/lib/atoms/user-agent";
 import { getTypingOptions } from "../tabs/setting/popover";
 
 const manifest = [
@@ -55,11 +55,11 @@ export const useLoadSoundEffects = () => {
 };
 
 export const playSound = (alias: SoundAlias) => {
-  const volume = getVolume();
+  const volume = getSoundVolume();
   void sound.play(alias, { volume });
 };
 
-const getVolume = () => {
-  const isMobile = readIsMobileDevice();
-  return (isMobile ? 100 : readVolume()) / 100;
+const getSoundVolume = () => {
+  const isMobile = getIsMobileDevice();
+  return (isMobile ? 100 : getVolume()) / 100;
 };

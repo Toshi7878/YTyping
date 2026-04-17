@@ -1,5 +1,5 @@
 import { getBuiltMap } from "../../../atoms/built-map";
-import { readLineSubstatus, writeLineSubstatus } from "../../../atoms/line-substatus";
+import { getLineSubstatus, setLineSubstatus } from "../../../atoms/line-substatus";
 import { getTypingSubstatus, setTypingSubstatus } from "../../../atoms/substatus";
 import { MISS_PENALTY_POINT } from "../../../lib/const";
 import { getTypingStatus, setTypingStatus } from "../../../tabs/typing-status/status-cell";
@@ -23,9 +23,9 @@ export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLin
   const { clearRate, missCombo } = getTypingSubstatus();
   setTypingSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
 
-  const { missCount: lineMissCount, types } = readLineSubstatus();
+  const { missCount: lineMissCount, types } = getLineSubstatus();
 
-  writeLineSubstatus({
+  setLineSubstatus({
     missCount: lineMissCount + 1,
     types: [...types, { char: failKey, time: constantLineTime }],
   });

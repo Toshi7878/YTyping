@@ -2,8 +2,8 @@ import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { countPerMinute } from "@/utils/math";
 import { getBuiltMap } from "../../atoms/built-map";
-import { readAllLineResult, setLineResult } from "../../atoms/line-result";
-import { readLineSubstatus } from "../../atoms/line-substatus";
+import { getAllLineResult, setLineResult } from "../../atoms/line-result";
+import { getLineSubstatus } from "../../atoms/line-substatus";
 import { getTypingSubstatus, setTypingSubstatus } from "../../atoms/substatus";
 import { getPlayingInputMode, getTypingWord } from "../../atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../../lib/const";
@@ -14,8 +14,8 @@ import { getLineKpm } from "../header/line-kpm";
 import { getScene } from "../typing-card";
 
 export const hasLineResultImproved = (count: number) => {
-  const lineResults = readAllLineResult();
-  const { missCount } = readLineSubstatus();
+  const lineResults = getAllLineResult();
+  const { missCount } = getLineSubstatus();
   const savedLineResult = lineResults[count];
   const typingStatus = getTypingStatus();
 
@@ -45,7 +45,7 @@ export const saveLineResult = (count: number, constantLineTime: number) => {
   }
 
   const typingStatus = getTypingStatus();
-  const { missCount, typeCount, types, startSpeed, startInputMode } = readLineSubstatus();
+  const { missCount, typeCount, types, startSpeed, startInputMode } = getLineSubstatus();
   const lineRkpm = countPerMinute(typeCount, Math.max(0, constantLineTime - (types[0]?.time ?? 0)));
   const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
   const { totalTypeTime } = getTypingSubstatus();

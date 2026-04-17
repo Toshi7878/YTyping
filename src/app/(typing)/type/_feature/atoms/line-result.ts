@@ -21,7 +21,7 @@ export const setLineResultSelected = ({ index, isSelected }: { index: number; is
   if (!target) return;
   store.set(lineResultAtomFamily(index), { ...target, isSelected });
 };
-export const readAllLineResult = (): TypingLineResult[] => {
+export const getAllLineResult = (): TypingLineResult[] => {
   const results: TypingLineResult[] = [];
   let index = 0;
 

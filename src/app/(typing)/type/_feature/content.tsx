@@ -4,7 +4,7 @@ import { buildTypingMap } from "lyrics-typing-engine";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { readReadyInputMode } from "@/lib/atoms/global-atoms";
+import { getReadyInputMode } from "@/lib/atoms/global-atoms";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -54,7 +54,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
 
-      const readyInputMode = readReadyInputMode();
+      const readyInputMode = getReadyInputMode();
       const typingLineIndexes = extractTypingLineIndexes(builtMapLines);
       const changeCSSIndexes = extractChangeCSSIndexes(builtMapLines);
 

@@ -26,8 +26,6 @@ export const setTypingSubstatus = (newSubstatus: Partial<TypingSubstatus>) =>
   store.set(typingSubstatusAtom, (prev) => ({ ...prev, ...newSubstatus }));
 export const resetTypingSubstatus = () => store.set(typingSubstatusAtom, RESET);
 
-const lineCompleteCountAtom = focusAtom(typingSubstatusAtom, (optic) => optic.prop("completeCount"));
 const lineFailureCountAtom = focusAtom(typingSubstatusAtom, (optic) => optic.prop("failureCount"));
 
-export const useLineCompleteCountState = () => useAtomValue(lineCompleteCountAtom);
 export const useLineFailureCountState = () => useAtomValue(lineFailureCountAtom);

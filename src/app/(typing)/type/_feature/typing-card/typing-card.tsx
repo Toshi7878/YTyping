@@ -26,7 +26,7 @@ export type EndSceneType = "play_end" | "practice_end" | "replay_end";
 export type SceneType = "ready" | PlayingSceneType | EndSceneType;
 
 const sceneAtom = atom<SceneType>("ready");
-export const resetSceneAtom = () => store.set(sceneAtom, "ready");
+export const resetScene = () => store.set(sceneAtom, "ready");
 const sceneGroupAtom = atom((get) => {
   const scene = get(sceneAtom);
   switch (scene) {

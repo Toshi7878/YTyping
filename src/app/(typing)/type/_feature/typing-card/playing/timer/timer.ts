@@ -2,17 +2,17 @@ import { Ticker } from "@pixi/ticker";
 import { createTypingWord } from "lyrics-typing-engine";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import {
-  readLineSubstatus,
+  getLineSubstatus,
   resetLineSubstatus,
-  writeLineSubstatus,
+  setLineSubstatus,
 } from "@/app/(typing)/type/_feature/atoms/line-substatus";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { countPerMinute } from "@/utils/math";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readAllLineResult } from "../../../atoms/line-result";
+import { getAllLineResult } from "../../../atoms/line-result";
 import { getTypingStats } from "../../../atoms/stats";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
-import { readYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
+import { getYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { getMapId } from "../../../provider";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
@@ -55,7 +55,7 @@ export const setTimerMaxFPS = (rate: number) => {
 
 let replayKeyCount = 0;
 const handleTimer = () => {
-  const YTPlayer = readYTPlayer();
+  const YTPlayer = getYTPlayer();
   const map = getBuiltMap();
   if (!YTPlayer || !map) {
     typeTicker.stop();
@@ -80,7 +80,7 @@ const handleTimer = () => {
         const scene = getScene();
 
         if (scene === "replay" && count > 0) {
-          const lineResults = readAllLineResult();
+          const lineResults = getAllLineResult();
 
           const lineResult = lineResults[count];
           if (!lineResult) return;
@@ -101,7 +101,7 @@ const handleTimer = () => {
         const isLineCompleted = typingWord.correct.roma && !typingWord.nextChunk.kana;
 
         if (!isLineCompleted) {
-          const { typeCount: lineTypeCount } = readLineSubstatus();
+          const { typeCount: lineTypeCount } = getLineSubstatus();
           const newLineKpm = countPerMinute(lineTypeCount, constantLineTime);
           setLineKpm(newLineKpm);
         }
@@ -289,7 +289,7 @@ export const setupNextLine = (map: NonNullable<BuiltMap>, nextCount: number) => 
     syncReplayLineSnapshot(nextCount);
     recalculateStatusFromResults({ count: nextCount, updateType: "lineUpdate" });
   }
-  writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
+  setLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
   setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
   setLineCustomStyleIndex(nextCount);
@@ -342,7 +342,7 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
 };
 
 const syncReplayLineSnapshot = (newCurrentCount: number) => {
-  const lineResults = readAllLineResult();
+  const lineResults = getAllLineResult();
   const inputMode = getPlayingInputMode();
 
   const lineResult = lineResults[newCurrentCount];

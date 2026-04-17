@@ -6,8 +6,8 @@ import YouTube from "react-youtube";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import {
-  readPreviewVideoInfo,
-  readVolume,
+  getPreviewVideoInfo,
+  getVolume,
   resetPreviewVideoInfo,
   resetPreviewYTPlayer,
   setPreviewYTPlayer,
@@ -62,7 +62,7 @@ export const PreviewYouTubePlayer = () => {
 const onStateChange = ({ data, target: YTPlayer }: { data: YT.PlayerState; target: YT.Player }) => {
   switch (data) {
     case YT.PlayerState.CUED: {
-      const { previewTime } = readPreviewVideoInfo();
+      const { previewTime } = getPreviewVideoInfo();
       YTPlayer.seekTo(Number(previewTime), true);
       YTPlayer.playVideo();
       break;
@@ -70,13 +70,13 @@ const onStateChange = ({ data, target: YTPlayer }: { data: YT.PlayerState; targe
   }
 };
 const onReady = ({ target: YTPlayer }: { target: YT.Player }) => {
-  const volume = readVolume();
+  const volume = getVolume();
   YTPlayer.setVolume(volume);
   setPreviewYTPlayer(YTPlayer);
 };
 
 const onPlay = ({ target: YTPlayer }: { target: YT.Player }) => {
-  const { previewSpeed } = readPreviewVideoInfo();
+  const { previewSpeed } = getPreviewVideoInfo();
   YTPlayer.setPlaybackRate(previewSpeed ?? 1);
 };
 
