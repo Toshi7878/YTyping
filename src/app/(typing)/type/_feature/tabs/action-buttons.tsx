@@ -1,7 +1,9 @@
+"use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import type { Route } from "next";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { BookmarkListPopover } from "@/components/shared/bookmark/bookmark-list-popover";
 import { Button } from "@/components/ui/button";
@@ -16,14 +18,13 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { formatDate } from "@/utils/date";
 import { formatTime } from "@/utils/format-time";
-import { useMapIdState } from "../atoms/hydrate";
 import { SettingPopover } from "./setting/popover";
 
 export const MapActionIconButtons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
-  const mapId = useMapIdState();
+  const { id: mapId } = useParams();
   const trpc = useTRPC();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.getById.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
   const hasBookmarked = mapInfo.bookmark.hasBookmarked;
   const hasLiked = mapInfo.like.hasLiked;
 
