@@ -23,15 +23,12 @@ import { RankingPopoverContent } from "./ranking-menu";
 type RankingResult = RouterOutputs["result"]["list"]["getRanking"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
-  const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const trpc = useTRPC();
   const mapId = useMapIdState();
-  const { data, error, isPending } = useQuery(
+  const { data, isPending } = useQuery(
     trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
   );
-  const toggleClap = useToggleClapMutation();
-  const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (!data) return;
@@ -41,6 +38,25 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     if (sceneGroup !== "Ready") return;
     setTypingStatus((prev) => ({ ...prev, rank: scores.length + 1 }));
   }, [data, sceneGroup]);
+
+  return (
+    <CardWithContent
+      id="tab-ranking-card"
+      className={{
+        card: cn("tab-card overflow-y-scroll py-0", className),
+        cardContent: "px-4",
+      }}
+    >
+      <RankingTable data={data ?? []} loading={isPending} />
+    </CardWithContent>
+  );
+};
+
+const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boolean }) => {
+  const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
+  const { data: session } = useSession();
+  const mapId = useMapIdState();
+  const toggleClap = useToggleClapMutation();
 
   const columns: ColumnDef<RankingResult, unknown>[] = [
     {
@@ -152,65 +168,55 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     },
   ];
 
-  if (error) return <div>Error loading data</div>;
-
   return (
-    <CardWithContent
-      id="tab-ranking-card"
-      className={{
-        card: cn("tab-card overflow-y-scroll py-0", className),
-        cardContent: "px-4",
+    <DataTable
+      loading={loading}
+      columns={columns}
+      data={data ?? []}
+      onRowClick={(_, __, index) => {
+        setOpenPopoverIndex((prev) => (prev === index ? null : index));
       }}
-    >
-      <DataTable
-        loading={isPending}
-        columns={columns}
-        data={data ?? []}
-        onRowClick={(_, __, index) => {
-          setOpenPopoverIndex((prev) => (prev === index ? null : index));
-        }}
-        className={cn("ranking-table overflow-visible rounded-none border-0")}
-        rowClassName={(index) =>
-          cn(
-            "border-accent-foreground cursor-pointer text-4xl font-bold md:text-base h-20 md:h-auto",
-            Number(session?.user.id) === data?.[index]?.player.id && "my-result text-secondary",
-            openPopoverIndex === index && "bg-accent/50",
-          )
-        }
-        headerRowClassName="text-3xl font-bold md:text-base h-20 md:h-auto"
-        tbodyId="ranking-tbody"
-        rowWrapper={({ row, index, children }) => {
-          const { otherStatus, typeCounts, typeSpeed } = row;
-          const { kanaType, flickType } = typeCounts;
-          const totalType = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
-          const isKanaFlickTyped = kanaType > 0 || flickType > 0;
-          const missRate = ((totalType / (otherStatus.miss + totalType)) * 100).toFixed(1);
+      className={cn("ranking-table overflow-visible rounded-none border-0")}
+      rowClassName={(index) =>
+        cn(
+          "border-accent-foreground cursor-pointer text-4xl font-bold md:text-base h-20 md:h-auto",
+          session?.user.id === data?.[index]?.player.id && "my-result text-secondary",
+          openPopoverIndex === index && "bg-accent/50",
+        )
+      }
+      headerRowClassName="text-3xl font-bold md:text-base h-20 md:h-auto"
+      tbodyId="ranking-tbody"
+      rowWrapper={({ row, index, children }) => {
+        const { otherStatus, typeCounts, typeSpeed } = row;
+        const { kanaType, flickType } = typeCounts;
+        const totalType = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
+        const isKanaFlickTyped = kanaType > 0 || flickType > 0;
+        const missRate = ((totalType / (otherStatus.miss + totalType)) * 100).toFixed(1);
 
-          return (
-            <TooltipWrapper
-              label={
-                <ResultToolTipText
-                  typeCounts={typeCounts}
-                  otherStatus={otherStatus}
-                  missRate={missRate}
-                  typeSpeed={typeSpeed}
-                  isKanaFlickTyped={isKanaFlickTyped}
-                  updatedAt={row.updatedAt}
-                />
-              }
-              side="bottom"
-              align="end"
-              sideOffset={-12}
-              delayDuration={0}
-              onPointerDownOutside={(event) => event.preventDefault()}
-              open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
-              asChild
-            >
-              {children}
-            </TooltipWrapper>
-          );
-        }}
-      />
-    </CardWithContent>
+        return (
+          <TooltipWrapper
+            label={
+              <ResultToolTipText
+                typeCounts={typeCounts}
+                otherStatus={otherStatus}
+                missRate={missRate}
+                typeSpeed={typeSpeed}
+                isKanaFlickTyped={isKanaFlickTyped}
+                updatedAt={row.updatedAt}
+              />
+            }
+            side="bottom"
+            align="end"
+            sideOffset={-12}
+            delayDuration={0}
+            onPointerDownOutside={(event) => event.preventDefault()}
+            open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
+            asChild
+          >
+            {children}
+          </TooltipWrapper>
+        );
+      }}
+    />
   );
 };
