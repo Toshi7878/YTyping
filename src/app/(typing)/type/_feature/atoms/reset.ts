@@ -25,7 +25,6 @@ import { resetTypingSubstatus } from "./substatus";
 import { resetTypingWord } from "./typing-word";
 import { resetYTPlayer } from "./youtube-player";
 
-/** `/type` セッション用 Jotai 状態をすべて初期値へ戻す（store の差し替えはしない） */
 export function resetAllTypingFeatureAtoms() {
   resetScene();
   resetNotify();
