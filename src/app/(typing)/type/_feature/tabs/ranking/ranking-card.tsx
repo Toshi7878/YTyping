@@ -15,7 +15,7 @@ import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { useMapIdState } from "../../atoms/hydrate";
+import { useMapIdState } from "../../provider";
 import { useSceneGroupState } from "../../typing-card/typing-card";
 import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";

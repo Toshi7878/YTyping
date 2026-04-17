@@ -9,12 +9,12 @@ import {
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { countPerMinute } from "@/utils/math";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readMapId } from "../../../atoms/hydrate";
 import { readAllLineResult } from "../../../atoms/line-result";
 import { getTypingStats } from "../../../atoms/stats";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { readYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
+import { getMapId } from "../../../provider";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getMediaSpeed } from "../../../youtube/youtube-player";
@@ -157,7 +157,7 @@ const handleTimer = () => {
         if (scene === "play") {
           const stats = getTypingStats();
           mutateTypingStats(stats);
-          const mapId = readMapId();
+          const mapId = getMapId();
           if (!mapId) return;
           mutateIncrementMapCompletionPlayCountStats({ mapId });
         } else if (scene === "practice") {

@@ -22,6 +22,7 @@ export const elapsedSecFormatTimeAtom = atom((get) => {
 
 export const getElapsedSecTime = () => store.get(elapsedSecTimeAtom);
 export const setElapsedSecTime = (value: number) => store.set(elapsedSecTimeAtom, value);
+export const resetElapsedSecTime = () => store.set(elapsedSecTimeAtom, 0);
 
 const ElapsedTimeDisplay = () => {
   return (

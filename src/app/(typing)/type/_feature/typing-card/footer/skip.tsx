@@ -18,6 +18,7 @@ const skipGuideMessageAtom = atom<string>((get) => {
 
 export const getActiveSkipKey = () => store.get(skipKeyAtom);
 export const setActiveSkipKey = (value: SkipKey) => store.set(skipKeyAtom, value);
+export const resetSkipKeyAtom = () => store.set(skipKeyAtom, null);
 
 export const SkipGuideMessage = () => {
   return (

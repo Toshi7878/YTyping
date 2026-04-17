@@ -1,6 +1,6 @@
 import type { Session } from "@/lib/auth-client";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
-import { readMapId } from "../../atoms/hydrate";
+import { getMapId } from "../../provider";
 
 export const getRankingMyResult = ({ mapId, session }: { mapId: number; session: Session }) => {
   const trpc = getTRPCOptions();
@@ -23,7 +23,7 @@ export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number;
 };
 
 export const getRankingData = () => {
-  const mapId = readMapId();
+  const mapId = getMapId();
   if (!mapId) return [];
   const trpc = getTRPCOptions();
   const queryClient = getQueryClient();

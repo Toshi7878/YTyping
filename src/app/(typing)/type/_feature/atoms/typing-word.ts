@@ -11,7 +11,7 @@ import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-fram
 import { getTypingOptions } from "../tabs/setting/popover";
 import { getLineCount } from "../typing-card/playing/playing-scene";
 import { getBuiltMap } from "./built-map";
-import { store, subscribeTypingGameStoreChange } from "./store";
+import { store } from "./store";
 
 const playingInputModeAtom = atom<InputMode>("roma");
 
@@ -90,7 +90,31 @@ function bindTypingWordDisplaySubs() {
 }
 
 bindTypingWordDisplaySubs();
-subscribeTypingGameStoreChange(bindTypingWordDisplaySubs);
+
+/** createStore 差し替え時の DOM 表示キャッシュ。resetAllTypingFeatureAtoms からも呼ぶ */
+export function resetTypingWordModuleCaches() {
+  prevMainCorrect = "";
+  prevMainNextChar = "";
+  prevMainRemain = "";
+  prevSubCorrect = "";
+  prevSubNextChar = "";
+  prevSubRemain = "";
+  prevMainShift = -1;
+  prevSubShift = -1;
+  prevMainCorrectTextForScroll = "";
+  prevSubCorrectTextForScroll = "";
+  unsubscribeTypingWordDisplaySubs?.();
+  bindTypingWordDisplaySubs();
+}
+
+export function resetTypingWordAtoms() {
+  store.set(typingWordAtom, RESET);
+  store.set(mainWordElementsAtom, RESET);
+  store.set(subWordElementsAtom, RESET);
+  store.set(wordContainerElementAtom, null);
+  store.set(playingInputModeAtom, "roma");
+  resetTypingWordModuleCaches();
+}
 
 export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
   store.set(mainWordElementsAtom, elements);

@@ -8,6 +8,10 @@ const lineProgressMaxAtom = atom(0);
 export const getLineProgressMax = () => store.get(lineProgressMaxAtom);
 export const setLineProgressValue = (value: number) => store.set(lineProgressValueAtom, value);
 export const setLineProgressMax = (max: number) => store.set(lineProgressMaxAtom, max);
+export const resetLineTimeProgressAtoms = () => {
+  store.set(lineProgressValueAtom, 0);
+  store.set(lineProgressMaxAtom, 0);
+};
 
 interface LineTimeProgressProps {
   id: string;

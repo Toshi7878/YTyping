@@ -7,6 +7,7 @@ import { useTypingOptionsState } from "../../tabs/setting/popover";
 
 const lyricsAtom = atom("");
 export const setLyrics = (value: string) => store.set(lyricsAtom, value);
+export const resetLyricsAtom = () => store.set(lyricsAtom, "");
 
 export const Lyrics = () => {
   const lyrics = useAtomValue(lyricsAtom);

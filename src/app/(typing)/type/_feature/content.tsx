@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { buildTypingMap } from "lyrics-typing-engine";
-import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -19,16 +18,13 @@ import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { initializeAllLineResult, setSelectLineIndex } from "./atoms/line-result";
-import { getTypingStats } from "./atoms/stats";
-import { resetTypingGameStore } from "./atoms/store";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
-import { mutateTypingStats } from "./lib/stats";
 import { useTypingOptionsState } from "./tabs/setting/popover";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
-import { getScene, TypingCard, useSceneGroupState } from "./typing-card/typing-card";
+import { TypingCard, useSceneGroupState } from "./typing-card/typing-card";
 import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
 
@@ -51,7 +47,6 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   const { data: rawMapLines, isLoading } = useQuery(
     trpc.map.getJsonById.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
   );
-  const pathname = usePathname();
 
   useEffect(() => {
     if (rawMapLines) {
@@ -83,18 +78,6 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       setTotalProgressMax(builtMap.duration);
     }
   }, [rawMapLines]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
-  useEffect(() => {
-    return () => {
-      const scene = getScene();
-      if (scene === "play" || scene === "practice") {
-        const stats = getTypingStats();
-        mutateTypingStats(stats);
-      }
-      resetTypingGameStore();
-    };
-  }, [pathname]);
 
   return (
     <div className="fixed flex h-screen w-screen flex-col items-center max-sm:-mt-1.5">

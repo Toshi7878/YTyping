@@ -38,6 +38,11 @@ const lineCountAtom = atom(0);
 export const getLineCount = () => store.get(lineCountAtom);
 export const setLineCount = (updater: SetStateAction<number>) => store.set(lineCountAtom, updater);
 
+export const resetPlayingSceneAtoms = () => {
+  store.set(timeOffsetAtom, 0);
+  store.set(lineCountAtom, 0);
+};
+
 interface PlayingProps {
   className: string;
 }

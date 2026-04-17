@@ -59,6 +59,7 @@ export const clearAllLineResult = () => {
 };
 
 const lineSelectIndexAtom = atom(0);
+export const resetLineSelectIndex = () => store.set(lineSelectIndexAtom, 0);
 export const useSelectLineIndexState = () => useAtomValue(lineSelectIndexAtom);
 export const getSelectLineIndex = () => store.get(lineSelectIndexAtom);
 export const setSelectLineIndex = (lineIndex: number) => {

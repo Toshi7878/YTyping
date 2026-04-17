@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { getSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
-import { readMapId } from "../../atoms/hydrate";
 import { initializeAllLineResult } from "../../atoms/line-result";
+import { getMapId } from "../../provider";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 import { getScene, setScene } from "../typing-card";
 
@@ -23,7 +23,7 @@ export const ReadyPracticeButton = () => {
       primeYTPlayerForMobilePlayback();
       overlay.loading("リザルトデータを読込中...");
       setScene("practice");
-      const mapId = readMapId();
+      const mapId = getMapId();
       const session = getSession();
       const resultId = mapId && session ? getRankingMyResult({ mapId, session })?.id : null;
 

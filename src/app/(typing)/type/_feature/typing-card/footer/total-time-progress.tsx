@@ -8,6 +8,10 @@ const totalProgressMaxAtom = atom(0);
 export const getTotalProgressMax = () => store.get(totalProgressMaxAtom);
 export const setTotalProgressValue = (value: number) => store.set(totalProgressValueAtom, value);
 export const setTotalProgressMax = (max: number) => store.set(totalProgressMaxAtom, max);
+export const resetTotalTimeProgressAtoms = () => {
+  store.set(totalProgressValueAtom, 0);
+  store.set(totalProgressMaxAtom, 0);
+};
 
 interface TotalTimeProgressProps {
   id: string;

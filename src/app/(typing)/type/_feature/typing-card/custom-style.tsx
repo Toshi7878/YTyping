@@ -12,7 +12,7 @@ const lineStyleAtom = atom((get): string => {
   if (!map) return "";
   return map.lines[lineStyleIndex]?.options?.changeCSS ?? "";
 });
-
+export const resetLineStyleIndexAtom = () => store.set(lineStyleIndexAtom, null);
 export const setLineCustomStyleIndex = (currentIndex: number) => {
   const map = getBuiltMap();
   if (!map) return;

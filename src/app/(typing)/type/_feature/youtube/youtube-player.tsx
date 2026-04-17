@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";
-import { readMapId } from "../atoms/hydrate";
 import { store } from "../atoms/store";
 import { setPlayingInputMode } from "../atoms/typing-word";
 import { pauseYTPlayer, playYTPlayer, writeYTPlayer } from "../atoms/youtube-player";
 import { iosActiveSound } from "../lib/sound-effect";
+import { getMapId } from "../provider";
 import { setTabName } from "../tabs/tabs";
 import { setNotify } from "../typing-card/header/notify";
 import { setLineCount } from "../typing-card/playing/playing-scene";
@@ -41,6 +41,13 @@ export const setMinMediaSpeed = (value: number) => store.set(minMediaSpeedAtom, 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const getIsYTStarted = () => store.get(isYTStartedAtom);
 export const setYTStarted = (value: boolean) => store.set(isYTStartedAtom, value);
+
+export const resetYoutubeUiAtoms = () => {
+  store.set(isYTStartedAtom, false);
+  store.set(isPausedAtom, false);
+  store.set(mediaSpeedAtom, 1);
+  store.set(minMediaSpeedAtom, 1);
+};
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -110,7 +117,7 @@ const handleStart = (player: YT.Player) => {
   const map = getBuiltMap();
   if (!map) return;
   setLastLineEndTime(map, player.getDuration());
-  const mapId = readMapId();
+  const mapId = getMapId();
   if (mapId) {
     mutatePlayCountStats({ mapId });
   }

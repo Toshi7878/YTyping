@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { useTRPC } from "@/trpc/provider";
 import type { TypingLineResult } from "@/validator/result";
-import { readMapId } from "../../atoms/hydrate";
 import { getTypingSubstatus, type TypingSubstatus } from "../../atoms/substatus";
+import { getMapId } from "../../provider";
 import { getTypingOptions, type TypingOptions } from "../../tabs/setting/popover";
 import { setTabName } from "../../tabs/tabs";
 import { getTypingStatus, type TypingStatus } from "../../tabs/typing-status/status-cell";
@@ -28,7 +28,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
   const registerRanking = useRegisterRankingMutation({
     onSuccess: async () => {
       onSuccess();
-      const mapId = readMapId();
+      const mapId = getMapId();
       await queryClient.invalidateQueries(trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }));
       setTabName("ランキング");
       toast.success("ランキング登録が完了しました");
@@ -39,7 +39,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
   });
 
   const handleClick = async () => {
-    const mapId = readMapId();
+    const mapId = getMapId();
     if (!mapId) return;
 
     const isConfirmed = isScoreUpdated

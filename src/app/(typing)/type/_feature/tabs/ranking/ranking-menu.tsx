@@ -10,13 +10,13 @@ import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { readMapId } from "../../atoms/hydrate";
 import { initializeAllLineResult } from "../../atoms/line-result";
 import { setReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
 import { iosActiveSound } from "../../lib/sound-effect";
+import { getMapId } from "../../provider";
 import { setScene, useSceneGroupState } from "../../typing-card/typing-card";
 import { getRankingResultByResultId } from "./get-ranking-result";
 
@@ -65,7 +65,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
 
     setTabName("ステータス");
 
-    const mapId = readMapId();
+    const mapId = getMapId();
     const replayRankingResult = mapId ? getRankingResultByResultId({ mapId, resultId }) : null;
     setReplayRankingResult(replayRankingResult);
 

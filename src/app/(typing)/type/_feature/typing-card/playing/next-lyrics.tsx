@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
 import { useAtomValue } from "jotai/react";
-import { atomWithReset } from "jotai/vanilla/utils";
+import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import type { BuiltMapLine } from "lyrics-typing-engine";
 import { cn } from "@/lib/utils";
 import { store } from "../../atoms/store";
@@ -23,6 +23,10 @@ export const setNextLyricsAndKpm = (line: BuiltMapLine) => {
     store.set(nextKpmAtom, 0);
     store.set(nextLyricsAtom, "");
   }
+};
+export const resetNextLyricsAtoms = () => {
+  store.set(nextLyricsAtom, RESET);
+  store.set(nextKpmAtom, RESET);
 };
 
 export const NextLyrics = () => {

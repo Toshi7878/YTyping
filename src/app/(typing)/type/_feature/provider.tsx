@@ -1,12 +1,20 @@
 "use client";
-import { Provider } from "jotai";
-import type { ReactNode } from "react";
-import { useSyncExternalStore } from "react";
+import { Provider, useAtomValue } from "jotai";
+import { atomWithReset, RESET } from "jotai/utils";
+import { type ReactNode, useEffect } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { mapIdAtom } from "./atoms/hydrate";
-import { getTypingGameStoreVersion, store, subscribeTypingGameStoreChange } from "./atoms/store";
+import { resetAllTypingFeatureAtoms } from "./atoms/reset";
+import { getTypingStats } from "./atoms/stats";
+import { store } from "./atoms/store";
+import { mutateTypingStats } from "./lib/stats";
 import { typingOptionsAtom } from "./tabs/setting/popover";
+import { getScene } from "./typing-card/typing-card";
+
+export const mapIdAtom = atomWithReset<number | null>(null);
+export const useMapIdState = () => useAtomValue(mapIdAtom);
+export const getMapId = () => store.get(mapIdAtom);
+export const resetMapId = () => store.set(mapIdAtom, RESET);
 
 interface JotaiProviderProps {
   userTypingOptions: RouterOutputs["user"]["typingOption"]["getForSession"];
@@ -15,10 +23,20 @@ interface JotaiProviderProps {
 }
 
 export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
-  const storeVersion = useSyncExternalStore(subscribeTypingGameStoreChange, getTypingGameStoreVersion, () => 0);
+  // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
+  useEffect(() => {
+    return () => {
+      const scene = getScene();
+      if (scene === "play" || scene === "practice") {
+        const stats = getTypingStats();
+        mutateTypingStats(stats);
+      }
+      resetAllTypingFeatureAtoms();
+    };
+  }, [mapId]);
 
   return (
-    <Provider key={storeVersion} store={store}>
+    <Provider store={store}>
       <AtomsHydrator
         atomValues={[
           [mapIdAtom, mapId],
