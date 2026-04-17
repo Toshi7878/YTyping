@@ -334,7 +334,7 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
   const playSpeed = getMediaSpeed();
   const skipOutTime = startLine.time - 3 * playSpeed;
 
-  if (startLine.time > 5 && skipOutTime > currentTime) {
+  if (startLine.time > 3 && skipOutTime > currentTime) {
     setActiveSkipKey(SKIP_KEY);
   } else {
     setActiveSkipKey(null);
