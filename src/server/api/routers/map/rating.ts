@@ -16,7 +16,7 @@ const DEFAULT_OPTIONS: Required<DifficultyOptions> = {
   penaltyExp: 2,
   peakN: 2,
   peakRatio: 0.3,
-  maxKPM: 1500,
+  maxKPM: 1700,
   minNotes: 70,
   logScale: 0.17,
   maxScale: 3.0,
