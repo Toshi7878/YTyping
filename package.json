@@ -100,7 +100,7 @@
     "@types/node": "^24.5.2",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@types/youtube": "^0.1.2",
+    "@types/youtube": "^0.2.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "csv-parse": "^6.1.0",
     "drizzle-kit": "^0.31.7",
