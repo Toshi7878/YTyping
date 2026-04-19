@@ -5,10 +5,10 @@ type DifficultyOptions = {
   penaltyExp?: number; // ペナルティの指数（大きいほど急激に下がる） default: 2
   peakN?: number; // ピーク行数 default: 2
   peakRatio?: number; // ピーク合成比率 default: 0.3
-  maxKPM?: number; // これを超えるKPMの行は異常値として無視 default: 1500
-  minNotes?: number; // 基準notes数（未満は線形で下げる） default: 70
-  logScale?: number; // notes上昇の緩やかさ default: 0.17
-  maxScale?: number; // notesScalingの上限倍率 default: 3.0
+  maxKPM?: number; // これを超えるKPMの行は異常値として無視 default: 1700
+  minNotes?: number; // 基準notes数（これを中心に対数スケール） default: 270
+  logScale?: number; // notesスケーリングの緩やかさ default: 0.17
+  maxScale?: number; // notesScalingの上限倍率 default: 1.1
 };
 
 const DEFAULT_OPTIONS: Required<DifficultyOptions> = {
@@ -51,13 +51,12 @@ function calcPenalty(div: number, threshold: number, exp: number): number {
 }
 
 /**
- * totalNotesによるスケーリング係数
- * minNotes未満 → 線形で下げる
+ * totalNotesによるスケーリング係数（上下対称の対数スケール）
+ * minNotes未満 → 対数で緩やかに下げる（0にならない）
  * minNotes以上 → 対数で緩やかに上げる（maxScaleで頭打ち）
  */
 function calcNotesScaling(totalNotes: number, minNotes: number, logScale: number, maxScale: number): number {
-  if (totalNotes < minNotes) return totalNotes / minNotes;
-  return Math.min(1.0 + Math.log(totalNotes / minNotes) * logScale, maxScale);
+  return Math.min(Math.max(1.0 + Math.log(totalNotes / minNotes) * logScale, 0), maxScale);
 }
 
 /** 譜面全体のstar ratingを算出 */
@@ -96,8 +95,8 @@ export function calcStarRating(lines: BuiltMapLine[], options?: DifficultyOption
 
   const difficultyScore = avgKPM * (1 - peakRatio) + peakKPM * peakRatio;
 
-  // totalNotesによるスケーリング
+  // totalNotesによるスケーリング（対数・上下対称）
   const notesScaling = calcNotesScaling(totalNotes, minNotes, logScale, maxScale);
 
-  return Math.trunc((difficultyScore / 100) * notesScaling);
+  return Math.round((difficultyScore / 100) * notesScaling * 100) / 100;
 }
