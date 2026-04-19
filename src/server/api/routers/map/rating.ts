@@ -19,7 +19,7 @@ const DEFAULT_OPTIONS: Required<DifficultyOptions> = {
   maxKPM: 1700,
   minNotes: 70,
   logScale: 0.17,
-  maxScale: 3.0,
+  maxScale: 1.1,
 };
 
 /** シャノンエントロピーでkanaの文字多様性を0〜1で算出 */
