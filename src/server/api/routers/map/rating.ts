@@ -99,5 +99,5 @@ export function calcStarRating(lines: BuiltMapLine[], options?: DifficultyOption
   // totalNotesによるスケーリング
   const notesScaling = calcNotesScaling(totalNotes, minNotes, logScale, maxScale);
 
-  return (difficultyScore / 100) * notesScaling;
+  return Math.trunc((difficultyScore / 100) * notesScaling);
 }

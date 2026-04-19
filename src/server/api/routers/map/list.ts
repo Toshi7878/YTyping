@@ -120,6 +120,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       kanaKpmMax: MapDifficulties.kanaKpmMax,
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+      rating: MapDifficulties.rating,
     },
     bookmark: {
       hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
@@ -225,7 +226,7 @@ function mapOrderBy(
       return [sql`RANDOM()`];
 
     case "difficulty":
-      return [order(MapDifficulties.romaKpmMedian)];
+      return [order(MapDifficulties.rating)];
     case "ranking-count":
       return [order(Maps.rankingCount), order(Maps.id)];
     case "ranking-register":
@@ -252,11 +253,11 @@ function filterByDifficulty({ minRate, maxRate }: { minRate?: number | null; max
   const conditions = [];
 
   if (minRate && minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
-    conditions.push(gte(MapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
+    conditions.push(gte(MapDifficulties.rating, minRate));
   }
 
   if (maxRate && MAP_DIFFICULTY_RATE_FILTER_LIMIT.max > maxRate) {
-    conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
+    conditions.push(lte(MapDifficulties.rating, maxRate));
   }
 
   return and(...conditions);

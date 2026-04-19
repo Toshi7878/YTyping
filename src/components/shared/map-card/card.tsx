@@ -89,7 +89,7 @@ const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
       <Link href={`/type/${map.id}`} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
         <Badge variant="accent-light" className="rounded-full">
           <span>★</span>
-          <span>{(map.difficulty.romaKpmMedian / 100).toFixed(1)}</span>
+          <span className="font-bold">{Math.trunc(map.difficulty.rating)}</span>
         </Badge>
         <Badge variant="accent-light" className="rounded-full max-lg:hidden">
           {formatTime(map.info.duration)}

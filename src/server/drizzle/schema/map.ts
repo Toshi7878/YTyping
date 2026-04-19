@@ -59,7 +59,7 @@ export const MapDifficulties = pgTable("map_difficulties", {
   englishTotalNotes: integer("english_total_notes").notNull().default(0),
   symbolTotalNotes: integer("symbol_total_notes").notNull().default(0),
   intTotalNotes: integer("int_total_notes").notNull().default(0),
-  rating: real("rating").default(0),
+  rating: real("rating").notNull(),
 });
 
 export const MapLikes = pgTable(

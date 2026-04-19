@@ -74,7 +74,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
       <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
         <Badge variant="accent-light" className="h-5 rounded-full px-1 text-xs">
           <span>★</span>
-          <span>{(map.difficulty.romaKpmMedian / 100).toFixed(1)}</span>
+          <span className="font-bold">{Math.trunc(map.difficulty.rating)}</span>
         </Badge>
       </Link>
     </HoverExtractCardTrigger>

@@ -45,6 +45,7 @@ export const notificationRouter = {
             romaKpmMax: true,
             romaTotalNotes: true,
             kanaTotalNotes: true,
+            rating: true,
           },
         },
         mapLikes: {
@@ -141,6 +142,7 @@ export const notificationRouter = {
           kanaKpmMax: map.difficulty.kanaKpmMax,
           romaTotalNotes: map.difficulty.romaTotalNotes,
           kanaTotalNotes: map.difficulty.kanaTotalNotes,
+          rating: map.difficulty.rating,
         },
         like: { count: map.likeCount, hasLiked: map.mapLikes?.[0]?.hasLiked ?? false },
         ranking: {
