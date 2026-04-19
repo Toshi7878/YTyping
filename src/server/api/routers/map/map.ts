@@ -1,5 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
+import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
@@ -12,6 +13,7 @@ import { mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";
+import { calcStarRating } from "./rating";
 
 export const mapRouter = {
   getById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -152,10 +154,13 @@ export const mapRouter = {
         throw new TRPCError({ code: "PRECONDITION_FAILED" });
       }
 
+      const builtMapLines = buildTypingMap({ rawMapLines: rawMapJson, charPoint: 0 });
+      const rating = calcStarRating(builtMapLines);
+
       await tx
         .insert(MapDifficulties)
-        .values({ mapId: newId, ...mapDifficulty })
-        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
+        .values({ mapId: newId, ...mapDifficulty, rating })
+        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: { ...mapDifficulty, rating } });
 
       await uploadPublicFile({
         key: `map-json/${mapId === null ? newId : mapId}.json`,
