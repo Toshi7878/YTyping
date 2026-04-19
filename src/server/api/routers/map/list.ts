@@ -226,7 +226,7 @@ function mapOrderBy(
       return [sql`RANDOM()`];
 
     case "difficulty":
-      return [order(MapDifficulties.rating)];
+      return [order(MapDifficulties.rating), order(Maps.id)];
     case "ranking-count":
       return [order(Maps.rankingCount), order(Maps.id)];
     case "ranking-register":
