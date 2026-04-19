@@ -10,6 +10,7 @@ import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { formatMapDifficultyRating } from "@/utils/format-map-difficulty-rating";
 import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
@@ -153,7 +154,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
       <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
         <Badge variant="accent-light" size="xs" className="rounded-full">
           <span>★</span>
-          <span className="font-bold">{Math.trunc(map.difficulty.rating)}</span>
+          <span className="font-bold">{formatMapDifficultyRating(map.difficulty.rating)}</span>
         </Badge>
       </Link>
     </HoverExtractCardTrigger>
