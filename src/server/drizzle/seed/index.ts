@@ -89,6 +89,7 @@ function parseMapRow(row: Record<string, string>) {
 function parseMapDifficultyRow(row: Record<string, string>) {
   return {
     mapId: Number(row.map_id ?? 0),
+    rating: Number(row.rating ?? 0),
     romaKpmMedian: Number(row.roma_kpm_median ?? 0),
     romaKpmMax: Number(row.roma_kpm_max ?? 0),
     kanaKpmMedian: Number(row.kana_kpm_median ?? 0),
