@@ -4,7 +4,15 @@ import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
-import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } from "@/server/drizzle/schema";
+import {
+  MapDifficulties,
+  Maps,
+  NotificationOverTakes,
+  Notifications,
+  ResultStatuses,
+  Results,
+  UserStats,
+} from "@/server/drizzle/schema";
 import type { TypingLineResult } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
@@ -12,6 +20,7 @@ import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../../utils/id";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
+import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP } from "./pp";
 
 export const resultRouter = {
   getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
@@ -33,6 +42,21 @@ export const resultRouter = {
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
+      const starRatingRow = await tx
+        .select({ rating: MapDifficulties.rating })
+        .from(MapDifficulties)
+        .where(eq(MapDifficulties.mapId, mapId))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      if (!starRatingRow) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "譜面の難易度情報が見つかりません" });
+      }
+
+      const rawPPInput = buildRawPPInputFromResultStatus(status);
+      const pp = calcRawPP(rawPPInput, starRatingRow.rating);
+      const statusWithPp = { ...status, pp };
+
       const existingResult = await tx
         .select({ id: Results.id })
         .from(Results)
@@ -64,8 +88,10 @@ export const resultRouter = {
 
       await tx
         .insert(ResultStatuses)
-        .values({ resultId, ...status })
-        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
+        .values({ resultId, ...statusWithPp })
+        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: statusWithPp });
+
+      await recalculateUserTotalPP(tx, userId);
 
       const jsonString = JSON.stringify(lineResults, null, 2);
       const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
@@ -225,3 +251,22 @@ const updateRankingsAndNotifyOvertakes = async ({
     }
   }
 };
+
+/** ユーザーの全スコア pp から total pp を再計算し `user_stats.total_pp` を更新する */
+async function recalculateUserTotalPP(tx: TXType, userId: number) {
+  const rows = await tx
+    .select({ pp: ResultStatuses.pp })
+    .from(ResultStatuses)
+    .innerJoin(Results, eq(Results.id, ResultStatuses.resultId))
+    .where(eq(Results.userId, userId));
+
+  const totalPP = Math.round(calcTotalPP(rows));
+
+  await tx
+    .insert(UserStats)
+    .values({ userId, totalPP })
+    .onConflictDoUpdate({
+      target: [UserStats.userId],
+      set: { totalPP },
+    });
+}

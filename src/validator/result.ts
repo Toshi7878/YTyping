@@ -30,7 +30,10 @@ const CreateTypingResultJsonSchema = z.array(
     ),
   }),
 );
-export const CreateResultStatusSchema = createInsertSchema(ResultStatuses).omit({ resultId: true }).required();
+/** pp はサーバーで map の star rating から算出する */
+export const CreateResultStatusSchema = createInsertSchema(ResultStatuses)
+  .omit({ resultId: true, pp: true })
+  .required();
 
 export const CreateResultSchema = z
   .object({

@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
-import { and, asc, count, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, lte, sql } from "drizzle-orm";
 import z from "zod";
 import {
   Maps,
@@ -9,6 +9,7 @@ import {
   UserMapCompletionPlayCounts,
   UserOptions,
   UserStats,
+  Users,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
 import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
@@ -30,6 +31,7 @@ export const userStatsRouter = {
         totalPlayCount: UserStats.totalPlayCount,
         totalRankingCount: UserStats.totalRankingCount,
         maxCombo: UserStats.maxCombo,
+        totalPP: UserStats.totalPP,
         totalTypingTime: UserStats.totalTypingTime,
         typeCounts: {
           romaTypeTotalCount: UserStats.romaTypeTotalCount,
@@ -54,6 +56,47 @@ export const userStatsRouter = {
 
     return userStats;
   }),
+
+  /** total PP 順のユーザーランキング（ページネーション） */
+  getPPRanking: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().int().min(0).optional(),
+        limit: z.number().int().min(1).max(50).default(30),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
+      const offset = input.cursor ?? 0;
+      const take = input.limit + 1;
+
+      const rows = await db
+        .select({
+          userId: Users.id,
+          name: Users.name,
+          totalPP: UserStats.totalPP,
+        })
+        .from(UserStats)
+        .innerJoin(Users, eq(Users.id, UserStats.userId))
+        .where(eq(Users.banned, false))
+        .orderBy(desc(UserStats.totalPP), asc(Users.id))
+        .limit(take)
+        .offset(offset);
+
+      const hasMore = rows.length > input.limit;
+      const items = hasMore ? rows.slice(0, input.limit) : rows;
+      const nextCursor = hasMore ? offset + input.limit : undefined;
+
+      return {
+        items: items.map((row, i) => ({
+          rank: offset + i + 1,
+          userId: row.userId,
+          name: row.name,
+          totalPP: row.totalPP,
+        })),
+        nextCursor,
+      };
+    }),
 
   getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;

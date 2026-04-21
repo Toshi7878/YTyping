@@ -206,6 +206,7 @@ export const UserStats = pgTable("user_stats", {
   totalPlayCount: integer("total_play_count").notNull().default(0),
   imeTypeTotalCount: integer("ime_type_total_count").notNull().default(0),
   maxCombo: integer("max_combo").notNull().default(0),
+  totalPP: integer("total_pp").notNull().default(0),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
