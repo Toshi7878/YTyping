@@ -14,6 +14,7 @@ import {
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
 import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
+import { createPagination } from "../../utils/pagination";
 
 const userStatsWriteRateLimit = createRateLimitMiddleware({
   keyPrefix: "ratelimit:user-stats:write",
@@ -61,14 +62,13 @@ export const userStatsRouter = {
   getPPRanking: publicProcedure
     .input(
       z.object({
-        cursor: z.number().int().min(0).optional(),
-        limit: z.number().int().min(1).max(50).default(30),
+        cursor: z.number().int().optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
-      const offset = input.cursor ?? 0;
-      const take = input.limit + 1;
+
+      const { offset, limit, buildPageResult } = createPagination(input.cursor, 30);
 
       const rows = await db
         .select({
@@ -80,22 +80,15 @@ export const userStatsRouter = {
         .innerJoin(Users, eq(Users.id, UserStats.userId))
         .where(eq(Users.banned, false))
         .orderBy(desc(UserStats.totalPP), asc(Users.id))
-        .limit(take)
+        .limit(limit)
         .offset(offset);
 
-      const hasMore = rows.length > input.limit;
-      const items = hasMore ? rows.slice(0, input.limit) : rows;
-      const nextCursor = hasMore ? offset + input.limit : undefined;
+      const rowsWithRank = rows.map((row, index) => ({
+        ...row,
+        rank: offset + index + 1,
+      }));
 
-      return {
-        items: items.map((row, i) => ({
-          rank: offset + i + 1,
-          userId: row.userId,
-          name: row.name,
-          totalPP: row.totalPP,
-        })),
-        nextCursor,
-      };
+      return buildPageResult(rowsWithRank);
     }),
 
   getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {

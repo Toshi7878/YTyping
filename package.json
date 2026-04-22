@@ -19,6 +19,7 @@
     "db:reset": "pnpx supabase db reset",
     "db:status": "pnpx supabase status",
     "db:seed": "pnpx tsx --env-file=.env src/server/drizzle/seed/index.ts",
+    "pp:recalculate": "dotenv -e .env -- pnpx tsx src/server/drizzle/scripts/recalculate-all-pp.ts",
     "notice:generate": "pnpx license-checker-rseidelsohn --production --markdown --out NOTICE.md",
     "prepare": "husky"
   },
@@ -103,6 +104,7 @@
     "@types/youtube": "^0.1.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "csv-parse": "^6.1.0",
+    "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.7",
     "husky": "^9.1.7",
     "supabase": "^2.48.3",

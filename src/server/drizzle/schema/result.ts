@@ -56,6 +56,8 @@ export const ResultStatuses = pgTable(
     maxCombo: integer("max_combo").notNull().default(0),
     clearRate: real("clear_rate").notNull().default(0),
     isCaseSensitive: boolean("is_case_sensitive").notNull().default(false),
+    /** 登録時点の星難易度（再計算・合計ppはこれを用い、現行 `map_difficulties.rating` には従わない） */
+    starRatingSnapshot: real("star_rating_snapshot").notNull().default(0),
     pp: real("pp").notNull().default(0),
   },
   (t) => [check("valid_play_speed_values", sql`${t.minPlaySpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],

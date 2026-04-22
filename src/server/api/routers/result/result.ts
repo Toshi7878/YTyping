@@ -54,8 +54,9 @@ export const resultRouter = {
       }
 
       const rawPPInput = buildRawPPInputFromResultStatus(status);
-      const pp = calcRawPP(rawPPInput, starRatingRow.rating);
-      const statusWithPp = { ...status, pp };
+      const starRating = starRatingRow.rating;
+      const pp = calcRawPP(rawPPInput, starRating);
+      const statusWithPp = { ...status, pp, starRatingSnapshot: starRating };
 
       const existingResult = await tx
         .select({ id: Results.id })

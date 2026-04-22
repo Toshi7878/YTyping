@@ -30,9 +30,9 @@ const CreateTypingResultJsonSchema = z.array(
     ),
   }),
 );
-/** pp はサーバーで map の star rating から算出する */
+/** pp / starRatingSnapshot はサーバーで map の難易度と同期して算出する */
 export const CreateResultStatusSchema = createInsertSchema(ResultStatuses)
-  .omit({ resultId: true, pp: true })
+  .omit({ resultId: true, pp: true, starRatingSnapshot: true })
   .required();
 
 export const CreateResultSchema = z

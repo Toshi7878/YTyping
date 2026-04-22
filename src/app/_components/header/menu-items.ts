@@ -12,7 +12,10 @@ export const LEFT_MENU_LINK_ITEMS: HeaderMenu[] = [
   { title: "API Docs", href: "/api-docs" },
 ];
 
-export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
+export const LEFT_LINKS: HeaderMenu[] = [
+  { title: "タイムライン", href: "/timeline" },
+  { title: "ランキング", href: "/rankings/performance" },
+];
 
 export const buildUserMenuLinkItems = (userId: number): HeaderMenu[] => {
   return [
