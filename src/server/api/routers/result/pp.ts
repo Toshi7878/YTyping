@@ -57,16 +57,11 @@ export function buildRawPPInputFromResultStatus(status: {
   };
 }
 
-/**
- * リザルトデータからraw ppを算出
- * acc_pp:  正確率ベース（30%・二乗）
- * comp_pp: 打ち切り率ベース（70%・二乗）
- */
 export function calcRawPP(result: RawPPInput, starRating: number): number {
   const basePP = calcBasePP(starRating);
 
-  const acc_pp = basePP * 0.3 * result.accuracy ** 2;
-  const comp_pp = basePP * 0.7 * result.clearRate ** 2;
+  const acc_pp = basePP * 0.4 * result.accuracy ** 2;
+  const comp_pp = basePP * 0.6 * result.clearRate ** 2.5;
 
   const speedMultiplier = calcSpeedMultiplier(result.minPlaySpeed);
 
