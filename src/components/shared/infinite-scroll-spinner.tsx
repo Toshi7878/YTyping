@@ -7,6 +7,7 @@ const INFINITE_SCROLL_IN_VIEW_PRESETS = {
   threeColumnMapList: { rootMargin: "300px 0px" },
   resultListWithMap: { rootMargin: "2000px 0px" },
   notificationSheet: { threshold: 0.8 },
+  ppRanking: { rootMargin: "1000px 0px" },
 } as const satisfies Record<string, IntersectionOptions>;
 
 type InfiniteScrollControls<TData = unknown, TError = unknown> = Pick<

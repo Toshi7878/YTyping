@@ -64,7 +64,7 @@ export const PPRankingTable = () => {
       </ul>
 
       <div className="flex min-h-8 flex-col items-center justify-center gap-2 py-4">
-        <InfiniteScrollSpinner fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
+        <InfiniteScrollSpinner inViewPreset="ppRanking" fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
         {isFetchingNextPage ? <p className="text-muted-foreground text-xs">読み込み中…</p> : null}
         {!hasNextPage && rows.length > 0 ? <p className="text-muted-foreground text-sm">すべて表示しました</p> : null}
       </div>
