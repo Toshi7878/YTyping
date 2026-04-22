@@ -65,6 +65,15 @@ export const ResultListSearchFilterSchema = z.object({
   playerId: z.number().nullish(),
 });
 
+/** `pageSize` 未指定時はサーバーで 25 件。指定時は 1〜50 の整数。 */
 export const SelectResultListApiSchema = z
-  .object({ cursor: z.number().optional() })
+  .object({
+    cursor: z.number().optional(),
+  })
   .extend(ResultListSearchFilterSchema.shape);
+
+/** ユーザーの PP 順リザルト一覧用。限定公開譜面も含む。 */
+export const SelectResultPpListApiSchema = z.object({
+  playerId: z.number(),
+  cursor: z.number().optional(),
+});

@@ -6,8 +6,15 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
-import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
+import {
+  CLEAR_RATE_LIMIT,
+  KPM_LIMIT,
+  PLAY_SPEED_LIMIT,
+  type RESULT_INPUT_METHOD_TYPES,
+  ResultListSearchFilterSchema,
+  SelectResultListApiSchema,
+  SelectResultPpListApiSchema,
+} from "@/validator/result";
 import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
@@ -22,6 +29,15 @@ const MyClap = alias(ResultClaps, "my_clap");
 
 const PAGE_SIZE = 25;
 
+type ResultListMapVisibilityMode = "default" | "publicAndUnlisted";
+
+const mapVisibilityForResultList = (session: TRPCContext["session"], mode: ResultListMapVisibilityMode) => {
+  if (mode === "publicAndUnlisted") {
+    return or(eq(Maps.visibility, "PUBLIC"), eq(Maps.visibility, "UNLISTED"));
+  }
+  return filterByMapVisibility(session);
+};
+
 export const resultListRouter = {
   get: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, ...searchInput } = input ?? {};
@@ -30,26 +46,45 @@ export const resultListRouter = {
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
     const baseSelect = buildBaseSelect(db, session);
 
-    const items = await buildResultWithMapBaseQuery(
+    const orderedQuery = buildResultWithMapBaseQuery(
       db.select(baseSelect).from(Results).$dynamic(),
       session,
       searchInput,
-    )
-      .orderBy(desc(Results.updatedAt))
-      .limit(limit)
-      .offset(offset);
+      "default",
+    ).orderBy(desc(Results.updatedAt));
+
+    const items = await orderedQuery.limit(limit).offset(offset);
 
     return buildPageResult(formatMapListItem(items));
   }),
 
-  getCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
-    const { cursor, ...searchInput } = input ?? {};
+  /** PP 降順。限定公開譜面も対象（`result.list.get` とは可視性条件が異なる）。 */
+  getPp: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
+    const { cursor, playerId } = input;
+    const { db, session } = ctx;
+
+    const { limit, offset, buildPageResult } = createPagination(cursor, 7);
+    const baseSelect = buildBaseSelect(db, session);
+
+    const orderedQuery = buildResultWithMapBaseQuery(
+      db.select(baseSelect).from(Results).$dynamic(),
+      session,
+      { playerId },
+      "publicAndUnlisted",
+    ).orderBy(desc(ResultStatuses.pp), desc(Results.updatedAt));
+
+    const items = await orderedQuery.limit(limit).offset(offset);
+
+    return buildPageResult(formatMapListItem(items));
+  }),
+
+  getCount: publicProcedure.input(ResultListSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
 
     const baseQuery = buildResultWithMapBaseQuery(
       db.select({ count: count() }).from(Results).$dynamic(),
       session,
-      searchInput,
+      input,
     );
 
     const total = await baseQuery.limit(1);
@@ -102,6 +137,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       maxCombo: ResultStatuses.maxCombo,
       clearRate: ResultStatuses.clearRate,
       isCaseSensitive: ResultStatuses.isCaseSensitive,
+      pp: ResultStatuses.pp,
     },
     typeSpeed: {
       kpm: ResultStatuses.kpm,
@@ -158,6 +194,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   db: T,
   session: TRPCContext["session"],
   input?: z.output<typeof ResultListSearchFilterSchema>,
+  mapVisibilityMode: ResultListMapVisibilityMode = "default",
 ) => {
   let baseQuery = db
     .innerJoin(Maps, eq(Maps.id, Results.mapId))
@@ -188,7 +225,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     filterByKeyword({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions));
+  return baseQuery.where(and(mapVisibilityForResultList(session, mapVisibilityMode), ...whereConditions));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

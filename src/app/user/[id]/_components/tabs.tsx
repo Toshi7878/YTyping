@@ -6,6 +6,7 @@ import { useTRPC } from "@/trpc/provider";
 import { type TABS, useTabQueryState } from "../_lib/search-params";
 import { UserBookmarkLists } from "./bookmark-lists";
 import { UserCreatedMapList, UserLikedMapList } from "./map-list";
+import { PPResultCardList } from "./user-pp-list/list";
 import { UserResultList } from "./user-result-list";
 import { UserStatsCard } from "./user-stats/card";
 
@@ -39,7 +40,8 @@ export const UserTabs = ({ id }: { id: string }) => {
           </TabsTrigger>
         ))}
       </TabsList>
-      <TabsContent value="stats">
+      <TabsContent value="stats" className="space-y-6">
+        <PPResultCardList id={id} />
         <UserStatsCard />
       </TabsContent>
       <TabsContent value="bookmarks">
