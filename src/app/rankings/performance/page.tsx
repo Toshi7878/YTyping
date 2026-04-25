@@ -16,7 +16,7 @@ export default async function Page() {
 
   return (
     <HydrateClient>
-      <div className="mx-auto max-w-3xl space-y-4 px-4 py-8 lg:px-8">
+      <div className="mx-auto max-w-3xl space-y-4 px-4 lg:px-8">
         <H1 className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span>YTyping 実力ランキング</span>
           <PPRankingInfoTrigger />
