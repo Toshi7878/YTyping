@@ -63,7 +63,7 @@ export const resultListRouter = {
     const { cursor, playerId } = input;
     const { db, session } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(cursor, 7, TOTAL_PP_TOP_N);
+    const { limit, offset, buildPageResult } = createPagination(cursor, 6, TOTAL_PP_TOP_N);
     const baseSelect = buildBaseSelect(db, session);
 
     const orderedQuery = buildResultWithMapBaseQuery(
