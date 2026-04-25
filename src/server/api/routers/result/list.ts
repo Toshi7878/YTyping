@@ -20,6 +20,7 @@ import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { filterByMapVisibility } from "../map/list";
+import { TOTAL_PP_TOP_N } from "../result/pp";
 
 const Player = alias(Users, "player");
 const Creator = alias(Users, "creator");
@@ -58,12 +59,11 @@ export const resultListRouter = {
     return buildPageResult(formatMapListItem(items));
   }),
 
-  /** PP 降順。限定公開譜面も対象（`result.list.get` とは可視性条件が異なる）。 */
   getPp: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, playerId } = input;
     const { db, session } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(cursor, 7);
+    const { limit, offset, buildPageResult } = createPagination(cursor, 7, TOTAL_PP_TOP_N);
     const baseSelect = buildBaseSelect(db, session);
 
     const orderedQuery = buildResultWithMapBaseQuery(

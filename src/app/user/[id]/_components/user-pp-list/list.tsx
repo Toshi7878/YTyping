@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { PPResultCard } from "@/components/shared/pp-card/card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TOTAL_PP_TOP_N } from "@/server/api/routers/result/pp";
 import { useTRPC } from "@/trpc/provider";
 
 export function PPResultCardList({ id }: { id: string }) {
@@ -19,7 +20,7 @@ export function PPResultCardList({ id }: { id: string }) {
   return (
     <Card aria-label="ベストパフォーマンス" className="px-24">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">ベストパフォーマンス</CardTitle>
+        <CardTitle className="text-base">ベストパフォーマンス TOP {TOTAL_PP_TOP_N} 譜面</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 gap-3">
