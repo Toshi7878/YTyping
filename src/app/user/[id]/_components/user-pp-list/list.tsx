@@ -5,14 +5,19 @@ import { Loader2 } from "lucide-react";
 import { PPResultCard } from "@/components/shared/pp-card/card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group/radio-group";
 import { TOTAL_PP_TOP_N } from "@/server/api/routers/result/pp";
 import { useTRPC } from "@/trpc/provider";
+import { usePpOrderQueryState } from "../../_lib/search-params";
 
 export function PPResultCardList({ id }: { id: string }) {
   const trpc = useTRPC();
+  const [order, setOrder] = usePpOrderQueryState();
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trpc.result.list.getPp.infiniteQueryOptions(
-      { playerId: Number(id) },
+      { playerId: Number(id), order },
       { getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined },
     ),
   );
@@ -20,7 +25,22 @@ export function PPResultCardList({ id }: { id: string }) {
   return (
     <Card aria-label="ベストパフォーマンス" className="gap-0 px-0 sm:px-24">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">ベストパフォーマンス TOP {TOTAL_PP_TOP_N} 譜面</CardTitle>
+        <div className="flex items-center gap-4">
+          <CardTitle className="text-base">ベストパフォーマンス TOP {TOTAL_PP_TOP_N} 譜面</CardTitle>
+          <RadioGroup value={order} onValueChange={(v) => setOrder(v as "asc" | "desc")} className="flex gap-3">
+            {(["desc", "asc"] as const).map((v) => {
+              const id = `pp-order-${v}`;
+              return (
+                <div key={v} className="flex items-center gap-1.5">
+                  <RadioGroupItem value={v} id={id} />
+                  <Label htmlFor={id} className="cursor-pointer text-xs">
+                    {v === "desc" ? "降順" : "昇順"}
+                  </Label>
+                </div>
+              );
+            })}
+          </RadioGroup>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4 max-sm:px-0">
         <div className="grid grid-cols-1 gap-3">

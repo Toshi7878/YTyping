@@ -76,4 +76,5 @@ export const SelectResultListApiSchema = z
 export const SelectResultPpListApiSchema = z.object({
   playerId: z.number(),
   cursor: z.number().optional(),
+  order: z.enum(["asc", "desc"]).optional().default("asc"),
 });

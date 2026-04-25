@@ -60,20 +60,55 @@ export const resultListRouter = {
   }),
 
   getPp: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
-    const { cursor, playerId } = input;
+    const { cursor, playerId, order } = input;
     const { db, session } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(cursor, 6, TOTAL_PP_TOP_N);
+    const PAGE_SIZE = 6;
+    const page = cursor ?? 0;
+    const pageOffset = page * PAGE_SIZE;
     const baseSelect = buildBaseSelect(db, session);
 
-    const orderedQuery = buildResultWithMapBaseQuery(
-      db.select(baseSelect).from(Results).$dynamic(),
-      session,
-      { playerId },
-      "publicAndUnlisted",
-    ).orderBy(desc(ResultStatuses.pp), desc(Results.updatedAt));
+    const buildBase = () =>
+      buildResultWithMapBaseQuery(
+        db.select(baseSelect).from(Results).$dynamic(),
+        session,
+        { playerId },
+        "publicAndUnlisted",
+      );
 
-    const items = await orderedQuery.limit(limit).offset(offset);
+    if (order === "asc") {
+      // TOP 200 の中の昇順: DESC で取得した上位 200 件を逆順ページングする
+      const totalRaw = await buildResultWithMapBaseQuery(
+        db.select({ count: count() }).from(Results).$dynamic(),
+        session,
+        { playerId },
+        "publicAndUnlisted",
+      ).then((rows) => rows[0]?.count ?? 0);
+
+      const total = Math.min(totalRaw, TOTAL_PP_TOP_N);
+      const revOffset = Math.max(0, total - pageOffset - PAGE_SIZE);
+      const revLimit = Math.min(PAGE_SIZE, total - pageOffset);
+
+      if (revLimit <= 0) return { items: [], nextCursor: undefined };
+
+      const items = await buildBase()
+        .orderBy(desc(ResultStatuses.pp), desc(Results.updatedAt))
+        .limit(revLimit)
+        .offset(revOffset);
+
+      return {
+        items: formatMapListItem(items).reverse(),
+        nextCursor: pageOffset + PAGE_SIZE < total ? page + 1 : undefined,
+      };
+    }
+
+    // 降順（デフォルト）: 上位 TOTAL_PP_TOP_N 件まで
+    const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE, TOTAL_PP_TOP_N);
+
+    const items = await buildBase()
+      .orderBy(desc(ResultStatuses.pp), desc(Results.updatedAt))
+      .limit(limit)
+      .offset(offset);
 
     return buildPageResult(formatMapListItem(items));
   }),
