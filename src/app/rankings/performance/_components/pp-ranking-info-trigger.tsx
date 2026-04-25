@@ -5,8 +5,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const ppExplanationBody = [
-  "PP（Performance Points）は、譜面の難易度を元に、正確率・クリア率からPPが算出され、難しい譜面で正確率・クリア率が良い記録を登録すると、より多くのPPが得られます。",
-  "「合計 PP」は、譜面の獲得PPを高い順に並べ、TOP200の譜面のPPを加重合計した値です。",
+  "PPはプレイ実力を表すポイントです。 難しい譜面で高記録を出すほど、より多くのPPを獲得できます。合計PPは、獲得PPの高い譜面上位200件をもとに加重方式で計算されます。",
 ] as const;
 
 const ppExplanation = (
