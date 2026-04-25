@@ -1,31 +1,58 @@
-// starRating ** BASE_EXP * BASE_CONSTANT = basePP
-// 最高難易度想定のstarRatingで上限1000ppになるよう調整
 const BASE_CONSTANT = 100;
 const BASE_EXP = 1;
 
+const ACCURACY_EXP = 2;
+
+const MIN_CLEAR_RATE_EXP = 1.2;
+const CLEAR_RATE_EXP_RANGE = 1.0;
+const CLEAR_RATE_STAR_SCALE = 8;
+
 /**
  * starRatingからbasePPを算出
- * BASE_CONSTANT・BASE_EXPは実データで調整する
  */
 export function calcBasePP(starRating: number): number {
   return starRating ** BASE_EXP * BASE_CONSTANT;
 }
 
 /**
- * 速度倍率によるpp補正（1.0以上のみ）
- * 1.0超は緩やかにボーナス（上限1.5倍）
+ * 再生速度補正
+ * 1.0未満は補正なし
+ * 1.0超は緩やかに上昇（最大1.5倍）
  */
 function calcSpeedMultiplier(speed: number): number {
-  return Math.min(1.0 + (speed - 1.0) * 0.5, 1.5);
+  const normalizedSpeed = Math.max(1, speed);
+  return Math.min(1 + (normalizedSpeed - 1) * 0.5, 1.5);
+}
+
+/**
+ * 高難易度ほど clearRate 減衰を緩くする
+ *
+ * star 0  -> exp 2.2
+ * star 5  -> exp 1.7
+ * star 10 -> exp 1.53
+ * star 15 -> exp 1.45
+ * star ∞  -> exp 1.2
+ */
+function calcClearRateExp(starRating: number): number {
+  const star = Math.max(0, starRating);
+
+  return MIN_CLEAR_RATE_EXP + CLEAR_RATE_EXP_RANGE / (1 + star / CLEAR_RATE_STAR_SCALE);
+}
+
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value));
 }
 
 export type RawPPInput = {
-  accuracy: number; // 正確率（0〜1）: totalType / (miss + totalType)
-  clearRate: number; // 打ち切り率（0〜1）
-  minPlaySpeed: number; // 再生速度（1.0以上）
+  accuracy: number;
+  clearRate: number;
+  minPlaySpeed: number;
 };
 
-/** `result_statuses` 相当の行から raw pp 用入力を組み立てる（clearRate は DB 上 0〜100 を想定） */
+/**
+ * result_statuses から RawPPInput を生成
+ * clearRate は DB上 0~100 を想定
+ */
 export function buildRawPPInputFromResultStatus(status: {
   romaType: number;
   kanaType: number;
@@ -46,13 +73,13 @@ export function buildRawPPInputFromResultStatus(status: {
     status.spaceType +
     status.symbolType +
     status.numType;
+
   const denom = totalType + status.miss;
   const accuracy = denom > 0 ? totalType / denom : 0;
-  const clearRate01 = status.clearRate > 1 ? status.clearRate / 100 : status.clearRate;
 
   return {
-    accuracy,
-    clearRate: Math.min(1, Math.max(0, clearRate01)),
+    accuracy: clamp01(accuracy),
+    clearRate: clamp01(status.clearRate / 100),
     minPlaySpeed: status.minPlaySpeed,
   };
 }
@@ -60,22 +87,22 @@ export function buildRawPPInputFromResultStatus(status: {
 export function calcRawPP(result: RawPPInput, starRating: number): number {
   const basePP = calcBasePP(starRating);
   const speedMultiplier = calcSpeedMultiplier(result.minPlaySpeed);
-  const pp = basePP * result.accuracy ** 2 * result.clearRate ** 2;
-  return Math.round(pp * speedMultiplier * 100) / 100;
+  const clearRateExp = calcClearRateExp(starRating);
+
+  const pp = basePP * result.accuracy ** ACCURACY_EXP * result.clearRate ** clearRateExp * speedMultiplier;
+
+  return Math.round(pp * 100) / 100;
 }
 
-/**
- * 全スコアの加重和からtotal ppを算出
- * pp降順にソートし、0.95の減衰をかけて合計
- */
 export const TOTAL_PP_TOP_N = 200;
+const TOTAL_PP_DECAY = 0.95;
 
 export function calcTotalPP(scores: { pp: number }[]): number {
   const total = scores
     .map((s) => s.pp)
     .sort((a, b) => b - a)
     .slice(0, TOTAL_PP_TOP_N)
-    .reduce((sum, pp, i) => sum + pp * 0.95 ** i, 0);
+    .reduce((sum, pp, i) => sum + pp * TOTAL_PP_DECAY ** i, 0);
 
   return Math.round(total * 100) / 100;
 }
