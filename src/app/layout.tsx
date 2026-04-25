@@ -56,7 +56,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               <LinkProgressProvider>
                 <TooltipProvider delayDuration={600}>
                   <SessionProvider session={session}>
-                    <Header className="fixed z-50 h-10 w-screen" />
+                    <Header className="fixed z-50 h-10 w-screen" session={session} />
                     <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
                       <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
                         {children}

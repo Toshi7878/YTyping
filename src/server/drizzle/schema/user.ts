@@ -190,25 +190,29 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
     .default(DEFAULT_IME_OPTIONS.enableLargeVideoDisplay),
 });
 
-export const UserStats = pgTable("user_stats", {
-  userId: integer("user_id")
-    .primaryKey()
-    .references(() => Users.id, { onDelete: "cascade" }),
-  totalRankingCount: integer("total_ranking_count").notNull().default(0),
-  totalTypingTime: real("total_typing_time").notNull().default(0),
-  romaTypeTotalCount: integer("roma_type_total_count").notNull().default(0),
-  kanaTypeTotalCount: integer("kana_type_total_count").notNull().default(0),
-  flickTypeTotalCount: integer("flick_type_total_count").notNull().default(0),
-  englishTypeTotalCount: integer("english_type_total_count").notNull().default(0),
-  spaceTypeTotalCount: integer("space_type_total_count").notNull().default(0),
-  symbolTypeTotalCount: integer("symbol_type_total_count").notNull().default(0),
-  numTypeTotalCount: integer("num_type_total_count").notNull().default(0),
-  totalPlayCount: integer("total_play_count").notNull().default(0),
-  imeTypeTotalCount: integer("ime_type_total_count").notNull().default(0),
-  maxCombo: integer("max_combo").notNull().default(0),
-  totalPP: integer("total_pp").notNull().default(0),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-});
+export const UserStats = pgTable(
+  "user_stats",
+  {
+    userId: integer("user_id")
+      .primaryKey()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    totalRankingCount: integer("total_ranking_count").notNull().default(0),
+    totalTypingTime: real("total_typing_time").notNull().default(0),
+    romaTypeTotalCount: integer("roma_type_total_count").notNull().default(0),
+    kanaTypeTotalCount: integer("kana_type_total_count").notNull().default(0),
+    flickTypeTotalCount: integer("flick_type_total_count").notNull().default(0),
+    englishTypeTotalCount: integer("english_type_total_count").notNull().default(0),
+    spaceTypeTotalCount: integer("space_type_total_count").notNull().default(0),
+    symbolTypeTotalCount: integer("symbol_type_total_count").notNull().default(0),
+    numTypeTotalCount: integer("num_type_total_count").notNull().default(0),
+    totalPlayCount: integer("total_play_count").notNull().default(0),
+    imeTypeTotalCount: integer("ime_type_total_count").notNull().default(0),
+    maxCombo: integer("max_combo").notNull().default(0),
+    totalPP: integer("total_pp").notNull().default(0),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => [index("user_stats_total_pp_idx").on(t.totalPP)],
+);
 
 export const UserDailyTypeCounts = pgTable(
   "user_daily_type_counts",

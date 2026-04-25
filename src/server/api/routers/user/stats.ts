@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
-import { and, asc, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, gte, lte, sql } from "drizzle-orm";
 import z from "zod";
 import {
   Maps,
@@ -90,6 +90,36 @@ export const userStatsRouter = {
 
       return buildPageResult(rowsWithRank);
     }),
+
+  /** 指定ユーザーの total PP 順位（同率は最上位を返す）。stats 未作成の場合は総ユーザー数（最下位）を返す。 */
+  getMyPpRank: protectedProcedure.query(async ({ ctx }) => {
+    const { db, session } = ctx;
+
+    const myStats = await db
+      .select({ totalPP: UserStats.totalPP })
+      .from(UserStats)
+      .where(eq(UserStats.userId, session.user.id))
+      .limit(1)
+      .then((rows) => rows[0] ?? null);
+
+    if (!myStats) {
+      return db
+        .select({ count: count() })
+        .from(UserStats)
+        .innerJoin(Users, eq(Users.id, UserStats.userId))
+        .where(eq(Users.banned, false))
+        .then((rows) => rows[0]?.count ?? 0);
+    }
+
+    const aboveCount = await db
+      .select({ count: count() })
+      .from(UserStats)
+      .innerJoin(Users, eq(Users.id, UserStats.userId))
+      .where(and(eq(Users.banned, false), gt(UserStats.totalPP, myStats.totalPP)))
+      .then((rows) => rows[0]?.count ?? 0);
+
+    return aboveCount + 1;
+  }),
 
   getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;

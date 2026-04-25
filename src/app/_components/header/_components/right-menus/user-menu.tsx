@@ -1,3 +1,6 @@
+"use client";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useTRPC } from "@/trpc/provider";
 import { buildUserMenuLinkItems } from "../../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
@@ -20,6 +24,8 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {
+  const trpc = useTRPC();
+  const { data: ppRank } = useSuspenseQuery(trpc.user.stats.getMyPpRank.queryOptions());
   const userMenuLinkItems = buildUserMenuLinkItems(userId);
 
   return (
@@ -31,6 +37,7 @@ export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {
           className={cn("mb-0.5 text-header-foreground/80 hover:text-header-foreground", className)}
         >
           <span id="header_user_name">{userName}</span>
+          <span className="tabular-nums opacity-60">#{ppRank}</span>
           <ChevronDown className="relative top-px size-4" />
         </Button>
       </DropdownMenuTrigger>

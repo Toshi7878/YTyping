@@ -30,6 +30,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       onSuccess();
       const mapId = getMapId();
       await queryClient.invalidateQueries(trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }));
+      await queryClient.invalidateQueries(trpc.user.stats.getMyPpRank.queryOptions());
       setTabName("ランキング");
       toast.success("ランキング登録が完了しました");
     },
