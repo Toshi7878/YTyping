@@ -18,11 +18,11 @@ export function PPResultCardList({ id }: { id: string }) {
   );
 
   return (
-    <Card aria-label="ベストパフォーマンス" className="px-24">
+    <Card aria-label="ベストパフォーマンス" className="gap-0 px-0 sm:px-24">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">ベストパフォーマンス TOP {TOTAL_PP_TOP_N} 譜面</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 max-sm:px-0">
         <div className="grid grid-cols-1 gap-3">
           {data.pages.map((page, pageIndex) =>
             page.items.map((result) => (

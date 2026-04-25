@@ -40,7 +40,7 @@ export const UserStatsCard = () => {
   return (
     <Card>
       <CardHeader className="mx-8 flex flex-col items-center">
-        <Badge variant="secondary" className="text-sm">
+        <Badge variant="secondary" className="text-xs">
           統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
         </Badge>
       </CardHeader>
