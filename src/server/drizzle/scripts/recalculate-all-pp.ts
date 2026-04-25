@@ -4,8 +4,13 @@
  *
  * @example pnpm pp:recalculate
  */
-import { eq } from "drizzle-orm";
-import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP } from "@/server/api/routers/result/pp";
+import { desc, eq } from "drizzle-orm";
+import {
+  buildRawPPInputFromResultStatus,
+  calcRawPP,
+  calcTotalPP,
+  TOTAL_PP_TOP_N,
+} from "@/server/api/routers/result/pp";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import { ResultStatuses, Results, UserStats } from "@/server/drizzle/schema";
@@ -42,19 +47,7 @@ async function main() {
     const chunk = rows.slice(i, i + BATCH);
     await db.transaction(async (tx) => {
       for (const row of chunk) {
-        const statusInput = {
-          romaType: row.romaType,
-          kanaType: row.kanaType,
-          flickType: row.flickType,
-          englishType: row.englishType,
-          spaceType: row.spaceType,
-          symbolType: row.symbolType,
-          numType: row.numType,
-          miss: row.miss,
-          clearRate: row.clearRate,
-          minPlaySpeed: row.minPlaySpeed,
-        };
-        const rawInput = buildRawPPInputFromResultStatus(statusInput);
+        const rawInput = buildRawPPInputFromResultStatus(row);
         const pp = calcRawPP(rawInput, row.starRatingSnapshot);
         await tx.update(ResultStatuses).set({ pp }).where(eq(ResultStatuses.resultId, row.resultId));
       }
@@ -84,7 +77,9 @@ async function syncUserTotalPP(tx: TXType, userId: number) {
     .select({ pp: ResultStatuses.pp })
     .from(ResultStatuses)
     .innerJoin(Results, eq(Results.id, ResultStatuses.resultId))
-    .where(eq(Results.userId, userId));
+    .where(eq(Results.userId, userId))
+    .orderBy(desc(ResultStatuses.pp))
+    .limit(TOTAL_PP_TOP_N);
 
   const totalPP = Math.round(calcTotalPP(ppRows));
 

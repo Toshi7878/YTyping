@@ -20,7 +20,7 @@ import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../../utils/id";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
-import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP } from "./pp";
+import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "./pp";
 
 export const resultRouter = {
   getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
@@ -259,7 +259,9 @@ async function recalculateUserTotalPP(tx: TXType, userId: number) {
     .select({ pp: ResultStatuses.pp })
     .from(ResultStatuses)
     .innerJoin(Results, eq(Results.id, ResultStatuses.resultId))
-    .where(eq(Results.userId, userId));
+    .where(eq(Results.userId, userId))
+    .orderBy(desc(ResultStatuses.pp))
+    .limit(TOTAL_PP_TOP_N);
 
   const totalPP = Math.round(calcTotalPP(rows));
 

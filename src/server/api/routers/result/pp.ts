@@ -59,23 +59,22 @@ export function buildRawPPInputFromResultStatus(status: {
 
 export function calcRawPP(result: RawPPInput, starRating: number): number {
   const basePP = calcBasePP(starRating);
-
-  const acc_pp = basePP * 0.4 * result.accuracy ** 2;
-  const comp_pp = basePP * 0.6 * result.clearRate ** 2.5;
-
   const speedMultiplier = calcSpeedMultiplier(result.minPlaySpeed);
-
-  return Math.round((acc_pp + comp_pp) * speedMultiplier * 100) / 100;
+  const pp = basePP * result.accuracy ** 2 * result.clearRate ** 2;
+  return Math.round(pp * speedMultiplier * 100) / 100;
 }
 
 /**
  * 全スコアの加重和からtotal ppを算出
  * pp降順にソートし、0.95の減衰をかけて合計
  */
+export const TOTAL_PP_TOP_N = 200;
+
 export function calcTotalPP(scores: { pp: number }[]): number {
   const total = scores
     .map((s) => s.pp)
     .sort((a, b) => b - a)
+    .slice(0, TOTAL_PP_TOP_N)
     .reduce((sum, pp, i) => sum + pp * 0.95 ** i, 0);
 
   return Math.round(total * 100) / 100;
