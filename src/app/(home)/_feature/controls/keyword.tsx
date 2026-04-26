@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { useIsSearchingState, useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
 
-export const SearchInput = () => {
+export const KeywordInput = () => {
   const [params] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();

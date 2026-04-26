@@ -15,7 +15,7 @@ import {
   useIsSearchingState,
   useMapListFilterQueryStates,
   useMapListSortQueryState,
-} from "./search/search-params";
+} from "./controls/search-params";
 
 const pageAtom = atom<number>(0);
 

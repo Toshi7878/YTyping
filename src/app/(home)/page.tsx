@@ -1,8 +1,8 @@
-import { loadMapListSearchParams } from "@/app/(home)/_feature/search/search-params";
+import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { MapListControls } from "./_feature/controls/controls";
 import { MapList } from "./_feature/map-list";
 import { JotaiProvider } from "./_feature/provider";
-import { MapControlArea } from "./_feature/search/map-control-area";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
@@ -14,7 +14,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <HydrateClient>
       <JotaiProvider>
         <div className="mx-auto max-w-7xl lg:px-8">
-          <MapControlArea />
+          <MapListControls />
           <MapList />
         </div>
       </JotaiProvider>
