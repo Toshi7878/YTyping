@@ -26,7 +26,7 @@ export function PPResultCardList({ id }: { id: string }) {
     <Card aria-label="ベストパフォーマンス" className="gap-0 px-0 sm:px-24">
       <CardHeader className="pb-2">
         <div className="flex items-center gap-4">
-          <CardTitle className="text-base">ベストパフォーマンス TOP {TOTAL_PP_TOP_N} 譜面</CardTitle>
+          <CardTitle className="text-base">ベストパフォーマンス TOP{TOTAL_PP_TOP_N}</CardTitle>
           <RadioGroup value={order} onValueChange={(v) => setOrder(v as "asc" | "desc")} className="flex gap-3">
             {(["desc", "asc"] as const).map((v) => {
               const id = `pp-order-${v}`;
@@ -52,7 +52,14 @@ export function PPResultCardList({ id }: { id: string }) {
         </div>
         {hasNextPage ? (
           <div className="flex justify-center pt-1">
-            <Button type="button" variant="secondary" disabled={isFetchingNextPage} onClick={() => fetchNextPage()}>
+            <Button
+              type="button"
+              size="sm"
+              className="w-full"
+              variant="secondary"
+              disabled={isFetchingNextPage}
+              onClick={() => fetchNextPage()}
+            >
               {isFetchingNextPage ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
