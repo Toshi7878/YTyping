@@ -11,6 +11,7 @@ import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapListActionButtons } from "../list-action-buttons";
+import { RatingBadge } from "../map/rating";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";
@@ -95,7 +96,7 @@ interface MapInfoProps {
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   return (
-    <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
+    <div className={cn("flex flex-col justify-center gap-1.5 truncate", className)} {...rest}>
       <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
         <Link href={`/type/${map.id}`} className="block text-secondary hover:underline">
           <div className="truncate font-bold text-sm sm:text-base">
@@ -103,6 +104,7 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
           </div>
         </Link>
       </TooltipWrapper>
+      <RatingBadge rating={map.difficulty.rating} />
       <div className="truncate text-xs">
         制作者:{" "}
         <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
