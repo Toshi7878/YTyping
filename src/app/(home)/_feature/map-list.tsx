@@ -26,6 +26,7 @@ export const MapList = () => {
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
+  const [currentPage, setCurrentPage] = useAtom(pageAtom);
 
   const { data, isFetchedAfterMount, ...pagination } = useSuspenseInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
@@ -37,8 +38,6 @@ export const MapList = () => {
       },
     ),
   );
-
-  const [currentPage, setCurrentPage] = useAtom(pageAtom);
 
   useEffect(() => {
     if (data) {
