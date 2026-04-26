@@ -1,8 +1,8 @@
-import { loadMapListSearchParams } from "@/lib/search-params/map-list";
+import { loadMapListSearchParams } from "@/app/(home)/_feature/search/search-params";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { MapControlArea } from "./_components/map-control-area";
-import { MapList } from "./_components/map-list";
-import { JotaiProvider } from "./_components/provider";
+import { MapList } from "./_feature/map-list";
+import { JotaiProvider } from "./_feature/provider";
+import { MapControlArea } from "./_feature/search/map-control-area";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);

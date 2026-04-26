@@ -7,11 +7,15 @@ import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinn
 import { MapCard } from "@/components/shared/map-card/card";
 import { CompactMapCard } from "@/components/shared/map-card/compact-card";
 import { useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
-import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
+import {
+  setIsSearching,
+  useIsSearchingState,
+  useMapListFilterQueryStates,
+  useMapListSortQueryState,
+} from "./search/search-params";
 
 const pageAtom = atom<number>(0);
 

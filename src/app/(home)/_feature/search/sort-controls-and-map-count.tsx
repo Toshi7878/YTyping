@@ -8,17 +8,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { setUserOptions, useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
-import {
-  type MapListSortSearchParams,
-  useMapListFilterQueryStates,
-  useMapListSortQueryState,
-} from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import type { MAP_LIST_LAYOUT_TYPES } from "@/server/drizzle/schema/user";
 import { useTRPC } from "@/trpc/provider";
 import type { MAP_SORT_OPTIONS } from "@/validator/map/list";
-import { useSetSearchParams } from "../../_lib/use-set-search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
+import {
+  type MapListSortSearchParams,
+  useMapListFilterQueryStates,
+  useMapListSortQueryState,
+  useSetSearchParams,
+} from "./search-params";
 
 export const SortControlsAndMapCount = () => {
   const { data: session } = useSession();

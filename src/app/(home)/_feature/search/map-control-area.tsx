@@ -1,9 +1,9 @@
 "use client";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { usePreviewPlayerState } from "@/lib/atoms/global-atoms";
-import { MapFilter } from "./search/map-filter";
-import { SearchInput } from "./search/search-input";
-import { SortControlsAndMapCount } from "./search/sort-controls-and-map-count";
+import { SearchInput } from "./keyword";
+import { MapFilter } from "./map-filter";
+import { SortControlsAndMapCount } from "./sort-controls-and-map-count";
 
 export const MapControlArea = () => {
   const YTPlayer = usePreviewPlayerState();

@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useMapListFilterQueryStates } from "@/lib/search-params/map-list";
-import { useIsSearchingState } from "../../_lib/atoms";
-import { useSetSearchParams } from "../../_lib/use-set-search-params";
+import { useIsSearchingState, useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
 
 export const SearchInput = () => {
   const [params] = useMapListFilterQueryStates();

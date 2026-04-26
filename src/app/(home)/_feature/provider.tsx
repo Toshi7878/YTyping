@@ -1,14 +1,13 @@
 "use client";
-import { Provider } from "jotai";
+import { createStore, Provider } from "jotai";
 import type React from "react";
-import { getHomeAtomStore } from "../_lib/atoms";
+
+export const store = createStore();
 
 interface JotaiProviderProps {
   children: React.ReactNode;
 }
 
 export const JotaiProvider = ({ children }: JotaiProviderProps) => {
-  const store = getHomeAtomStore();
-
   return <Provider store={store}>{children}</Provider>;
 };

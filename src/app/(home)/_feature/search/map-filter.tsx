@@ -4,18 +4,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import type React from "react";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { Small } from "@/components/ui/typography";
 import { useSession } from "@/lib/auth-client";
-import {
-  type MapListFilterSearchParams,
-  type MapListSortSearchParams,
-  useMapListFilterQueryStates,
-} from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useDebounce } from "@/utils/hooks/use-debounce";
@@ -24,7 +18,12 @@ import {
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
   type MAP_USER_FILTER_OPTIONS,
 } from "@/validator/map/list";
-import { useSetSearchParams } from "../../_lib/use-set-search-params";
+import {
+  type MapListFilterSearchParams,
+  type MapListSortSearchParams,
+  useMapListFilterQueryStates,
+  useSetSearchParams,
+} from "./search-params";
 
 export const MapFilter = () => {
   const { data: session } = useSession();
@@ -88,8 +87,8 @@ interface FilterMenuProps {
 
 const FilterMenu = ({ filter, children }: FilterMenuProps) => {
   const [params] = useMapListFilterQueryStates();
-
   const setSearchParams = useSetSearchParams();
+
   return (
     <>
       <div className="mr-0 flex h-8 min-w-0 items-center font-medium text-foreground text-sm md:mr-3 md:min-w-[80px]">

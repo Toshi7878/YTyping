@@ -1,3 +1,5 @@
+import { useAtomValue } from "jotai";
+import { atom } from "jotai/vanilla";
 import { type inferParserType, useQueryState, useQueryStates } from "nuqs";
 import {
   createLoader,
@@ -14,6 +16,7 @@ import {
   MAP_SORT_OPTIONS,
   MAP_USER_FILTER_OPTIONS,
 } from "@/validator/map/list";
+import { store } from "../provider";
 
 const parseAsSort = createParser({
   parse(query): { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean } | null {
@@ -60,3 +63,20 @@ export type MapListSortSearchParams = inferParserType<typeof mapListSortParser>;
 
 export const loadMapListSearchParams = createLoader({ ...mapListFilterParsers, sort: mapListSortParser });
 export const mapListSerialize = createSerializer({ ...mapListFilterParsers, sort: mapListSortParser });
+
+const isSearchingAtom = atom(false);
+export const useIsSearchingState = () => useAtomValue(isSearchingAtom);
+export const setIsSearching = (value: boolean) => store.set(isSearchingAtom, value);
+
+export const useSetSearchParams = () => {
+  const [params] = useMapListFilterQueryStates();
+
+  return (updates?: Partial<MapListFilterSearchParams & { sort: MapListSortSearchParams }>) => {
+    const mergedParams = { ...params, ...updates };
+    const isChanged = JSON.stringify(params) !== JSON.stringify(mergedParams);
+    if (!isChanged) return;
+
+    setIsSearching(true);
+    window.history.replaceState(null, "", mapListSerialize(mergedParams) || window.location.pathname);
+  };
+};
