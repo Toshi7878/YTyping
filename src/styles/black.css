@@ -35,6 +35,13 @@
   --like: oklch(0.7253 0.1752 349.76);
   --failure: oklch(0.7012 0.1812 298.06);
 
+  --level-easy: oklch(0.5287 0.1131 161.37);
+  --level-normal: oklch(0.5016 0.1111 246.56);
+  --level-hard: oklch(0.5717 0.154069 48.6941);
+  --level-expert: oklch(0.5081 0.1776 30.06);
+  --level-master: oklch(0.5018 0.1622 301.92);
+  --level-ultra: oklch(0% 0 0);
+
   --opacity-word-correct: 0;
   --word-correct: oklch(0.5946 0.1398 250.3);
   --word-nextChar: #ffffff;
