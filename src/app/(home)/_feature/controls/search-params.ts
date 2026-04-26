@@ -64,11 +64,13 @@ export const useIsSearchingState = () => useAtomValue(isSearchingAtom);
 export const setIsSearching = (value: boolean) => store.set(isSearchingAtom, value);
 
 export const useSetSearchParams = () => {
-  const [params] = useMapListFilterQueryStates();
+  const [filterParams] = useMapListFilterQueryStates();
+  const [sortParams] = useMapListSortQueryState();
 
   return (updates?: Partial<MapListFilterSearchParams & { sort: MapListSortSearchParams }>) => {
-    const mergedParams = { ...params, ...updates };
-    const isChanged = JSON.stringify(params) !== JSON.stringify(mergedParams);
+    const currentParams = { ...filterParams, sort: sortParams };
+    const mergedParams = { ...currentParams, ...updates };
+    const isChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
     if (!isChanged) return;
 
     setIsSearching(true);
