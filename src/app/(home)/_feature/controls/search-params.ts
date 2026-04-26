@@ -10,12 +10,7 @@ import {
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs/server";
-import {
-  MAP_DIFFICULTY_RATE_FILTER_LIMIT,
-  MAP_RANKING_STATUS_FILTER_OPTIONS,
-  MAP_SORT_OPTIONS,
-  MAP_USER_FILTER_OPTIONS,
-} from "@/validator/map/list";
+import { MAP_RANKING_STATUS_FILTER_OPTIONS, MAP_SORT_OPTIONS, MAP_USER_FILTER_OPTIONS } from "@/validator/map/list";
 import { store } from "../provider";
 
 const parseAsSort = createParser({
@@ -35,20 +30,20 @@ const parseAsSort = createParser({
 const parseAsDifficultyRate = createParser({
   parse(query) {
     const value = parseAsFloat.parse(query);
-    if (value === null) return null;
+    if (value === null || value === Infinity) return null;
 
-    const rounded = Math.round(value * 10) / 10;
-    return Math.max(0, Math.min(12, rounded));
+    const rounded = Math.round(value * 100) / 100;
+    return Math.max(0, rounded);
   },
   serialize(value: number) {
-    return value.toFixed(1);
+    return value.toFixed(2);
   },
 });
 
 const mapListFilterParsers = {
   keyword: parseAsString.withDefault(""),
-  minRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.min),
-  maxRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max),
+  minRate: parseAsDifficultyRate.withDefault(0),
+  maxRate: parseAsDifficultyRate,
   filterType: parseAsStringLiteral(MAP_USER_FILTER_OPTIONS),
   rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
   bookmarkListId: parseAsInteger,

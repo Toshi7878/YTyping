@@ -16,18 +16,16 @@ export const MapListControls = () => {
   const isLogin = !!session?.user?.id;
 
   return (
-    <section className="mb-4 flex w-full flex-col gap-4">
+    <section className="flex w-full flex-col gap-3">
       <KeywordInput />
-      <div className="flex flex-col justify-between space-y-4 md:flex-row md:space-y-0">
-        <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
-          {isLogin && <MapListTagFilter />}
-          <DifficultyFilter />
-        </div>
-        <VolumeRange YTPlayer={YTPlayer} />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+        {isLogin && <MapListTagFilter />}
+        <DifficultyFilter />
       </div>
       <CardWithContent className={{ card: "p-0", cardContent: "flex flex-wrap items-center justify-between p-1.5" }}>
         <SortControls />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <VolumeRange YTPlayer={YTPlayer} size="sm" sliderClassName="w-[140px]" />
           {isLogin && <MapListLayoutModeSelector className="hidden lg:flex" />}
           <MapCountBadge />
         </div>

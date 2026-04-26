@@ -49,8 +49,8 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
 
 export const MapListTagFilter = () => {
   return (
-    <Card className="min-h-20 select-none py-3">
-      <CardContent className="grid grid-cols-1 items-center gap-1 md:grid-cols-[auto_1fr]">
+    <Card className="select-none py-1">
+      <CardContent className="grid grid-cols-1 items-center gap-1 sm:grid-cols-[auto_1fr]">
         <FilterMenu key={USER_FILTER_MENU.label} filter={USER_FILTER_MENU}>
           <BookmarkListSelect />
         </FilterMenu>
@@ -71,7 +71,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 
   return (
     <>
-      <div className="mr-0 flex h-8 min-w-0 items-center font-medium text-foreground text-sm md:mr-3 md:min-w-[80px]">
+      <div className="flex h-8 min-w-0 items-center font-medium text-foreground text-xs md:mr-3 md:min-w-[80px]">
         {filter.label}
       </div>
       <div className="flex flex-wrap items-center gap-1">
@@ -89,7 +89,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
                 setSearchParams({ ...nextParams, sort: deriveSortParam(nextParams) });
               }}
               className={cn(
-                "rounded px-2 py-1 text-sm transition-none hover:underline",
+                "rounded px-2 py-1 text-xs transition-none hover:underline",
                 isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
               )}
             >

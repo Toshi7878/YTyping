@@ -10,12 +10,12 @@ import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { formatMapDifficultyRating } from "@/utils/format-map-difficulty-rating";
 import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { MapListActionButtons } from "../list-action-buttons";
+import { RatingBadge } from "../map/rating";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
@@ -152,10 +152,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
       <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
-        <Badge variant="accent-light" size="xs" className="rounded-full">
-          <span>★</span>
-          <span className="font-bold">{formatMapDifficultyRating(map.difficulty.rating)}</span>
-        </Badge>
+        <RatingBadge rating={map.difficulty.rating} />
       </Link>
     </HoverExtractCardTrigger>
   );

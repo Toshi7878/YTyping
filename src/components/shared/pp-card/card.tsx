@@ -6,9 +6,9 @@ import { Card, CardContentWithThumbnail } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { formatMapDifficultyRating } from "@/utils/format-map-difficulty-rating";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { RatingBadge } from "../map/rating";
 import { MapThumbnailImage } from "../map-thumbnail-image";
 
 interface ResultCardProps {
@@ -52,9 +52,9 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
           </div>
         </Link>
       </TooltipWrapper>
-      <div className="text-muted-foreground text-xs tabular-nums">
-        難易度: {formatMapDifficultyRating(map.difficulty.rating)}
-      </div>
+
+      <RatingBadge rating={map.difficulty.rating} />
+
       <div className="truncate text-xs">
         制作者:{" "}
         <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">

@@ -14,7 +14,6 @@ import {
 } from "@/server/drizzle/schema";
 import {
   GetMapListOpenApiResponseSchema,
-  MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_SORT_OPTIONS_WITH_OPEN_API,
   type MapSearchFilterSchema,
   SelectMapListOpenApiSchema,
@@ -175,11 +174,11 @@ interface GetDifficultyFilterSqlParams {
 function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions = [];
 
-  if (minRate && minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
+  if (minRate && minRate >= 0) {
     conditions.push(gte(MapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
   }
 
-  if (maxRate && MAP_DIFFICULTY_RATE_FILTER_LIMIT.max > maxRate) {
+  if (maxRate) {
     conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
   }
 

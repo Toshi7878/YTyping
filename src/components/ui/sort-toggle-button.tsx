@@ -8,13 +8,17 @@ interface SortButtonProps {
   label: string;
   sortState: SortIconState;
   onClick: () => void;
+  className?: string;
+  size?: React.ComponentProps<typeof Button>["size"];
 }
 
-export const SortToggleButton = ({ label, sortState, onClick }: SortButtonProps) => (
+export const SortToggleButton = ({ label, sortState, onClick, className, size }: SortButtonProps) => (
   <Button
     variant="ghost"
+    size={size}
     className={cn(
-      "group gap-1 text-base transition-none",
+      "group gap-0.5 transition-none has-[>svg]:px-2",
+      className,
       ACTIVE_SORT_STATES.has(sortState) && "bg-accent font-bold text-secondary-light hover:text-secondary-light",
     )}
     onClick={onClick}

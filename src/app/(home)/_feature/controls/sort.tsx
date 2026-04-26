@@ -33,7 +33,7 @@ export const SortControls = () => {
   const [currentSort] = useMapListSortQueryState();
 
   return (
-    <div className="flex select-none flex-wrap items-center gap-1">
+    <div className="flex select-none flex-wrap items-center gap-0.5">
       {SORT_OPTIONS.filter(({ value }) => isSortOptionVisible(value, params)).map(({ label, value }) => (
         <SortToggleButton
           key={value}

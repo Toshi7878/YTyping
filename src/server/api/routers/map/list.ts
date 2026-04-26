@@ -15,7 +15,6 @@ import {
   Users,
 } from "@/server/drizzle/schema";
 import {
-  MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
   type MAP_SORT_OPTIONS,
   type MAP_USER_FILTER_OPTIONS,
@@ -252,11 +251,11 @@ function mapOrderBy(
 function filterByDifficulty({ minRate, maxRate }: { minRate?: number | null; maxRate?: number | null }) {
   const conditions = [];
 
-  if (minRate && minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
+  if (minRate) {
     conditions.push(gte(MapDifficulties.rating, minRate));
   }
 
-  if (maxRate && MAP_DIFFICULTY_RATE_FILTER_LIMIT.max > maxRate) {
+  if (maxRate) {
     conditions.push(lte(MapDifficulties.rating, maxRate));
   }
 

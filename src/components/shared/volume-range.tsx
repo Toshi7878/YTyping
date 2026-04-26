@@ -3,13 +3,22 @@ import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 import { setVolume, useVolumeState } from "@/lib/atoms/global-atoms";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
+import { cn } from "@/lib/utils";
 import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
   YTPlayer: YT.Player | null;
+  size?: "sm" | "md";
+  sliderClassName?: string;
 }
 
-export const VolumeRange = ({ YTPlayer, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
+export const VolumeRange = ({
+  YTPlayer,
+  className,
+  size = "md",
+  sliderClassName,
+  ...props
+}: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
   const volume = useVolumeState();
   const isMobile = useIsMobileDeviceState();
 
@@ -26,23 +35,26 @@ export const VolumeRange = ({ YTPlayer, ...props }: VolumeRangeProps & HTMLAttri
   };
 
   return (
-    <div className="flex items-center">
-      <fieldset
-        className="flex flex-row items-center gap-2 rounded-full bg-card px-4 py-2"
-        aria-label="音量調整"
-        {...props}
-      >
-        <VolumeIcon volume={volume} />
-        <Slider
-          value={[volume]}
-          onValueChange={handleChange}
-          max={100}
-          min={0}
-          className="w-[200px]"
-          aria-label={`音量: ${volume}%`}
-        />
-      </fieldset>
-    </div>
+    <fieldset
+      className={cn(
+        "flex flex-row items-center gap-2 rounded-full bg-card px-4 py-2",
+        size === "sm" && "px-2 py-1",
+        size === "md" && "px-4 py-2",
+        className,
+      )}
+      aria-label="音量調整"
+      {...props}
+    >
+      <VolumeIcon volume={volume} />
+      <Slider
+        value={[volume]}
+        onValueChange={handleChange}
+        max={100}
+        min={0}
+        className={cn("w-[200px]", sliderClassName)}
+        aria-label={`音量: ${volume}%`}
+      />
+    </fieldset>
   );
 };
 
