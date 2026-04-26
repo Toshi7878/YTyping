@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -106,8 +106,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
               onClick={(e) => {
                 e.preventDefault();
                 const nextParams = getNextFilterParams(filter.name, param.value, !isActive, params);
-                const sort = deriveSortParam(nextParams, filter.name, isActive);
-                setSearchParams({ ...nextParams, sort });
+                setSearchParams({ ...nextParams, sort: deriveSortParam(nextParams) });
               }}
               className={cn(
                 "rounded px-2 py-1 text-sm transition-none hover:underline",
@@ -162,43 +161,21 @@ const BookmarkListSelect = () => {
   );
 };
 
-const deriveSortParam = (
-  {
-    filterType,
-    rankingStatus,
-  }: {
-    filterType: MapListFilterSearchParams["filterType"];
-    rankingStatus: MapListFilterSearchParams["rankingStatus"];
-  },
-  name: "filterType" | "rankingStatus",
-  isActive: boolean,
-): MapListSortSearchParams | undefined => {
-  const RANKING_REGISTERED_FILTER_OPTIONS: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number][] = [
-    "1st",
-    "not-first",
-    "registerd",
-    "perfect",
-  ];
-  const hasRankingStatusFilter = rankingStatus !== null && RANKING_REGISTERED_FILTER_OPTIONS.includes(rankingStatus);
+const RANKING_REGISTERED_FILTER_OPTIONS: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number][] = [
+  "1st",
+  "not-first",
+  "registerd",
+  "perfect",
+];
 
-  if (isActive) {
-    if (name === "filterType" && hasRankingStatusFilter) {
-      return { value: "ranking-register", desc: true };
-    }
-    if (name === "rankingStatus" && filterType === "liked") {
-      return { value: "like", desc: true };
-    }
-    return { value: "publishedAt", desc: true };
-  }
-
-  if (name === "filterType" && filterType === "liked") {
-    return { value: "like", desc: true };
-  }
-
-  if (name === "rankingStatus" && hasRankingStatusFilter) {
+const deriveSortParam = ({
+  filterType,
+  rankingStatus,
+}: Pick<MapListFilterSearchParams, "filterType" | "rankingStatus">): MapListSortSearchParams => {
+  if (filterType === "liked") return { value: "like", desc: true };
+  if (rankingStatus && RANKING_REGISTERED_FILTER_OPTIONS.includes(rankingStatus)) {
     return { value: "ranking-register", desc: true };
   }
-
   return { value: "publishedAt", desc: true };
 };
 
