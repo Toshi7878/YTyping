@@ -9,6 +9,11 @@ import { getReplayRankingResult } from "../../../atoms/replay";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../lib/sound-effect";
+import {
+  emitReplayTypingLineCompleted,
+  emitReplayTypingMiss,
+  emitReplayTypingSuccess,
+} from "../../../user-script-hooks";
 import { getMinMediaSpeed } from "../../../youtube/youtube-player";
 import { setCombo } from "../../header/combo";
 import { setLineKpm } from "../../header/line-kpm";
@@ -33,7 +38,7 @@ export const simulateTypingInput = ({
   const typingWord = getTypingWord();
 
   evaluateInput(typeResult, inputMode, typingWord, isCaseSensitive, {
-    onSuccess: ({ nextTypingWord, isCompleted, successKey, updatePoint }) => {
+    onSuccess: ({ nextTypingWord, isCompleted, successKey, updatePoint, chunkType }) => {
       if (isCompleted) {
         triggerTypeCompletedSound();
       } else {
@@ -42,11 +47,13 @@ export const simulateTypingInput = ({
       setTypingWord(nextTypingWord);
       updateSuccessStatus({ constantRemainLineTime, updatePoint, constantLineTime });
       updateSuccessSubstatus({ constantLineTime, successKey });
+      emitReplayTypingSuccess({ successKey, isCompleted, chunkType, constantLineTime });
     },
     onMiss: ({ failKey }) => {
       triggerMissSound();
       updateMissStatus();
       updateMissSubstatus({ constantLineTime, failKey });
+      emitReplayTypingMiss({ failKey });
     },
     onLineCompleted: () => {
       const lineResults = getAllLineResult();
@@ -56,6 +63,7 @@ export const simulateTypingInput = ({
       recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
       setCombo(lineResult?.status.combo ?? 0);
       setLineKpm(lineResult?.status.kpm ?? 0);
+      emitReplayTypingLineCompleted({ constantLineTime });
     },
     onOptionChange: (option) => {
       switch (option) {
@@ -91,6 +99,7 @@ const evaluateInput = (
       successKey: string;
       isCompleted: boolean;
       updatePoint: number;
+      chunkType?: string;
     }) => void;
     onMiss: (result: { failKey: string }) => void;
     onLineCompleted: () => void;
@@ -105,14 +114,14 @@ const evaluateInput = (
 
   if (inputChar) {
     if (isCorrect) {
-      const { nextTypingWord, successKey, isCompleted, updatePoint } = executeTypingInput({
+      const { nextTypingWord, successKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
         inputChar,
         inputMode,
         typingWord,
         isCaseSensitive,
       });
       if (!successKey) return;
-      onSuccess({ nextTypingWord, successKey, isCompleted, updatePoint });
+      onSuccess({ nextTypingWord, successKey, isCompleted, updatePoint, chunkType });
 
       if (isCompleted) {
         onLineCompleted();

@@ -3,17 +3,26 @@
  *
  * ## イベント命名規則
  * `ytyping:{domain}:{event}`
- * - `type`  : 入力イベント
- * - `timer` : タイマーイベント
- * - `yt`    : YouTube プレイヤーイベント
+ * - `type`   : 入力イベント（通常プレイ・練習）
+ * - `replay` : リプレイのシミュレート打鍵
+ * - `timer`  : タイマーイベント
+ * - `yt`     : YouTube プレイヤーイベント
  *
- * ## タイピングイベント
+ * ## タイピングイベント（通常プレイ・練習）
  * @example
  * window.addEventListener("ytyping:type:success", (e) => {
  *   const { successKey, isCompleted, constantLineTime } = e.detail;
  * });
  * window.addEventListener("ytyping:type:miss",          (e) => console.log("miss!", e.detail.failKey));
  * window.addEventListener("ytyping:type:lineCompleted", (e) => console.log("line done!", e.detail.constantLineTime));
+ *
+ * ## リプレイ打鍵イベント（`simulateTypingInput` 経由。`detail` の形は通常の type 系と同じ）
+ * @example
+ * window.addEventListener("ytyping:replay:type:success", (e) => {
+ *   const { successKey, isCompleted, constantLineTime } = e.detail;
+ * });
+ * window.addEventListener("ytyping:replay:type:miss", (e) => console.log("replay miss", e.detail.failKey));
+ * window.addEventListener("ytyping:replay:type:lineCompleted", (e) => console.log("replay line", e.detail.constantLineTime));
  *
  * ## タイマーイベント
  * @example
@@ -148,6 +157,14 @@ declare global {
     "ytyping:type:miss": CustomEvent<TypeMissDetail>;
     /** ライン入力完了時 */
     "ytyping:type:lineCompleted": CustomEvent<LineCompletedDetail>;
+
+    // ── リプレイ打鍵系（`replay.ts` の simulateTypingInput）────
+    /** リプレイ: シミュレート成功時（`detail` は `ytyping:type:success` と同形） */
+    "ytyping:replay:type:success": CustomEvent<TypeSuccessDetail>;
+    /** リプレイ: シミュレートミス時 */
+    "ytyping:replay:type:miss": CustomEvent<TypeMissDetail>;
+    /** リプレイ: シミュレートでライン完了時 */
+    "ytyping:replay:type:lineCompleted": CustomEvent<LineCompletedDetail>;
 
     // ── タイマー系 ───────────────────────────────────────────
     /** 毎フレーム（約60fps）発火 */
@@ -316,6 +333,19 @@ export const dispatchTypeMiss = (detail: TypeMissDetail) => {
 export const dispatchLineCompleted = (detail: LineCompletedDetail) => {
   window.dispatchEvent(new CustomEvent("ytyping:type:lineCompleted", { detail }));
 };
+
+// リプレイ打鍵系（関数名は WindowEventMap のキー文字列と区別するため emit 接頭辞）
+export function emitReplayTypingSuccess(detail: TypeSuccessDetail): void {
+  window.dispatchEvent(new CustomEvent("ytyping:replay:type:success", { detail }));
+}
+
+export function emitReplayTypingMiss(detail: TypeMissDetail): void {
+  window.dispatchEvent(new CustomEvent("ytyping:replay:type:miss", { detail }));
+}
+
+export function emitReplayTypingLineCompleted(detail: LineCompletedDetail): void {
+  window.dispatchEvent(new CustomEvent("ytyping:replay:type:lineCompleted", { detail }));
+}
 
 // タイマー系
 export const dispatchTick = (detail: TickDetail) => {
