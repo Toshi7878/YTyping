@@ -27,7 +27,7 @@
  *
  * ## 再開イベント（`lib/play-restart` の `restartPlay` 完了後）
  * @example
- * window.addEventListener("ytyping:restart:play", (e) => {
+ * window.addEventListener("ytyping:restart", (e) => {
  *   const { newPlayMode, previousScene } = e.detail;
  * });
  *
