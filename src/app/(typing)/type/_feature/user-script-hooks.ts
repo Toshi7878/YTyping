@@ -41,8 +41,10 @@
  * const mapMeta = window.__ytyping.getMapGetByIdCache(123); // React Query の map.getById キャッシュ（無ければ undefined）
  * const mapId = window.__ytyping.getMapId(); // Jotai の mapIdAtom（タイプページの譜面 ID、未設定なら null）
  * const currentMapMeta = window.__ytyping.getMapGetByIdCacheForCurrentMapId(); // getMapGetByIdCache(getMapId()) と同じ
+ * const rawPp = window.__ytyping.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
  */
 
+import { calcRawPP as calcRawPPFromServer, type RawPPInput } from "@/server/api/routers/result/pp";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
@@ -148,6 +150,11 @@ function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
   return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
 }
 
+/** サーバー `result/pp.ts` の `calcRawPP` と同一（星評価・正確率・打ち切り率・最低再生速度から 1 プレイ分の生 PP） */
+export function calcRawPPOnClient(result: RawPPInput, starRating: number): number {
+  return calcRawPPFromServer(result, starRating);
+}
+
 declare global {
   interface WindowEventMap {
     // ── 入力系 ────────────────────────────────────────────────
@@ -248,6 +255,9 @@ declare global {
 
       /** `getMapGetByIdCache(getMapId())` と同じ（現在ページの譜面メタの Query キャッシュ） */
       getMapInfo: typeof getMapInfo;
+
+      /** 生 PP 算出（`@/server/api/routers/result/pp` の `calcRawPP` と同一式） */
+      calcRawPP: typeof calcRawPPOnClient;
     };
   }
 }
@@ -316,6 +326,9 @@ window.__ytyping = {
   },
   get getMapInfo() {
     return getMapInfo;
+  },
+  get calcRawPP() {
+    return calcRawPPOnClient;
   },
 };
 
