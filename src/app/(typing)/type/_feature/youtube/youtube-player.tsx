@@ -19,6 +19,15 @@ import { setTabName } from "../tabs/tabs";
 import { setNotify } from "../typing-card/header/notify";
 import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
+import {
+  dispatchYtPause,
+  dispatchYtPlay,
+  dispatchYtRateChange,
+  dispatchYtReady,
+  dispatchYtSeeked,
+  dispatchYtStart,
+  dispatchYtStateChange,
+} from "../typing-card/playing/user-script-hooks";
 import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
 
 const isYTStartedAtom = atom(false);
@@ -135,6 +144,7 @@ const handleStart = (player: YT.Player) => {
 
   const readyInputMode = getReadyInputMode();
   setPlayingInputMode(readyInputMode);
+  dispatchYtStart({ scene: getScene() });
 };
 
 const handlePlay = async ({ target: player }: { target: YT.Player }) => {
@@ -162,6 +172,8 @@ const handlePlay = async ({ target: player }: { target: YT.Player }) => {
       setNotify(Symbol("▶"));
     }
   }
+
+  dispatchYtPlay();
 };
 
 const handlePause = () => {
@@ -173,6 +185,7 @@ const handlePause = () => {
   const scene = getScene();
   if (!isPaused) {
     setIsPaused(true);
+    dispatchYtPause();
     if (scene === "practice") return;
     setNotify(Symbol("ll"));
   }
@@ -186,21 +199,25 @@ const handleSeeked = (player: YT.Player) => {
   }
 
   console.log("シーク");
+  dispatchYtSeeked({ time });
 };
 
 const handleReady = ({ target: player }: { target: YT.Player }) => {
   player.setVolume(getVolume());
   writeYTPlayer(player);
+  dispatchYtReady();
 };
 
 const handlePlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
   const nextSpeed = player.getPlaybackRate();
   setMediaSpeed(nextSpeed);
   setNotify(Symbol(`x${nextSpeed.toFixed(2)}`));
+  dispatchYtRateChange({ speed: nextSpeed });
 };
 
 const handleStateChange = (event: YouTubeEvent) => {
   if (event.data === YT.PlayerState.BUFFERING) {
     handleSeeked(event.target as YT.Player);
   }
+  dispatchYtStateChange({ state: event.data });
 };

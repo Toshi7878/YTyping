@@ -35,6 +35,13 @@ import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateTypingTime } from "../update-status/update-kpm";
+import {
+  dispatchGameEnd,
+  dispatchLineChange,
+  dispatchTick,
+  dispatchTimer1sUpdate,
+  dispatchTimerUpdate,
+} from "../user-script-hooks";
 import { simulateTypingInput } from "./replay";
 
 export const startTimer = () => {
@@ -79,6 +86,7 @@ const handleTimer = () => {
         setLineProgressValue(currentLineTime);
         const scene = getScene();
 
+        dispatchTick({ currentTime, constantLineTime, constantRemainLineTime });
         if (scene === "replay" && count > 0) {
           const lineResults = getAllLineResult();
 
@@ -95,7 +103,7 @@ const handleTimer = () => {
           }
         }
       },
-      on100MsUpdate: ({ currentTime, constantLineTime, constantRemainLineTime }) => {
+      on100MsUpdate: ({ currentTime, constantTime, constantLineTime, constantRemainLineTime }) => {
         setLineRemainTime(constantRemainLineTime);
         const typingWord = getTypingWord();
         const isLineCompleted = typingWord.correct.roma && !typingWord.nextChunk.kana;
@@ -119,10 +127,12 @@ const handleTimer = () => {
         }
 
         setTotalProgressValue(currentTime);
+        dispatchTimerUpdate({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
       },
 
       on1000MsUpdate: ({ constantTime }) => {
         setElapsedSecTime(constantTime);
+        dispatchTimer1sUpdate({ constantTime });
       },
 
       onTimeLimitReach: ({ nextCount }) => {
@@ -135,6 +145,7 @@ const handleTimer = () => {
         }
 
         setupNextLine(map, scene === "play" ? nextCount : getLineCountByTime(currentTime));
+        dispatchLineChange({ nextCount });
       },
 
       onTimerEnd: ({ constantLineTime }) => {
@@ -164,6 +175,7 @@ const handleTimer = () => {
           const stats = getTypingStats();
           mutateTypingStats(stats);
         }
+        dispatchGameEnd({ constantLineTime });
       },
     },
   );

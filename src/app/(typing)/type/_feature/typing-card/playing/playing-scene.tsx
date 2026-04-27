@@ -30,6 +30,7 @@ import { updateMissStatus, updateMissSubstatus } from "./update-status/miss";
 import { recalculateStatusFromResults } from "./update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "./update-status/success";
 import { updateTypingTime } from "./update-status/update-kpm";
+import { dispatchLineCompleted, dispatchTypeMiss, dispatchTypeSuccess } from "./user-script-hooks";
 
 const timeOffsetAtom = atom(0);
 export const getTimeOffset = () => store.get(timeOffsetAtom);
@@ -147,6 +148,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           setTypingWord(nextTypingWord);
           updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
           updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
+          dispatchTypeSuccess({ successKey, isCompleted, chunkType, constantLineTime });
 
           return { constantLineTime };
         },
@@ -158,6 +160,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           triggerMissSound();
           updateMissStatus();
           updateMissSubstatus({ constantLineTime, failKey });
+          dispatchTypeMiss({ failKey });
         },
 
         onCompleted: ({ constantLineTime }) => {
@@ -171,6 +174,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
           if (hasLineResultImproved(count)) {
             saveLineResult(count, constantLineTime);
           }
+
+          dispatchLineCompleted({ constantLineTime });
 
           if (scene === "practice") {
             recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
