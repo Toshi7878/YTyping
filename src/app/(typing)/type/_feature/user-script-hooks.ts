@@ -11,7 +11,7 @@
  * ## タイピングイベント（通常プレイ・練習）
  * @example
  * window.addEventListener("ytyping:type:success", (e) => {
- *   const { successKey, isCompleted, constantLineTime } = e.detail;
+ *   const { successKey, isCompleted, constantLineTime, updatePoint } = e.detail;
  * });
  * window.addEventListener("ytyping:type:miss",          (e) => console.log("miss!", e.detail.failKey));
  * window.addEventListener("ytyping:type:lineCompleted", (e) => console.log("line done!", e.detail.constantLineTime));
@@ -19,7 +19,7 @@
  * ## リプレイ打鍵イベント（`simulateTypingInput` 経由。`detail` の形は通常の type 系と同じ）
  * @example
  * window.addEventListener("ytyping:replay:type:success", (e) => {
- *   const { successKey, isCompleted, constantLineTime } = e.detail;
+ *   const { successKey, isCompleted, constantLineTime, updatePoint } = e.detail;
  * });
  * window.addEventListener("ytyping:replay:type:miss", (e) => console.log("replay miss", e.detail.failKey));
  * window.addEventListener("ytyping:replay:type:lineCompleted", (e) => console.log("replay line", e.detail.constantLineTime));
@@ -72,6 +72,8 @@ interface TypeSuccessDetail {
   chunkType: string | undefined;
   /** ライン経過時間 (ms) */
   constantLineTime: number;
+  /** この入力で加算された点数（`CHAR_POINT` 比で打鍵量の目安に使える） */
+  updatePoint: number;
 }
 
 interface TypeMissDetail {

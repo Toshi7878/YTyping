@@ -148,7 +148,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           setTypingWord(nextTypingWord);
           updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
           updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
-          dispatchTypeSuccess({ successKey, isCompleted, chunkType, constantLineTime });
+          dispatchTypeSuccess({ successKey, isCompleted, chunkType, constantLineTime, updatePoint });
 
           return { constantLineTime };
         },

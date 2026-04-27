@@ -47,7 +47,7 @@ export const simulateTypingInput = ({
       setTypingWord(nextTypingWord);
       updateSuccessStatus({ constantRemainLineTime, updatePoint, constantLineTime });
       updateSuccessSubstatus({ constantLineTime, successKey });
-      emitReplayTypingSuccess({ successKey, isCompleted, chunkType, constantLineTime });
+      emitReplayTypingSuccess({ successKey, isCompleted, chunkType, constantLineTime, updatePoint });
     },
     onMiss: ({ failKey }) => {
       triggerMissSound();
