@@ -34,7 +34,7 @@ export const DifficultyFilter = () => {
           {DIFFICULTY_TIERS.map((tier) => {
             const hasFilter = params.minRate > RANGE.min || params.maxRate !== null;
             const currentMax = params.maxRate ?? RANGE.max;
-            const isSelected = hasFilter && params.minRate <= tier.max && currentMax >= tier.min;
+            const isSelected = hasFilter && params.minRate <= (tier.max ?? Infinity) && currentMax >= tier.min;
             const variant: ButtonVariant = tier.variant;
             return (
               <Button

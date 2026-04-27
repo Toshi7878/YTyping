@@ -30,7 +30,7 @@ const parseAsSort = createParser({
 const parseAsDifficultyRate = createParser({
   parse(query) {
     const value = parseAsFloat.parse(query);
-    if (value === null || value === Infinity) return null;
+    if (value === null) return null;
 
     const rounded = Math.round(value * 100) / 100;
     return Math.max(0, rounded);
