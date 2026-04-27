@@ -48,6 +48,7 @@ export const mapRouter = {
           kanaKpmMax: MapDifficulties.kanaKpmMax,
           romaTotalNotes: MapDifficulties.romaTotalNotes,
           kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+          rating: MapDifficulties.rating,
         },
         like: {
           hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),

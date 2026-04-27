@@ -28,23 +28,31 @@
  * const { kpm, score, miss } = window.__ytyping.getStatus();
  * const { maxCombo, clearRate } = window.__ytyping.getSubstatus();
  * const { typeCount, missCount } = window.__ytyping.getLineSubstatus();
+ * const { CHAR_POINT, MISS_PENALTY_POINT } = window.__ytyping;
+ * const mapMeta = window.__ytyping.getMapGetByIdCache(123); // React Query の map.getById キャッシュ（無ければ undefined）
+ * const mapId = window.__ytyping.getMapId(); // Jotai の mapIdAtom（タイプページの譜面 ID、未設定なら null）
+ * const currentMapMeta = window.__ytyping.getMapGetByIdCacheForCurrentMapId(); // getMapGetByIdCache(getMapId()) と同じ
  */
 
-import { getBuiltMap } from "../../atoms/built-map";
-import { getAllLineResult, getSelectLineIndex } from "../../atoms/line-result";
-import { getLineSubstatus } from "../../atoms/line-substatus";
-import { getReplayRankingResult } from "../../atoms/replay";
-import { getTypingStats } from "../../atoms/stats";
-import { getTypingSubstatus } from "../../atoms/substatus";
-import { getPlayingInputMode, getTypingWord } from "../../atoms/typing-word";
-import { getYTCurrentTime, getYTPlayer, getYTPlayerState, getYTVideoId } from "../../atoms/youtube-player";
-import { getTypingStatus } from "../../tabs/typing-status/status-cell";
-import { getScene } from "../typing-card";
-import { getLineCount, getTimeOffset } from "./playing-scene";
+import type { RouterOutputs } from "@/server/api/trpc";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
+import { getBuiltMap } from "./atoms/built-map";
+import { getAllLineResult, getSelectLineIndex } from "./atoms/line-result";
+import { getLineSubstatus } from "./atoms/line-substatus";
+import { getReplayRankingResult } from "./atoms/replay";
+import { getTypingStats } from "./atoms/stats";
+import { getTypingSubstatus } from "./atoms/substatus";
+import { getPlayingInputMode, getTypingWord } from "./atoms/typing-word";
+import { getYTCurrentTime, getYTPlayer, getYTPlayerState, getYTVideoId } from "./atoms/youtube-player";
+import { CHAR_POINT as CHAR_POINT_CONST, MISS_PENALTY_POINT as MISS_PENALTY_POINT_CONST } from "./lib/const";
+import { getMapId } from "./provider";
+import { getTypingStatus } from "./tabs/typing-status/status-cell";
+import { getLineCount, getTimeOffset } from "./typing-card/playing/playing-scene";
+import { getScene } from "./typing-card/typing-card";
 
 // ─── CustomEvent 型定義 ─────────────────────────────────────
 
-export interface TypeSuccessDetail {
+interface TypeSuccessDetail {
   /** 入力したキー */
   successKey: string;
   /** チャンクが完了したか */
@@ -55,17 +63,17 @@ export interface TypeSuccessDetail {
   constantLineTime: number;
 }
 
-export interface TypeMissDetail {
+interface TypeMissDetail {
   /** ミスしたキー */
   failKey: string;
 }
 
-export interface LineCompletedDetail {
+interface LineCompletedDetail {
   /** ライン経過時間 (ms) */
   constantLineTime: number;
 }
 
-export interface TimerUpdateDetail {
+interface TimerUpdateDetail {
   /** 動画の現在時刻 (s) */
   currentTime: number;
   /** 動画の現在時刻（定数・補間なし）(s) */
@@ -76,41 +84,41 @@ export interface TimerUpdateDetail {
   constantRemainLineTime: number;
 }
 
-export interface LineChangeDetail {
+interface LineChangeDetail {
   /** 新しいラインのインデックス */
   nextCount: number;
 }
 
-export interface GameEndDetail {
+interface GameEndDetail {
   /** ゲーム終了時のライン経過時間 (ms) */
   constantLineTime: number;
 }
 
-export interface GameStartDetail {
+interface GameStartDetail {
   /** 開始シーン ("play" | "practice" | "replay") */
   scene: string;
 }
 
-export type PlayDetail = Record<never, never>;
-export type PauseDetail = Record<never, never>;
-export type ReadyDetail = Record<never, never>;
+type PlayDetail = Record<never, never>;
+type PauseDetail = Record<never, never>;
+type ReadyDetail = Record<never, never>;
 
-export interface RateChangeDetail {
+interface RateChangeDetail {
   /** 変更後の再生速度 */
   speed: number;
 }
 
-export interface StateChangeDetail {
+interface StateChangeDetail {
   /** YT.PlayerState の値 (-1 | 0 | 1 | 2 | 3 | 5) */
   state: number;
 }
 
-export interface SeekedDetail {
+interface SeekedDetail {
   /** シーク後の現在時刻（秒） */
   time: number;
 }
 
-export interface TickDetail {
+interface TickDetail {
   /** 動画の現在時刻 (s) */
   currentTime: number;
   /** ライン経過時間 (ms) */
@@ -119,9 +127,16 @@ export interface TickDetail {
   constantRemainLineTime: number;
 }
 
-export interface Timer1sUpdateDetail {
+interface Timer1sUpdateDetail {
   /** 動画の現在時刻（定数・補間なし）(s) */
   constantTime: number;
+}
+
+function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
+  const mapId = getMapId();
+  if (mapId === null) return undefined;
+  const trpc = getTRPCOptions();
+  return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
 }
 
 declare global {
@@ -165,6 +180,12 @@ declare global {
 
   interface Window {
     __ytyping: {
+      // ── 定数（読み取り専用・ゲッターのみ）──────────────────
+      /** 1 文字正解あたりの加点（`lib/const` と同一） */
+      readonly CHAR_POINT: number;
+      /** 1 ミスあたりの減点（`CHAR_POINT / 2`） */
+      readonly MISS_PENALTY_POINT: number;
+
       // ── ステータス系 ─────────────────────────────────────
       /** スコア・KPM・ミス数などのメインステータスを取得 */
       getStatus: typeof getTypingStatus;
@@ -192,7 +213,6 @@ declare global {
       getScene: typeof getScene;
       /** ビルド済みマップ（譜面データ）を取得 */
       getBuiltMap: typeof getBuiltMap;
-
       // ── タイマー・ライン位置系 ───────────────────────────
       /** 現在の時間オフセット（ms）を取得 */
       getTimeOffset: typeof getTimeOffset;
@@ -208,6 +228,9 @@ declare global {
       getYTVideoId: typeof getYTVideoId;
       /** YouTube の現在再生時刻（秒）を取得 */
       getYTCurrentTime: typeof getYTCurrentTime;
+
+      /** `getMapGetByIdCache(getMapId())` と同じ（現在ページの譜面メタの Query キャッシュ） */
+      getMapInfo: typeof getMapInfo;
     };
   }
 }
@@ -217,6 +240,12 @@ declare global {
 // getter を使って循環依存による TDZ エラーを回避する
 // (直接代入すると import が解決される前にアクセスされる場合がある)
 window.__ytyping = {
+  get CHAR_POINT() {
+    return CHAR_POINT_CONST;
+  },
+  get MISS_PENALTY_POINT() {
+    return MISS_PENALTY_POINT_CONST;
+  },
   get getStatus() {
     return getTypingStatus;
   },
@@ -267,6 +296,9 @@ window.__ytyping = {
   },
   get getYTCurrentTime() {
     return getYTCurrentTime;
+  },
+  get getMapInfo() {
+    return getMapInfo;
   },
 };
 

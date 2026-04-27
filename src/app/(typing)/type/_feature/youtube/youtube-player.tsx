@@ -19,6 +19,7 @@ import { setTabName } from "../tabs/tabs";
 import { setNotify } from "../typing-card/header/notify";
 import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
+import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
 import {
   dispatchYtPause,
   dispatchYtPlay,
@@ -27,8 +28,7 @@ import {
   dispatchYtSeeked,
   dispatchYtStart,
   dispatchYtStateChange,
-} from "../typing-card/playing/user-script-hooks";
-import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
+} from "../user-script-hooks";
 
 const isYTStartedAtom = atom(false);
 const isPausedAtom = atom(false);

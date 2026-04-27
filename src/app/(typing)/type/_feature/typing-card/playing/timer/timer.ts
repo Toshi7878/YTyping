@@ -16,6 +16,13 @@ import { getYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { getMapId } from "../../../provider";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
+import {
+  dispatchGameEnd,
+  dispatchLineChange,
+  dispatchTick,
+  dispatchTimer1sUpdate,
+  dispatchTimerUpdate,
+} from "../../../user-script-hooks";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getMediaSpeed } from "../../../youtube/youtube-player";
 import { setLineCustomStyleIndex } from "../../custom-style";
@@ -35,13 +42,6 @@ import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateTypingTime } from "../update-status/update-kpm";
-import {
-  dispatchGameEnd,
-  dispatchLineChange,
-  dispatchTick,
-  dispatchTimer1sUpdate,
-  dispatchTimerUpdate,
-} from "../user-script-hooks";
 import { simulateTypingInput } from "./replay";
 
 export const startTimer = () => {

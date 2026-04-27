@@ -16,6 +16,7 @@ import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/t
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
+import { dispatchLineCompleted, dispatchTypeMiss, dispatchTypeSuccess } from "../../user-script-hooks";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
 import { getIsPaused } from "../../youtube/youtube-player";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
@@ -30,7 +31,6 @@ import { updateMissStatus, updateMissSubstatus } from "./update-status/miss";
 import { recalculateStatusFromResults } from "./update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "./update-status/success";
 import { updateTypingTime } from "./update-status/update-kpm";
-import { dispatchLineCompleted, dispatchTypeMiss, dispatchTypeSuccess } from "./user-script-hooks";
 
 const timeOffsetAtom = atom(0);
 export const getTimeOffset = () => store.get(timeOffsetAtom);
