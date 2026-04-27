@@ -19,7 +19,7 @@ export const DIFFICULTY_TIERS = [
   { label: "★4-5", min: 4, max: 5.99, variant: "level-hard" },
   { label: "★6-8", min: 6, max: 8.99, variant: "level-expert" },
   { label: "★9-11", min: 9, max: 11.99, variant: "level-master" },
-  { label: "★12-∞", min: 12, max: Infinity, variant: "level-ultra" },
+  { label: "★12-∞", min: 12, max: null, variant: "level-ultra" },
 ] as const;
 
 export type DifficultyVariant = (typeof DIFFICULTY_TIERS)[number]["variant"];
@@ -27,7 +27,7 @@ export type DifficultyVariant = (typeof DIFFICULTY_TIERS)[number]["variant"];
 /** DIFFICULTY_TIERS と同じ区分で rating に対応する variant を返す */
 export function getDifficultyLevelVariant(rating: number): DifficultyVariant {
   for (const tier of DIFFICULTY_TIERS) {
-    if (rating <= tier.max) return tier.variant;
+    if (rating <= (tier.max ?? Infinity)) return tier.variant;
   }
   return "level-ultra";
 }
