@@ -153,7 +153,7 @@ interface Timer1sUpdateDetail {
 }
 
 export function emitRestartPlayUserScript(): void {
-  window.dispatchEvent(new CustomEvent("ytyping:restart:play", { detail: {} }));
+  window.dispatchEvent(new CustomEvent("ytyping:restart", { detail: {} }));
 }
 
 function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
