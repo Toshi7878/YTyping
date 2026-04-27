@@ -5,6 +5,7 @@
  * `ytyping:{domain}:{event}`
  * - `type`   : 入力イベント（通常プレイ・練習）
  * - `replay` : リプレイのシミュレート打鍵
+ * - `restart`: プレイ再開（`restartPlay`）
  * - `timer`  : タイマーイベント
  * - `yt`     : YouTube プレイヤーイベント
  *
@@ -23,6 +24,12 @@
  * });
  * window.addEventListener("ytyping:replay:type:miss", (e) => console.log("replay miss", e.detail.failKey));
  * window.addEventListener("ytyping:replay:type:lineCompleted", (e) => console.log("replay line", e.detail.constantLineTime));
+ *
+ * ## 再開イベント（`lib/play-restart` の `restartPlay` 完了後）
+ * @example
+ * window.addEventListener("ytyping:restart:play", (e) => {
+ *   const { newPlayMode, previousScene } = e.detail;
+ * });
  *
  * ## タイマーイベント
  * @example
@@ -145,6 +152,10 @@ interface Timer1sUpdateDetail {
   constantTime: number;
 }
 
+export function emitRestartPlayUserScript(): void {
+  window.dispatchEvent(new CustomEvent("ytyping:restart:play", { detail: {} }));
+}
+
 function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
   const mapId = getMapId();
   if (mapId === null) return undefined;
@@ -174,6 +185,10 @@ declare global {
     "ytyping:replay:type:miss": CustomEvent<TypeMissDetail>;
     /** リプレイ: シミュレートでライン完了時 */
     "ytyping:replay:type:lineCompleted": CustomEvent<LineCompletedDetail>;
+
+    // ── 再開系（`lib/play-restart.ts` の `restartPlay`）────────
+    /** 再開処理完了後（状態は新シーン側に更新済み） */
+    "ytyping:restart": CustomEvent<null>;
 
     // ── タイマー系 ───────────────────────────────────────────
     /** 毎フレーム（約60fps）発火 */
