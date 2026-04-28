@@ -30,6 +30,7 @@ export const MapActionIconButtons = ({ className }: { className: string }) => {
 
   return (
     <div
+      id="action-buttons"
       className={cn(
         "mb-1.5 flex gap-18 text-foreground/60 max-md:mr-12 md:gap-2 [&>a]:hover:text-foreground/90 [&>button]:hover:text-foreground/90 [&_svg]:size-24! md:[&_svg]:size-9!",
         className,
