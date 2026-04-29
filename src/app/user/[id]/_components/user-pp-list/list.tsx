@@ -16,7 +16,7 @@ export function PPResultCardList({ id }: { id: string }) {
   const [order, setOrder] = usePpOrderQueryState();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    trpc.result.list.getPp.infiniteQueryOptions(
+    trpc.result.pp.userTopList.infiniteQueryOptions(
       { playerId: Number(id), order },
       { getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined },
     ),

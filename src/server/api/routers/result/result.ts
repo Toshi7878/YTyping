@@ -21,6 +21,7 @@ import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../../utils/id";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
+import { resultPpRouter } from "./pp";
 
 export const resultRouter = {
   getJsonById: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
@@ -127,6 +128,7 @@ export const resultRouter = {
   }),
 
   list: resultListRouter,
+  pp: resultPpRouter,
   clap: resultClapRouter,
 } satisfies TRPCRouterRecord;
 

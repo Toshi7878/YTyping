@@ -16,7 +16,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   if (tab === "stats") {
     prefetch(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
     prefetch(trpc.user.stats.getActivityOldestYear.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.result.list.getPp.infiniteQueryOptions({ playerId: Number(id) }));
+    prefetch(trpc.result.pp.userTopList.infiniteQueryOptions({ playerId: Number(id) }));
   } else if (tab === "bookmarks") {
     prefetch(trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(
