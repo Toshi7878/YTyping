@@ -14,16 +14,16 @@ import { overlay } from "@/components/ui/overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
-import { InputTextarea } from "../_components/input-textarea";
-import { MenuBar } from "../_components/memu/menu-bar";
-import { Notifications } from "../_components/notifications-display";
-import { ViewArea } from "../_components/view-area/view-area";
-import { YouTubePlayer } from "../_components/youtube-player";
 import { readImeStats } from "../_lib/atoms/ref";
 import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
 import { ensureLyricsWithReadings } from "../_lib/core/ensure-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
+import { InputTextarea } from "./input-textarea";
+import { MenuBar } from "./memu/menu-bar";
+import { Notifications } from "./notifications-display";
+import { ViewArea } from "./view-area/view-area";
+import { YouTubePlayer } from "./youtube-player";
 
 interface ContentProps {
   mapInfo: RouterOutputs["map"]["getById"];

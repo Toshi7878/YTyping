@@ -1,7 +1,5 @@
 import { atomWithReset, RESET } from "jotai/utils";
-import { getImeAtomStore } from "./store";
-
-const store = getImeAtomStore();
+import { store } from "../../_feature/provider";
 
 export const mapIdAtom = atomWithReset<number | null>(null);
 export const readMapId = () => store.get(mapIdAtom);

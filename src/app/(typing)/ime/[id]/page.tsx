@@ -4,8 +4,8 @@ import { cache } from "react";
 import { getCaller } from "@/trpc/server";
 import { toLocaleDateString } from "@/utils/date";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { Content } from "../_components/content";
-import { JotaiProvider } from "../_components/provider";
+import { Content } from "../_feature/content";
+import { JotaiProvider } from "../_feature/provider";
 
 const getMapInfo = cache(async (caller: ReturnType<typeof getCaller>, mapId: number) => {
   return await caller.map.getById({ mapId });

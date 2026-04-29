@@ -5,11 +5,9 @@ import { focusAtom } from "jotai-optics";
 import type { BuiltImeLine, WordResult } from "lyrics-ime-typing-engine";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 import type { Updater } from "@/utils/types";
+import { store } from "../../_feature/provider";
 import { DISPLAY_LINE_LENGTH } from "../const";
 import type { PlaceholderType, SceneType } from "../type";
-import { getImeAtomStore } from "./store";
-
-const store = getImeAtomStore();
 
 const builtMapAtom = atomWithReset<{
   lines: BuiltImeLine[];
@@ -114,13 +112,6 @@ export const setWordResults = (updateResult: { index: number; result: WordResult
     return newResults;
   });
 };
-
-const notificationsAtom = atomWithReset<string[]>([]);
-
-export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
-export const setNotifications = (update: Updater<ExtractAtomValue<typeof notificationsAtom>>) =>
-  store.set(notificationsAtom, update);
-export const resetNotifications = () => store.set(notificationsAtom, RESET);
 
 const resultDialogAtom = atom(false);
 

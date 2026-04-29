@@ -1,4 +1,5 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
+import { resetNotifications } from "../../_feature/notifications-display";
 import { readMapId, resetMapId } from "../atoms/hydrate";
 import { readTypingTextarea } from "../atoms/ref";
 import {
@@ -6,7 +7,6 @@ import {
   readScene,
   readStatus,
   resetBuiltMap,
-  resetNotifications,
   resetScene,
   resetStatus,
   resetTypingWord,

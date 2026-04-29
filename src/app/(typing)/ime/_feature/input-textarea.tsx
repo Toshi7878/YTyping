@@ -12,7 +12,6 @@ import {
   readWordResults,
   resultDialogOpen,
   setCurrentWordIndex,
-  setNotifications,
   setStatus,
   setWordResults,
   useSceneState,
@@ -21,6 +20,7 @@ import {
 import { handleSceneEnd } from "../_lib/core/scene-control";
 import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
+import { setNotifications } from "./notifications-display";
 
 const TICK_STOP_TIME = 1000;
 

@@ -2,9 +2,7 @@ import { atom, type ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { Updater } from "@/utils/types";
-import { getImeAtomStore } from "./store";
-
-const store = getImeAtomStore();
+import { store } from "../../_feature/provider";
 
 const lyricsContainerAtom = atom<HTMLDivElement | null>(null);
 export const readLyricsContainer = () => store.get(lyricsContainerAtom);

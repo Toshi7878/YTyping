@@ -1,8 +1,6 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { getImeAtomStore } from "./store";
-
-const store = getImeAtomStore();
+import { store } from "../../_feature/provider";
 
 const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
 export const useYTPlayer = () => useAtomValue(YTPlayerAtom, { store });
