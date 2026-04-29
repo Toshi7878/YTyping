@@ -41,18 +41,15 @@
  *
  * ## getter（任意タイミングで現在値を取得）
  * @example
- * const { kpm, score, miss } = window.__ytyping.getStatus();
- * const { maxCombo, clearRate } = window.__ytyping.getSubstatus();
- * const { typeCount, missCount } = window.__ytyping.getLineSubstatus();
- * const { CHAR_POINT, MISS_PENALTY_POINT } = window.__ytyping;
- * const mapMeta = window.__ytyping.getMapGetByIdCache(123); // React Query の map.getById キャッシュ（無ければ undefined）
- * const mapId = window.__ytyping.getMapId(); // Jotai の mapIdAtom（タイプページの譜面 ID、未設定なら null）
- * const currentMapMeta = window.__ytyping.getMapGetByIdCacheForCurrentMapId(); // getMapGetByIdCache(getMapId()) と同じ
- * const rawPp = window.__ytyping.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
- * const topPps = await window.__ytyping.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
+ * const { kpm, score, miss } = window.__ytyping.type.getStatus();
+ * const { maxCombo, clearRate } = window.__ytyping.type.getSubstatus();
+ * const { typeCount, missCount } = window.__ytyping.type.getLineSubstatus();
+ * const { CHAR_POINT, MISS_PENALTY_POINT } = window.__ytyping.type;
+ * const mapMeta = window.__ytyping.type.getMapInfo();
+ * const rawPp = window.__ytyping.type.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
+ * const topPps = await window.__ytyping.type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
-import { getSession, type Session } from "@/lib/auth-client";
 import { calcRawPP } from "@/lib/pp";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
@@ -222,7 +219,7 @@ declare global {
   }
 
   interface Window {
-    __ytyping: {
+    __ytyping_type: {
       // ── 定数（読み取り専用・ゲッターのみ）──────────────────
       /** 1 文字正解あたりの加点（`lib/const` と同一） */
       readonly CHAR_POINT: number;
@@ -280,9 +277,6 @@ declare global {
 
       /** ログイン中ユーザーの PP 上位一覧（降順）を取得。未認証時は例外 */
       getUserTopPPs: typeof getUserTopPPs;
-
-      /** ログイン中ユーザー情報を取得。未ログイン時は null */
-      getSessionUser: () => Session["user"] | null;
     };
   }
 }
@@ -293,7 +287,7 @@ declare global {
 // getter を使って循環依存による TDZ エラーを回避する
 // (直接代入すると import が解決される前にアクセスされる場合がある)
 if (typeof window !== "undefined")
-  window.__ytyping = {
+  window.__ytyping_type = {
     get CHAR_POINT() {
       return CHAR_POINT_CONST;
     },
@@ -359,9 +353,6 @@ if (typeof window !== "undefined")
     },
     get getUserTopPPs() {
       return getUserTopPPs;
-    },
-    get getSessionUser() {
-      return () => getSession()?.user ?? null;
     },
   };
 

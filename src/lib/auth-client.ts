@@ -55,9 +55,3 @@ export function useSession(): UseSessionReturn {
 
   return { ...session, data: null };
 }
-
-if (typeof window !== "undefined") {
-  const w = window as unknown as Record<string, unknown>;
-  (w.__ytyping as Record<string, unknown> | undefined) ??= {};
-  (w.__ytyping as Record<string, unknown>).getSessionUser = () => getSession()?.user ?? null;
-}
