@@ -1,3 +1,4 @@
+"use client";
 import { toast } from "sonner";
 import { getSession } from "@/lib/auth-client";
 
@@ -17,3 +18,7 @@ declare global {
 }
 
 if (typeof window !== "undefined") window.__ytyping = ytypingGlobal;
+
+export function UserScriptInit() {
+  return null;
+}

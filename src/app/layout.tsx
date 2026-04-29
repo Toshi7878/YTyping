@@ -19,6 +19,7 @@ import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
 import { SessionProvider } from "./_components/session-provider";
 import { ThemeProvider } from "./_components/theme-provider";
+import { UserScriptInit } from "./user-script";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -74,6 +75,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <ConfirmDialogHost />
         <OverlayHost />
         <ClearSelectionOnNavigate />
+        <UserScriptInit />
       </body>
     </html>
   );
