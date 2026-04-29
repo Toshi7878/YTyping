@@ -16,7 +16,7 @@ import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/t
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
-import { dispatchLineCompleted, dispatchTypeMiss, dispatchTypeSuccess } from "../../user-script";
+import { dispatchTypeEvent } from "../../user-script";
 import { getRemainLineTime } from "../../youtube/get-youtube-time";
 import { getIsPaused } from "../../youtube/youtube-player";
 import { getActiveSkipKey, skipLine } from "../footer/skip";
@@ -148,7 +148,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           setTypingWord(nextTypingWord);
           updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
           updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
-          dispatchTypeSuccess({ successKey, isCompleted, chunkType, constantLineTime, updatePoint });
+          dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
 
           return { constantLineTime };
         },
@@ -160,7 +160,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           triggerMissSound();
           updateMissStatus();
           updateMissSubstatus({ constantLineTime, failKey });
-          dispatchTypeMiss({ failKey });
+          dispatchTypeEvent("type:miss", { failKey });
         },
 
         onCompleted: ({ constantLineTime }) => {
@@ -175,7 +175,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             saveLineResult(count, constantLineTime);
           }
 
-          dispatchLineCompleted({ constantLineTime });
+          dispatchTypeEvent("type:lineCompleted", { constantLineTime });
 
           if (scene === "practice") {
             recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });

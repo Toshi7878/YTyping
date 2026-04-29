@@ -20,15 +20,7 @@ import { setNotify } from "../typing-card/header/notify";
 import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
 import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
-import {
-  dispatchYtPause,
-  dispatchYtPlay,
-  dispatchYtRateChange,
-  dispatchYtReady,
-  dispatchYtSeeked,
-  dispatchYtStart,
-  dispatchYtStateChange,
-} from "../user-script";
+import { dispatchTypeEvent } from "../user-script";
 
 const isYTStartedAtom = atom(false);
 const isPausedAtom = atom(false);
@@ -144,7 +136,7 @@ const handleStart = (player: YT.Player) => {
 
   const readyInputMode = getReadyInputMode();
   setPlayingInputMode(readyInputMode);
-  dispatchYtStart({ scene: getScene() });
+  dispatchTypeEvent("yt:start", { scene: getScene() });
 };
 
 const handlePlay = async ({ target: player }: { target: YT.Player }) => {
@@ -173,7 +165,7 @@ const handlePlay = async ({ target: player }: { target: YT.Player }) => {
     }
   }
 
-  dispatchYtPlay();
+  dispatchTypeEvent("yt:play", {});
 };
 
 const handlePause = () => {
@@ -185,7 +177,7 @@ const handlePause = () => {
   const scene = getScene();
   if (!isPaused) {
     setIsPaused(true);
-    dispatchYtPause();
+    dispatchTypeEvent("yt:pause", {});
     if (scene === "practice") return;
     setNotify(Symbol("ll"));
   }
@@ -199,25 +191,25 @@ const handleSeeked = (player: YT.Player) => {
   }
 
   console.log("シーク");
-  dispatchYtSeeked({ time });
+  dispatchTypeEvent("yt:seeked", { time });
 };
 
 const handleReady = ({ target: player }: { target: YT.Player }) => {
   player.setVolume(getVolume());
   writeYTPlayer(player);
-  dispatchYtReady();
+  dispatchTypeEvent("yt:ready", {});
 };
 
 const handlePlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
   const nextSpeed = player.getPlaybackRate();
   setMediaSpeed(nextSpeed);
   setNotify(Symbol(`x${nextSpeed.toFixed(2)}`));
-  dispatchYtRateChange({ speed: nextSpeed });
+  dispatchTypeEvent("yt:rateChange", { speed: nextSpeed });
 };
 
 const handleStateChange = (event: YouTubeEvent) => {
   if (event.data === YT.PlayerState.BUFFERING) {
     handleSeeked(event.target as YT.Player);
   }
-  dispatchYtStateChange({ state: event.data });
+  dispatchTypeEvent("yt:stateChange", { state: event.data });
 };

@@ -16,13 +16,7 @@ import { getYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../../../lib/stats";
 import { getMapId } from "../../../provider";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
-import {
-  dispatchGameEnd,
-  dispatchLineChange,
-  dispatchTick,
-  dispatchTimer1sUpdate,
-  dispatchTimerUpdate,
-} from "../../../user-script";
+import { dispatchTypeEvent } from "../../../user-script";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getMediaSpeed } from "../../../youtube/youtube-player";
 import { setLineCustomStyleIndex } from "../../custom-style";
@@ -86,7 +80,7 @@ const handleTimer = () => {
         setLineProgressValue(currentLineTime);
         const scene = getScene();
 
-        dispatchTick({ currentTime, constantLineTime, constantRemainLineTime });
+        dispatchTypeEvent("timer:tick", { currentTime, constantLineTime, constantRemainLineTime });
         if (scene === "replay" && count > 0) {
           const lineResults = getAllLineResult();
 
@@ -127,12 +121,12 @@ const handleTimer = () => {
         }
 
         setTotalProgressValue(currentTime);
-        dispatchTimerUpdate({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
+        dispatchTypeEvent("timer:100msUpdate", { currentTime, constantTime, constantLineTime, constantRemainLineTime });
       },
 
       on1000MsUpdate: ({ constantTime }) => {
         setElapsedSecTime(constantTime);
-        dispatchTimer1sUpdate({ constantTime });
+        dispatchTypeEvent("timer:1sUpdate", { constantTime });
       },
 
       onTimeLimitReach: ({ nextCount }) => {
@@ -145,7 +139,7 @@ const handleTimer = () => {
         }
 
         setupNextLine(map, scene === "play" ? nextCount : getLineCountByTime(currentTime));
-        dispatchLineChange({ nextCount });
+        dispatchTypeEvent("timer:lineChange", { nextCount });
       },
 
       onTimerEnd: ({ constantLineTime }) => {
@@ -175,7 +169,7 @@ const handleTimer = () => {
           const stats = getTypingStats();
           mutateTypingStats(stats);
         }
-        dispatchGameEnd({ constantLineTime });
+        dispatchTypeEvent("timer:end", { constantLineTime });
       },
     },
   );

@@ -20,7 +20,7 @@ import { setNextLyricsAndKpm } from "../typing-card/playing/next-lyrics";
 import { setLineCount } from "../typing-card/playing/playing-scene";
 import { stopTimer } from "../typing-card/playing/timer/timer";
 import { getScene, type PlayingSceneType, setScene } from "../typing-card/typing-card";
-import { emitRestartPlayUserScript } from "../user-script";
+import { dispatchTypeEvent } from "../user-script";
 import { mutateTypingStats } from "./stats";
 
 const retryCountAtom = atom(1);
@@ -93,7 +93,7 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
   seekYTPlayer(0);
   stopTimer();
   playYTPlayer();
-  emitRestartPlayUserScript();
+  dispatchTypeEvent("restart", null);
 };
 
 export const resetCurrentLine = (map: BuiltMap) => {

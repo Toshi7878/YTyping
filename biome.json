@@ -74,6 +74,12 @@
   },
   "overrides": [
     {
+      "includes": ["**/ime/_feature/user.js"],
+      "linter": {
+        "enabled": false
+      }
+    },
+    {
       "includes": ["**/layout.tsx", "**/page.tsx", "**/loading.tsx", "**/error.tsx", "**/not-found.tsx"],
       "linter": {
         "rules": {

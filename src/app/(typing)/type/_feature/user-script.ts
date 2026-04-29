@@ -2,7 +2,7 @@
  * YTyping ユーザースクリプト向けフック
  *
  * ## イベント命名規則
- * `ytyping:{domain}:{event}`
+ * `{domain}:{event}`
  * - `type`   : 入力イベント（通常プレイ・練習）
  * - `replay` : リプレイのシミュレート打鍵
  * - `restart`: プレイ再開（`restartPlay`）
@@ -11,47 +11,44 @@
  *
  * ## タイピングイベント（通常プレイ・練習）
  * @example
- * window.addEventListener("ytyping:type:success", (e) => {
- *   const { successKey, isCompleted, constantLineTime, updatePoint } = e.detail;
+ * window.__ytyping_type.addEventListener("type:success", (detail) => {
+ *   const { successKey, isCompleted, constantLineTime, updatePoint } = detail;
  * });
- * window.addEventListener("ytyping:type:miss",          (e) => console.log("miss!", e.detail.failKey));
- * window.addEventListener("ytyping:type:lineCompleted", (e) => console.log("line done!", e.detail.constantLineTime));
+ * window.__ytyping_type.addEventListener("type:miss",          (detail) => console.log("miss!", detail.failKey));
+ * window.__ytyping_type.addEventListener("type:lineCompleted", (detail) => console.log("line done!", detail.constantLineTime));
  *
  * ## リプレイ打鍵イベント（`simulateTypingInput` 経由。`detail` の形は通常の type 系と同じ）
  * @example
- * window.addEventListener("ytyping:replay:type:success", (e) => {
- *   const { successKey, isCompleted, constantLineTime, updatePoint } = e.detail;
+ * window.__ytyping_type.addEventListener("replay:type:success", (detail) => {
+ *   const { successKey, isCompleted, constantLineTime, updatePoint } = detail;
  * });
- * window.addEventListener("ytyping:replay:type:miss", (e) => console.log("replay miss", e.detail.failKey));
- * window.addEventListener("ytyping:replay:type:lineCompleted", (e) => console.log("replay line", e.detail.constantLineTime));
+ * window.__ytyping_type.addEventListener("replay:type:miss", (detail) => console.log("replay miss", detail.failKey));
+ * window.__ytyping_type.addEventListener("replay:type:lineCompleted", (detail) => console.log("replay line", detail.constantLineTime));
  *
  * ## 再開イベント（`lib/play-restart` の `restartPlay` 完了後）
  * @example
- * window.addEventListener("ytyping:restart", (e) => {
- *   const { newPlayMode, previousScene } = e.detail;
- * });
+ * window.__ytyping_type.addEventListener("restart", () => { ... });
  *
  * ## タイマーイベント
  * @example
- * window.addEventListener("ytyping:timer:update", (e) => {
- *   const { currentTime, constantLineTime, constantRemainLineTime } = e.detail;
+ * window.__ytyping_type.addEventListener("timer:update", (detail) => {
+ *   const { currentTime, constantLineTime, constantRemainLineTime } = detail;
  * });
- * window.addEventListener("ytyping:timer:lineChange", (e) => console.log("line →", e.detail.nextCount));
- * window.addEventListener("ytyping:timer:end",        (e) => console.log("end!", e.detail.constantLineTime));
+ * window.__ytyping_type.addEventListener("timer:lineChange", (detail) => console.log("line →", detail.nextCount));
+ * window.__ytyping_type.addEventListener("timer:end",        (detail) => console.log("end!", detail.constantLineTime));
  *
  * ## getter（任意タイミングで現在値を取得）
  * @example
- * const { kpm, score, miss } = window.__ytyping.type.getStatus();
- * const { maxCombo, clearRate } = window.__ytyping.type.getSubstatus();
- * const { typeCount, missCount } = window.__ytyping.type.getLineSubstatus();
- * const { CHAR_POINT, MISS_PENALTY_POINT } = window.__ytyping.type;
- * const mapMeta = window.__ytyping.type.getMapInfo();
- * const rawPp = window.__ytyping.type.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
- * const topPps = await window.__ytyping.type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
+ * const { kpm, score, miss } = window.__ytyping_type.getStatus();
+ * const { maxCombo, clearRate } = window.__ytyping_type.getSubstatus();
+ * const { typeCount, missCount } = window.__ytyping_type.getLineSubstatus();
+ * const { CHAR_POINT, MISS_PENALTY_POINT } = window.__ytyping_type;
+ * const mapMeta = window.__ytyping_type.getMapInfo();
+ * const rawPp = window.__ytyping_type.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
+ * const topPps = await window.__ytyping_type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
 import { calcRawPP } from "@/lib/pp";
-import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
 import { getAllLineResult, getSelectLineIndex } from "./atoms/line-result";
@@ -67,7 +64,7 @@ import { getTypingStatus } from "./tabs/typing-status/status-cell";
 import { getLineCount, getTimeOffset } from "./typing-card/playing/playing-scene";
 import { getScene } from "./typing-card/typing-card";
 
-// ─── CustomEvent 型定義 ─────────────────────────────────────
+// ─── detail 型定義 ─────────────────────────────────────────
 
 interface TypeSuccessDetail {
   /** 入力したキー */
@@ -151,285 +148,134 @@ interface Timer1sUpdateDetail {
   constantTime: number;
 }
 
-export function emitRestartPlayUserScript(): void {
-  window.dispatchEvent(new CustomEvent("ytyping:restart", { detail: {} }));
-}
+// ─── イベントマップ & リスナー ─────────────────────────────────
 
-function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
-  const mapId = getMapId();
-  if (mapId === null) return undefined;
-  const trpc = getTRPCOptions();
-  return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
-}
+type TypeEventMap = {
+  "type:success": TypeSuccessDetail;
+  "type:miss": TypeMissDetail;
+  "type:lineCompleted": LineCompletedDetail;
+  "replay:success": TypeSuccessDetail;
+  "replay:miss": TypeMissDetail;
+  "replay:lineCompleted": LineCompletedDetail;
+  restart: null;
+  "timer:tick": TickDetail;
+  "timer:100msUpdate": TimerUpdateDetail;
+  "timer:1sUpdate": Timer1sUpdateDetail;
+  "timer:lineChange": LineChangeDetail;
+  "timer:end": GameEndDetail;
+  "yt:start": GameStartDetail;
+  "yt:play": PlayDetail;
+  "yt:pause": PauseDetail;
+  "yt:ready": ReadyDetail;
+  "yt:rateChange": RateChangeDetail;
+  "yt:stateChange": StateChangeDetail;
+  "yt:seeked": SeekedDetail;
+};
+type TypeEventType = keyof TypeEventMap;
+type TypeEventCallback<T extends TypeEventType> = (detail: TypeEventMap[T]) => void;
 
-async function getUserTopPPs() {
-  const trpc = getTRPCOptions();
-  return getQueryClient().ensureQueryData(trpc.result.pp.getUserTopPps.queryOptions());
-}
+const eventListeners = new Map<TypeEventType, Set<TypeEventCallback<TypeEventType>>>();
 
-declare global {
-  interface WindowEventMap {
-    // ── 入力系 ────────────────────────────────────────────────
-    /** キー入力成功時 */
-    "ytyping:type:success": CustomEvent<TypeSuccessDetail>;
-    /** キー入力ミス時 */
-    "ytyping:type:miss": CustomEvent<TypeMissDetail>;
-    /** ライン入力完了時 */
-    "ytyping:type:lineCompleted": CustomEvent<LineCompletedDetail>;
+export const dispatchTypeEvent = <T extends TypeEventType>(type: T, detail: TypeEventMap[T]) => {
+  eventListeners.get(type)?.forEach((cb) => {
+    cb(detail);
+  });
+};
 
-    // ── リプレイ打鍵系（`replay.ts` の simulateTypingInput）────
-    /** リプレイ: シミュレート成功時（`detail` は `ytyping:type:success` と同形） */
-    "ytyping:replay:type:success": CustomEvent<TypeSuccessDetail>;
-    /** リプレイ: シミュレートミス時 */
-    "ytyping:replay:type:miss": CustomEvent<TypeMissDetail>;
-    /** リプレイ: シミュレートでライン完了時 */
-    "ytyping:replay:type:lineCompleted": CustomEvent<LineCompletedDetail>;
+// ─── window オブジェクト定義 ─────────────────────────────────
 
-    // ── 再開系（`lib/play-restart.ts` の `restartPlay`）────────
-    /** 再開処理完了後（状態は新シーン側に更新済み） */
-    "ytyping:restart": CustomEvent<null>;
-
-    // ── タイマー系 ───────────────────────────────────────────
-    /** 毎フレーム（約60fps）発火 */
-    "ytyping:timer:tick": CustomEvent<TickDetail>;
-    /** 100ms ごとに発火 */
-    "ytyping:timer:update": CustomEvent<TimerUpdateDetail>;
-    /** 1000ms ごとに発火 */
-    "ytyping:timer:1sUpdate": CustomEvent<Timer1sUpdateDetail>;
-    /** ライン切り替わり時 */
-    "ytyping:timer:lineChange": CustomEvent<LineChangeDetail>;
-    /** ゲーム終了時 */
-    "ytyping:timer:end": CustomEvent<GameEndDetail>;
-
-    // ── YouTube 系 ───────────────────────────────────────────
-    /** ゲーム初回開始時（seekTo(0) 後） */
-    "ytyping:yt:start": CustomEvent<GameStartDetail>;
-    /** YouTube 再生・再開時 */
-    "ytyping:yt:play": CustomEvent<PlayDetail>;
-    /** YouTube 一時停止時 */
-    "ytyping:yt:pause": CustomEvent<PauseDetail>;
-    /** YouTube Player 準備完了時 */
-    "ytyping:yt:ready": CustomEvent<ReadyDetail>;
-    /** 再生速度変更時 */
-    "ytyping:yt:rateChange": CustomEvent<RateChangeDetail>;
-    /** プレイヤー状態変化時 */
-    "ytyping:yt:stateChange": CustomEvent<StateChangeDetail>;
-    /** シーク完了時 */
-    "ytyping:yt:seeked": CustomEvent<SeekedDetail>;
-  }
-
-  interface Window {
-    __ytyping_type: {
-      // ── 定数（読み取り専用・ゲッターのみ）──────────────────
-      /** 1 文字正解あたりの加点（`lib/const` と同一） */
-      readonly CHAR_POINT: number;
-      /** 1 ミスあたりの減点（`CHAR_POINT / 2`） */
-      readonly MISS_PENALTY_POINT: number;
-
-      // ── ステータス系 ─────────────────────────────────────
-      /** スコア・KPM・ミス数などのメインステータスを取得 */
-      getStatus: typeof getTypingStatus;
-      /** コンボ・クリア率・入力種別ごとの集計などを取得 */
-      getSubstatus: typeof getTypingSubstatus;
-      /** 現在ライン内の入力数・ミス数・入力履歴を取得 */
-      getLineSubstatus: typeof getLineSubstatus;
-      /** タイピング集計統計（チャンク完了数・ミス数など）を取得 */
-      getTypingStats: typeof getTypingStats;
-      /** 現在の typing word（入力済み文字・次チャンク・残りチャンク）を取得 */
-      getTypingWord: typeof getTypingWord;
-      /** 現在の入力モード（"roma" | "kana" 等）を取得 */
-      getInputMode: typeof getPlayingInputMode;
-
-      // ── ライン・結果系 ───────────────────────────────────
-      /** 全ラインの結果を取得（ゲーム中・終了後ともに利用可） */
-      getLineResults: typeof getAllLineResult;
-      /** 結果画面で選択中のライン index を取得 */
-      getSelectLineIndex: typeof getSelectLineIndex;
-      /** リプレイ用のランキング結果を取得 */
-      getReplayRankingResult: typeof getReplayRankingResult;
-
-      // ── シーン・マップ系 ─────────────────────────────────
-      /** 現在のシーン ("ready" | "play" | "practice" | "replay" | "play_end" 等）を取得 */
-      getScene: typeof getScene;
-      /** ビルド済みマップ（譜面データ）を取得 */
-      getBuiltMap: typeof getBuiltMap;
-      // ── タイマー・ライン位置系 ───────────────────────────
-      /** 現在の時間オフセット（ms）を取得 */
-      getTimeOffset: typeof getTimeOffset;
-      /** 現在のライン番号を取得 */
-      getLineCount: typeof getLineCount;
-
-      // ── YouTube 系 ───────────────────────────────────────
-      /** YouTube Player インスタンスを取得 */
-      getYTPlayer: typeof getYTPlayer;
-      /** YouTube Player の再生状態を取得 */
-      getYTPlayerState: typeof getYTPlayerState;
-      /** YouTube 動画 ID を取得 */
-      getYTVideoId: typeof getYTVideoId;
-      /** YouTube の現在再生時刻（秒）を取得 */
-      getYTCurrentTime: typeof getYTCurrentTime;
-
-      /** `getMapGetByIdCache(getMapId())` と同じ（現在ページの譜面メタの Query キャッシュ） */
-      getMapInfo: typeof getMapInfo;
-
-      /** 生 PP 算出（`@/server/api/routers/result/pp` の `calcRawPP` と同一式） */
-      calcRawPP: typeof calcRawPP;
-
-      /** ログイン中ユーザーの PP 上位一覧（降順）を取得。未認証時は例外 */
-      getUserTopPPs: typeof getUserTopPPs;
-    };
-  }
-}
-
-// ─── window への登録（モジュール初回ロード時に実行）──────────
-
-// SSR 時は window が存在しないため、クライアント側でのみ登録する
 // getter を使って循環依存による TDZ エラーを回避する
 // (直接代入すると import が解決される前にアクセスされる場合がある)
-if (typeof window !== "undefined")
-  window.__ytyping_type = {
-    get CHAR_POINT() {
-      return CHAR_POINT_CONST;
-    },
-    get MISS_PENALTY_POINT() {
-      return MISS_PENALTY_POINT_CONST;
-    },
-    get getStatus() {
-      return getTypingStatus;
-    },
-    get getSubstatus() {
-      return getTypingSubstatus;
-    },
-    get getLineSubstatus() {
-      return getLineSubstatus;
-    },
-    get getTypingStats() {
-      return getTypingStats;
-    },
-    get getTypingWord() {
-      return getTypingWord;
-    },
-    get getInputMode() {
-      return getPlayingInputMode;
-    },
-    get getLineResults() {
-      return getAllLineResult;
-    },
-    get getSelectLineIndex() {
-      return getSelectLineIndex;
-    },
-    get getReplayRankingResult() {
-      return getReplayRankingResult;
-    },
-    get getScene() {
-      return getScene;
-    },
-    get getBuiltMap() {
-      return getBuiltMap;
-    },
-    get getTimeOffset() {
-      return getTimeOffset;
-    },
-    get getLineCount() {
-      return getLineCount;
-    },
-    get getYTPlayer() {
-      return getYTPlayer;
-    },
-    get getYTPlayerState() {
-      return getYTPlayerState;
-    },
-    get getYTVideoId() {
-      return getYTVideoId;
-    },
-    get getYTCurrentTime() {
-      return getYTCurrentTime;
-    },
-    get getMapInfo() {
-      return getMapInfo;
-    },
-    get calcRawPP() {
-      return calcRawPP;
-    },
-    get getUserTopPPs() {
-      return getUserTopPPs;
-    },
-  };
-
-// ─── dispatch ヘルパー ────────────────────────────────────────
-
-// 入力系
-export const dispatchTypeSuccess = (detail: TypeSuccessDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:type:success", { detail }));
+const ytypingType = {
+  get CHAR_POINT() {
+    return CHAR_POINT_CONST;
+  },
+  get MISS_PENALTY_POINT() {
+    return MISS_PENALTY_POINT_CONST;
+  },
+  get getStatus() {
+    return getTypingStatus;
+  },
+  get getSubstatus() {
+    return getTypingSubstatus;
+  },
+  get getLineSubstatus() {
+    return getLineSubstatus;
+  },
+  get getTypingStats() {
+    return getTypingStats;
+  },
+  get getTypingWord() {
+    return getTypingWord;
+  },
+  get getInputMode() {
+    return getPlayingInputMode;
+  },
+  get getLineResults() {
+    return getAllLineResult;
+  },
+  get getSelectLineIndex() {
+    return getSelectLineIndex;
+  },
+  get getReplayRankingResult() {
+    return getReplayRankingResult;
+  },
+  get getScene() {
+    return getScene;
+  },
+  get getBuiltMap() {
+    return getBuiltMap;
+  },
+  get getTimeOffset() {
+    return getTimeOffset;
+  },
+  get getLineCount() {
+    return getLineCount;
+  },
+  get getYTPlayer() {
+    return getYTPlayer;
+  },
+  get getYTPlayerState() {
+    return getYTPlayerState;
+  },
+  get getYTVideoId() {
+    return getYTVideoId;
+  },
+  get getYTCurrentTime() {
+    return getYTCurrentTime;
+  },
+  get getMapInfo() {
+    return () => {
+      const mapId = getMapId();
+      if (mapId === null) return undefined;
+      const trpc = getTRPCOptions();
+      return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
+    };
+  },
+  get calcRawPP() {
+    return calcRawPP;
+  },
+  get getUserTopPPs() {
+    return async () => {
+      const trpc = getTRPCOptions();
+      return getQueryClient().ensureQueryData(trpc.result.pp.getUserTopPps.queryOptions());
+    };
+  },
+  addEventListener<T extends TypeEventType>(type: T, callback: TypeEventCallback<T>) {
+    const listeners = eventListeners.get(type) ?? new Set<TypeEventCallback<TypeEventType>>();
+    listeners.add(callback as TypeEventCallback<TypeEventType>);
+    eventListeners.set(type, listeners);
+  },
+  removeEventListener<T extends TypeEventType>(type: T, callback: TypeEventCallback<T>) {
+    eventListeners.get(type)?.delete(callback as TypeEventCallback<TypeEventType>);
+  },
 };
 
-export const dispatchTypeMiss = (detail: TypeMissDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:type:miss", { detail }));
-};
-
-export const dispatchLineCompleted = (detail: LineCompletedDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:type:lineCompleted", { detail }));
-};
-
-// リプレイ打鍵系（関数名は WindowEventMap のキー文字列と区別するため emit 接頭辞）
-export function emitReplayTypingSuccess(detail: TypeSuccessDetail): void {
-  window.dispatchEvent(new CustomEvent("ytyping:replay:type:success", { detail }));
+declare global {
+  interface Window {
+    __ytyping_type: typeof ytypingType;
+  }
 }
 
-export function emitReplayTypingMiss(detail: TypeMissDetail): void {
-  window.dispatchEvent(new CustomEvent("ytyping:replay:type:miss", { detail }));
-}
-
-export function emitReplayTypingLineCompleted(detail: LineCompletedDetail): void {
-  window.dispatchEvent(new CustomEvent("ytyping:replay:type:lineCompleted", { detail }));
-}
-
-// タイマー系
-export const dispatchTick = (detail: TickDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:timer:tick", { detail }));
-};
-
-export const dispatchTimerUpdate = (detail: TimerUpdateDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:timer:update", { detail }));
-};
-
-export const dispatchTimer1sUpdate = (detail: Timer1sUpdateDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:timer:1sUpdate", { detail }));
-};
-
-export const dispatchLineChange = (detail: LineChangeDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:timer:lineChange", { detail }));
-};
-
-export const dispatchGameEnd = (detail: GameEndDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:timer:end", { detail }));
-};
-
-// YouTube 系
-export const dispatchYtStart = (detail: GameStartDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:start", { detail }));
-};
-
-export const dispatchYtPlay = () => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:play", { detail: {} }));
-};
-
-export const dispatchYtPause = () => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:pause", { detail: {} }));
-};
-
-export const dispatchYtReady = () => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:ready", { detail: {} }));
-};
-
-export const dispatchYtRateChange = (detail: RateChangeDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:rateChange", { detail }));
-};
-
-export const dispatchYtStateChange = (detail: StateChangeDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:stateChange", { detail }));
-};
-
-export const dispatchYtSeeked = (detail: SeekedDetail) => {
-  window.dispatchEvent(new CustomEvent("ytyping:yt:seeked", { detail }));
-};
+// SSR 時は window が存在しないため、クライアント側でのみ登録する
+if (typeof window !== "undefined") window.__ytyping_type = ytypingType;

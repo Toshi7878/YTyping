@@ -9,7 +9,7 @@ import { getReplayRankingResult } from "../../../atoms/replay";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../lib/sound-effect";
-import { emitReplayTypingLineCompleted, emitReplayTypingMiss, emitReplayTypingSuccess } from "../../../user-script";
+import { dispatchTypeEvent } from "../../../user-script";
 import { getMinMediaSpeed } from "../../../youtube/youtube-player";
 import { setCombo } from "../../header/combo";
 import { setLineKpm } from "../../header/line-kpm";
@@ -43,13 +43,13 @@ export const simulateTypingInput = ({
       setTypingWord(nextTypingWord);
       updateSuccessStatus({ constantRemainLineTime, updatePoint, constantLineTime });
       updateSuccessSubstatus({ constantLineTime, successKey });
-      emitReplayTypingSuccess({ successKey, isCompleted, chunkType, constantLineTime, updatePoint });
+      dispatchTypeEvent("replay:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
     },
     onMiss: ({ failKey }) => {
       triggerMissSound();
       updateMissStatus();
       updateMissSubstatus({ constantLineTime, failKey });
-      emitReplayTypingMiss({ failKey });
+      dispatchTypeEvent("replay:miss", { failKey });
     },
     onLineCompleted: () => {
       const lineResults = getAllLineResult();
@@ -59,7 +59,7 @@ export const simulateTypingInput = ({
       recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
       setCombo(lineResult?.status.combo ?? 0);
       setLineKpm(lineResult?.status.kpm ?? 0);
-      emitReplayTypingLineCompleted({ constantLineTime });
+      dispatchTypeEvent("replay:lineCompleted", { constantLineTime });
     },
     onOptionChange: (option) => {
       switch (option) {
