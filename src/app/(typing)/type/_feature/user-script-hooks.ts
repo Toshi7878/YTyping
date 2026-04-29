@@ -281,73 +281,75 @@ declare global {
 
 // ─── window への登録（モジュール初回ロード時に実行）──────────
 
+// SSR 時は window が存在しないため、クライアント側でのみ登録する
 // getter を使って循環依存による TDZ エラーを回避する
 // (直接代入すると import が解決される前にアクセスされる場合がある)
-window.__ytyping = {
-  get CHAR_POINT() {
-    return CHAR_POINT_CONST;
-  },
-  get MISS_PENALTY_POINT() {
-    return MISS_PENALTY_POINT_CONST;
-  },
-  get getStatus() {
-    return getTypingStatus;
-  },
-  get getSubstatus() {
-    return getTypingSubstatus;
-  },
-  get getLineSubstatus() {
-    return getLineSubstatus;
-  },
-  get getTypingStats() {
-    return getTypingStats;
-  },
-  get getTypingWord() {
-    return getTypingWord;
-  },
-  get getInputMode() {
-    return getPlayingInputMode;
-  },
-  get getLineResults() {
-    return getAllLineResult;
-  },
-  get getSelectLineIndex() {
-    return getSelectLineIndex;
-  },
-  get getReplayRankingResult() {
-    return getReplayRankingResult;
-  },
-  get getScene() {
-    return getScene;
-  },
-  get getBuiltMap() {
-    return getBuiltMap;
-  },
-  get getTimeOffset() {
-    return getTimeOffset;
-  },
-  get getLineCount() {
-    return getLineCount;
-  },
-  get getYTPlayer() {
-    return getYTPlayer;
-  },
-  get getYTPlayerState() {
-    return getYTPlayerState;
-  },
-  get getYTVideoId() {
-    return getYTVideoId;
-  },
-  get getYTCurrentTime() {
-    return getYTCurrentTime;
-  },
-  get getMapInfo() {
-    return getMapInfo;
-  },
-  get calcRawPP() {
-    return calcRawPPOnClient;
-  },
-};
+if (typeof window !== "undefined")
+  window.__ytyping = {
+    get CHAR_POINT() {
+      return CHAR_POINT_CONST;
+    },
+    get MISS_PENALTY_POINT() {
+      return MISS_PENALTY_POINT_CONST;
+    },
+    get getStatus() {
+      return getTypingStatus;
+    },
+    get getSubstatus() {
+      return getTypingSubstatus;
+    },
+    get getLineSubstatus() {
+      return getLineSubstatus;
+    },
+    get getTypingStats() {
+      return getTypingStats;
+    },
+    get getTypingWord() {
+      return getTypingWord;
+    },
+    get getInputMode() {
+      return getPlayingInputMode;
+    },
+    get getLineResults() {
+      return getAllLineResult;
+    },
+    get getSelectLineIndex() {
+      return getSelectLineIndex;
+    },
+    get getReplayRankingResult() {
+      return getReplayRankingResult;
+    },
+    get getScene() {
+      return getScene;
+    },
+    get getBuiltMap() {
+      return getBuiltMap;
+    },
+    get getTimeOffset() {
+      return getTimeOffset;
+    },
+    get getLineCount() {
+      return getLineCount;
+    },
+    get getYTPlayer() {
+      return getYTPlayer;
+    },
+    get getYTPlayerState() {
+      return getYTPlayerState;
+    },
+    get getYTVideoId() {
+      return getYTVideoId;
+    },
+    get getYTCurrentTime() {
+      return getYTCurrentTime;
+    },
+    get getMapInfo() {
+      return getMapInfo;
+    },
+    get calcRawPP() {
+      return calcRawPPOnClient;
+    },
+  };
 
 // ─── dispatch ヘルパー ────────────────────────────────────────
 
