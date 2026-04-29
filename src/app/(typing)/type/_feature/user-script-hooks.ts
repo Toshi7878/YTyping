@@ -49,7 +49,7 @@
  * const mapId = window.__ytyping.getMapId(); // Jotai の mapIdAtom（タイプページの譜面 ID、未設定なら null）
  * const currentMapMeta = window.__ytyping.getMapGetByIdCacheForCurrentMapId(); // getMapGetByIdCache(getMapId()) と同じ
  * const rawPp = window.__ytyping.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
- * const topPps = await window.__ytyping.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列
+ * const topPps = await window.__ytyping.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
 import { calcRawPP } from "@/lib/pp";
