@@ -7,7 +7,7 @@ import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, 
 import { SelectResultPpListApiSchema } from "@/validator/result";
 import { TOTAL_PP_TOP_N } from "../../../../lib/pp";
 import { bookmarkedMapExists } from "../../lib/map";
-import { publicProcedure, type TRPCContext } from "../../trpc";
+import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 
@@ -18,6 +18,20 @@ const MyLike = alias(MapLikes, "my_like");
 const MyClap = alias(ResultClaps, "my_clap");
 
 export const resultPpRouter = {
+  getUserTopPps: protectedProcedure.query(async ({ ctx }) => {
+    const { db, session } = ctx;
+
+    const rows = await db
+      .select({ pp: ResultStatuses.pp })
+      .from(Results)
+      .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+      .where(and(eq(Results.userId, session.user.id), sql`${ResultStatuses.pp} IS NOT NULL`))
+      .orderBy(desc(ResultStatuses.pp))
+      .limit(TOTAL_PP_TOP_N);
+
+    return rows.map((r) => r.pp);
+  }),
+
   userTopList: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, playerId, order } = input;
     const { db, session } = ctx;

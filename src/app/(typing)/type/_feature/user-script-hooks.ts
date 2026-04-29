@@ -49,9 +49,10 @@
  * const mapId = window.__ytyping.getMapId(); // Jotai の mapIdAtom（タイプページの譜面 ID、未設定なら null）
  * const currentMapMeta = window.__ytyping.getMapGetByIdCacheForCurrentMapId(); // getMapGetByIdCache(getMapId()) と同じ
  * const rawPp = window.__ytyping.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
+ * const topPps = await window.__ytyping.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列
  */
 
-import { calcRawPP, type RawPPInput } from "@/lib/pp";
+import { calcRawPP } from "@/lib/pp";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
@@ -163,8 +164,9 @@ function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
   return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
 }
 
-function calcRawPPOnClient(result: RawPPInput, starRating: number): number {
-  return calcRawPP(result, starRating);
+async function getUserTopPPs(): Promise<number[]> {
+  const trpc = getTRPCOptions();
+  return getQueryClient().ensureQueryData(trpc.result.pp.getUserTopPps.queryOptions());
 }
 
 declare global {
@@ -273,7 +275,10 @@ declare global {
       getMapInfo: typeof getMapInfo;
 
       /** 生 PP 算出（`@/server/api/routers/result/pp` の `calcRawPP` と同一式） */
-      calcRawPP: typeof calcRawPPOnClient;
+      calcRawPP: typeof calcRawPP;
+
+      /** ログイン中ユーザーの PP 上位一覧（降順）を取得。未認証時は例外 */
+      getUserTopPPs: typeof getUserTopPPs;
     };
   }
 }
@@ -346,7 +351,10 @@ if (typeof window !== "undefined")
       return getMapInfo;
     },
     get calcRawPP() {
-      return calcRawPPOnClient;
+      return calcRawPP;
+    },
+    get getUserTopPPs() {
+      return getUserTopPPs;
     },
   };
 
