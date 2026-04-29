@@ -1,11 +1,11 @@
 import { readTypingTextarea } from "../atoms/ref";
-import { readBuiltMap, readUtilityParams, setSkipRemainTime } from "../atoms/state";
+import { getBuiltMap, readUtilityParams, setSkipRemainTime } from "../atoms/state";
 import { seekYTPlayer } from "../atoms/yt-player";
 
 const SKIP_BUFFER_TIME = 3;
 
 export const handleSkip = () => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
   const { count } = readUtilityParams();
 

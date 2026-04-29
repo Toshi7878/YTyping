@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
 import {
-  readImeTypeOptions,
+  getImeOptions,
   readIsImeTypeOptionsEdited,
   setBuiltMap,
   setImeOptions,
@@ -40,14 +40,13 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
     if (!open) {
       const isOptionEdited = readIsImeTypeOptionsEdited();
       if (isOptionEdited) {
-        updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
+        updateImeTypingOptions.mutate({ ...getImeOptions() });
         const rawMapLines = queryClient.getQueryData(
           trpc.map.getJsonById.queryOptions({ mapId: Number(mapId) }).queryKey,
         );
 
         if (rawMapLines) {
-          const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } =
-            readImeTypeOptions();
+          const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = getImeOptions();
           const lines = await buildImeLines(rawMapLines, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
           const words = await buildImeWords(lines, ensureLyricsWithReadings, { insertEnglishSpaces });
           const totalNotes = getTotalNotes(words);

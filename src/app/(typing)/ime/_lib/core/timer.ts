@@ -2,8 +2,8 @@ import { Ticker } from "@pixi/ticker";
 import { type BuiltImeLine, getExpectedWords } from "lyrics-ime-typing-engine";
 import { readLyricsContainer } from "../atoms/ref";
 import {
-  readBuiltMap,
-  readImeTypeOptions,
+  getBuiltMap,
+  getImeOptions,
   readUtilityParams,
   readWipeLine,
   setCount,
@@ -77,7 +77,7 @@ const updateSkip = ({
 };
 
 const updateDisplayLines = (newCount: number) => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   if (!map) return;
 
   const { lines } = map;
@@ -115,11 +115,11 @@ const updateNextDisplayLine = ({
     const nextTime = nextLine?.[0]?.startTime;
     if (!nextTime) return;
 
-    const { enableNextLyrics } = readImeTypeOptions();
+    const { enableNextLyrics } = getImeOptions();
     if (enableNextLyrics && nextTime - currentTime < 3) {
       setNextDisplayLine(nextLine);
 
-      const map = readBuiltMap();
+      const map = getBuiltMap();
       if (!map) return;
 
       const expectedWords = getExpectedWords(count + 1, map.words);
@@ -131,7 +131,7 @@ const updateNextDisplayLine = ({
 };
 
 const timer = () => {
-  const map = readBuiltMap();
+  const map = getBuiltMap();
   const currentTime = getYTCurrentTime();
   if (!map || currentTime === undefined) return;
   const { count, wipeCount } = readUtilityParams();

@@ -15,10 +15,11 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { readImeStats } from "../_lib/atoms/ref";
-import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
+import { getImeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
 import { ensureLyricsWithReadings } from "../_lib/core/ensure-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
+import "./user-script";
 import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
 import { Notifications } from "./notifications-display";
@@ -43,7 +44,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     overlay.loading("ひらがな判定生成中...");
 
     try {
-      const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = readImeTypeOptions();
+      const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = getImeOptions();
       const lines = await buildImeLines(mapData, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
 
       const words = await buildImeWords(lines, ensureLyricsWithReadings, { insertEnglishSpaces });

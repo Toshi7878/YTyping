@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
-  readBuiltMap,
-  readImeTypeOptions,
-  readTypingWord,
+  getBuiltMap,
+  getImeOptions,
+  getTypingWord,
   readUtilityParams,
   readWordResults,
   resultDialogOpen,
@@ -34,18 +34,14 @@ export const InputTextarea = () => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
       const { value } = e.currentTarget;
       e.preventDefault();
-      const map = readBuiltMap();
+      const map = getBuiltMap();
       if (!map) return;
 
-      const typingWord = readTypingWord();
+      const typingWord = getTypingWord();
       const wordResults = readWordResults();
-      const { isCaseSensitive, includeRegexPattern, enableIncludeRegex } = readImeTypeOptions();
+      const options = getImeOptions();
 
-      const result = evaluateImeInput(value, typingWord, [...wordResults], map, {
-        isCaseSensitive,
-        includeRegexPattern,
-        enableIncludeRegex,
-      });
+      const result = evaluateImeInput(value, typingWord, wordResults, map, options);
 
       for (const update of result.wordResultUpdates) {
         setWordResults(update);
@@ -82,7 +78,7 @@ export const InputTextarea = () => {
           break;
         }
         case "end": {
-          const map = readBuiltMap();
+          const map = getBuiltMap();
           if (!map) return;
 
           const { count } = readUtilityParams();

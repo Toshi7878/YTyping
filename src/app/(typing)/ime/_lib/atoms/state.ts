@@ -19,7 +19,7 @@ const builtMapAtom = atomWithReset<{
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
 export const setBuiltMap = (map: ExtractAtomValue<typeof builtMapAtom>) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
-export const readBuiltMap = () => store.get(builtMapAtom);
+export const getBuiltMap = () => store.get(builtMapAtom);
 
 const sceneAtom = atomWithReset<SceneType>("ready");
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
@@ -35,7 +35,7 @@ const typingWordAtom = atomWithReset({
 const expectedWordsAtom = focusAtom(typingWordAtom, (optic) => optic.prop("expectedWords"));
 const currentWordIndexAtom = focusAtom(typingWordAtom, (optic) => optic.prop("currentWordIndex"));
 
-export const readTypingWord = () => store.get(typingWordAtom);
+export const getTypingWord = () => store.get(typingWordAtom);
 export const setExpectedWords = (newExpectedWords: ExtractAtomValue<typeof expectedWordsAtom>) =>
   store.set(expectedWordsAtom, newExpectedWords);
 export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom, { store });
@@ -132,7 +132,7 @@ store.sub(imeTypeOptionsAtom, () => {
 export const readIsImeTypeOptionsEdited = () => store.get(isImeTypeOptionsEditedAtom);
 
 export const useImeTypeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store });
-export const readImeTypeOptions = () => store.get(imeTypeOptionsAtom);
+export const getImeOptions = () => store.get(imeTypeOptionsAtom);
 
 export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
 export const useEnableLargeVideoDisplayState = () => useAtomValue(enableLargeVideoDisplayAtom, { store });
