@@ -1,6 +1,7 @@
 import { evaluateImeInput } from "lyrics-ime-typing-engine";
 import { getSession, type Session } from "@/lib/auth-client";
-import { getBuiltMap, getImeOptions, getTypingWord } from "../_lib/atoms/state";
+import { getBuiltMap, getTypingWord } from "../_lib/atoms/state";
+import { getImeOptions } from "./provider";
 
 declare global {
   interface Window {

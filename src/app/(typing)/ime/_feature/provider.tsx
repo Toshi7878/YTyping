@@ -1,12 +1,40 @@
 "use client";
-import { createStore, Provider } from "jotai";
+import { atom, createStore, type ExtractAtomValue, Provider, useAtomValue } from "jotai";
+import { atomWithReset } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { mapIdAtom } from "../_lib/atoms/hydrate";
-import { imeTypeOptionsAtom } from "../_lib/atoms/state";
+import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 
 export const store = createStore();
+
+const mapIdAtom = atom<number | null>(null);
+export const getMapId = () => store.get(mapIdAtom);
+export const resetMapId = () => store.set(mapIdAtom, null);
+
+const imeTypeOptionsAtom = atomWithReset(DEFAULT_IME_OPTIONS);
+const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableNextLyrics"));
+const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableLargeVideoDisplay"));
+
+let _isImeTypeOptionsEdited = false;
+export const isImeTypeOptionsEdited = () => _isImeTypeOptionsEdited;
+export const resetIsImeTypeOptionsEdited = () => {
+  _isImeTypeOptionsEdited = false;
+};
+
+export const useImeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store });
+export const getImeOptions = () => store.get(imeTypeOptionsAtom);
+
+export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
+export const useEnableLargeVideoDisplayState = () => useAtomValue(enableLargeVideoDisplayAtom, { store });
+export const setImeOptions = (newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
+  store.set(imeTypeOptionsAtom, (prev) => ({
+    ...prev,
+    ...newOptions,
+  }));
+  _isImeTypeOptionsEdited = true;
+};
 
 interface JotaiProviderProps {
   children: ReactNode;

@@ -1,9 +1,9 @@
 import { Ticker } from "@pixi/ticker";
 import { type BuiltImeLine, getExpectedWords } from "lyrics-ime-typing-engine";
+import { getImeOptions } from "../../_feature/provider";
 import { readLyricsContainer } from "../atoms/ref";
 import {
   getBuiltMap,
-  getImeOptions,
   readUtilityParams,
   readWipeLine,
   setCount,

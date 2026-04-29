@@ -15,7 +15,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { readImeStats } from "../_lib/atoms/ref";
-import { getImeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
+import { readScene, setBuiltMap } from "../_lib/atoms/state";
 import { ensureLyricsWithReadings } from "../_lib/core/ensure-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
@@ -23,6 +23,7 @@ import "./user-script";
 import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
 import { Notifications } from "./notifications-display";
+import { getImeOptions, useEnableLargeVideoDisplayState } from "./provider";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
 

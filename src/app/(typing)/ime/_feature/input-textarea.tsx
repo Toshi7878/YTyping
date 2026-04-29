@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   getBuiltMap,
-  getImeOptions,
   getTypingWord,
   readUtilityParams,
   readWordResults,
@@ -21,6 +20,7 @@ import { handleSceneEnd } from "../_lib/core/scene-control";
 import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
 import { setNotifications } from "./notifications-display";
+import { getImeOptions } from "./provider";
 
 const TICK_STOP_TIME = 1000;
 

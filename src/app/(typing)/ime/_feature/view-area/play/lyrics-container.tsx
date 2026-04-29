@@ -8,9 +8,9 @@ import {
   useBuiltMapState,
   useCountState,
   useDisplayLinesState,
-  useEnableNextLyricsOptionState,
   useNextDisplayLineState,
 } from "../../../_lib/atoms/state";
+import { useEnableNextLyricsOptionState } from "../../provider";
 import { Skip } from "./skip-display";
 
 export const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {

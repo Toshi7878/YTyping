@@ -1,6 +1,6 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { resetNotifications } from "../../_feature/notifications-display";
-import { readMapId, resetMapId } from "../atoms/hydrate";
+import { getMapId, resetMapId } from "../../_feature/provider";
 import { readTypingTextarea } from "../atoms/ref";
 import {
   initializeResultsFromMap,
@@ -16,7 +16,7 @@ import {
 import { resetYTPlayer, seekYTPlayer } from "../atoms/yt-player";
 
 export const initializePlayScene = () => {
-  const mapId = readMapId();
+  const mapId = getMapId();
   if (mapId && (readStatus().typeCount > 0 || readScene() === "ready")) {
     mutatePlayCountStats({ mapId });
   }

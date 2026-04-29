@@ -14,14 +14,15 @@ import { LabeledInput } from "@/components/ui/input/labeled-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
+import { setBuiltMap } from "../../_lib/atoms/state";
+import { ensureLyricsWithReadings } from "../../_lib/core/ensure-lyrics-with-readings";
 import {
   getImeOptions,
-  readIsImeTypeOptionsEdited,
-  setBuiltMap,
+  isImeTypeOptionsEdited,
+  resetIsImeTypeOptionsEdited,
   setImeOptions,
-  useImeTypeOptionsState,
-} from "../../_lib/atoms/state";
-import { ensureLyricsWithReadings } from "../../_lib/core/ensure-lyrics-with-readings";
+  useImeOptionsState,
+} from "../provider";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -38,8 +39,8 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
     setIsOpen(open);
 
     if (!open) {
-      const isOptionEdited = readIsImeTypeOptionsEdited();
-      if (isOptionEdited) {
+      if (isImeTypeOptionsEdited()) {
+        resetIsImeTypeOptionsEdited();
         updateImeTypingOptions.mutate({ ...getImeOptions() });
         const rawMapLines = queryClient.getQueryData(
           trpc.map.getJsonById.queryOptions({ mapId: Number(mapId) }).queryKey,
@@ -108,7 +109,7 @@ const SettingCardDivider = () => {
 };
 
 const MainSettingTab = () => {
-  const userImeTypeOptions = useImeTypeOptionsState();
+  const imeOptions = useImeOptionsState();
 
   return (
     <div className="flex flex-col gap-4">
@@ -117,7 +118,7 @@ const MainSettingTab = () => {
           label={
             <LabeledCheckbox
               label="判定文字追加を有効化"
-              defaultChecked={userImeTypeOptions.enableIncludeRegex}
+              defaultChecked={imeOptions.enableIncludeRegex}
               onCheckedChange={(value: boolean) => {
                 setImeOptions({ enableIncludeRegex: value });
               }}
@@ -126,21 +127,21 @@ const MainSettingTab = () => {
           onInput={(e) => {
             setImeOptions({ includeRegexPattern: e.currentTarget.value });
           }}
-          value={userImeTypeOptions.includeRegexPattern}
-          disabled={!userImeTypeOptions.enableIncludeRegex}
+          value={imeOptions.includeRegexPattern}
+          disabled={!imeOptions.enableIncludeRegex}
         />
       </div>
       <div className="flex">
         <LabeledCheckbox
           label="英語スペースを有効化"
-          defaultChecked={userImeTypeOptions.insertEnglishSpaces}
+          defaultChecked={imeOptions.insertEnglishSpaces}
           onCheckedChange={(value: boolean) => {
             setImeOptions({ insertEnglishSpaces: value });
           }}
         />
         <LabeledCheckbox
           label="英語大文字判定を有効化"
-          defaultChecked={userImeTypeOptions.isCaseSensitive}
+          defaultChecked={imeOptions.isCaseSensitive}
           onCheckedChange={(value: boolean) => {
             setImeOptions({ isCaseSensitive: value });
           }}
@@ -151,7 +152,7 @@ const MainSettingTab = () => {
 
       <LabeledCheckbox
         label="次の歌詞を表示"
-        defaultChecked={userImeTypeOptions.enableNextLyrics}
+        defaultChecked={imeOptions.enableNextLyrics}
         onCheckedChange={(value: boolean) => {
           setImeOptions({ enableNextLyrics: value });
         }}
@@ -159,7 +160,7 @@ const MainSettingTab = () => {
 
       <LabeledCheckbox
         label="動画を大きく表示"
-        defaultChecked={userImeTypeOptions.enableLargeVideoDisplay}
+        defaultChecked={imeOptions.enableLargeVideoDisplay}
         onCheckedChange={(value: boolean) => {
           setImeOptions({ enableLargeVideoDisplay: value });
         }}

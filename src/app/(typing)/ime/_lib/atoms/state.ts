@@ -3,7 +3,6 @@ import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuiltImeLine, WordResult } from "lyrics-ime-typing-engine";
-import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 import type { Updater } from "@/utils/types";
 import { store } from "../../_feature/provider";
 import { DISPLAY_LINE_LENGTH } from "../const";
@@ -118,27 +117,3 @@ const resultDialogAtom = atom(false);
 export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom, { store });
 export const resultDialogOpen = () => store.set(resultDialogAtom, true);
 export const resultDialogClose = () => store.set(resultDialogAtom, false);
-
-const isImeTypeOptionsEditedAtom = atom(false);
-export const imeTypeOptionsAtom = atomWithReset(DEFAULT_IME_OPTIONS);
-
-const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableNextLyrics"));
-const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableLargeVideoDisplay"));
-
-store.sub(imeTypeOptionsAtom, () => {
-  store.set(isImeTypeOptionsEditedAtom, true);
-});
-
-export const readIsImeTypeOptionsEdited = () => store.get(isImeTypeOptionsEditedAtom);
-
-export const useImeTypeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store });
-export const getImeOptions = () => store.get(imeTypeOptionsAtom);
-
-export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
-export const useEnableLargeVideoDisplayState = () => useAtomValue(enableLargeVideoDisplayAtom, { store });
-export const setImeOptions = (newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
-  store.set(imeTypeOptionsAtom, (prev) => ({
-    ...prev,
-    ...newOptions,
-  }));
-};
