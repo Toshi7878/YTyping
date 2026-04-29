@@ -15,12 +15,12 @@ import {
   SelectResultListApiSchema,
   SelectResultPpListApiSchema,
 } from "@/validator/result";
+import { TOTAL_PP_TOP_N } from "../../../../lib/pp";
 import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { filterByMapVisibility } from "../map/list";
-import { TOTAL_PP_TOP_N } from "../result/pp";
 
 const Player = alias(Users, "player");
 const Creator = alias(Users, "creator");

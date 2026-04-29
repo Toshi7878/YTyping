@@ -51,7 +51,7 @@
  * const rawPp = window.__ytyping.calcRawPP({ accuracy: 0.99, clearRate: 1, minPlaySpeed: 1 }, 5.2);
  */
 
-import { calcRawPP as calcRawPPFromServer, type RawPPInput } from "@/server/api/routers/result/pp";
+import { calcRawPP, type RawPPInput } from "@/lib/pp";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
@@ -163,9 +163,8 @@ function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
   return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
 }
 
-/** サーバー `result/pp.ts` の `calcRawPP` と同一（星評価・正確率・打ち切り率・最低再生速度から 1 プレイ分の生 PP） */
-export function calcRawPPOnClient(result: RawPPInput, starRating: number): number {
-  return calcRawPPFromServer(result, starRating);
+function calcRawPPOnClient(result: RawPPInput, starRating: number): number {
+  return calcRawPP(result, starRating);
 }
 
 declare global {
