@@ -1,5 +1,4 @@
 import { evaluateImeInput } from "lyrics-ime-typing-engine";
-import { getSession, type Session } from "@/lib/auth-client";
 import { getBuiltMap, getTypingWord } from "../_lib/atoms/state";
 import { getImeOptions } from "./provider";
 
@@ -14,8 +13,6 @@ declare global {
       getImeOptions: typeof getImeOptions;
       /** ビルド済みマップ（譜面データ）を取得 */
       getBuiltMap: typeof getBuiltMap;
-      /** ログイン中ユーザー情報を取得。未ログイン時は null */
-      getSessionUser: () => Session["user"] | null;
     };
   }
 }
@@ -34,8 +31,5 @@ if (typeof window !== "undefined")
     },
     get getBuiltMap() {
       return getBuiltMap;
-    },
-    get getSessionUser() {
-      return () => getSession()?.user ?? null;
     },
   };
