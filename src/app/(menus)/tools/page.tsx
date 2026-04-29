@@ -35,6 +35,12 @@ const TOOLS = [
     href: "/manual/ytyping-equalizer",
     byUserId: "1",
   },
+  {
+    title: "YTyping PP Counter",
+    description: "タイピングページにリアルタイムPPカウンターを追加",
+    href: "https://greasyfork.org/ja/scripts/575857-ytyping-pp-counter",
+    byUserId: "1",
+  },
 ] as const;
 
 export default function Page() {
