@@ -52,7 +52,7 @@
  * const topPps = await window.__ytyping.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
-import type { Session } from "@/lib/auth-client";
+import { getSession, type Session } from "@/lib/auth-client";
 import { calcRawPP } from "@/lib/pp";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
@@ -359,6 +359,9 @@ if (typeof window !== "undefined")
     },
     get getUserTopPPs() {
       return getUserTopPPs;
+    },
+    get getSessionUser() {
+      return () => getSession()?.user ?? null;
     },
   };
 
