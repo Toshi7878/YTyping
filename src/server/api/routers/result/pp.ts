@@ -21,15 +21,13 @@ export const resultPpRouter = {
   getUserTopPps: protectedProcedure.query(async ({ ctx }) => {
     const { db, session } = ctx;
 
-    const rows = await db
-      .select({ pp: ResultStatuses.pp })
+    return db
+      .select({ mapId: Results.mapId, pp: ResultStatuses.pp })
       .from(Results)
       .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .where(and(eq(Results.userId, session.user.id), sql`${ResultStatuses.pp} IS NOT NULL`))
       .orderBy(desc(ResultStatuses.pp))
       .limit(TOTAL_PP_TOP_N);
-
-    return rows.map((r) => r.pp);
   }),
 
   userTopList: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
