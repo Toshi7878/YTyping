@@ -164,7 +164,7 @@ function getMapInfo(): RouterOutputs["map"]["getById"] | undefined {
   return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
 }
 
-async function getUserTopPPs(): Promise<number[]> {
+async function getUserTopPPs() {
   const trpc = getTRPCOptions();
   return getQueryClient().ensureQueryData(trpc.result.pp.getUserTopPps.queryOptions());
 }

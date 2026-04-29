@@ -79,9 +79,10 @@ export const auth = betterAuth({
 export const getSession = cache(async () => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return null;
+  const { email: _email, ...userWithoutEmail } = session.user;
   return {
     ...session,
-    user: { ...session.user, id: Number(session.user.id), role: session.user.role as Session["user"]["role"] },
+    user: { ...userWithoutEmail, id: Number(session.user.id), role: session.user.role as Session["user"]["role"] },
   };
 });
 

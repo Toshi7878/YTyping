@@ -10,15 +10,21 @@ const authClient = createAuthClient({
 export const { signIn, signOut } = authClient;
 
 export type Session = Omit<typeof authClient.$Infer.Session, "user"> & {
-  user: Omit<(typeof authClient.$Infer.Session)["user"], "id"> & { id: number; role: (typeof USER_ROLE_TYPES)[number] };
+  user: Omit<(typeof authClient.$Infer.Session)["user"], "id" | "email"> & {
+    id: number;
+    role: (typeof USER_ROLE_TYPES)[number];
+  };
 };
 
 export const SessionContext = createContext<Session | null>(null);
 
-const toSession = (raw: typeof authClient.$Infer.Session): Session => ({
-  ...raw,
-  user: { ...raw.user, id: Number(raw.user.id) } as Session["user"],
-});
+const toSession = (raw: typeof authClient.$Infer.Session): Session => {
+  const { email: _email, ...userWithoutEmail } = raw.user;
+  return {
+    ...raw,
+    user: { ...userWithoutEmail, id: Number(raw.user.id) } as Session["user"],
+  };
+};
 
 type UseSessionReturn = Omit<ReturnType<typeof authClient.useSession>, "data"> & {
   data: Session | null;
@@ -48,4 +54,10 @@ export function useSession(): UseSessionReturn {
   }
 
   return { ...session, data: null };
+}
+
+if (typeof window !== "undefined") {
+  const w = window as unknown as Record<string, unknown>;
+  (w.__ytyping as Record<string, unknown> | undefined) ??= {};
+  (w.__ytyping as Record<string, unknown>).getSessionUser = () => getSession()?.user ?? null;
 }
