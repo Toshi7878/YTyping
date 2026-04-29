@@ -28,7 +28,7 @@ import {
   dispatchYtSeeked,
   dispatchYtStart,
   dispatchYtStateChange,
-} from "../user-script-hooks";
+} from "../user-script";
 
 const isYTStartedAtom = atom(false);
 const isPausedAtom = atom(false);

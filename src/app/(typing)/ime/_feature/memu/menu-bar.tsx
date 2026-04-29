@@ -26,25 +26,25 @@ export const MenuBar = () => {
   const isResultDialogOpen = useIsResultDialogOpen();
   return (
     <>
-      <div id="menu_bar" className="bg-card">
-        <div className="mx-4 flex flex-col items-center justify-between lg:flex-row">
-          <div className="flex flex-col items-center lg:flex-row">
-            <VolumeRange YTPlayer={YTPlayer} />
+      <div id="menu_bar" role="toolbar" className="bg-card">
+        <div className="mx-4 flex flex-wrap justify-between">
+          <div className="flex" id="left_menu">
+            <VolumeRange YTPlayer={YTPlayer} size="sm" sliderClassName="w-[100px]" />
             <MenuButton disabled={true} image={metronome} title="倍速" />
           </div>
-          <div className="flex w-full justify-between lg:w-1/5">
+          <div className="flex justify-between gap-3" id="center_menu">
             <MenuButton image={start} disabled={scene === "play"} onClick={startPlayFlow} title="開始" />
             <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleSceneEnd} title="終了" />
             <MenuButton disabled={scene === "ready"} onClick={resultDialogOpen} image={reportPencil} title="採点結果" />
           </div>
-          <div className="flex lg:w-1/5">
+          <nav className="flex" id="right_menu">
             <SettingPopover triggerButton={<MenuButton image={gear} title="設定" />} />
             <Link href={`/type/${mapId}`} replace>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 text-xs">
                 タイピングページに戻る
               </Button>
             </Link>
-          </div>
+          </nav>
         </div>
       </div>
       <ResultDialog isOpen={isResultDialogOpen} onClose={resultDialogClose} />

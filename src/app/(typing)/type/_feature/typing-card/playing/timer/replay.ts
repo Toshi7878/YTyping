@@ -9,11 +9,7 @@ import { getReplayRankingResult } from "../../../atoms/replay";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { cycleYTPlaybackRate } from "../../../atoms/youtube-player";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../../lib/sound-effect";
-import {
-  emitReplayTypingLineCompleted,
-  emitReplayTypingMiss,
-  emitReplayTypingSuccess,
-} from "../../../user-script-hooks";
+import { emitReplayTypingLineCompleted, emitReplayTypingMiss, emitReplayTypingSuccess } from "../../../user-script";
 import { getMinMediaSpeed } from "../../../youtube/youtube-player";
 import { setCombo } from "../../header/combo";
 import { setLineKpm } from "../../header/line-kpm";

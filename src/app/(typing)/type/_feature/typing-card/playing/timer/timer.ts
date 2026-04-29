@@ -22,7 +22,7 @@ import {
   dispatchTick,
   dispatchTimer1sUpdate,
   dispatchTimerUpdate,
-} from "../../../user-script-hooks";
+} from "../../../user-script";
 import { getRemainLineTime } from "../../../youtube/get-youtube-time";
 import { getMediaSpeed } from "../../../youtube/youtube-player";
 import { setLineCustomStyleIndex } from "../../custom-style";
