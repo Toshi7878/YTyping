@@ -1,4 +1,3 @@
-import { dispatchImeEvent } from "../../_feature/user-script";
 import { readImeStats } from "../atoms/ref";
 import { readScene, setScene, setTextareaPlaceholderType } from "../atoms/state";
 import { playYTPlayer, stopYTPlayer } from "../atoms/yt-player";
@@ -14,7 +13,6 @@ export const startPlayFlow = () => {
   }
 
   playYTPlayer();
-  dispatchImeEvent("start");
 };
 
 export const handleSceneEnd = () => {

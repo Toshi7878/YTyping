@@ -42,17 +42,15 @@ export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerP
 };
 
 const onStart = async () => {
-  const scene = readScene();
-
-  if (scene === "ready") {
-    initializePlayScene();
-  }
+  initializePlayScene();
 };
 
 const onPlay = async () => {
   console.log("再生 1");
   const scene = readScene();
-  onStart();
+  if (scene === "ready") {
+    onStart();
+  }
 
   if (scene === "play") {
     startTimer();
