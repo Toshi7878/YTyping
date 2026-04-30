@@ -6,6 +6,7 @@ import { toLocaleDateString } from "@/utils/date";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { Content } from "../_feature/content";
 import { JotaiProvider } from "../_feature/provider";
+import { UserScriptInit } from "../_feature/user-script";
 
 const getMapInfo = cache(async (caller: ReturnType<typeof getCaller>, mapId: number) => {
   return await caller.map.getById({ mapId });
@@ -46,8 +47,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!mapInfo) notFound();
 
   return (
-    <JotaiProvider userImeTypingOptions={userImeTypingOptions} mapId={Number(id)}>
-      <Content mapInfo={mapInfo} mapId={Number(id)} />
-    </JotaiProvider>
+    <>
+      <JotaiProvider userImeTypingOptions={userImeTypingOptions} mapId={Number(id)}>
+        <Content mapInfo={mapInfo} mapId={Number(id)} />
+      </JotaiProvider>
+      <UserScriptInit />
+    </>
   );
 }

@@ -1,3 +1,4 @@
+"use client";
 import { evaluateImeInput } from "lyrics-ime-typing-engine";
 import { getBuiltMap, getTypingWord } from "../_lib/atoms/state";
 import { getImeOptions } from "./provider";
@@ -47,3 +48,7 @@ declare global {
 
 // SSR 時は window が存在しないため、クライアント側でのみ登録する
 if (typeof window !== "undefined") window.__ytyping_ime = ytypingIme;
+
+export function UserScriptInit() {
+  return null;
+}
