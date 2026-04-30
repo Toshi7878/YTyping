@@ -1,5 +1,5 @@
 "use client";
-import { evaluateImeInput } from "lyrics-ime-typing-engine";
+import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
 import { getBuiltMap, getTypingWord } from "../_lib/atoms/state";
 import { getImeOptions } from "./provider";
 
@@ -19,16 +19,14 @@ export const dispatchImeEvent = <T extends ImeEventType>(type: T) => {
 
 const ytypingIme = {
   get evaluateImeInput() {
-    return evaluateImeInput;
-  },
-  get getTypingWord() {
-    return getTypingWord;
-  },
-  get getImeOptions() {
-    return getImeOptions;
-  },
-  get getBuiltMap() {
-    return getBuiltMap;
+    return (value: string, wordResults: WordResult[]) => {
+      const map = getBuiltMap();
+      if (!map) return;
+      const typingWord = getTypingWord();
+      const options = getImeOptions();
+
+      return evaluateImeInput(value, typingWord, wordResults, map, options);
+    };
   },
   addEventListener<T extends ImeEventType>(type: T, callback: ImeEventCallback<T>) {
     const listeners = eventListeners.get(type) ?? new Set<ImeEventCallback<ImeEventType>>();
