@@ -1,6 +1,7 @@
 "use client";
 import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
 import { getBuiltMap, getTargetWords } from "../_lib/atoms/state";
+import { addNotifications } from "./notifications";
 import { getImeOptions } from "./provider";
 
 type ImeEventMap = {
@@ -20,6 +21,9 @@ export const dispatchImeEvent = <T extends ImeEventType>(type: T) => {
 const ytypingIme = {
   get getBuiltMap() {
     return getBuiltMap;
+  },
+  get addNotifications() {
+    return addNotifications;
   },
   get evaluateImeInput() {
     return ({

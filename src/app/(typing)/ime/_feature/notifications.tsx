@@ -1,4 +1,4 @@
-import { type SetStateAction, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
@@ -7,7 +7,8 @@ import { store } from "./provider";
 const notificationsAtom = atomWithReset<string[]>([]);
 
 export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
-export const setNotifications = (update: SetStateAction<string[]>) => store.set(notificationsAtom, update);
+export const addNotifications = (notifications: string[]) =>
+  store.set(notificationsAtom, (prev) => [...prev, ...notifications]);
 export const resetNotifications = () => store.set(notificationsAtom, RESET);
 
 export const Notifications = ({ style }: { style: CSSProperties }) => {

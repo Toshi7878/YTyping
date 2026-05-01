@@ -22,7 +22,7 @@ import { pathChangeAtomReset } from "../_lib/core/reset";
 import "./user-script";
 import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
-import { Notifications } from "./notifications-display";
+import { Notifications } from "./notifications";
 import { getImeOptions, useEnableLargeVideoDisplayState } from "./provider";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
