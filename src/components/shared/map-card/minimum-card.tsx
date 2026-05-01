@@ -1,9 +1,10 @@
 "use client";
+import type { Route } from "next";
 import Link from "next/link";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
+import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
@@ -43,21 +44,23 @@ interface MinumumMapInfoProps {
 
 const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const linkMode = useMapLinkMode();
+  const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (
     <div className="relative h-auto w-full overflow-hidden">
-      <Link className="absolute size-full" href={`/type/${map.id}`} />
+      <Link className="absolute size-full" href={link} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
         <section className="flex flex-col">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary text-sm">
+            <Link href={link} className="z-1 truncate font-bold text-secondary text-sm">
               {nolink(map.info.title)}
             </Link>
           </TooltipWrapper>
           <div className="truncate font-semibold text-secondary text-xs">{nolink(map.info.artistName)}</div>
         </section>
         <section className="flex h-full w-[98%] items-center justify-between">
-          <MapBadges map={map} />
+          <MapBadges map={map} href={link} />
           <MapListActionButtons map={map} showBookmark={false} className="absolute right-1 -bottom-px" />
         </section>
       </div>
@@ -67,12 +70,13 @@ const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
 
 interface MapBadgesProps {
   map: MapListItem;
+  href: Route;
 }
 
-const MapBadges = ({ map }: MapBadgesProps) => {
+const MapBadges = ({ map, href }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
+      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center">
         <RatingBadge rating={map.difficulty.rating} />
       </Link>
     </HoverExtractCardTrigger>

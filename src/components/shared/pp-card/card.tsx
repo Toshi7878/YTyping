@@ -1,9 +1,11 @@
 "use client";
+import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useMapLinkMode } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { nolink } from "@/utils/no-link";
@@ -43,10 +45,13 @@ interface MapInfoProps {
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const linkMode = useMapLinkMode();
+  const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
+
   return (
     <div className={cn("flex flex-col gap-2 truncate", className)} {...rest}>
       <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-        <Link href={`/type/${map.id}`} className="block text-secondary hover:underline">
+        <Link href={link} className="block text-secondary hover:underline">
           <div className="truncate font-bold text-sm sm:text-base">
             {nolink(`${map.info.title} / ${map.info.artistName}`)}
           </div>

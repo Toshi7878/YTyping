@@ -1,5 +1,6 @@
 "use client";
 import { toast } from "sonner";
+import { getMapLinkMode, setMapLinkMode } from "@/lib/atoms/global-atoms";
 import { getSession } from "@/lib/auth-client";
 
 const ytypingGlobal = {
@@ -8,6 +9,12 @@ const ytypingGlobal = {
   },
   get getSessionUser() {
     return () => getSession()?.user ?? null;
+  },
+  get getMapLinkMode() {
+    return () => getMapLinkMode();
+  },
+  get setMapLinkMode() {
+    return (mode: "type" | "ime") => setMapLinkMode(mode);
   },
 };
 

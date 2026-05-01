@@ -1,5 +1,5 @@
 import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
+import { atomWithReset, atomWithStorage, createJSONStorage, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { InputMode } from "lyrics-typing-engine";
 import { DEFAULT_USER_OPTIONS } from "@/server/drizzle/schema";
@@ -69,3 +69,12 @@ export const usePresenceOptionState = () => useAtomValue(presenceStateAtom, { st
 export const useMapListLayoutTypeState = () => useAtomValue(mapListLayoutAtom, { store });
 export const setUserOptions = (update: Updater<ExtractAtomValue<typeof userOptionsAtom>>) =>
   store.set(userOptionsAtom, update);
+
+const mapLinkModeAtom = atomWithStorage<"type" | "ime">(
+  "mapLinkMode",
+  "type",
+  createJSONStorage(() => sessionStorage),
+);
+export const useMapLinkMode = () => useAtomValue(mapLinkModeAtom, { store });
+export const getMapLinkMode = () => store.get(mapLinkModeAtom);
+export const setMapLinkMode = (value: "type" | "ime") => store.set(mapLinkModeAtom, value);

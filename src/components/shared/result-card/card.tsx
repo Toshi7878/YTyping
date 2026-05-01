@@ -1,9 +1,11 @@
 "use client";
+import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useMapLinkMode } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
@@ -26,7 +28,6 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
   const { data: session } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
-
   return (
     <Card className="map-card-hover block w-full py-0 transition-shadow duration-300" ref={ref}>
       <CardHeader className="mx-0 flex items-center justify-between py-4 md:mx-6">
@@ -95,10 +96,13 @@ interface MapInfoProps {
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const linkMode = useMapLinkMode();
+  const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
+
   return (
     <div className={cn("flex flex-col justify-center gap-1.5 truncate", className)} {...rest}>
       <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-        <Link href={`/type/${map.id}`} className="block text-secondary hover:underline">
+        <Link href={link} className="block text-secondary hover:underline">
           <div className="truncate font-bold text-sm sm:text-base">
             {nolink(`${map.info.title} / ${map.info.artistName}`)}
           </div>

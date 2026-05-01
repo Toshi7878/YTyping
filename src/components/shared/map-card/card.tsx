@@ -1,9 +1,10 @@
 "use client";
+import type { Route } from "next";
 import Link from "next/link";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
+import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
@@ -56,14 +57,16 @@ interface MapInfoProps {
 const MapInfo = ({ map }: MapInfoProps) => {
   const { data: session } = useSession();
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const linkMode = useMapLinkMode();
+  const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (
     <div className="relative h-auto w-full overflow-hidden">
-      <Link className="absolute size-full" href={`/type/${map.id}`} />
+      <Link className="absolute size-full" href={link} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-2.5 sm:pt-1.5">
         <section className="flex flex-col sm:gap-0.5">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary sm:text-lg">
+            <Link href={link} className="z-1 truncate font-bold text-secondary sm:text-lg">
               {map.info.title}
             </Link>
           </TooltipWrapper>

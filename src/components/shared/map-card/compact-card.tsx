@@ -1,11 +1,12 @@
 "use client";
+import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
+import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
@@ -94,15 +95,17 @@ interface CompactMapInfoProps {
 
 const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
   const { data: session } = useSession();
+  const linkMode = useMapLinkMode();
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (
     <div className="relative h-auto w-full overflow-hidden rounded-md">
-      <Link className="absolute size-full" href={`/type/${map.id}`} />
+      <Link className="absolute size-full" href={link} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
         <section className="flex flex-col">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={`/type/${map.id}`} className="z-1 truncate font-bold text-secondary">
+            <Link href={link} className="z-1 truncate font-bold text-secondary">
               {nolink(map.info.title)}
             </Link>
           </TooltipWrapper>
@@ -114,7 +117,7 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
             className="mt-1.5"
           />
         </section>
-        <MapBadges map={map} />
+        <MapBadges map={map} href={link} />
         <MapListActionButtons map={map} showBookmark={!!session} className="absolute right-1 -bottom-px" />
       </div>
     </div>
@@ -146,12 +149,13 @@ const MapCreatorInfo = ({ creator, updatedAt, isUnlisted, className }: MapCreato
 
 interface MapBadgesProps {
   map: MapListItem;
+  href: Route;
 }
 
-const MapBadges = ({ map }: MapBadgesProps) => {
+const MapBadges = ({ map, href }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={`/type/${map.id}`} className="z-10 mb-0.5 flex flex-1 items-center">
+      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center">
         <RatingBadge rating={map.difficulty.rating} />
       </Link>
     </HoverExtractCardTrigger>
