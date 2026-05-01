@@ -80,17 +80,17 @@ const MapInfo = ({ map }: MapInfoProps) => {
             className="mt-2"
           />
         </section>
-        <MapBadges map={map} className="mt-2 mb-0.5" />
+        <MapBadges map={map} href={link} className="mt-2 mb-0.5" />
         <MapListActionButtons map={map} showBookmark={!!session} className="absolute right-1 -bottom-px" />
       </div>
     </div>
   );
 };
 
-const MapBadges = ({ map, className }: { map: Map; className?: string }) => {
+const MapBadges = ({ map, href, className }: { map: Map; href: Route; className?: string }) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={`/type/${map.id}`} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
+      <Link href={href} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
         <RatingBadge rating={map.difficulty.rating} />
         <Badge variant="accent-light" className="rounded-full max-lg:hidden">
           {formatTime(map.info.duration)}
