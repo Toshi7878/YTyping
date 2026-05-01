@@ -18,6 +18,9 @@ export const dispatchImeEvent = <T extends ImeEventType>(type: T) => {
 };
 
 const ytypingIme = {
+  get getBuiltMap() {
+    return getBuiltMap;
+  },
   get evaluateImeInput() {
     return ({
       value,
