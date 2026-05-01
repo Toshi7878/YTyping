@@ -15,13 +15,13 @@ const builtMapAtom = atomWithReset<{
   initWordResults: WordResult[];
   flatWords: string[];
 } | null>(null);
-export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
+export const useBuiltMapState = () => useAtomValue(builtMapAtom);
 export const setBuiltMap = (map: ExtractAtomValue<typeof builtMapAtom>) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const getBuiltMap = () => store.get(builtMapAtom);
 
 const sceneAtom = atomWithReset<SceneType>("ready");
-export const useSceneState = () => useAtomValue(sceneAtom, { store });
+export const useSceneState = () => useAtomValue(sceneAtom);
 export const setScene = (newScene: SceneType) => store.set(sceneAtom, newScene);
 export const resetScene = () => store.set(sceneAtom, RESET);
 export const readScene = () => store.get(sceneAtom);
@@ -37,7 +37,7 @@ const currentWordIndexAtom = focusAtom(typingWordAtom, (optic) => optic.prop("cu
 export const getTypingWord = () => store.get(typingWordAtom);
 export const setExpectedWords = (newExpectedWords: ExtractAtomValue<typeof expectedWordsAtom>) =>
   store.set(expectedWordsAtom, newExpectedWords);
-export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom, { store });
+export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom);
 export const setCurrentWordIndex = (newCurrentWordIndex: number) =>
   store.set(currentWordIndexAtom, newCurrentWordIndex);
 export const resetTypingWord = () => store.set(typingWordAtom, RESET);
@@ -66,11 +66,11 @@ const displayLinesAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("dis
 const nextDisplayLineAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("nextDisplayLine"));
 const textareaPlaceholderTypeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("textareaPlaceholderType"));
 
-export const useCountState = () => useAtomValue(countAtom, { store });
-export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
-export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
-export const useNextDisplayLineState = () => useAtomValue(nextDisplayLineAtom, { store });
-export const useTextareaPlaceholderTypeState = () => useAtomValue(textareaPlaceholderTypeAtom, { store });
+export const useCountState = () => useAtomValue(countAtom);
+export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom);
+export const useDisplayLinesState = () => useAtomValue(displayLinesAtom);
+export const useNextDisplayLineState = () => useAtomValue(nextDisplayLineAtom);
+export const useTextareaPlaceholderTypeState = () => useAtomValue(textareaPlaceholderTypeAtom);
 
 export const setSkipRemainTime = (time: number | null) => store.set(skipRemainTimeAtom, time);
 export const setWipeCount = (wipeCount: number) => store.set(wipeCountAtom, wipeCount);
@@ -83,14 +83,14 @@ export const setTextareaPlaceholderType = (type: ExtractAtomValue<typeof textare
   store.set(textareaPlaceholderTypeAtom, type);
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0 });
-export const useStatusState = () => useAtomValue(statusAtom, { store });
+export const useStatusState = () => useAtomValue(statusAtom);
 export const setStatus = (update: Updater<ExtractAtomValue<typeof statusAtom>>) => store.set(statusAtom, update);
 export const resetStatus = () => store.set(statusAtom, RESET);
 export const readStatus = () => store.get(statusAtom);
 
 const wordResultsAtom = atomWithReset([] as WordResult[]);
 
-export const useWordResultsState = () => useAtomValue(wordResultsAtom, { store });
+export const useWordResultsState = () => useAtomValue(wordResultsAtom);
 export const readWordResults = () => store.get(wordResultsAtom);
 
 export const initializeResultsFromMap = () => {
@@ -114,6 +114,6 @@ export const setWordResults = (updateResult: { index: number; result: WordResult
 
 const resultDialogAtom = atom(false);
 
-export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom, { store });
+export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom);
 export const resultDialogOpen = () => store.set(resultDialogAtom, true);
 export const resultDialogClose = () => store.set(resultDialogAtom, false);
