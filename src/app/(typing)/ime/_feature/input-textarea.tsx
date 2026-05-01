@@ -12,7 +12,7 @@ import {
   readWordResults,
   resultDialogOpen,
   setCurrentWordIndex,
-  setStatus,
+  setTypeCount,
   setWordResults,
   useSceneState,
   useTextareaPlaceholderTypeState,
@@ -50,13 +50,7 @@ export const InputTextarea = () => {
       }
 
       if (result.typeCountDelta) {
-        setStatus((prev) => {
-          const newTypeCount = prev.typeCount + result.typeCountDelta;
-          return {
-            typeCount: Math.floor(newTypeCount),
-            score: Math.round((1000 / map.totalNotes) * newTypeCount),
-          };
-        });
+        setTypeCount((prev) => Math.floor(prev + result.typeCountDelta));
 
         if (result.nextWordIndex) {
           setCurrentWordIndex(result.nextWordIndex);

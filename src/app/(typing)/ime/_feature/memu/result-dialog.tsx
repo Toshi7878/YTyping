@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import {
   useBuiltMapState,
   useCurrentWordIndexState,
-  useStatusState,
+  useScoreState,
+  useTypeCountState,
   useWordResultsState,
 } from "../../_lib/atoms/state";
 
@@ -30,10 +31,11 @@ export const ResultDialog = ({ isOpen, onClose }: ResultDialogProps) => {
 };
 
 const ResultStatus = () => {
-  const status = useStatusState();
+  const score = useScoreState();
+  const typeCount = useTypeCountState();
   const map = useBuiltMapState();
 
-  const isPerfect = status.score === 1000;
+  const isPerfect = score === 1000;
 
   return (
     <section>
@@ -41,13 +43,13 @@ const ResultStatus = () => {
         <div className="min-w-[120px] text-center">
           <div className="font-semibold text-muted-foreground text-sm">スコア</div>
           <div className={cn("font-bold font-mono text-3xl", isPerfect ? "text-yellow-500" : "text-foreground")}>
-            {status.score} <span className="font-normal text-base text-muted-foreground">/ 1000</span>
+            {score} <span className="font-normal text-base text-muted-foreground">/ 1000</span>
           </div>
         </div>
         <div className="min-w-[120px] text-center">
           <div className="font-semibold text-muted-foreground text-sm">タイプ数</div>
           <div className={cn("font-bold font-mono text-3xl", isPerfect ? "text-yellow-500" : "text-foreground")}>
-            {status.typeCount} <span className="font-normal text-base text-muted-foreground">/ {map?.totalNotes}</span>
+            {typeCount} <span className="font-normal text-base text-muted-foreground">/ {map?.totalNotes}</span>
           </div>
         </div>
       </div>

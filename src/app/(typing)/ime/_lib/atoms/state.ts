@@ -1,9 +1,8 @@
-import type { ExtractAtomValue } from "jotai";
+import type { ExtractAtomValue, SetStateAction } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuiltImeLine, WordResult } from "lyrics-ime-typing-engine";
-import type { Updater } from "@/utils/types";
 import { store } from "../../_feature/provider";
 import { DISPLAY_LINE_LENGTH } from "../const";
 import type { PlaceholderType, SceneType } from "../type";
@@ -79,11 +78,22 @@ export const setNextDisplayLine = (nextLine: ExtractAtomValue<typeof nextDisplay
 export const setTextareaPlaceholderType = (type: ExtractAtomValue<typeof textareaPlaceholderTypeAtom>) =>
   store.set(textareaPlaceholderTypeAtom, type);
 
-const statusAtom = atomWithReset({ typeCount: 0, score: 0 });
-export const useStatusState = () => useAtomValue(statusAtom);
-export const setStatus = (update: Updater<ExtractAtomValue<typeof statusAtom>>) => store.set(statusAtom, update);
-export const resetStatus = () => store.set(statusAtom, RESET);
-export const readStatus = () => store.get(statusAtom);
+const typeCountAtom = atom(0);
+const scoreAtom = atom((get) => {
+  const typeCount = get(typeCountAtom);
+  const map = get(builtMapAtom);
+  if (!map) return 0;
+
+  return Math.round((1000 / map.totalNotes) * typeCount);
+});
+
+export const useTypeCountState = () => useAtomValue(typeCountAtom);
+export const getTypeCount = () => store.get(typeCountAtom);
+export const setTypeCount = (updater: SetStateAction<number>) => store.set(typeCountAtom, updater);
+export const resetTypeCount = () => store.set(typeCountAtom, 0);
+
+export const useScoreState = () => useAtomValue(scoreAtom);
+export const getScore = () => store.get(scoreAtom);
 
 const wordResultsAtom = atomWithReset([] as WordResult[]);
 

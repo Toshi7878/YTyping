@@ -3,9 +3,11 @@ import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
 import { getBuiltMap, getTargetWords } from "../_lib/atoms/state";
 import { addNotifications } from "./notifications";
 import { getImeOptions } from "./provider";
+import { addUserResult } from "./view-area/end/score-ranking";
 
 type ImeEventMap = {
   start: undefined;
+  end: undefined;
 };
 type ImeEventType = keyof ImeEventMap;
 type ImeEventCallback<T extends ImeEventType> = (detail: ImeEventMap[T]) => void;
@@ -24,6 +26,9 @@ const ytypingIme = {
   },
   get addNotifications() {
     return addNotifications;
+  },
+  get addUserResult() {
+    return addUserResult;
   },
   get evaluateImeInput() {
     return ({

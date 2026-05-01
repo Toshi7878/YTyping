@@ -6,7 +6,7 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { type ImeStats, readImeStats, readTypingTextarea, resetImeStats } from "../../_lib/atoms/ref";
 import { useBuiltMapState, useSceneState } from "../../_lib/atoms/state";
 import { playYTPlayer } from "../../_lib/atoms/yt-player";
-import { ResultScore } from "./end/result-score";
+import { ScoreRanking } from "./end/score-ranking";
 import { LyricsContainer } from "./play/lyrics-container";
 
 export const ViewArea = () => {
@@ -99,7 +99,7 @@ const SceneView = () => {
   return (
     <div className="ml-6 md:ml-20 xl:ml-32">
       <LyricsContainer className={scene === "ready" || scene === "end" ? "invisible" : "visible"} />
-      {scene === "end" && <ResultScore className="absolute top-2" />}
+      {scene === "end" && <ScoreRanking className="absolute top-2" />}
     </div>
   );
 };

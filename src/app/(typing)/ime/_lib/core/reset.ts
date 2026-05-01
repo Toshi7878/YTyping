@@ -2,14 +2,15 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { resetNotifications } from "../../_feature/notifications";
 import { getMapId, resetMapId } from "../../_feature/provider";
 import { dispatchImeEvent } from "../../_feature/user-script";
+import { resetUserResults } from "../../_feature/view-area/end/score-ranking";
 import { readTypingTextarea } from "../atoms/ref";
 import {
+  getTypeCount,
   initializeResultsFromMap,
   readScene,
-  readStatus,
   resetBuiltMap,
   resetScene,
-  resetStatus,
+  resetTypeCount,
   resetTypingWord,
   resetUtilityParams,
   setScene,
@@ -18,14 +19,15 @@ import { resetYTPlayer, seekYTPlayer } from "../atoms/yt-player";
 
 export const initializePlayScene = () => {
   const mapId = getMapId();
-  if (mapId && (readStatus().typeCount > 0 || readScene() === "ready")) {
+  if (mapId && (getTypeCount() > 0 || readScene() === "ready")) {
     mutatePlayCountStats({ mapId });
   }
 
   resetUtilityParams();
-  resetStatus();
+  resetTypeCount();
   initializeResultsFromMap();
   resetNotifications();
+  resetUserResults();
 
   const textarea = readTypingTextarea();
   if (textarea) {
@@ -43,7 +45,8 @@ export const pathChangeAtomReset = () => {
   resetYTPlayer();
   resetBuiltMap();
   resetScene();
-  resetStatus();
+  resetTypeCount();
+  resetUserResults();
   resetNotifications();
   resetMapId();
 };
