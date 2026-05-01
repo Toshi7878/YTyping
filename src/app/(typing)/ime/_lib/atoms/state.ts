@@ -26,21 +26,18 @@ export const setScene = (newScene: SceneType) => store.set(sceneAtom, newScene);
 export const resetScene = () => store.set(sceneAtom, RESET);
 export const readScene = () => store.get(sceneAtom);
 
-const typingWordAtom = atomWithReset({
-  expectedWords: [] as string[][][],
-  currentWordIndex: 0,
-});
+const targetWordsAtom = atom<string[][][]>([]);
 
-const expectedWordsAtom = focusAtom(typingWordAtom, (optic) => optic.prop("expectedWords"));
-const currentWordIndexAtom = focusAtom(typingWordAtom, (optic) => optic.prop("currentWordIndex"));
+export const getTargetWords = () => store.get(targetWordsAtom);
+export const setTargetWords = (newExpectedWords: ExtractAtomValue<typeof targetWordsAtom>) =>
+  store.set(targetWordsAtom, newExpectedWords);
+export const resetTypingWord = () => store.set(targetWordsAtom, []);
 
-export const getTypingWord = () => store.get(typingWordAtom);
-export const setExpectedWords = (newExpectedWords: ExtractAtomValue<typeof expectedWordsAtom>) =>
-  store.set(expectedWordsAtom, newExpectedWords);
+const currentWordIndexAtom = atom(0);
 export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom);
+export const getCurrentWordIndex = () => store.get(currentWordIndexAtom);
 export const setCurrentWordIndex = (newCurrentWordIndex: number) =>
   store.set(currentWordIndexAtom, newCurrentWordIndex);
-export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
 const utilityParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,

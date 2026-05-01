@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   getBuiltMap,
-  getTypingWord,
+  getCurrentWordIndex,
+  getTargetWords,
   readUtilityParams,
   readWordResults,
   resultDialogOpen,
@@ -37,11 +38,12 @@ export const InputTextarea = () => {
       const map = getBuiltMap();
       if (!map) return;
 
-      const typingWord = getTypingWord();
+      const targetWords = getTargetWords();
+      const currentWordIndex = getCurrentWordIndex();
       const wordResults = readWordResults();
       const options = getImeOptions();
 
-      const result = evaluateImeInput(value, typingWord, wordResults, map, options);
+      const result = evaluateImeInput(value, { targetWords, currentWordIndex }, wordResults, map, options);
 
       for (const update of result.wordResultUpdates) {
         setWordResults(update);

@@ -1,5 +1,5 @@
 import { Ticker } from "@pixi/ticker";
-import { type BuiltImeLine, getExpectedWords } from "lyrics-ime-typing-engine";
+import { type BuiltImeLine, getTargetWords } from "lyrics-ime-typing-engine";
 import { getImeOptions } from "../../_feature/provider";
 import { readLyricsContainer } from "../atoms/ref";
 import {
@@ -8,9 +8,9 @@ import {
   readWipeLine,
   setCount,
   setDisplayLines,
-  setExpectedWords,
   setNextDisplayLine,
   setSkipRemainTime,
+  setTargetWords,
   setTextareaPlaceholderType,
   setWipeCount,
 } from "../atoms/state";
@@ -95,9 +95,9 @@ const updateDisplayLines = (newCount: number) => {
   setNextDisplayLine([]);
   setWipeCount(0);
 
-  const expectedWords = getExpectedWords(newCount, map.words);
+  const expectedWords = getTargetWords(newCount, map.words);
   if (expectedWords) {
-    setExpectedWords(expectedWords);
+    setTargetWords(expectedWords);
   }
 };
 
@@ -122,9 +122,9 @@ const updateNextDisplayLine = ({
       const map = getBuiltMap();
       if (!map) return;
 
-      const expectedWords = getExpectedWords(count + 1, map.words);
-      if (expectedWords) {
-        setExpectedWords(expectedWords);
+      const targetWords = getTargetWords(count + 1, map.words);
+      if (targetWords) {
+        setTargetWords(targetWords);
       }
     }
   }
