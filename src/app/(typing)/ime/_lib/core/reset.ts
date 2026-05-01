@@ -1,5 +1,5 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
-import { resetNotifications } from "../../_feature/notifications-display";
+import { resetNotifications } from "../../_feature/notifications";
 import { getMapId, resetMapId } from "../../_feature/provider";
 import { dispatchImeEvent } from "../../_feature/user-script";
 import { readTypingTextarea } from "../atoms/ref";
