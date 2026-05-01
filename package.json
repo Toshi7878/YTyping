@@ -20,7 +20,6 @@
     "db:status": "pnpx supabase status",
     "db:seed": "pnpx tsx --env-file=.env src/server/drizzle/seed/index.ts",
     "pp:recalculate": "dotenv -e .env -- pnpx tsx src/server/drizzle/scripts/recalculate-all-pp.ts",
-    "notice:generate": "pnpx license-checker-rseidelsohn --production --markdown --out NOTICE.md",
     "prepare": "husky"
   },
   "dependencies": {
@@ -65,7 +64,7 @@
     "jotai-uncontrolled": "^0.4.1",
     "jschardet": "^3.1.4",
     "lucide-react": "^0.577.0",
-    "lyrics-ime-typing-engine": "^1.0.1",
+    "lyrics-ime-typing-engine": "1.0.1",
     "lyrics-typing-engine": "2.0.2",
     "md5": "^2.3.0",
     "nanoid": "^5.1.6",
