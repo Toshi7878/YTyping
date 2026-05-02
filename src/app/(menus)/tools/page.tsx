@@ -41,6 +41,12 @@ const TOOLS = [
     href: "https://greasyfork.org/ja/scripts/575857-ytyping-pp-counter",
     byUserId: "1",
   },
+  {
+    title: "NamaYTyping",
+    description: "YTypingの変換ありタイピングにYouTube Liveチャットから参加できる拡張機能",
+    href: "https://greasyfork.org/ja/scripts/576187-namaytyping-youtube",
+    byUserId: "1",
+  },
 ] as const;
 
 export default function Page() {
