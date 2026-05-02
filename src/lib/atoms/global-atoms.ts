@@ -74,6 +74,7 @@ const mapLinkModeAtom = atomWithStorage<"type" | "ime">(
   "mapLinkMode",
   "type",
   createJSONStorage(() => sessionStorage),
+  { getOnInit: true },
 );
 export const useMapLinkMode = () => useAtomValue(mapLinkModeAtom, { store });
 export const getMapLinkMode = () => store.get(mapLinkModeAtom);
