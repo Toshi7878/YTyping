@@ -6,7 +6,7 @@ import { H3, LinkText, OList, P } from "@/components/ui/typography";
 export function InstallationSteps() {
   const steps = [
     {
-      title: "NamaYTyping UserScriptをインストールする",
+      title: "namaYTypingスクリプトをインストールする",
       content: (
         <P>
           <LinkText href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja">
@@ -14,10 +14,10 @@ export function InstallationSteps() {
           </LinkText>
           からTampermonkeyをインストールします。
           <br />
-          <LinkText href="https://greasyfork.org/en/scripts/576187-namaytyping-youtube">
-            GreasyFork - NamaYTyping UserScript
+          <LinkText href="https://update.greasyfork.org/scripts/576187/namaYTyping.user.js">
+            GreasyFork - namaYTyping
           </LinkText>
-          からスクリプトをインストールします。 YouTube Live上のチャットでの対戦が可能になります。
+          からスクリプトをインストールします。
         </P>
       ),
     },
@@ -35,7 +35,7 @@ export function InstallationSteps() {
       ),
     },
     {
-      title: "URLかIDが入力された状態で開始すると対戦が開始されます",
+      title: "開始すると対戦が開始されます",
       images: (
         <div className="flex flex-col gap-4">
           <Image alt="対戦開始" src="/images/manual/nama-ytyping/chat-connect.png" width={700} height={350} />

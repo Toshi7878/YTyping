@@ -42,8 +42,8 @@ const TOOLS = [
     byUserId: "1",
   },
   {
-    title: "NamaYTyping",
-    description: "YTypingの変換ありタイピングにYouTube Liveチャットから参加できる拡張機能",
+    title: "namaYTyping",
+    description: "変換ありタイピングでYouTube Liveチャットでの対戦が可能になる拡張機能",
     href: "/manual/nama-ytyping",
     byUserId: "1",
   },
