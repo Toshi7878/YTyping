@@ -20,11 +20,6 @@ export function InstallationSteps() {
           からスクリプトをインストールします。 YouTube Live上のチャットでの対戦が可能になります。
         </P>
       ),
-      images: (
-        <div className="flex flex-col gap-4">
-          <Image alt="YTyping Equalizer" src="/images/manual/nama-typing/id-input.png" width={500} height={250} />
-        </div>
-      ),
     },
     {
       title: "変換有りタイピングページで配信URLまたはIDを貼り付ける",
@@ -32,9 +27,9 @@ export function InstallationSteps() {
         <div className="flex flex-col gap-4">
           <Image
             alt="配信URLまたはIDを貼り付ける"
-            src="/images/manual/nama-typing/id-input.png"
-            width={500}
-            height={250}
+            src="/images/manual/nama-ytyping/id-input.png"
+            width={700}
+            height={350}
           />
         </div>
       ),
@@ -43,7 +38,7 @@ export function InstallationSteps() {
       title: "URLかIDが入力された状態で開始すると対戦が開始されます",
       images: (
         <div className="flex flex-col gap-4">
-          <Image alt="対戦開始" src="/images/manual/nama-typing/chat-connect.png" width={500} height={250} />
+          <Image alt="対戦開始" src="/images/manual/nama-ytyping/chat-connect.png" width={700} height={350} />
         </div>
       ),
     },
@@ -54,7 +49,7 @@ export function InstallationSteps() {
         <div className="flex flex-col gap-4">
           <Image
             alt="譜面のリンクを変換ありタイピングページに変更する"
-            src="/images/manual/nama-typing/header-toggle-switch.png"
+            src="/images/manual/nama-ytyping/header-toggle-switch.png"
             width={500}
             height={250}
           />
