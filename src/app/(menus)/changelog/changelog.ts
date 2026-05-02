@@ -1,6 +1,10 @@
 export const changelog = [
   {
     date: "2026-4-29",
+    descriptions: ["ツールページにNamaTypingを追加"],
+  },
+  {
+    date: "2026-4-29",
     descriptions: ["難易度カラーの彩度を調整"],
   },
   {
