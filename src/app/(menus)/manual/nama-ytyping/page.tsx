@@ -5,7 +5,7 @@ import { InstallationSteps } from "./installation-steps";
 export default function Page() {
   return (
     <article className="mx-auto max-w-7xl space-y-4">
-      <H1>NamaYTyping</H1>
+      <H1>namaYTyping</H1>
       <Card>
         <CardHeader>
           <CardDescription className="text-foreground text-lg">
