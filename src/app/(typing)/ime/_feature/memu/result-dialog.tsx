@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from "jotai";
-import type { WordResult } from "lyrics-ime-typing-engine";
+import type { UserResult, WordResult } from "lyrics-ime-typing-engine";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { getBuiltMap, useBuiltMapState } from "../../_lib/atoms/state";
 import { store } from "../provider";
 
-type UserResult = { name: string; typeCount: number; wordResults: WordResult[]; currentWordIndex: number };
 const userResultMapAtom = atom<Map<string, UserResult>>(new Map());
 
 export const getUserResult = (id: string) => store.get(userResultMapAtom).get(id);
