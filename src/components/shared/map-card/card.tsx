@@ -2,7 +2,6 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
-import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
@@ -130,26 +129,39 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
   const { kanaRatio, alphabetRatio, otherRatio } = calcChunkRatios(map.difficulty);
   return (
-    <div className="flex flex-wrap items-center gap-x-3">
-      <Badge variant={kanaRatio === 0 ? "english" : inputMode === "roma" ? "roma" : "kana"} size="xs">
-        {kanaRatio === 0 ? "英語" : inputMode === "roma" ? "ローマ字" : "かな"}
-      </Badge>
+    <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">最大</span>
-        <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
+        <Badge variant={kanaRatio === 0 ? "english" : inputMode === "roma" ? "roma" : "kana"} size="xs">
+          {kanaRatio === 0 ? "英語" : inputMode === "roma" ? "ローマ字" : "かな"}
+        </Badge>
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">最大</span>
+          <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">打鍵数</span>
+          <span className="font-semibold tabular-nums">{totalNotes}打</span>
+        </div>
       </div>
-      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">打鍵数</span>
-        <span className="font-semibold tabular-nums">{totalNotes}打</span>
-      </div>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <span className="text-muted-foreground">かな</span>
-        <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
-        <span className="text-muted-foreground">英字</span>
-        <span className="font-semibold tabular-nums">{Math.round(alphabetRatio * 100)}%</span>
-        <span className="text-muted-foreground">記号</span>
-        <span className="font-semibold tabular-nums">{Math.round(otherRatio * 100)}%</span>
+        {kanaRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">かな</span>
+            <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
+          </>
+        )}
+        {alphabetRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">英字</span>
+            <span className="font-semibold tabular-nums">{Math.round(alphabetRatio * 100)}%</span>
+          </>
+        )}
+        {otherRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">記号</span>
+            <span className="font-semibold tabular-nums">{Math.round(otherRatio * 100)}%</span>
+          </>
+        )}
       </div>
     </div>
   );
