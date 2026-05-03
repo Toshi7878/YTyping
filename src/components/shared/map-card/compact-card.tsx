@@ -191,7 +191,7 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
       <div className="mt-2 flex flex-wrap items-center gap-2">
         {kanaRatio > 0 && (
           <>
-            <span className="text-muted-foreground">かな</span>
+            <span className="text-muted-foreground">ひらがな</span>
             <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
           </>
         )}
