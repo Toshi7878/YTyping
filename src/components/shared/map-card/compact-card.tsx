@@ -189,12 +189,24 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
-        <span className="text-muted-foreground">かな</span>
-        <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
-        <span className="text-muted-foreground">英字</span>
-        <span className="font-semibold tabular-nums">{Math.round(alphabetRatio * 100)}%</span>
-        <span className="text-muted-foreground">記号</span>
-        <span className="font-semibold tabular-nums">{Math.round(otherRatio * 100)}%</span>
+        {kanaRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">かな</span>
+            <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
+          </>
+        )}
+        {alphabetRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">英字</span>
+            <span className="font-semibold tabular-nums">{Math.round(alphabetRatio * 100)}%</span>
+          </>
+        )}
+        {otherRatio > 0 && (
+          <>
+            <span className="text-muted-foreground">記号</span>
+            <span className="font-semibold tabular-nums">{Math.round(otherRatio * 100)}%</span>
+          </>
+        )}
       </div>
     </div>
   );
