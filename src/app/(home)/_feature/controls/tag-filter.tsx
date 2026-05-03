@@ -27,7 +27,7 @@ type FilterMenuConfig<K extends keyof MapListFilterSearchParams> = {
 
 const USER_FILTER_MENU: FilterMenuConfig<"filterType"> = {
   name: "filterType",
-  label: "フィルター",
+  label: "ユーザー",
   options: [
     { label: "いいね済み", value: "liked" },
     { label: "作成した譜面", value: "created" },
