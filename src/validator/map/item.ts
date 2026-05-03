@@ -75,6 +75,11 @@ const CreateMapDifficultySchema = createInsertSchema(MapDifficulties).pick({
   kanaKpmMax: true,
   romaTotalNotes: true,
   kanaTotalNotes: true,
+  kanaChunkCount: true,
+  alphabetChunkCount: true,
+  numChunkCount: true,
+  spaceChunkCount: true,
+  symbolChunkCount: true,
 });
 
 export const upsertMapItemSchema = z.object({

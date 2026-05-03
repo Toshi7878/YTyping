@@ -31,6 +31,7 @@ import { FloatingLabelSelectFormField } from "@/components/ui/select/select-form
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import {
+  calcChunkCounts,
   calculateDuration,
   calculateSpeedDifficulty,
   calculateTotalNotes,
@@ -478,22 +479,23 @@ const useOnSubmit = (form: FormType) => {
   );
 
   return async (data: z.output<typeof MapInfoFormSchema>) => {
-    const rawMapLines = readRawMap();
+    const videoId = getYTVideoId();
+    if (!videoId) return;
 
+    const rawMapLines = readRawMap();
     const { title, artistName, musicSource, creatorComment, tags, previewTime, visibility } = data;
     const builtMap = buildTypingMap({ rawMapLines, charPoint: 0 });
     const duration = calculateDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
     const startLine = getStartLine(builtMap);
     const speedDifficulty = calculateSpeedDifficulty(builtMap);
-    const videoId = getYTVideoId();
-    if (!videoId) return;
+    const chunkCounts = calcChunkCounts(builtMap);
 
-    const typingStartTime = Math.max(0, startLine.time + 0.2);
+    const minPreviewTime = Math.max(0, startLine.time + 0.2);
 
     const videoDuration = getYTDuration() ?? 0;
     const newPreviewTime =
-      previewTime > videoDuration || typingStartTime >= previewTime ? Number(typingStartTime.toFixed(3)) : previewTime;
+      previewTime > videoDuration || minPreviewTime >= previewTime ? Number(minPreviewTime.toFixed(3)) : previewTime;
 
     form.setValue("previewTime", newPreviewTime);
 
@@ -517,6 +519,7 @@ const useOnSubmit = (form: FormType) => {
       kanaKpmMax: Math.floor(speedDifficulty.max.r),
       romaTotalNotes: Math.floor(totalNotes.roma),
       kanaTotalNotes: Math.floor(totalNotes.kana),
+      ...chunkCounts,
     };
     const { isUpdateUpdatedAt } = readUtilityParams();
     const mapId = readMapId();

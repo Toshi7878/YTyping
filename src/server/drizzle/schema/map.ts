@@ -56,9 +56,11 @@ export const MapDifficulties = pgTable("map_difficulties", {
   kanaKpmMax: integer("kana_kpm_max").notNull().default(0),
   romaTotalNotes: integer("roma_total_notes").notNull().default(0),
   kanaTotalNotes: integer("kana_total_notes").notNull().default(0),
-  englishTotalNotes: integer("english_total_notes").notNull().default(0),
-  symbolTotalNotes: integer("symbol_total_notes").notNull().default(0),
-  intTotalNotes: integer("int_total_notes").notNull().default(0),
+  kanaChunkCount: integer("kana_chunk_count").notNull().default(0),
+  alphabetChunkCount: integer("alphabet_chunk_count").notNull().default(0),
+  numChunkCount: integer("num_chunk_count").notNull().default(0),
+  spaceChunkCount: integer("space_chunk_count").notNull().default(0),
+  symbolChunkCount: integer("symbol_chunk_count").notNull().default(0),
   rating: real("rating").notNull(),
 });
 

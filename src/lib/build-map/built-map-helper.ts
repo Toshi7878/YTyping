@@ -125,3 +125,33 @@ export const calculateDuration = (builtMapLines: BuiltMapLineWithOption[]): numb
 
 export const hasAlphabetChunk = (builtMapLines: BuiltMapLineWithOption[]): boolean =>
   builtMapLines.some((line) => line.wordChunks.some((chunk) => chunk.type === "alphabet"));
+
+export const calcChunkCounts = (
+  builtMapLines: BuiltMapLineWithOption[],
+): {
+  kanaChunkCount: number;
+  alphabetChunkCount: number;
+  numChunkCount: number;
+  spaceChunkCount: number;
+  symbolChunkCount: number;
+} => {
+  const counts = {
+    kanaChunkCount: 0,
+    alphabetChunkCount: 0,
+    numChunkCount: 0,
+    spaceChunkCount: 0,
+    symbolChunkCount: 0,
+  };
+
+  for (const line of builtMapLines) {
+    for (const chunk of line.wordChunks) {
+      if (chunk.type === "kana") counts.kanaChunkCount++;
+      else if (chunk.type === "alphabet") counts.alphabetChunkCount++;
+      else if (chunk.type === "num") counts.numChunkCount++;
+      else if (chunk.type === "space") counts.spaceChunkCount++;
+      else if (chunk.type === "symbol") counts.symbolChunkCount++;
+    }
+  }
+
+  return counts;
+};
