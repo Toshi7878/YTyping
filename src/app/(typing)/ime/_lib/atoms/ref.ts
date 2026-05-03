@@ -9,7 +9,6 @@ export const readLyricsContainer = () => store.get(lyricsContainerAtom);
 export const writeLyricsContainer = (element: HTMLDivElement) => store.set(lyricsContainerAtom, element);
 
 const inputTextareaAtom = atom<HTMLTextAreaElement | null>(null);
-
 export const readTypingTextarea = () => store.get(inputTextareaAtom);
 export const writeTypingTextarea = (element: HTMLTextAreaElement) => store.set(inputTextareaAtom, element);
 

@@ -1,25 +1,21 @@
 import { Ticker } from "@pixi/ticker";
-import { evaluateImeInput } from "lyrics-ime-typing-engine";
+import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { getSession } from "@/lib/auth-client";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   getBuiltMap,
-  getCurrentWordIndex,
   getTargetWords,
   readUtilityParams,
-  readWordResults,
-  resultDialogOpen,
-  setCurrentWordIndex,
-  setTypeCount,
-  setWordResults,
   useSceneState,
   useTextareaPlaceholderTypeState,
 } from "../_lib/atoms/state";
 import { handleSceneEnd } from "../_lib/core/scene-control";
 import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
+import { getUserResult, openResultDialog, updateUserResult } from "./memu/result-dialog";
 import { addNotifications } from "./notifications";
 import { getImeOptions } from "./provider";
 
@@ -31,38 +27,29 @@ export const InputTextarea = () => {
 
   const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
       const { value } = e.currentTarget;
       e.preventDefault();
-      const map = getBuiltMap();
-      if (!map) return;
 
-      const targetWords = getTargetWords();
-      const currentWordIndex = getCurrentWordIndex();
-      const wordResults = readWordResults();
-      const options = getImeOptions();
+      const session = getSession();
+      const userId = session?.user.id.toString() || "default";
+      const userResult = getUserResult(userId);
 
-      const result = evaluateImeInput(value, { targetWords, currentWordIndex }, wordResults, map, options);
+      const { typeCountStatsDelta, appendNotifications, ...result } = handleImeInput({
+        value,
+        currentWordIndex: userResult?.currentWordIndex,
+        wordResults: userResult?.wordResults,
+      });
 
-      for (const update of result.wordResultUpdates) {
-        setWordResults(update);
+      updateUserResult(userId, {
+        name: session?.user.name || "ゲスト",
+        ...result,
+      });
+      updateImeTypeCountStats((prev) => prev + typeCountStatsDelta);
+      if (appendNotifications.length > 0) {
+        addNotifications(appendNotifications);
       }
-
-      if (result.typeCountDelta) {
-        setTypeCount((prev) => Math.floor(prev + result.typeCountDelta));
-
-        if (result.nextWordIndex) {
-          setCurrentWordIndex(result.nextWordIndex);
-        }
-      }
-      if (result.typeCountStatsDelta) {
-        updateImeTypeCountStats((prev) => prev + result.typeCountStatsDelta);
-      }
-      if (result.notificationsToAppend.length) {
-        addNotifications(result.notificationsToAppend);
-      }
-
       stopTicker();
 
       switch (value.toLowerCase().trim()) {
@@ -85,7 +72,7 @@ export const InputTextarea = () => {
         }
         case "result":
           if (scene === "end") {
-            resultDialogOpen();
+            openResultDialog();
           }
           break;
       }
@@ -117,11 +104,56 @@ export const InputTextarea = () => {
         className="h-[130px] resize-none rounded-md px-4 font-bold text-2xl tracking-widest xl:text-3xl"
         autoComplete="off"
         placeholder={textareaPlaceholder({ scene, textareaPlaceholderType })}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleSubmit}
         onInput={handleInput}
       />
     </div>
   );
+};
+
+export const handleImeInput = ({
+  value,
+  currentWordIndex,
+  wordResults: _wordResults,
+}: {
+  value: string;
+  currentWordIndex: number | undefined;
+  wordResults: WordResult[] | undefined;
+}) => {
+  const map = getBuiltMap();
+  if (!map) throw new Error("built map is not found.");
+  const wordResults = _wordResults ? [..._wordResults] : [...map.initWordResults];
+
+  const targetWords = getTargetWords();
+  const result = evaluateImeInput(
+    value,
+    { targetWords, currentWordIndex: currentWordIndex ?? 0 },
+    wordResults,
+    map,
+    getImeOptions(),
+  );
+  const newWordResults: WordResult[] = wordResults;
+  let nextWordIndex = currentWordIndex ?? 0;
+
+  for (const update of result.wordResultUpdates) {
+    const { index, result } = update;
+
+    if (newWordResults[index]) {
+      newWordResults[index] = result;
+    }
+  }
+
+  if (result.nextWordIndex) {
+    nextWordIndex = result.nextWordIndex;
+  }
+
+  return {
+    newWordResults,
+    typeCountDelta: result.typeCountDelta,
+    typeCountStatsDelta: result.typeCountStatsDelta,
+    nextWordIndex,
+    appendNotifications: result.notificationsToAppend,
+  };
 };
 
 const textareaPlaceholder = ({

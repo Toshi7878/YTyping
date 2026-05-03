@@ -1,33 +1,22 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
+import { resetUserResultMap } from "../../_feature/memu/result-dialog";
 import { resetNotifications } from "../../_feature/notifications";
 import { getMapId, resetMapId } from "../../_feature/provider";
 import { dispatchImeEvent } from "../../_feature/user-script";
-import { resetUserResults } from "../../_feature/view-area/end/score-ranking";
 import { readTypingTextarea } from "../atoms/ref";
-import {
-  getTypeCount,
-  initializeResultsFromMap,
-  readScene,
-  resetBuiltMap,
-  resetScene,
-  resetTypeCount,
-  resetTypingWord,
-  resetUtilityParams,
-  setScene,
-} from "../atoms/state";
+import { readScene, resetBuiltMap, resetScene, resetTypingWord, resetUtilityParams, setScene } from "../atoms/state";
 import { resetYTPlayer, seekYTPlayer } from "../atoms/yt-player";
 
 export const initializePlayScene = () => {
   const mapId = getMapId();
-  if (mapId && (getTypeCount() > 0 || readScene() === "ready")) {
+
+  if (mapId && readScene() === "ready") {
     mutatePlayCountStats({ mapId });
   }
 
   resetUtilityParams();
-  resetTypeCount();
-  initializeResultsFromMap();
   resetNotifications();
-  resetUserResults();
+  resetUserResultMap();
 
   const textarea = readTypingTextarea();
   if (textarea) {
@@ -45,8 +34,7 @@ export const pathChangeAtomReset = () => {
   resetYTPlayer();
   resetBuiltMap();
   resetScene();
-  resetTypeCount();
-  resetUserResults();
+  resetUserResultMap();
   resetNotifications();
   resetMapId();
 };

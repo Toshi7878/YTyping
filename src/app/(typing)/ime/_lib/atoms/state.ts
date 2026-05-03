@@ -1,4 +1,4 @@
-import type { ExtractAtomValue, SetStateAction } from "jotai";
+import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
@@ -77,50 +77,3 @@ export const setNextDisplayLine = (nextLine: ExtractAtomValue<typeof nextDisplay
 
 export const setTextareaPlaceholderType = (type: ExtractAtomValue<typeof textareaPlaceholderTypeAtom>) =>
   store.set(textareaPlaceholderTypeAtom, type);
-
-const typeCountAtom = atom(0);
-const scoreAtom = atom((get) => {
-  const typeCount = get(typeCountAtom);
-  const map = get(builtMapAtom);
-  if (!map) return 0;
-
-  return Math.round((1000 / map.totalNotes) * typeCount);
-});
-
-export const useTypeCountState = () => useAtomValue(typeCountAtom);
-export const getTypeCount = () => store.get(typeCountAtom);
-export const setTypeCount = (updater: SetStateAction<number>) => store.set(typeCountAtom, updater);
-export const resetTypeCount = () => store.set(typeCountAtom, 0);
-
-export const useScoreState = () => useAtomValue(scoreAtom);
-export const getScore = () => store.get(scoreAtom);
-
-const wordResultsAtom = atomWithReset([] as WordResult[]);
-
-export const useWordResultsState = () => useAtomValue(wordResultsAtom);
-export const readWordResults = () => store.get(wordResultsAtom);
-
-export const initializeResultsFromMap = () => {
-  const map = store.get(builtMapAtom);
-  if (map) {
-    store.set(wordResultsAtom, map.initWordResults);
-  }
-};
-export const setWordResults = (updateResult: { index: number; result: WordResult }) => {
-  const { index, result } = updateResult;
-
-  store.set(wordResultsAtom, (prev) => {
-    const newResults = [...prev];
-
-    if (newResults[index]) {
-      newResults[index] = result;
-    }
-    return newResults;
-  });
-};
-
-const resultDialogAtom = atom(false);
-
-export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom);
-export const resultDialogOpen = () => store.set(resultDialogAtom, true);
-export const resultDialogClose = () => store.set(resultDialogAtom, false);

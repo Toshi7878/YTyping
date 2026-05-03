@@ -11,10 +11,10 @@ import metronome from "../../_img/metronome.png";
 import reportPencil from "../../_img/report--pencil.png";
 import trophy from "../../_img/trophy.png";
 
-import { resultDialogClose, resultDialogOpen, useIsResultDialogOpen, useSceneState } from "../../_lib/atoms/state";
+import { useSceneState } from "../../_lib/atoms/state";
 import { useYTPlayer } from "../../_lib/atoms/yt-player";
 import { handleSceneEnd, startPlayFlow } from "../../_lib/core/scene-control";
-import { ResultDialog } from "./result-dialog";
+import { openResultDialog, ResultDialog } from "./result-dialog";
 import { SettingPopover } from "./setting-popover";
 
 const ICON_SIZE = "16";
@@ -23,7 +23,6 @@ export const MenuBar = () => {
   const { id: mapId } = useParams();
   const YTPlayer = useYTPlayer();
   const scene = useSceneState();
-  const isResultDialogOpen = useIsResultDialogOpen();
   return (
     <>
       <div id="menu_bar" role="toolbar" className="bg-card">
@@ -35,7 +34,7 @@ export const MenuBar = () => {
           <div className="flex justify-between gap-3" id="center_menu">
             <MenuButton image={start} disabled={scene === "play"} onClick={startPlayFlow} title="開始" />
             <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleSceneEnd} title="終了" />
-            <MenuButton disabled={scene === "ready"} onClick={resultDialogOpen} image={reportPencil} title="採点結果" />
+            <MenuButton disabled={scene === "ready"} onClick={openResultDialog} image={reportPencil} title="採点結果" />
           </div>
           <nav className="flex" id="right_menu">
             <SettingPopover triggerButton={<MenuButton image={gear} title="設定" />} />
@@ -47,7 +46,7 @@ export const MenuBar = () => {
           </nav>
         </div>
       </div>
-      <ResultDialog isOpen={isResultDialogOpen} onClose={resultDialogClose} />
+      <ResultDialog />
     </>
   );
 };

@@ -1,9 +1,8 @@
 "use client";
-import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
-import { getBuiltMap, getTargetWords } from "../_lib/atoms/state";
+import { getBuiltMap } from "../_lib/atoms/state";
+import { handleImeInput } from "./input-textarea";
+import { getResultRanking, updateUserResult } from "./memu/result-dialog";
 import { addNotifications } from "./notifications";
-import { getImeOptions } from "./provider";
-import { addUserResult } from "./view-area/end/score-ranking";
 
 type ImeEventMap = {
   start: undefined;
@@ -27,26 +26,14 @@ const ytypingIme = {
   get addNotifications() {
     return addNotifications;
   },
-  get addUserResult() {
-    return addUserResult;
+  get updateUserResult() {
+    return updateUserResult;
   },
-  get evaluateImeInput() {
-    return ({
-      value,
-      currentWordIndex,
-      wordResults,
-    }: {
-      value: string;
-      currentWordIndex: number;
-      wordResults: WordResult[];
-    }) => {
-      const map = getBuiltMap();
-      if (!map) return;
-      const targetWords = getTargetWords();
-      const options = getImeOptions();
-
-      return evaluateImeInput(value, { targetWords, currentWordIndex }, wordResults, map, options);
-    };
+  get getResultRanking() {
+    return getResultRanking;
+  },
+  get handleImeInput() {
+    return handleImeInput;
   },
   addEventListener<T extends ImeEventType>(type: T, callback: ImeEventCallback<T>) {
     const listeners = eventListeners.get(type) ?? new Set<ImeEventCallback<ImeEventType>>();

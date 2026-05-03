@@ -1,8 +1,6 @@
-import { getSession } from "@/lib/auth-client";
 import { dispatchImeEvent } from "../../_feature/user-script";
-import { addUserResult } from "../../_feature/view-area/end/score-ranking";
 import { readImeStats } from "../atoms/ref";
-import { getTypeCount, readScene, setScene, setTextareaPlaceholderType } from "../atoms/state";
+import { readScene, setScene, setTextareaPlaceholderType } from "../atoms/state";
 import { playYTPlayer, stopYTPlayer } from "../atoms/yt-player";
 import { mutateImeStats } from "./mutate-stats";
 import { initializePlayScene } from "./reset";
@@ -20,10 +18,6 @@ export const startPlayFlow = () => {
 
 export const handleSceneEnd = () => {
   dispatchImeEvent("end");
-  const typeCount = getTypeCount();
-  if (typeCount) {
-    addUserResult({ name: getSession()?.user.name ?? "ゲスト", typeCount });
-  }
   setScene("end");
   setTextareaPlaceholderType("normal");
   pauseTimer();
