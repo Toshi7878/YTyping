@@ -42,13 +42,11 @@ export const InputTextarea = () => {
         wordResults: userResult?.wordResults,
       });
 
-      updateUserResult(userId, {
-        name: session?.user.name || "ゲスト",
-        ...result,
-      });
+      const userName = session?.user.name || "ゲスト";
+      updateUserResult(userId, { name: userName, ...result });
       updateImeTypeCountStats((prev) => prev + typeCountStatsDelta);
       if (appendNotifications.length > 0) {
-        addNotifications(appendNotifications);
+        addNotifications(appendNotifications.map((n) => `${userName}: ${n}`));
       }
       stopTicker();
 

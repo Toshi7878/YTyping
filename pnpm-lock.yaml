@@ -141,8 +141,8 @@ importers:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.5)
       lyrics-ime-typing-engine:
-        specifier: ^1.2.11
-        version: 1.2.11
+        specifier: ^1.2.12
+        version: 1.2.12
       lyrics-typing-engine:
         specifier: 2.0.2
         version: 2.0.2
@@ -4084,8 +4084,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lyrics-ime-typing-engine@1.2.11:
-    resolution: {integrity: sha512-i/l0UlsRVFDBFTd28yznSzlWR09p7xY3rRDb78ZrhI2yC45lkgWFSWHXEuytg1IhcNxYqUss9zTwGsp2T6HDZA==}
+  lyrics-ime-typing-engine@1.2.12:
+    resolution: {integrity: sha512-ZCv92zQEHpk1wf1q8NklB926cKNvLHMCjYnZRnhsehTJRSvcU301LnqTjb2uglT4GCYj15/36Ap4s+w9cOLYDQ==}
 
   lyrics-typing-engine@2.0.2:
     resolution: {integrity: sha512-v7aZEFwRN5tgovKRAn7u0c/J50ImelxB22m8yueDt4+yA06iYeq3K7ONu8NAx/1z60FvXWdbGQSgGc45b+E57w==}
@@ -8862,7 +8862,7 @@ snapshots:
     dependencies:
       react: 19.2.5
 
-  lyrics-ime-typing-engine@1.2.11: {}
+  lyrics-ime-typing-engine@1.2.12: {}
 
   lyrics-typing-engine@2.0.2: {}
 
