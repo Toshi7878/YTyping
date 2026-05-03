@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { ClearRateText } from "@/components/shared/text/clear-rate-text";
@@ -25,9 +26,9 @@ type RankingResult = RouterOutputs["result"]["list"]["getRanking"][number];
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
   const trpc = useTRPC();
-  const mapId = useMapIdState();
+  const { id: mapId } = useParams();
   const { data, isPending } = useQuery(
-    trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
+    trpc.result.list.getRanking.queryOptions({ mapId: mapId ? Number(mapId) : 0 }, { gcTime: Infinity }),
   );
 
   useEffect(() => {
