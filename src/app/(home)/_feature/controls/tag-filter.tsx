@@ -49,12 +49,13 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
 
 export const MapListTagFilter = () => {
   return (
-    <Card className="select-none py-1">
-      <CardContent className="grid grid-cols-1 items-center gap-1 sm:grid-cols-[auto_1fr]">
+    <Card className="flex-1 select-none py-1">
+      <CardContent className="grid grid-cols-1 items-center sm:grid-cols-[auto_1fr]">
         <FilterMenu key={USER_FILTER_MENU.label} filter={USER_FILTER_MENU}>
           <BookmarkListSelect />
         </FilterMenu>
         <FilterMenu key={RANKING_STATUS_FILTER_MENU.label} filter={RANKING_STATUS_FILTER_MENU} />
+        <GenreFilterRow />
       </CardContent>
     </Card>
   );
@@ -71,7 +72,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 
   return (
     <>
-      <div className="flex h-8 min-w-0 items-center font-medium text-foreground text-xs md:mr-3 md:min-w-[80px]">
+      <div className="flex h-6 min-w-0 items-center font-medium text-[11px] text-muted-foreground md:mr-3 md:min-w-[72px]">
         {filter.label}
       </div>
       <div className="flex flex-wrap items-center gap-1">
@@ -89,7 +90,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
                 setSearchParams({ ...nextParams, sort: deriveSortParam(nextParams) });
               }}
               className={cn(
-                "rounded px-2 py-1 text-xs transition-none hover:underline",
+                "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
                 isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
               )}
             >
@@ -125,7 +126,10 @@ const BookmarkListSelect = () => {
     >
       <SelectTrigger
         size="sm"
-        className={cn("w-40 font-normal", value && "font-bold text-secondary-light hover:text-secondary-light")}
+        className={cn(
+          "w-36 font-normal text-[11px]",
+          value && "font-bold text-secondary-light hover:text-secondary-light",
+        )}
       >
         <SelectValue placeholder="ブックマーク" />
       </SelectTrigger>
@@ -138,6 +142,52 @@ const BookmarkListSelect = () => {
         ))}
       </SelectContent>
     </Select>
+  );
+};
+
+const GENRE_FILTERS = [
+  {
+    label: "English",
+    params: { maxKanaChunkCount: 0, minAlphabetChunkCount: 1 },
+  },
+] as const;
+
+const GenreFilterRow = () => {
+  const [params] = useMapListFilterQueryStates();
+  const setSearchParams = useSetSearchParams();
+
+  return (
+    <>
+      <div className="flex h-6 min-w-0 items-center font-medium text-[11px] text-muted-foreground md:mr-3 md:min-w-[72px]">
+        ジャンル
+      </div>
+      <div className="flex flex-wrap items-center gap-1">
+        {GENRE_FILTERS.map((filter) => {
+          const isActive =
+            params.maxKanaChunkCount === filter.params.maxKanaChunkCount &&
+            params.minAlphabetChunkCount === filter.params.minAlphabetChunkCount;
+
+          return (
+            <Button
+              key={filter.label}
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault();
+                setSearchParams(
+                  isActive ? { maxKanaChunkCount: null, minAlphabetChunkCount: null } : { ...filter.params },
+                );
+              }}
+              className={cn(
+                "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
+                isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+              )}
+            >
+              {filter.label}
+            </Button>
+          );
+        })}
+      </div>
+    </>
   );
 };
 
@@ -171,7 +221,6 @@ const getNextFilterParams = (
   if (name === "filterType") {
     selectedFilter = isApply ? (value as typeof params.filterType) : null;
   }
-
   let selectedRankingStatus = params.rankingStatus;
   if (name === "rankingStatus") {
     selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;

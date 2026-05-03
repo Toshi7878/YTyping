@@ -18,7 +18,7 @@ export const MapListControls = () => {
   return (
     <section className="flex w-full flex-col gap-3">
       <KeywordInput />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         {isLogin && <MapListTagFilter />}
         <DifficultyFilter />
       </div>

@@ -28,8 +28,8 @@ export const DifficultyFilter = () => {
   };
 
   return (
-    <Card className="py-3">
-      <CardContent className="flex w-full select-none flex-col gap-2">
+    <Card className="flex-1 py-3">
+      <CardContent className="flex w-full select-none flex-col gap-4">
         <div className="flex flex-wrap gap-2">
           {DIFFICULTY_TIERS.map((tier) => {
             const hasFilter = params.minRate > RANGE.min || params.maxRate !== null;
