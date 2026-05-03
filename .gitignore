@@ -12,6 +12,7 @@
 /.next/
 /out/
 /map-json
+/built-maps
 
 # production
 /build

@@ -155,3 +155,30 @@ export const calcChunkCounts = (
 
   return counts;
 };
+
+export const calcChunkRatios = ({
+  kanaChunkCount,
+  alphabetChunkCount,
+  numChunkCount,
+  spaceChunkCount,
+  symbolChunkCount,
+}: {
+  kanaChunkCount: number;
+  alphabetChunkCount: number;
+  numChunkCount: number;
+  spaceChunkCount: number;
+  symbolChunkCount: number;
+}): { kanaRatio: number; alphabetRatio: number; otherRatio: number } => {
+  const otherChunkCount = numChunkCount + spaceChunkCount + symbolChunkCount;
+  const total = kanaChunkCount + alphabetChunkCount + otherChunkCount;
+
+  if (total === 0) {
+    return { kanaRatio: 0, alphabetRatio: 0, otherRatio: 0 };
+  }
+
+  return {
+    kanaRatio: kanaChunkCount / total,
+    alphabetRatio: alphabetChunkCount / total,
+    otherRatio: otherChunkCount / total,
+  };
+};

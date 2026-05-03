@@ -22,6 +22,8 @@ export const MapSearchFilterSchema = z.object({
   keyword: z.string().nullish(),
   minRate: z.number().nullish(),
   maxRate: z.number().nullish(),
+  maxKanaChunkCount: z.number().nullish(),
+  minAlphabetChunkCount: z.number().nullish(),
   creatorId: z.number().nullish(),
   likerId: z.number().nullish(),
 });

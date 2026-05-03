@@ -135,7 +135,7 @@ export const HoverExtractCard = ({
                   cardHoverContentClassName,
                 )}
                 style={{ width: cardWidth }}
-                onPointerEnter={openHover}
+                onPointerEnter={closeHover}
                 onPointerLeave={closeHover}
               >
                 {extractContent}

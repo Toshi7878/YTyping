@@ -46,6 +46,8 @@ const mapListFilterParsers = {
   maxRate: parseAsDifficultyRate,
   filterType: parseAsStringLiteral(MAP_USER_FILTER_OPTIONS),
   rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
+  maxKanaChunkCount: parseAsInteger,
+  minAlphabetChunkCount: parseAsInteger,
   bookmarkListId: parseAsInteger,
 };
 const mapListSortParser = parseAsSort.withDefault({ value: "publishedAt", desc: true });

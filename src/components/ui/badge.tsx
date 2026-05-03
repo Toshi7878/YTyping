@@ -29,6 +29,7 @@ const badgeVariants = cva(
         result: "bg-card  rounded-sm border border-border text-center normal-case",
         kana: "border-transparent bg-kana/90 text-kana-foreground [a&]:hover:bg-kana/90",
         roma: "border-transparent bg-roma/90 text-roma-foreground [a&]:hover:bg-roma/90",
+        english: "border-transparent bg-english/90 text-english-foreground [a&]:hover:bg-english/90",
         "level-easy": "border-transparent bg-level-easy ",
         "level-normal": "border-transparent bg-level-normal ",
         "level-hard": "border-transparent bg-level-hard ",

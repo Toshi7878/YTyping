@@ -119,6 +119,11 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       kanaKpmMax: MapDifficulties.kanaKpmMax,
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+      kanaChunkCount: MapDifficulties.kanaChunkCount,
+      alphabetChunkCount: MapDifficulties.alphabetChunkCount,
+      numChunkCount: MapDifficulties.numChunkCount,
+      spaceChunkCount: MapDifficulties.spaceChunkCount,
+      symbolChunkCount: MapDifficulties.symbolChunkCount,
       rating: MapDifficulties.rating,
     },
     bookmark: {
@@ -188,6 +193,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     session ? filterByRankingStatus(input.rankingStatus) : undefined,
     filterByDifficulty({ minRate: input.minRate, maxRate: input.maxRate }),
     filterByKeyword(input.keyword),
+    input ? filterByChunkCount(input) : undefined,
     input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
     input.bookmarkListId
@@ -313,4 +319,21 @@ export const filterByMapVisibility = (
   }
 
   return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id)));
+};
+
+export const filterByChunkCount = (
+  input: Pick<z.output<typeof MapSearchFilterSchema>, "maxKanaChunkCount" | "minAlphabetChunkCount">,
+) => {
+  const conditions = [];
+  const { maxKanaChunkCount, minAlphabetChunkCount } = input ?? {};
+
+  if (typeof maxKanaChunkCount === "number" && maxKanaChunkCount >= 0) {
+    conditions.push(lte(MapDifficulties.kanaChunkCount, maxKanaChunkCount));
+  }
+
+  if (typeof minAlphabetChunkCount === "number" && minAlphabetChunkCount >= 0) {
+    conditions.push(gte(MapDifficulties.alphabetChunkCount, minAlphabetChunkCount));
+  }
+
+  return and(...conditions);
 };
