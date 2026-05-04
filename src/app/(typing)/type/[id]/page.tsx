@@ -39,7 +39,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: PageProps<"/type/[id]">) {
   const { id: mapId } = await params;
-  prefetch(trpc.map.getJsonById.queryOptions({ mapId: Number(mapId) }));
   const caller = getCaller();
   const [userTypingOptions, mapInfo] = await Promise.all([
     caller.user.typingOption.getForSession(),
