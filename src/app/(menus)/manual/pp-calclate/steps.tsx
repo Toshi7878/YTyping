@@ -148,7 +148,7 @@ export function PPSteps() {
       ),
     },
     {
-      title: "クリア率 (Clear Rate) と補正",
+      title: "クリア率 (Clear Rate) 補正",
       links: [`${HELPER_URL}#L111-L116`, `${MISS_URL}#L19-L24`, `${SAVE_LINE_URL}#L41-L44`, `${PP_URL}#L36-L40`],
       content: (
         <>
