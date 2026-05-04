@@ -147,7 +147,9 @@ export function PPSteps() {
         <>
           <P>
             タイプ成功数 ÷（タイプ数 + ミス数）で精度を算出し、2乗で補正します。 精度が落ちるほど PP
-            が大きく減少します。 accuracy…正確率、type…タイプ数、miss…ミス数
+            が大きく減少します。
+            <br />
+            accuracy…正確率、type…タイプ数、miss…ミス数
           </P>
           <FormulaBlock>{"accuracy = type / (type + miss)\n補正係数 = accuracy²"}</FormulaBlock>
         </>
@@ -160,7 +162,9 @@ export function PPSteps() {
         <>
           <P>
             クリア率（進捗率）のべき乗で補正します。難易度が高いほど指数が小さくなり、 低クリア率でも PP
-            が出やすくなります。 rating…難易度 clearRate…クリア率 exp…補正係数
+            が出やすくなります。
+            <br />
+            clearRate…クリア率 exp…補正係数
           </P>
           <FormulaBlock>
             {
