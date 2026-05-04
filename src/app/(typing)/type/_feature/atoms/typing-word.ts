@@ -62,6 +62,13 @@ store.sub(typingWordAtom, () => {
 
   const { correct } = updateWordDisplay(typingWord, main, sub, options);
 
+  const isLineStart = correct.kana.length === 0 && correct.roma.length === 0;
+
+  if (isLineStart) {
+    resetScrollImmediately(main.trackRef, sub.trackRef);
+    return;
+  }
+
   scheduleScroll(main, sub, correct.kana, correct.roma, {
     isSmoothScroll: options.isSmoothScroll,
     mainScrollStart: options.mainWordScrollStart,
@@ -250,9 +257,17 @@ let prevSubShift = -1;
 let prevMainCorrectTextForScroll = "";
 let prevSubCorrectTextForScroll = "";
 
-const resetScroll = (track: HTMLDivElement) => {
-  track.style.transition = "";
-  track.style.transform = "translate3d(0px, 0px, 0px)";
+const resetScrollImmediately = (mainTrack: HTMLDivElement, subTrack: HTMLDivElement) => {
+  mainTrack.style.transition = "";
+  mainTrack.style.transform = "translate3d(0px, 0px, 0px)";
+  prevMainShift = 0;
+
+  subTrack.style.transition = "";
+  subTrack.style.transform = "translate3d(0px, 0px, 0px)";
+  prevSubShift = 0;
+
+  prevMainCorrectTextForScroll = "";
+  prevSubCorrectTextForScroll = "";
 };
 
 const scheduleScroll = (
@@ -292,22 +307,6 @@ const applyScroll = (
   subCorrect: string,
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
 ) => {
-  if (mainCorrect.length === 0 && subCorrect.length === 0) {
-    if (prevMainShift !== 0) {
-      resetScroll(mainRefs.trackRef);
-      prevMainShift = 0;
-    }
-
-    if (prevSubShift !== 0) {
-      resetScroll(subRefs.trackRef);
-      prevSubShift = 0;
-    }
-
-    prevMainCorrectTextForScroll = "";
-    prevSubCorrectTextForScroll = "";
-    return;
-  }
-
   const isMainTextChanged = prevMainCorrectTextForScroll !== mainCorrect;
   const isSubTextChanged = prevSubCorrectTextForScroll !== subCorrect;
 
@@ -323,12 +322,10 @@ const applyScroll = (
   let mainShift: number | null = null;
   let subShift: number | null = null;
 
-  // ---- Read phase ----
   if (mainCorrect.length > 0 && (isMainTextChanged || prevMainShift === -1)) {
     const currentShift = prevMainShift > 0 ? prevMainShift : 0;
-    const viewportWidth = mainRefs.viewportRef.clientWidth;
     const caretX = mainRefs.caretRef.offsetLeft;
-    const rightBound = Math.floor(viewportWidth * mainRightBoundRatio);
+    const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * mainRightBoundRatio);
     const visibleCaretX = caretX - currentShift;
 
     if (visibleCaretX > rightBound) {
@@ -338,9 +335,8 @@ const applyScroll = (
 
   if (subCorrect.length > 0 && (isSubTextChanged || prevSubShift === -1)) {
     const currentShift = prevSubShift > 0 ? prevSubShift : 0;
-    const viewportWidth = subRefs.viewportRef.clientWidth;
     const caretX = subRefs.caretRef.offsetLeft;
-    const rightBound = Math.floor(viewportWidth * subRightBoundRatio);
+    const rightBound = Math.floor(subRefs.viewportRef.clientWidth * subRightBoundRatio);
     const visibleCaretX = caretX - currentShift;
 
     if (visibleCaretX > rightBound) {
@@ -348,7 +344,6 @@ const applyScroll = (
     }
   }
 
-  // ---- Write phase ----
   if (mainShift !== null && mainShift !== prevMainShift) {
     mainRefs.trackRef.style.transition = scrollTransition;
     mainRefs.trackRef.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
