@@ -1,5 +1,5 @@
 "use client";
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -10,17 +10,11 @@ import { useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import {
-  setIsSearching,
-  useIsSearchingState,
-  useMapListFilterQueryStates,
-  useMapListSortQueryState,
-} from "./controls/search-params";
+import { setIsSearching, useMapListFilterQueryStates, useMapListSortQueryState } from "./controls/search-params";
 
 const pageAtom = atom<number>(0);
 
 export const MapList = () => {
-  const isSearching = useIsSearchingState();
   const trpc = useTRPC();
   const layoutType = useMapListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
@@ -28,13 +22,14 @@ export const MapList = () => {
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom);
 
-  const { data, isFetchedAfterMount, ...pagination } = useSuspenseInfiniteQuery(
+  const { data, isFetchedAfterMount, isPending, isPlaceholderData, ...pagination } = useInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
       { ...filterParams, sortType: sortParams.value, isSortDesc: sortParams.desc },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
         staleTime: Infinity,
         gcTime: Infinity,
+        placeholderData: (previousData) => previousData,
       },
     ),
   );
@@ -46,16 +41,16 @@ export const MapList = () => {
   }, [data]);
 
   useEffect(() => {
-    if (data.pages.length > 0) {
+    if (data && data.pages.length > 0) {
       setIsInitialPageRendered(true);
     }
-  }, [data.pages.length]);
+  }, [data]);
 
   const imagePriority = !isFetchedAfterMount && !isInitialPageRendered;
 
   return (
-    <div className={cn("space-y-3", isSearching && "opacity-20")}>
-      {data.pages.map((page, pageIndex) => {
+    <div className={cn("space-y-3", isPlaceholderData && "opacity-20")}>
+      {data?.pages.map((page, pageIndex) => {
         const isInView = Math.abs(pageIndex - currentPage) <= 1;
 
         return layoutType === "THREE_COLUMNS" ? (
