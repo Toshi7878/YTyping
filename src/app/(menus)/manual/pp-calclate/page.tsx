@@ -34,6 +34,8 @@ export default function Page() {
           <H2>PP (Performance Points)</H2>
           <CardDescription>
             プレイ結果から算出されるポイントです。精度・クリア率・速度・難易度が総合的に評価されます。
+            <br />
+            ※計算方法は見直し変更される可能性があります。
             <div className="flex items-center gap-x-2">
               <span>ソースコード:</span>
               <Link
