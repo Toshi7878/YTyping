@@ -56,16 +56,17 @@ store.sub(typingWordAtom, () => {
   const main = store.get(mainWordElementsAtom);
   const sub = store.get(subWordElementsAtom);
 
-  if (main && sub) {
-    const { correct } = updateWordDisplay(typingWord, main, sub);
-    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = getTypingOptions();
+  if (!main || !sub) return;
 
-    applyScroll(main, sub, correct.kana, correct.roma, {
-      isSmoothScroll,
-      mainScrollStart: mainWordScrollStart,
-      subScrollStart: subWordScrollStart,
-    });
-  }
+  const options = getTypingOptions();
+
+  const { correct } = updateWordDisplay(typingWord, main, sub, options);
+
+  applyScroll(main, sub, correct.kana, correct.roma, {
+    isSmoothScroll: options.isSmoothScroll,
+    mainScrollStart: options.mainWordScrollStart,
+    subScrollStart: options.subWordScrollStart,
+  });
 });
 
 store.sub(playingInputModeAtom, () => {
@@ -94,6 +95,13 @@ let prevMainRemain = "";
 let prevSubCorrect = "";
 let prevSubNextChar = "";
 let prevSubRemain = "";
+let prevIsCompleted = false;
+let prevIsUpdateLine = false;
+let prevLineCompletedDisplay = "";
+let prevIsMainKana = false;
+let prevNextLineCount = -1;
+let prevMainNextWordText = "";
+let prevSubNextWordText = "";
 
 const updateWordDisplay = (
   typingWord: TypingWord,
@@ -109,98 +117,131 @@ const updateWordDisplay = (
     caretRef: HTMLSpanElement;
     nextWordRef: HTMLSpanElement;
   },
+  options = getTypingOptions(),
 ) => {
-  const { wordDisplay, lineCompletedDisplay } = getTypingOptions();
+  const { wordDisplay, lineCompletedDisplay } = options;
   const inputMode = getPlayingInputMode();
+
   const isMainKana = wordDisplay.startsWith("KANA_") || inputMode === "kana";
-  const { correct, nextChar, remainWord } = createDisplayWord(typingWord, { remainWord: { maxLength: 60 } });
+
+  const { correct, nextChar, remainWord } = createDisplayWord(typingWord, {
+    remainWord: { maxLength: 60 },
+  });
 
   const mainCorrectText = isMainKana ? correct.kana : correct.roma;
   const mainNextCharText = isMainKana ? nextChar.kana : nextChar.roma;
   const mainRemainText = isMainKana ? remainWord.kana : remainWord.roma;
 
-  if (main?.trackRef) {
-    const correctEl = main.trackRef.children[0];
-    const nextCharEl = main.trackRef.children[1];
-    const remainWordEl = main.trackRef.children[2];
+  const subCorrectText = isMainKana ? correct.roma : correct.kana;
+  const subNextCharText = isMainKana ? nextChar.roma : nextChar.kana;
+  const subRemainText = isMainKana ? remainWord.roma : remainWord.kana;
 
-    if (correctEl && nextCharEl && remainWordEl) {
-      if (prevMainCorrect !== mainCorrectText) {
-        correctEl.textContent = mainCorrectText;
-        prevMainCorrect = mainCorrectText;
-      }
-      if (prevMainNextChar !== mainNextCharText) {
-        nextCharEl.textContent = mainNextCharText;
-        prevMainNextChar = mainNextCharText;
-      }
-      if (prevMainRemain !== mainRemainText) {
-        remainWordEl.textContent = mainRemainText;
-        prevMainRemain = mainRemainText;
-      }
-    }
+  const mainCorrectEl = main.trackRef.children[0];
+  const mainNextCharEl = main.trackRef.children[1];
+  const mainRemainWordEl = main.trackRef.children[2];
+
+  if (mainCorrectEl && prevMainCorrect !== mainCorrectText) {
+    mainCorrectEl.textContent = mainCorrectText;
+    prevMainCorrect = mainCorrectText;
   }
 
-  if (sub?.trackRef) {
-    const correctEl = sub?.trackRef.children[0];
-    const nextCharEl = sub?.trackRef.children[1];
-    const remainWordEl = sub?.trackRef.children[2];
+  if (mainNextCharEl && prevMainNextChar !== mainNextCharText) {
+    mainNextCharEl.textContent = mainNextCharText;
+    prevMainNextChar = mainNextCharText;
+  }
 
-    if (correctEl && nextCharEl && remainWordEl) {
-      const subCorrectText = isMainKana ? correct.roma : correct.kana;
-      const subNextCharText = isMainKana ? nextChar.roma : nextChar.kana;
-      const subRemainText = isMainKana ? remainWord.roma : remainWord.kana;
+  if (mainRemainWordEl && prevMainRemain !== mainRemainText) {
+    mainRemainWordEl.textContent = mainRemainText;
+    prevMainRemain = mainRemainText;
+  }
 
-      if (prevSubCorrect !== subCorrectText) {
-        correctEl.textContent = subCorrectText;
-        prevSubCorrect = subCorrectText;
-      }
-      if (prevSubNextChar !== subNextCharText) {
-        nextCharEl.textContent = subNextCharText;
-        prevSubNextChar = subNextCharText;
-      }
-      if (prevSubRemain !== subRemainText) {
-        remainWordEl.textContent = subRemainText;
-        prevSubRemain = subRemainText;
-      }
-    }
+  const subCorrectEl = sub.trackRef.children[0];
+  const subNextCharEl = sub.trackRef.children[1];
+  const subRemainWordEl = sub.trackRef.children[2];
+
+  if (subCorrectEl && prevSubCorrect !== subCorrectText) {
+    subCorrectEl.textContent = subCorrectText;
+    prevSubCorrect = subCorrectText;
+  }
+
+  if (subNextCharEl && prevSubNextChar !== subNextCharText) {
+    subNextCharEl.textContent = subNextCharText;
+    prevSubNextChar = subNextCharText;
+  }
+
+  if (subRemainWordEl && prevSubRemain !== subRemainText) {
+    subRemainWordEl.textContent = subRemainText;
+    prevSubRemain = subRemainText;
   }
 
   const isCompleted = !!correct.kana && !nextChar.kana;
   const isUpdateLine = !correct.kana;
-  const wordContainer = store.get(wordContainerElementAtom);
-  requestAnimationFrame(() => {
-    wordContainer?.classList.toggle("word-area-completed", isCompleted);
 
-    if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
-      const builtMap = getBuiltMap();
-      const count = getLineCount();
-      const nextLine = builtMap?.lines[count + 1];
-      if (nextLine && main && sub) {
-        const { kanaLyrics, romaLyrics } = nextLine;
-        main.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? kanaLyrics : romaLyrics)}`;
-        sub.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? romaLyrics : kanaLyrics)}`;
+  const shouldUpdateCompletedView =
+    prevIsCompleted !== isCompleted ||
+    prevIsUpdateLine !== isUpdateLine ||
+    prevLineCompletedDisplay !== lineCompletedDisplay ||
+    prevIsMainKana !== isMainKana;
+
+  if (shouldUpdateCompletedView) {
+    prevIsCompleted = isCompleted;
+    prevIsUpdateLine = isUpdateLine;
+    prevLineCompletedDisplay = lineCompletedDisplay;
+    prevIsMainKana = isMainKana;
+
+    requestAnimationFrame(() => {
+      const wordContainer = store.get(wordContainerElementAtom);
+
+      wordContainer?.classList.toggle("word-area-completed", isCompleted);
+
+      if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
+        const builtMap = getBuiltMap();
+        const count = getLineCount();
+        const nextLine = builtMap?.lines[count + 1];
+
+        if (nextLine && prevNextLineCount !== count) {
+          prevNextLineCount = count;
+
+          const { kanaLyrics, romaLyrics } = nextLine;
+
+          const mainNextWordText = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? kanaLyrics : romaLyrics)}`;
+
+          const subNextWordText = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? romaLyrics : kanaLyrics)}`;
+
+          if (prevMainNextWordText !== mainNextWordText) {
+            main.nextWordRef.textContent = mainNextWordText;
+            prevMainNextWordText = mainNextWordText;
+          }
+
+          if (prevSubNextWordText !== subNextWordText) {
+            sub.nextWordRef.textContent = subNextWordText;
+            prevSubNextWordText = subNextWordText;
+          }
+        }
+
         main.nextWordRef.classList.toggle("!block", true);
         sub.nextWordRef.classList.toggle("!block", true);
         main.viewportRef.classList.toggle("hidden", true);
         sub.viewportRef.classList.toggle("hidden", true);
+      } else if (isUpdateLine) {
+        prevNextLineCount = -1;
+        prevMainNextWordText = "";
+        prevSubNextWordText = "";
+
+        main.nextWordRef.textContent = "";
+        sub.nextWordRef.textContent = "";
+
+        main.nextWordRef.classList.toggle("!block", false);
+        sub.nextWordRef.classList.toggle("!block", false);
+        main.viewportRef.classList.toggle("hidden", false);
+        sub.viewportRef.classList.toggle("hidden", false);
       }
-    } else if (isUpdateLine) {
-      main.nextWordRef.textContent = "";
-      sub.nextWordRef.textContent = "";
 
-      main.nextWordRef.classList.toggle("!block", false);
-      sub.nextWordRef.classList.toggle("!block", false);
-      main.viewportRef.classList.toggle("hidden", false);
-      sub.viewportRef.classList.toggle("hidden", false);
-    }
+      mainCorrectEl?.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
 
-    const mainCorrectEl = main.trackRef.children[0];
-    const subCorrectEl = sub.trackRef.children[0];
-    if (mainCorrectEl && subCorrectEl) {
-      mainCorrectEl.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
-      subCorrectEl.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
-    }
-  });
+      subCorrectEl?.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
+    });
+  }
 
   return { correct };
 };
