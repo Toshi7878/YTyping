@@ -9,8 +9,8 @@ import {
 import { useParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { LabeledInput } from "@/components/ui/input/labeled-input";
+import { LabeledCheckbox } from "@/components/ui/labeled-items";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";

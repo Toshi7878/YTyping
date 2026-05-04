@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
+import { LabeledCheckbox } from "@/components/ui/labeled-items";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
@@ -16,6 +17,7 @@ import {
   useMediaSpeedState,
   useYTStartedState,
 } from "../../youtube/youtube-player";
+import { setIsDisabledMapStyled, useIsDisabledMapStyled, useIsStyledMap } from "../custom-style";
 import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";
@@ -28,17 +30,27 @@ export const FooterButtons = () => {
   const isReady = sceneGroup === "Ready";
   const { id: mapId } = useParams<{ id: string }>();
   const { data: session } = useSession();
+  const isDisabledCSSChange = useIsDisabledMapStyled();
+  const isStyledMap = useIsStyledMap();
 
   return (
     <section
       className={cn("mx-3 mt-2 mb-3 flex h-16 w-full justify-between font-bold md:h-10", isReady && "justify-end")}
     >
-      {isReady && !!session && (
-        <Link href={`/ime/${mapId}`} replace>
-          <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
-            変換有りタイピング
-          </Button>
-        </Link>
+      {isReady && (
+        <div className="flex w-full items-center justify-between">
+          <LabeledCheckbox
+            containerClassName={!isStyledMap ? "invisible" : ""}
+            label="譜面の装飾を無効化"
+            checked={isDisabledCSSChange}
+            onCheckedChange={setIsDisabledMapStyled}
+          />
+          <Link href={`/ime/${mapId}`} className={!session ? "invisible" : ""} replace>
+            <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
+              変換有りタイピング
+            </Button>
+          </Link>
+        </div>
       )}
       {isYTStarted && scene === "play" && (
         <>

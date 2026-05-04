@@ -7,7 +7,7 @@ import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResult } from "@/validator/result";
 import { store } from "./store";
 
-const builtMapAtom = atomWithReset<{
+export const builtMapAtom = atomWithReset<{
   lines: BuiltMapLine<z.infer<typeof LineOptionSchema>>[];
   totalNotes: { roma: number; kana: number };
   keyRate: number;

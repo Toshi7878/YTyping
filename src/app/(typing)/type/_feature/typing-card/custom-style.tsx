@@ -1,6 +1,7 @@
+import { useAtomValue } from "jotai";
 import { atom } from "jotai/vanilla";
 import { uncontrolled } from "jotai-uncontrolled";
-import { getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
+import { builtMapAtom, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { findClosestLowerOrEqual } from "@/utils/array";
 import { store } from "../atoms/store";
 
@@ -24,13 +25,29 @@ export const setLineCustomStyleIndex = (currentIndex: number) => {
   store.set(lineStyleIndexAtom, findClosestLowerOrEqual(map.changeCSSIndexes, currentIndex));
 };
 
+export const isStyledMapAtom = atom((get): boolean => {
+  const map = get(builtMapAtom);
+  if (!map) return false;
+  return map.changeCSSIndexes.length > 0 || !!map.lines[0]?.options?.eternalCSS;
+});
+export const useIsStyledMap = () => useAtomValue(isStyledMapAtom);
+
+const isDisabledMapStyledAtom = atom(false);
+export const useIsDisabledMapStyled = () => useAtomValue(isDisabledMapStyledAtom);
+export const setIsDisabledMapStyled = (value: boolean) => store.set(isDisabledMapStyledAtom, value);
+
 export const LineCustomStyle = () => {
+  const isDisabledMapStyled = useIsDisabledMapStyled();
+  if (isDisabledMapStyled) return null;
   return <uncontrolled.style atomStore={store}>{lineStyleAtom}</uncontrolled.style>;
 };
 
 export const EternalCustomStyle = () => {
   const map = getBuiltMap();
-  if (!map) return null;
+  const isDisabledMapStyled = useIsDisabledMapStyled();
+
+  if (!map || isDisabledMapStyled) return null;
   if (!map.lines[0]?.options?.eternalCSS) return null;
+
   return <style>{map.lines[0].options?.eternalCSS}</style>;
 };

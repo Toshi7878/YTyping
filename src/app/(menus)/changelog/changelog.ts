@@ -1,7 +1,11 @@
 export const changelog = [
   {
-    date: "2026-4-29",
-    descriptions: ["ツールページにNamaTypingを追加"],
+    date: "2026-5-4",
+    descriptions: ["装飾譜面のタイピング開始画面に装飾を無効化できるチェックボックスを追加"],
+  },
+  {
+    date: "2026-5-2",
+    descriptions: ["ツールページにnamaYTypingを追加"],
   },
   {
     date: "2026-4-29",
