@@ -23,7 +23,7 @@ export default async function Page() {
           <div>
             <PPRankingInfoTrigger />
             <Link href="/manual/pp-calclate" className="ml-2 text-primary-light text-sm hover:underline">
-              PP計算方法
+              譜面難易度とPP計算方法
             </Link>
           </div>
         </H1>

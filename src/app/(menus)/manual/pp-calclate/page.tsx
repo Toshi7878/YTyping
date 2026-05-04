@@ -6,7 +6,7 @@ import { DifficultySteps, PPSteps } from "./steps";
 export default function Page() {
   return (
     <article className="mx-auto max-w-7xl space-y-4">
-      <H1>PP計算方法</H1>
+      <H1>譜面難易度とPP計算方法</H1>
       <Card>
         <CardHeader>
           <H2>難易度 (Rating)</H2>
