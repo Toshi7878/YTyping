@@ -7,11 +7,10 @@ import { JotaiProvider } from "./_feature/provider";
 export default async function Home({ searchParams }: PageProps<"/">) {
   const { sort, ...mapListFilterParams } = loadMapListSearchParams(await searchParams);
   const caller = getCaller();
-  const mapList = await caller.map.list.get({
-    ...mapListFilterParams,
-    sortType: sort.value,
-    isSortDesc: sort.desc,
-  });
+  const [mapList, bookmarkLists] = await Promise.all([
+    caller.map.list.get({ ...mapListFilterParams, sortType: sort.value, isSortDesc: sort.desc }),
+    caller.map.bookmark.lists.getForSession(),
+  ]);
   prefetch(
     trpc.map.list.get.infiniteQueryOptions(
       {
@@ -25,7 +24,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       },
     ),
   );
-  prefetch(trpc.map.bookmark.lists.getForSession.queryOptions());
+  prefetch(trpc.map.bookmark.lists.getForSession.queryOptions(undefined, { initialData: bookmarkLists }));
 
   return (
     <HydrateClient>

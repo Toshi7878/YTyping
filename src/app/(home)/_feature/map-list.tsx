@@ -1,6 +1,6 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
@@ -10,9 +10,12 @@ import { useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { setIsSearching, useMapListFilterQueryStates, useMapListSortQueryState } from "./controls/search-params";
+import { useMapListFilterQueryStates, useMapListSortQueryState } from "./controls/search-params";
+import { store } from "./provider";
 
 const pageAtom = atom<number>(0);
+const isSearchingAtom = atom<boolean>(false);
+export const useIsSearching = () => useAtomValue(isSearchingAtom);
 
 export const MapList = () => {
   const trpc = useTRPC();
@@ -35,10 +38,8 @@ export const MapList = () => {
   );
 
   useEffect(() => {
-    if (data) {
-      setIsSearching(false);
-    }
-  }, [data]);
+    store.set(isSearchingAtom, isPlaceholderData);
+  }, [isPlaceholderData]);
 
   useEffect(() => {
     if (data && data.pages.length > 0) {

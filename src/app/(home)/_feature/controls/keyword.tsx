@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useIsSearchingState, useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
+import { useIsSearching } from "../map-list";
+import { useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
 
 export const KeywordInput = () => {
   const [params] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
-  const isSearching = useIsSearchingState();
+  const isSearching = useIsSearching();
   const setSearchParams = useSetSearchParams();
 
   useEffect(() => {
