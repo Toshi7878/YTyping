@@ -22,8 +22,8 @@ export default async function Page() {
           <span>YTyping 実力ランキング</span>
           <div>
             <PPRankingInfoTrigger />
-            <Link href="/manual/pp-calclate" className="ml-2 text-primary-light text-sm hover:underline">
-              譜面難易度とPP計算方法
+            <Link href="/manual/pp-calclate" className="ml-2 text-primary-light text-xs hover:underline">
+              PP算出方法
             </Link>
           </div>
         </H1>
