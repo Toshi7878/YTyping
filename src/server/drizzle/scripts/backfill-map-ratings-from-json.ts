@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { eq } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
-import { calcStarRating } from "@/server/api/routers/map/rating";
+import { calcRating } from "@/server/api/routers/map/rating";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties } from "@/server/drizzle/schema";
 import { RawMapLineSchema } from "@/validator/map/raw-map-json";
@@ -54,7 +54,7 @@ async function main() {
       const parsed = JSON.parse(text) as unknown;
       const rawMapLines = rawMapLinesSchema.parse(parsed);
       const builtMapLines = buildTypingMap({ rawMapLines, charPoint: 0 });
-      const rating = calcStarRating(builtMapLines);
+      const rating = calcRating(builtMapLines);
 
       const rows = await db
         .update(MapDifficulties)

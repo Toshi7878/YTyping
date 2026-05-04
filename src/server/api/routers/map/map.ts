@@ -13,7 +13,7 @@ import { mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";
-import { calcStarRating } from "./rating";
+import { calcRating } from "./rating";
 
 export const mapRouter = {
   getById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -156,7 +156,7 @@ export const mapRouter = {
       }
 
       const builtMapLines = buildTypingMap({ rawMapLines: rawMapJson, charPoint: 0 });
-      const rating = calcStarRating(builtMapLines);
+      const rating = calcRating(builtMapLines);
 
       await tx
         .insert(MapDifficulties)

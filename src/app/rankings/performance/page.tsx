@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { H1 } from "@/components/ui/typography";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { PPRankingInfoTrigger } from "./_components/pp-ranking-info-trigger";
@@ -19,8 +20,14 @@ export default async function Page() {
       <div className="mx-auto max-w-3xl space-y-4 px-4 lg:px-8">
         <H1 className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span>YTyping 実力ランキング</span>
-          <PPRankingInfoTrigger />
+          <div>
+            <PPRankingInfoTrigger />
+            <Link href="/manual/pp-calclate" className="ml-2 text-primary-light text-sm hover:underline">
+              PP計算方法
+            </Link>
+          </div>
         </H1>
+
         <PPRankingTable />
       </div>
     </HydrateClient>

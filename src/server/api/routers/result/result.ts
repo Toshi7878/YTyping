@@ -43,21 +43,21 @@ export const resultRouter = {
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
-      const starRatingRow = await tx
+      const ratingRow = await tx
         .select({ rating: MapDifficulties.rating })
         .from(MapDifficulties)
         .where(eq(MapDifficulties.mapId, mapId))
         .limit(1)
         .then((rows) => rows[0]);
 
-      if (!starRatingRow) {
+      if (!ratingRow) {
         throw new TRPCError({ code: "NOT_FOUND", message: "譜面の難易度情報が見つかりません" });
       }
 
       const rawPPInput = buildRawPPInputFromResultStatus(status);
-      const starRating = starRatingRow.rating;
-      const pp = calcRawPP(rawPPInput, starRating);
-      const statusWithPp = { ...status, pp, starRatingSnapshot: starRating };
+      const rating = ratingRow.rating;
+      const pp = calcRawPP(rawPPInput, rating);
+      const statusWithPp = { ...status, pp, starRatingSnapshot: rating };
 
       const existingResult = await tx
         .select({ id: Results.id })

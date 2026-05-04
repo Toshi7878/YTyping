@@ -8,10 +8,10 @@ const CLEAR_RATE_EXP_RANGE = 1.0;
 const CLEAR_RATE_STAR_SCALE = 8;
 
 /**
- * starRatingからbasePPを算出
+ * ratingからbasePPを算出
  */
-function calcBasePP(starRating: number): number {
-  return starRating ** BASE_EXP * BASE_CONSTANT;
+function calcBasePP(rating: number): number {
+  return rating ** BASE_EXP * BASE_CONSTANT;
 }
 
 /**
@@ -33,8 +33,8 @@ function calcSpeedMultiplier(speed: number): number {
  * star 15 -> exp 1.45
  * star ∞  -> exp 1.2
  */
-function calcClearRateExp(starRating: number): number {
-  const star = Math.max(0, starRating);
+function calcClearRateExp(rating: number): number {
+  const star = Math.max(0, rating);
 
   return MIN_CLEAR_RATE_EXP + CLEAR_RATE_EXP_RANGE / (1 + star / CLEAR_RATE_STAR_SCALE);
 }
@@ -84,10 +84,10 @@ export function buildRawPPInputFromResultStatus(status: {
   };
 }
 
-export function calcRawPP(result: RawPPInput, starRating: number): number {
-  const basePP = calcBasePP(starRating);
+export function calcRawPP(result: RawPPInput, rating: number): number {
+  const basePP = calcBasePP(rating);
   const speedMultiplier = calcSpeedMultiplier(result.minPlaySpeed);
-  const clearRateExp = calcClearRateExp(starRating);
+  const clearRateExp = calcClearRateExp(rating);
 
   const pp = basePP * result.accuracy ** ACCURACY_EXP * result.clearRate ** clearRateExp * speedMultiplier;
 

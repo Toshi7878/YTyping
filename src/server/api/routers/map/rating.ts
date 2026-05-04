@@ -60,7 +60,7 @@ function calcNotesScaling(totalNotes: number, minNotes: number, logScale: number
 }
 
 /** 譜面全体のstar ratingを算出 */
-export function calcStarRating(lines: BuiltMapLine[], options?: DifficultyOptions): number {
+export function calcRating(lines: BuiltMapLine[], options?: DifficultyOptions): number {
   const { threshold, penaltyExp, peakN, peakRatio, maxKPM, minNotes, logScale, maxScale } = {
     ...DEFAULT_OPTIONS,
     ...options,
