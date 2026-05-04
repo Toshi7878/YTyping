@@ -49,7 +49,7 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
 
 export const MapListTagFilter = () => {
   return (
-    <Card className="flex-1 select-none py-1">
+    <Card className="max-w-1/2 flex-1 select-none py-1">
       <CardContent className="grid grid-cols-1 items-center sm:grid-cols-[auto_1fr]">
         <FilterMenu key={USER_FILTER_MENU.label} filter={USER_FILTER_MENU}>
           <BookmarkListSelect />
