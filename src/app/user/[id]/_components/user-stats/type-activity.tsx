@@ -11,8 +11,21 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { getTimezone, getYearsDesc } from "@/utils/date";
-import { getCSSVariable } from "@/utils/get-computed-color";
 import { useTargetYearQueryState } from "../../_lib/search-params";
+
+/**
+ * TailwindCSSのCSS変数を取得する汎用関数
+ * @param variableName CSS変数名（--で始まる形式、またはそれなしの形式）
+ * @returns CSS変数の値、見つからない場合は空文字
+ */
+const getCSSVariable = (variableName: string): string => {
+  const computedStyle = getComputedStyle(document.documentElement);
+
+  // 変数名が--で始まっていない場合は追加
+  const cssVar = variableName.startsWith("--") ? variableName : `--${variableName}`;
+
+  return computedStyle.getPropertyValue(cssVar).trim();
+};
 
 export const TypeActivity = () => {
   const trpc = useTRPC();
