@@ -3,6 +3,7 @@ import { VolumeRange } from "@/components/shared/volume-range";
 import { CardWithContent } from "@/components/ui/card";
 import { usePreviewPlayerState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 import { DifficultyFilter } from "./difficulty-filter";
 import { KeywordInput } from "./keyword";
 import { MapCountBadge } from "./list-count";
@@ -18,9 +19,9 @@ export const MapListControls = () => {
   return (
     <section className="flex w-full flex-col gap-3">
       <KeywordInput />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+      <div className="flex flex-col gap-3 sm:flex-row">
         {isLogin && <MapListTagFilter />}
-        <DifficultyFilter />
+        <DifficultyFilter className={cn(!isLogin && "lg:max-w-1/2")} />
       </div>
       <CardWithContent className={{ card: "p-0", cardContent: "flex flex-wrap items-center justify-between p-1.5" }}>
         <SortControls />

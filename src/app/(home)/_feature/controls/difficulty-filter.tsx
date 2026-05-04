@@ -13,7 +13,7 @@ import { useMapListFilterQueryStates, useSetSearchParams } from "./search-params
 type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
 const RANGE = { min: 0, max: 16 };
 
-export const DifficultyFilter = () => {
+export const DifficultyFilter = ({ className }: { className?: string }) => {
   const [params] = useMapListFilterQueryStates();
   const setSearchParams = useSetSearchParams();
   const { debounce } = useDebounce(500);
@@ -28,7 +28,7 @@ export const DifficultyFilter = () => {
   };
 
   return (
-    <Card className="flex-1 py-3 sm:max-w-1/2">
+    <Card className={cn("flex-1 py-3", className)}>
       <CardContent className="flex w-full select-none flex-col gap-4">
         <div className="flex flex-wrap gap-2">
           {DIFFICULTY_TIERS.map((tier) => {
