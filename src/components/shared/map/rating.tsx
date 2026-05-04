@@ -22,10 +22,10 @@ export const DIFFICULTY_TIERS = [
   { label: "★12-∞", min: 12, max: null, variant: "level-ultra" },
 ] as const;
 
-export type DifficultyVariant = (typeof DIFFICULTY_TIERS)[number]["variant"];
+type DifficultyVariant = (typeof DIFFICULTY_TIERS)[number]["variant"];
 
 /** DIFFICULTY_TIERS と同じ区分で rating に対応する variant を返す */
-export function getDifficultyLevelVariant(rating: number): DifficultyVariant {
+function getDifficultyLevelVariant(rating: number): DifficultyVariant {
   for (const tier of DIFFICULTY_TIERS) {
     if (rating <= (tier.max ?? Infinity)) return tier.variant;
   }

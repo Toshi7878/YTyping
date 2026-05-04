@@ -10,7 +10,6 @@ const lineRemainFormatTimeAtom = atom((get) => {
   return lineRemainTime.toFixed(1);
 });
 
-export const getLineRemainTime = () => store.get(lineRemainTimeAtom);
 export const setLineRemainTime = (value: number) => store.set(lineRemainTimeAtom, value);
 export const resetLineRemainTime = () => store.set(lineRemainTimeAtom, 0);
 

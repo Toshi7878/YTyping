@@ -59,7 +59,7 @@ export type MapListFilterSearchParams = inferParserType<typeof mapListFilterPars
 export type MapListSortSearchParams = inferParserType<typeof mapListSortParser>;
 
 export const loadMapListSearchParams = createLoader({ ...mapListFilterParsers, sort: mapListSortParser });
-export const mapListSerialize = createSerializer({ ...mapListFilterParsers, sort: mapListSortParser });
+const mapListSerialize = createSerializer({ ...mapListFilterParsers, sort: mapListSortParser });
 
 const isSearchingAtom = atom(false);
 export const useIsSearchingState = () => useAtomValue(isSearchingAtom);

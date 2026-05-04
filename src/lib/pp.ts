@@ -10,7 +10,7 @@ const CLEAR_RATE_STAR_SCALE = 8;
 /**
  * starRatingからbasePPを算出
  */
-export function calcBasePP(starRating: number): number {
+function calcBasePP(starRating: number): number {
   return starRating ** BASE_EXP * BASE_CONSTANT;
 }
 
@@ -43,7 +43,7 @@ function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-export type RawPPInput = {
+type RawPPInput = {
   accuracy: number;
   clearRate: number;
   minPlaySpeed: number;

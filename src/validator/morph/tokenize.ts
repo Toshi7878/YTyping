@@ -8,5 +8,3 @@ export const tokenizeSentenceResultSchema = z.object({
   lyrics: z.array(z.string()),
   readings: z.array(z.string()),
 });
-
-export type TokenizeSentenceResult = z.infer<typeof tokenizeSentenceResultSchema>;

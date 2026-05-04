@@ -16,11 +16,12 @@ export const setLineResult = ({ index, lineResult }: { index: number; lineResult
   if (!prev) return;
   store.set(lineResultAtomFamily(index), { ...prev, lineResult });
 };
-export const setLineResultSelected = ({ index, isSelected }: { index: number; isSelected: boolean }) => {
+const setLineResultSelected = ({ index, isSelected }: { index: number; isSelected: boolean }) => {
   const target = store.get(lineResultAtomFamily(index));
   if (!target) return;
   store.set(lineResultAtomFamily(index), { ...target, isSelected });
 };
+
 export const getAllLineResult = (): TypingLineResult[] => {
   const results: TypingLineResult[] = [];
   let index = 0;

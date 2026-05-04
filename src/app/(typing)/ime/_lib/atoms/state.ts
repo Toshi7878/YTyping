@@ -32,12 +32,6 @@ export const setTargetWords = (newExpectedWords: ExtractAtomValue<typeof targetW
   store.set(targetWordsAtom, newExpectedWords);
 export const resetTypingWord = () => store.set(targetWordsAtom, []);
 
-const currentWordIndexAtom = atom(0);
-export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom);
-export const getCurrentWordIndex = () => store.get(currentWordIndexAtom);
-export const setCurrentWordIndex = (newCurrentWordIndex: number) =>
-  store.set(currentWordIndexAtom, newCurrentWordIndex);
-
 const utilityParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,
   count: 0,

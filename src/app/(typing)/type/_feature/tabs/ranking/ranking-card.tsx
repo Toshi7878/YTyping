@@ -16,7 +16,6 @@ import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { useMapIdState } from "../../provider";
 import { useSceneGroupState } from "../../typing-card/typing-card";
 import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
@@ -56,7 +55,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
 const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boolean }) => {
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
   const { data: session } = useSession();
-  const mapId = useMapIdState();
+  const { id: mapId } = useParams();
   const toggleClap = useToggleClapMutation();
 
   const columns: ColumnDef<RankingResult, unknown>[] = [

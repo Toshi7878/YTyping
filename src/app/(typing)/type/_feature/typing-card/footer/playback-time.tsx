@@ -15,12 +15,11 @@ export const PlaybackTimeDisplay = () => {
 
 const elapsedSecTimeAtom = atom(0);
 
-export const elapsedSecFormatTimeAtom = atom((get) => {
+const elapsedSecFormatTimeAtom = atom((get) => {
   const elapsedSecTime = get(elapsedSecTimeAtom);
   return formatTime(elapsedSecTime);
 });
 
-export const getElapsedSecTime = () => store.get(elapsedSecTimeAtom);
 export const setElapsedSecTime = (value: number) => store.set(elapsedSecTimeAtom, value);
 export const resetElapsedSecTime = () => store.set(elapsedSecTimeAtom, 0);
 

@@ -25,7 +25,7 @@ export const setLineCustomStyleIndex = (currentIndex: number) => {
   store.set(lineStyleIndexAtom, findClosestLowerOrEqual(map.changeCSSIndexes, currentIndex));
 };
 
-export const isStyledMapAtom = atom((get): boolean => {
+const isStyledMapAtom = atom((get): boolean => {
   const map = get(builtMapAtom);
   if (!map) return false;
   return map.changeCSSIndexes.length > 0 || !!map.lines[0]?.options?.eternalCSS;

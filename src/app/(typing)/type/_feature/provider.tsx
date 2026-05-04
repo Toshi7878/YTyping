@@ -1,5 +1,5 @@
 "use client";
-import { Provider, useAtomValue } from "jotai";
+import { Provider } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
@@ -11,8 +11,7 @@ import { mutateTypingStats } from "./lib/stats";
 import { typingOptionsAtom } from "./tabs/setting/popover";
 import { getScene } from "./typing-card/typing-card";
 
-export const mapIdAtom = atomWithReset<number | null>(null);
-export const useMapIdState = () => useAtomValue(mapIdAtom);
+const mapIdAtom = atomWithReset<number | null>(null);
 export const getMapId = () => store.get(mapIdAtom);
 export const resetMapId = () => store.set(mapIdAtom, RESET);
 

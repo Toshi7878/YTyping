@@ -29,19 +29,19 @@ const minMediaSpeedAtom = atom(1);
 
 export const useIsPausedState = () => useAtomValue(isPausedAtom);
 export const getIsPaused = () => store.get(isPausedAtom);
-export const setIsPaused = (updater: SetStateAction<boolean>) => store.set(isPausedAtom, updater);
+const setIsPaused = (updater: SetStateAction<boolean>) => store.set(isPausedAtom, updater);
 
 export const useMediaSpeedState = () => useAtomValue(mediaSpeedAtom);
 export const getMediaSpeed = () => store.get(mediaSpeedAtom);
-export const setMediaSpeed = (updater: SetStateAction<number>) => store.set(mediaSpeedAtom, updater);
+const setMediaSpeed = (updater: SetStateAction<number>) => store.set(mediaSpeedAtom, updater);
 
 export const useMinMediaSpeedState = () => useAtomValue(minMediaSpeedAtom);
 export const getMinMediaSpeed = () => store.get(minMediaSpeedAtom);
 export const setMinMediaSpeed = (value: number) => store.set(minMediaSpeedAtom, value);
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
-export const getIsYTStarted = () => store.get(isYTStartedAtom);
-export const setYTStarted = (value: boolean) => store.set(isYTStartedAtom, value);
+const getIsYTStarted = () => store.get(isYTStartedAtom);
+const setYTStarted = (value: boolean) => store.set(isYTStartedAtom, value);
 
 export const resetYoutubeStatus = () => {
   store.set(isYTStartedAtom, false);

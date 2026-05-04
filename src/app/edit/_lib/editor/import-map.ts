@@ -45,7 +45,7 @@ const timelineObjectArrayConverter = async (rows: TimelineObjectRow[]) => {
   return result;
 };
 
-export const importMapFromJsonText = async (text: string) => {
+const importMapFromJsonText = async (text: string) => {
   const parsed: unknown = JSON.parse(text);
   let convertedData: RawMapLine[];
 
@@ -82,7 +82,7 @@ export const importMapFromJsonText = async (text: string) => {
 };
 
 /** textarea 先頭が JSON オブジェクト／配列なら true。LRC の [mm:ss.xx] 行は [ の次が数字のため false。 */
-export function isImportTextLikelyJson(text: string): boolean {
+function isImportTextLikelyJson(text: string): boolean {
   const t = text.replace(/^\uFEFF/, "").trimStart();
   if (t.startsWith("{")) return true;
   if (!t.startsWith("[")) return false;
@@ -108,7 +108,7 @@ export async function importMapFromTextAutoDetect(text: string): Promise<void> {
   }
 }
 
-export const importMapFromLrcText = async (text: string) => {
+const importMapFromLrcText = async (text: string) => {
   const lrc = text.split(/\r\n|\n/);
   const convertedData = await lrcConverter(lrc);
   dispatchEditHistory({

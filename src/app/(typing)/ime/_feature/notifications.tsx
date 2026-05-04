@@ -6,13 +6,12 @@ import { store } from "./provider";
 
 const notificationsAtom = atomWithReset<string[]>([]);
 
-export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
 export const addNotifications = (notifications: string[]) =>
   store.set(notificationsAtom, (prev) => [...prev, ...notifications]);
 export const resetNotifications = () => store.set(notificationsAtom, RESET);
 
 export const Notifications = ({ style }: { style: CSSProperties }) => {
-  const notifications = useNotificationsState();
+  const notifications = useAtomValue(notificationsAtom);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: notifications.length変更時のみ発火させたいため

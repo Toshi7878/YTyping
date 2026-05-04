@@ -13,7 +13,6 @@ export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);
 export const playYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
 export const pauseYTPlayer = () => store.get(YTPlayerAtom)?.pauseVideo();
 export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true);
-export const stopYTPlayer = () => store.get(YTPlayerAtom)?.stopVideo();
 export const getYTPlayerState = () => store.get(YTPlayerAtom)?.getPlayerState();
 const getYTPlaybackRate = () => store.get(YTPlayerAtom)?.getPlaybackRate();
 export const cycleYTPlaybackRate = ({ minSpeed }: { minSpeed: number }) => {
@@ -36,7 +35,6 @@ export const stepYTPlaybackRate = (direction: "up" | "down") => {
 export const setYTPlaybackRate = (suggestedRate: number) => store.get(YTPlayerAtom)?.setPlaybackRate(suggestedRate);
 export const getYTVideoId = () => store.get(YTPlayerAtom)?.getVideoData().video_id;
 export const getYTCurrentTime = () => store.get(YTPlayerAtom)?.getCurrentTime();
-export const cueYTVideoById = (videoId: string) => store.get(YTPlayerAtom)?.cueVideoById(videoId);
 
 export const primeYTPlayerForMobilePlayback = () => {
   const isDesktop = getIsDesktopDevice();

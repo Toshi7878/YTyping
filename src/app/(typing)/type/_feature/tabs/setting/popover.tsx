@@ -37,7 +37,7 @@ export const setTypingOptions = (newTypingOptions: Partial<TypingOptions>) => {
   store.set(typingOptionsAtom, (prev) => ({ ...prev, ...newTypingOptions }));
   isOptionEdited = true;
 };
-export const resetTypingOptions = () => {
+const resetTypingOptions = () => {
   store.set(typingOptionsAtom, RESET);
   isOptionEdited = true;
 };

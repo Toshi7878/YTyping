@@ -321,7 +321,7 @@ export const filterByMapVisibility = (
   return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id)));
 };
 
-export const filterByChunkCount = (
+const filterByChunkCount = (
   input: Pick<z.output<typeof MapSearchFilterSchema>, "maxKanaChunkCount" | "minAlphabetChunkCount">,
 ) => {
   const conditions = [];
