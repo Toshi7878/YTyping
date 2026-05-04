@@ -43,7 +43,7 @@ export const mapBookmarkListItemRouter = {
             ),
           });
 
-          if (!existingNotification) {
+          if (!existingNotification && list.isPublic) {
             const notificationId = generateNotificationId();
             await db.transaction(async (tx) => {
               await tx.insert(Notifications).values({
