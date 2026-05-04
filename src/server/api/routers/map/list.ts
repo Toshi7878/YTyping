@@ -181,7 +181,13 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   if (input?.bookmarkListId) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .innerJoin(MapBookmarkLists, and(eq(MapBookmarkLists.id, input.bookmarkListId)))
+      .innerJoin(
+        MapBookmarkLists,
+        and(
+          eq(MapBookmarkLists.id, input.bookmarkListId),
+          or(eq(MapBookmarkLists.isPublic, true), session ? eq(MapBookmarkLists.userId, session.user.id) : sql`false`),
+        ),
+      )
       .innerJoin(
         MapBookmarkListItems,
         and(eq(MapBookmarkListItems.listId, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id)),
