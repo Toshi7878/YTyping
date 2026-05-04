@@ -36,6 +36,7 @@ export default function Page() {
             プレイ結果から算出されるポイントです。精度・クリア率・速度・難易度が総合的に評価されます。
             <br />
             ※計算方法は見直し変更される可能性があります。
+            ※PP初回算出時2026-4-22以前の譜面が後から更新されたリザルトはratingが不明なため0ppになっています。
             <div className="flex items-center gap-x-2">
               <span>ソースコード:</span>
               <Link
