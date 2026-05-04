@@ -62,13 +62,12 @@ store.sub(typingWordAtom, () => {
 
   const { correct } = updateWordDisplay(typingWord, main, sub, options);
 
-  applyScroll(main, sub, correct.kana, correct.roma, {
+  scheduleScroll(main, sub, correct.kana, correct.roma, {
     isSmoothScroll: options.isSmoothScroll,
     mainScrollStart: options.mainWordScrollStart,
     subScrollStart: options.subWordScrollStart,
   });
 });
-
 store.sub(playingInputModeAtom, () => {
   const typingWord = store.get(typingWordAtom);
   const main = store.get(mainWordElementsAtom);
@@ -251,6 +250,33 @@ let prevSubShift = -1;
 let prevMainCorrectTextForScroll = "";
 let prevSubCorrectTextForScroll = "";
 
+const resetScroll = (track: HTMLDivElement) => {
+  track.style.transition = "";
+  track.style.transform = "translate3d(0px, 0px, 0px)";
+};
+
+const scheduleScroll = (
+  mainRefs: {
+    viewportRef: HTMLDivElement;
+    trackRef: HTMLDivElement;
+    caretRef: HTMLSpanElement;
+  },
+  subRefs: {
+    viewportRef: HTMLDivElement;
+    trackRef: HTMLDivElement;
+    caretRef: HTMLSpanElement;
+  },
+  mainCorrect: string,
+  subCorrect: string,
+  options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
+) => {
+  requestDebouncedAnimationFrame("word-scroll", () => {
+    requestAnimationFrame(() => {
+      applyScroll(mainRefs, subRefs, mainCorrect, subCorrect, options);
+    });
+  });
+};
+
 const applyScroll = (
   mainRefs: {
     viewportRef: HTMLDivElement;
@@ -266,79 +292,72 @@ const applyScroll = (
   subCorrect: string,
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
 ) => {
-  // 早期リターン：初期化（即座に実行）
   if (mainCorrect.length === 0 && subCorrect.length === 0) {
-    // Write Only
-    mainRefs.trackRef.style.transition = "";
-    mainRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
-    prevMainShift = 0;
-    subRefs.trackRef.style.transition = "";
-    subRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
-    prevSubShift = 0;
+    if (prevMainShift !== 0) {
+      resetScroll(mainRefs.trackRef);
+      prevMainShift = 0;
+    }
+
+    if (prevSubShift !== 0) {
+      resetScroll(subRefs.trackRef);
+      prevSubShift = 0;
+    }
+
     prevMainCorrectTextForScroll = "";
     prevSubCorrectTextForScroll = "";
     return;
   }
 
-  const DURATION = options.isSmoothScroll ? 80 : 0;
-  const SCROLL_TRANSITION = `transform ${DURATION}ms`;
-  const MAIN_RIGHT_BOUND_RATIO = options.mainScrollStart / 100;
-  const SUB_RIGHT_BOUND_RATIO = options.subScrollStart / 100;
+  const isMainTextChanged = prevMainCorrectTextForScroll !== mainCorrect;
+  const isSubTextChanged = prevSubCorrectTextForScroll !== subCorrect;
 
-  return requestDebouncedAnimationFrame("word-scroll", () => {
-    // --- Phase 1: Read (Layout計測) ---
-    // ここでDOMプロパティ(clientWidth, offsetLeft)を一気に読み取る
-    // 書き込み(style変更)を行う前にすべて読み終えることが重要
+  prevMainCorrectTextForScroll = mainCorrect;
+  prevSubCorrectTextForScroll = subCorrect;
 
-    let mainShift: number | null = null;
-    let subShift: number | null = null;
+  const duration = options.isSmoothScroll ? 80 : 0;
+  const scrollTransition = `transform ${duration}ms`;
 
-    const isMainTextChanged = prevMainCorrectTextForScroll !== mainCorrect;
-    const isSubTextChanged = prevSubCorrectTextForScroll !== subCorrect;
+  const mainRightBoundRatio = options.mainScrollStart / 100;
+  const subRightBoundRatio = options.subScrollStart / 100;
 
-    prevMainCorrectTextForScroll = mainCorrect;
-    prevSubCorrectTextForScroll = subCorrect;
+  let mainShift: number | null = null;
+  let subShift: number | null = null;
 
-    if (mainCorrect.length > 0) {
-      if (isMainTextChanged || prevMainShift === -1) {
-        const caretX = mainRefs.caretRef.offsetLeft;
-        const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * MAIN_RIGHT_BOUND_RATIO);
+  // ---- Read phase ----
+  if (mainCorrect.length > 0 && (isMainTextChanged || prevMainShift === -1)) {
+    const currentShift = prevMainShift > 0 ? prevMainShift : 0;
+    const viewportWidth = mainRefs.viewportRef.clientWidth;
+    const caretX = mainRefs.caretRef.offsetLeft;
+    const rightBound = Math.floor(viewportWidth * mainRightBoundRatio);
+    const visibleCaretX = caretX - currentShift;
 
-        if (caretX > rightBound) {
-          mainShift = Math.max(0, caretX - rightBound);
-        }
-      } else {
-        mainShift = prevMainShift;
-      }
+    if (visibleCaretX > rightBound) {
+      mainShift = currentShift + (visibleCaretX - rightBound);
     }
+  }
 
-    if (subCorrect.length > 0) {
-      if (isSubTextChanged || prevSubShift === -1) {
-        const caretX = subRefs.caretRef.offsetLeft;
-        const rightBound = Math.floor(subRefs.viewportRef.clientWidth * SUB_RIGHT_BOUND_RATIO);
+  if (subCorrect.length > 0 && (isSubTextChanged || prevSubShift === -1)) {
+    const currentShift = prevSubShift > 0 ? prevSubShift : 0;
+    const viewportWidth = subRefs.viewportRef.clientWidth;
+    const caretX = subRefs.caretRef.offsetLeft;
+    const rightBound = Math.floor(viewportWidth * subRightBoundRatio);
+    const visibleCaretX = caretX - currentShift;
 
-        if (caretX > rightBound) {
-          subShift = Math.max(0, caretX - rightBound);
-        }
-      } else {
-        subShift = prevSubShift;
-      }
+    if (visibleCaretX > rightBound) {
+      subShift = currentShift + (visibleCaretX - rightBound);
     }
+  }
 
-    // --- Phase 2: Write (DOM更新) ---
-    // 計測結果に基づいてDOMを更新する
-    // これ以降、DOMの読み取りは行わない
+  // ---- Write phase ----
+  if (mainShift !== null && mainShift !== prevMainShift) {
+    mainRefs.trackRef.style.transition = scrollTransition;
+    mainRefs.trackRef.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
+    prevMainShift = mainShift;
+  }
 
-    if (mainShift !== null && mainShift !== prevMainShift) {
-      mainRefs.trackRef.style.transition = SCROLL_TRANSITION;
-      mainRefs.trackRef.style.transform = `translateX(${-mainShift}px)`;
-      prevMainShift = mainShift;
-    }
-
-    if (subShift !== null && subShift !== prevSubShift) {
-      subRefs.trackRef.style.transition = SCROLL_TRANSITION;
-      subRefs.trackRef.style.transform = `translateX(${-subShift}px)`;
-      prevSubShift = subShift;
-    }
-  });
+  if (subShift !== null && subShift !== prevSubShift) {
+    subRefs.trackRef.style.transition = scrollTransition;
+    subRefs.trackRef.style.transform = `translate3d(${-subShift}px, 0px, 0px)`;
+    prevSubShift = subShift;
+  }
 };
