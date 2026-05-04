@@ -28,7 +28,7 @@ export const DifficultyFilter = () => {
   };
 
   return (
-    <Card className="max-w-1/2 flex-1 py-3">
+    <Card className="flex-1 py-3 sm:max-w-1/2">
       <CardContent className="flex w-full select-none flex-col gap-4">
         <div className="flex flex-wrap gap-2">
           {DIFFICULTY_TIERS.map((tier) => {
