@@ -13,7 +13,7 @@ function FormulaBlock({ children }: { children: ReactNode }) {
   );
 }
 
-function StepList({ steps }: { steps: { title: string; content: ReactNode; link?: string }[] }) {
+function StepList({ steps }: { steps: { title: string; content: ReactNode; links?: string[] }[] }) {
   return (
     <OList
       className="list-inside list-decimal space-y-6"
@@ -21,9 +21,11 @@ function StepList({ steps }: { steps: { title: string; content: ReactNode; link?
       items={steps.map((step, i) => (
         <>
           <H3 className="inline">{step.title}</H3>
-          {step.link && (
+          {step.links?.map((link, j) => (
             <Link
-              href={step.link as Route}
+              // biome-ignore lint/suspicious/noArrayIndexKey: 静的なlistで使用する
+              key={j}
+              href={link as Route}
               target="_blank"
               rel="noopener noreferrer"
               className="ml-2 inline-flex items-center gap-1 align-middle text-muted-foreground text-xs hover:text-primary"
@@ -31,7 +33,7 @@ function StepList({ steps }: { steps: { title: string; content: ReactNode; link?
               <ExternalLink size={12} />
               コード
             </Link>
-          )}
+          ))}
           {step.content}
           {i !== steps.length - 1 && <Separator className="my-4" />}
         </>
@@ -45,7 +47,7 @@ export function DifficultySteps() {
   const steps = [
     {
       title: "KPMの算出",
-      link: `${RATING_URL}#L69`,
+      links: [`${RATING_URL}#L69`],
       content: (
         <>
           <P>各行のローマ字KPM（Keys Per Minute）を計算します。1700 KPMを超える行は異常値として除外されます。</P>
@@ -55,7 +57,7 @@ export function DifficultySteps() {
     },
     {
       title: "文字多様性スコア (Diversity)",
-      link: `${RATING_URL}#L26-L40`,
+      links: [`${RATING_URL}#L26-L40`],
       content: (
         <>
           <P>
@@ -70,7 +72,7 @@ export function DifficultySteps() {
     },
     {
       title: "多様性ペナルティの適用",
-      link: `${RATING_URL}#L48-L51`,
+      links: [`${RATING_URL}#L48-L51`],
       content: (
         <>
           <P>
@@ -84,7 +86,7 @@ export function DifficultySteps() {
     },
     {
       title: "難易度スコアの計算 (difficultyScore)",
-      link: `${RATING_URL}#L84-L96`,
+      links: [`${RATING_URL}#L84-L96`],
       content: (
         <>
           <P>
@@ -101,7 +103,7 @@ export function DifficultySteps() {
     },
     {
       title: "ノーツ数補正",
-      link: `${RATING_URL}#L58-L60`,
+      links: [`${RATING_URL}#L58-L60`],
       content: (
         <>
           <P>
@@ -114,7 +116,7 @@ export function DifficultySteps() {
     },
     {
       title: "難易度",
-      link: `${RATING_URL}#L101`,
+      links: [`${RATING_URL}#L101`],
       content: (
         <>
           <P>難易度スコアを 100 で割り、ノーツ補正を乗算して最終的な難易度を算出します。</P>
@@ -129,10 +131,15 @@ export function DifficultySteps() {
 
 export function PPSteps() {
   const PP_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/lib/pp.ts";
+  const HELPER_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/lib/build-map/built-map-helper.ts";
+  const MISS_URL =
+    "https://github.com/Toshi7878/YTyping/blob/main/src/app/(typing)/type/_feature/typing-card/playing/update-status/miss.ts";
+  const SAVE_LINE_URL =
+    "https://github.com/Toshi7878/YTyping/blob/main/src/app/(typing)/type/_feature/typing-card/playing/save-line-result.ts";
   const steps = [
     {
       title: "Base PP",
-      link: `${PP_URL}#L13-L15`,
+      links: [`${PP_URL}#L13-L15`],
       content: (
         <>
           <P>難易度から基礎となる PP を算出します。 rating…難易度</P>
@@ -141,8 +148,26 @@ export function PPSteps() {
       ),
     },
     {
+      title: "クリア率 (Clear Rate)",
+      links: [`${HELPER_URL}#L111-L116`, `${MISS_URL}#L19-L24`, `${SAVE_LINE_URL}#L41-L44`],
+      content: (
+        <>
+          <P>
+            100%の割合からミスと打ち損じの打数に応じて減算します。かな入力でもローマ時換算で計算します。
+            <br />
+            totalNotes…総ローマ字ノーツ数、missCount…ミス数、lostNotes…打ち損じノーツ数、keyRate…100/totalNotes、missRate…keyRateの1/2
+          </P>
+          <FormulaBlock>
+            {
+              "keyRate  = 100 / totalNotes\nmissRate = keyRate / 2\n\nclearRate = 100 − missCount × missRate − lostNotes × keyRate"
+            }
+          </FormulaBlock>
+        </>
+      ),
+    },
+    {
       title: "精度 (Accuracy) 補正",
-      link: `${PP_URL}#L56-L85`,
+      links: [`${PP_URL}#L56-L85`],
       content: (
         <>
           <P>
@@ -157,12 +182,11 @@ export function PPSteps() {
     },
     {
       title: "クリア率補正",
-      link: `${PP_URL}#L36-L40`,
+      links: [`${PP_URL}#L36-L40`],
       content: (
         <>
           <P>
-            クリア率（進捗率）のべき乗で補正します。難易度が高いほど指数が小さくなり、 低クリア率でも PP
-            が出やすくなります。
+            クリア率のべき乗で補正します。難易度が高いほど指数が小さくなり、 低クリア率でも PP が出やすくなります。
             <br />
             clearRate…クリア率 exp…補正係数
           </P>
@@ -176,7 +200,7 @@ export function PPSteps() {
     },
     {
       title: "速度補正",
-      link: `${PP_URL}#L22-L25`,
+      links: [`${PP_URL}#L22-L25`],
       content: (
         <>
           <P>再生速度 1.0 以上で補正が上昇し、最大 1.5 倍まで加算されます。(再生速度1.0 未満はランキング登録不可)</P>
@@ -186,7 +210,7 @@ export function PPSteps() {
     },
     {
       title: "譜面リザルトのPP値",
-      link: `${PP_URL}#L87-L95`,
+      links: [`${PP_URL}#L87-L95`],
       content: (
         <>
           <P>各スコアの PP 値を算出します。</P>
@@ -196,7 +220,7 @@ export function PPSteps() {
     },
     {
       title: "実力ランキングの合計PP",
-      link: `${PP_URL}#L100-L108`,
+      links: [`${PP_URL}#L100-L108`],
       content: (
         <>
           <P>
