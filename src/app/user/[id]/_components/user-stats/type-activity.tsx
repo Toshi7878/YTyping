@@ -13,20 +13,6 @@ import { useTRPC } from "@/trpc/provider";
 import { getTimezone, getYearsDesc } from "@/utils/date";
 import { useTargetYearQueryState } from "../../_lib/search-params";
 
-/**
- * TailwindCSSのCSS変数を取得する汎用関数
- * @param variableName CSS変数名（--で始まる形式、またはそれなしの形式）
- * @returns CSS変数の値、見つからない場合は空文字
- */
-const getCSSVariable = (variableName: string): string => {
-  const computedStyle = getComputedStyle(document.documentElement);
-
-  // 変数名が--で始まっていない場合は追加
-  const cssVar = variableName.startsWith("--") ? variableName : `--${variableName}`;
-
-  return computedStyle.getPropertyValue(cssVar).trim();
-};
-
 export const TypeActivity = () => {
   const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
@@ -142,12 +128,12 @@ export const ActivityYearButtons = () => {
 
 const getBlockColors = () => {
   const colors = {
-    background: getCSSVariable("--background"),
-    roma: getCSSVariable("--roma"),
-    kana: getCSSVariable("--kana"),
-    flick: getCSSVariable("--flick"),
-    english: getCSSVariable("--english"),
-    ime: getCSSVariable("--foreground"),
+    background: "var(--background)",
+    roma: "var(--roma)",
+    kana: "var(--kana)",
+    flick: "var(--flick)",
+    english: "var(--english)",
+    ime: "var(--foreground)",
   };
 
   // 透明度なしで色を3段階で返す（同じ色を3回）
