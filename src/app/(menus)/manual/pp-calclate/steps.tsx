@@ -148,18 +148,28 @@ export function PPSteps() {
       ),
     },
     {
-      title: "クリア率 (Clear Rate)",
-      links: [`${HELPER_URL}#L111-L116`, `${MISS_URL}#L19-L24`, `${SAVE_LINE_URL}#L41-L44`],
+      title: "クリア率 (Clear Rate) と補正",
+      links: [`${HELPER_URL}#L111-L116`, `${MISS_URL}#L19-L24`, `${SAVE_LINE_URL}#L41-L44`, `${PP_URL}#L36-L40`],
       content: (
         <>
           <P>
-            100%の割合からミスと打ち損じの打数に応じて減算します。かな入力でもローマ時換算で計算します。
+            100%の割合からミスと打ち損じの打数に応じて減算します。かな入力でもローマ字換算で計算します。
             <br />
             totalNotes…総ローマ字ノーツ数、missCount…ミス数、lostNotes…打ち損じノーツ数、keyRate…100/totalNotes、missRate…keyRateの1/2
           </P>
           <FormulaBlock>
             {
               "keyRate  = 100 / totalNotes\nmissRate = keyRate / 2\n\nclearRate = 100 − missCount × missRate − lostNotes × keyRate"
+            }
+          </FormulaBlock>
+          <P>
+            クリア率のべき乗で補正します。難易度が高いほど指数が小さくなり、低クリア率でも PP が出やすくなります。
+            <br />
+            clearRate…クリア率、exp…補正係数
+          </P>
+          <FormulaBlock>
+            {
+              "exp = 1.2 + 1.0 / (1 + rating / 8)\n  rating=0  → exp≈2.2\n  rating=5  → exp≈1.7\n  rating=10 → exp≈1.53\n\n補正係数 = clearRate ^ exp"
             }
           </FormulaBlock>
         </>
@@ -177,24 +187,6 @@ export function PPSteps() {
             accuracy…正確率、type…タイプ数、miss…ミス数
           </P>
           <FormulaBlock>{"accuracy = type / (type + miss)\n補正係数 = accuracy²"}</FormulaBlock>
-        </>
-      ),
-    },
-    {
-      title: "クリア率補正",
-      links: [`${PP_URL}#L36-L40`],
-      content: (
-        <>
-          <P>
-            クリア率のべき乗で補正します。難易度が高いほど指数が小さくなり、 低クリア率でも PP が出やすくなります。
-            <br />
-            clearRate…クリア率 exp…補正係数
-          </P>
-          <FormulaBlock>
-            {
-              "exp = 1.2 + 1.0 / (1 + rating / 8)\n  rating=0  → exp≈2.2\n  rating=5  → exp≈1.7\n  rating=10 → exp≈1.53\n\n補正係数 = clearRate ^ exp"
-            }
-          </FormulaBlock>
         </>
       ),
     },
