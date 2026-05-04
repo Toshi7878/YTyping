@@ -176,12 +176,12 @@ export function PPSteps() {
       ),
     },
     {
-      title: "精度 (Accuracy) 補正",
+      title: "正確率 (Accuracy) 補正",
       links: [`${PP_URL}#L56-L85`],
       content: (
         <>
           <P>
-            タイプ成功数 ÷（タイプ数 + ミス数）で精度を算出し、2乗で補正します。 精度が落ちるほど PP
+            タイプ成功数 ÷（タイプ数 + ミス数）で正確率を算出し、2乗で補正します。 正確率が落ちるほど PP
             が大きく減少します。
             <br />
             accuracy…正確率、type…タイプ数、miss…ミス数
