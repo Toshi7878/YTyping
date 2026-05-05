@@ -1,8 +1,8 @@
 import type { NextRequest } from "next/server";
 import { createOpenApiFetchHandler } from "trpc-to-openapi";
-import { auth } from "@/lib/auth";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
+import { auth } from "@/server/auth";
 
 export const dynamic = "force-dynamic";
 

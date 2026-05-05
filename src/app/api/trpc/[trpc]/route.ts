@@ -1,8 +1,8 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import type { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
 import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
+import { auth } from "@/server/auth";
 
 const handler = async (req: NextRequest) => {
   const response = await fetchRequestHandler({

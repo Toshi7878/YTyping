@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { caller } from "@/trpc/server";

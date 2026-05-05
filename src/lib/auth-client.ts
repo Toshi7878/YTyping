@@ -1,11 +1,11 @@
 import { customSessionClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { createContext, useContext } from "react";
-import type { auth } from "@/lib/auth";
+import type { Auth } from "@/server/auth";
 import type { USER_ROLE_TYPES } from "@/server/drizzle/schema";
 
 const authClient = createAuthClient({
-  plugins: [inferAdditionalFields<typeof auth>(), customSessionClient<typeof auth>()],
+  plugins: [inferAdditionalFields<Auth>(), customSessionClient<Auth>()],
 });
 export const { signIn, signOut } = authClient;
 

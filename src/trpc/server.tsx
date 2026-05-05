@@ -5,10 +5,10 @@ import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { cache } from "react";
-import { auth } from "@/lib/auth";
 import type { AppRouter } from "@/server/api/root";
 import { appRouter } from "@/server/api/root";
 import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
+import { auth } from "@/server/auth";
 import { makeQueryClient } from "./query-client";
 import "server-only";
 

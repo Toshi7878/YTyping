@@ -1,5 +1,5 @@
 import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/server/auth";
 import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { MapListControls } from "./_feature/controls/controls";
 import { HomeMapList } from "./_feature/map-list";

@@ -1,5 +1,5 @@
-import type { getSession } from "@/lib/auth";
 import { cn } from "@/lib/tailwind";
+import type { getSession } from "@/server/auth";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { LeftNav, RightNav } from "./navs/navs";
 

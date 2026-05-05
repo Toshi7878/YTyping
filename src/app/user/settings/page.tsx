@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/server/auth";
 import { caller } from "@/trpc/server";
 import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
 import { H2 } from "@/ui/typography";

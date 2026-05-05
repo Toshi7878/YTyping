@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { cache } from "react";
 import { env } from "@/env";
 import { db, schema } from "@/server/drizzle/client";
-import type { Session } from "./auth-client";
+import type { Session } from "../lib/auth-client";
 import "server-only";
 
 const baseUrl =
