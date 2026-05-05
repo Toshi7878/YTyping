@@ -2,8 +2,8 @@
 
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
-import { cn } from "@/lib/tailwind";
 import { LoadingOverlayProvider } from "@/ui/overlay";
+import { cn } from "@/utils/cn";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useVideoIdState } from "../_lib/atoms/hydrate";
 import { readYTPlayerStatus } from "../_lib/atoms/state";

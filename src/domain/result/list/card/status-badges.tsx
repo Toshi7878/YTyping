@@ -1,8 +1,8 @@
 import { ClearRateText } from "@/domain/text/clear-rate-text";
 import { InputModeText } from "@/domain/text/input-mode-text";
-import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { Badge } from "@/ui/badge";
+import { cn } from "@/utils/cn";
 
 interface ResultStatusBadgesProps {
   result: ResultWithMapItem;

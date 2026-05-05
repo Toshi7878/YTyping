@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/domain/map/bookmark/list-item";
-import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
@@ -23,7 +22,8 @@ import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H4, Small } from "@/ui/typography";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { cn } from "@/utils/cn";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator/map/bookmark";
 
 interface BookmarkListPopoverProps {
@@ -100,7 +100,7 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
     <Button variant="ghost" size="xl" className="justify-between px-1" onClick={onClick}>
       <div className="flex items-center gap-3">
         <ThumbnailImage
-          src={videoId ? buildYouTubeThumbnailUrl(videoId, "mqdefault") : undefined}
+          src={videoId ? getYouTubeThumbnailUrl(videoId, "mqdefault") : undefined}
           alt={list.title}
           fallback={<Bookmark className="size-4 text-muted-foreground" fill="currentColor" />}
           size="3xs"

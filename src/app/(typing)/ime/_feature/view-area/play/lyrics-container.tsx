@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { BuiltImeLine } from "lyrics-ime-typing-engine";
 import type { HTMLAttributes } from "react";
 import { Fragment, useEffect, useRef } from "react";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { writeLyricsContainer } from "../../../_lib/atoms/ref";
 import {
   useBuiltMapState,

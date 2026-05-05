@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { caller } from "@/trpc/server";
 import { toLocaleDateString } from "@/utils/date";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { Content } from "../_feature/content";
 import { JotaiProvider } from "../_feature/provider";
 import { UserScriptInit } from "../_feature/user-script";
@@ -15,7 +15,7 @@ const getMapInfo = cache(async (mapId: number) => {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const mapInfo = await getMapInfo(Number(id));
-  const thumbnailUrl = buildYouTubeThumbnailUrl(mapInfo.media.videoId, mapInfo.media.thumbnailQuality);
+  const thumbnailUrl = getYouTubeThumbnailUrl(mapInfo.media.videoId, mapInfo.media.thumbnailQuality);
 
   return {
     title: `${mapInfo.info.title} - YTyping`,

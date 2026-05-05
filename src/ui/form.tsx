@@ -13,8 +13,8 @@ import {
   useFormContext,
   useFormState,
 } from "react-hook-form";
-import { cn } from "@/lib/tailwind";
 import { Label } from "@/ui/label";
+import { cn } from "@/utils/cn";
 
 const Form = FormProvider;
 

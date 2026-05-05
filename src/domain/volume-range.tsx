@@ -1,10 +1,10 @@
 "use client";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
-import { cn } from "@/lib/tailwind";
 import { useIsMobileDeviceState } from "@/store/user-agent";
 import { setVolume, useVolume } from "@/store/volume";
 import { Slider } from "@/ui/slider";
+import { cn } from "@/utils/cn";
 
 interface VolumeRangeProps {
   YTPlayer: YT.Player | null;

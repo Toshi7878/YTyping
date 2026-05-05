@@ -3,7 +3,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 
 const DataListOrientationContext = React.createContext<"horizontal" | "vertical">("horizontal");
 

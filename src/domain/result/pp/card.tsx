@@ -4,14 +4,14 @@ import Link from "next/link";
 import type { HTMLAttributes } from "react";
 import { RatingBadge } from "@/domain/map/rating/badge";
 import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
-import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
+import { cn } from "@/utils/cn";
 import { nolink } from "@/utils/no-link";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 
 interface ResultCardProps {
   result: ResultWithMapItem;
@@ -19,7 +19,7 @@ interface ResultCardProps {
 }
 
 export const PPResultCard = ({ result, initialInView = false }: ResultCardProps) => {
-  const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
+  const src = getYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
   return (
     <Card className="map-card-hover block w-full py-0 transition-shadow duration-300">

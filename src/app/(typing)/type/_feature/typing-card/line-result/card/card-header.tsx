@@ -1,9 +1,9 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { cn } from "@/lib/tailwind";
 import { CardHeader } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
+import { cn } from "@/utils/cn";
 
 interface ResultCardHeaderProps {
   lineNotes: number;

@@ -1,7 +1,7 @@
 "use client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { formatDate, toLocaleDateString } from "@/utils/date";
 
 interface DateDistanceTextProps {

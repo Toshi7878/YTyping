@@ -1,5 +1,5 @@
-import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
+import { cn } from "@/utils/cn";
 
 interface InputModeTextProps {
   typeCounts: ResultWithMapItem["typeCounts"];

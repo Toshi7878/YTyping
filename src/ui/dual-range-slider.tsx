@@ -3,7 +3,7 @@
 import { Slider as SliderPrimitive } from "radix-ui";
 import * as React from "react";
 
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 
 interface DualRangeSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
   labelPosition?: "top" | "bottom";

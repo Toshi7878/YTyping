@@ -1,7 +1,7 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { cn } from "@/lib/tailwind";
 import { H2 } from "@/ui/typography";
+import { cn } from "@/utils/cn";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { playYTPlayer } from "../../atoms/youtube-player";
 import { ReadyInputModeRadioCards } from "./input-mode-radio-cards";

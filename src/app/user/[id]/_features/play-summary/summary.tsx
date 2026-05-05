@@ -8,13 +8,13 @@ import type { ReactNode } from "react";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useSession } from "@/auth/client";
-import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/ui/card";
 import { H2 } from "@/ui/typography";
+import { cn } from "@/utils/cn";
 import { ActivityYearButtons, TypeActivity } from "./type-activity";
 
 const formatTime = (totalSeconds: number) => {

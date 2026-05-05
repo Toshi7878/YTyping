@@ -1,8 +1,8 @@
 import { useProgress } from "@bprogress/next";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 import { signIn, signOut } from "@/auth/client";
-import { cn } from "@/lib/tailwind";
 import { DropdownMenuItem } from "@/ui/dropdown-menu";
+import { cn } from "@/utils/cn";
 
 export const SignInDropdownItems = () => {
   const { start } = useProgress();

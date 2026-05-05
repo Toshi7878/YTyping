@@ -1,9 +1,9 @@
 "use client";
 import { useSession } from "@/auth/client";
 import { useToggleClapMutation } from "@/domain/result/clap";
-import { cn } from "@/lib/tailwind";
 import { HandsClappingButton } from "@/ui/icon-button";
 import { TooltipWrapper } from "@/ui/tooltip";
+import { cn } from "@/utils/cn";
 
 interface ResultClapButtonProps {
   resultId: number;

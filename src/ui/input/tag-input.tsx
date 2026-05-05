@@ -6,10 +6,10 @@ import type React from "react";
 import type { KeyboardEvent } from "react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/tailwind";
 import type { badgeVariants } from "@/ui/badge";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
+import { cn } from "@/utils/cn";
 import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";
 

@@ -3,7 +3,6 @@ import { Palette } from "lucide-react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { useIsPreviewEnabled } from "@/app/_layout/preview-youtube";
-import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import {
   getPreviewYTPlayer,
@@ -14,7 +13,8 @@ import {
 } from "@/store/preview-yt-player";
 import { ThumbnailImage, thumbnailImageVariants } from "@/ui/image";
 import { TooltipWrapper } from "@/ui/tooltip";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { cn } from "@/utils/cn";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 
 interface MapThumbnailImageProps {
   alt: string;
@@ -39,7 +39,7 @@ export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           {isStyledMap && <StyledMapBadge />}
           <ThumbnailImage
-            src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
+            src={getYouTubeThumbnailUrl(media.videoId, "mqdefault")}
             alt={alt}
             size={size}
             className={imageClassName}

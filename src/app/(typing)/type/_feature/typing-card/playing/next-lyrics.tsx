@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 import { useAtomValue } from "jotai/react";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import type { BuiltMapLine } from "lyrics-typing-engine";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { store } from "../../atoms/store";
 import { getPlayingInputMode } from "../../atoms/typing-word";
 import { getTypingOptions } from "../../tabs/setting/popover";

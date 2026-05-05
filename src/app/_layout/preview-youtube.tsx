@@ -3,7 +3,6 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
-import { cn } from "@/lib/tailwind";
 import {
   getPreviewVideoInfo,
   resetPreviewVideoInfo,
@@ -12,6 +11,7 @@ import {
   usePreviewVideoInfo,
 } from "@/store/preview-yt-player";
 import { getVolume } from "@/store/volume";
+import { cn } from "@/utils/cn";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 
 export const PreviewYouTubePlayer = () => {

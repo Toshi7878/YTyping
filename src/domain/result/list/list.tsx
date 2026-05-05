@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import type z from "zod/v4";
 import { ResultCard } from "@/domain/result/list/card/card";
 import { InfiniteScrollSpinner, usePageCounter } from "@/lib/infinite-scroll";
-import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";
+import { cn } from "@/utils/cn";
 import type { ResultListFilterSchema } from "@/validator/result/list";
 
 const pageAtom = atom<number>(0);

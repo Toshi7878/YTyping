@@ -7,15 +7,15 @@ import { MapListActionButtons } from "@/domain/map/action-buttons";
 import { RatingBadge } from "@/domain/map/rating/badge";
 import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
 import { DateDistanceText } from "@/domain/text/date-distance-text";
-import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
+import { cn } from "@/utils/cn";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { ResultClapButton } from "./clap-button";
 import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 
@@ -28,7 +28,7 @@ interface ResultCardProps {
 export const ResultCard = ({ result, initialInView = false, imagePriority = false }: ResultCardProps) => {
   const { data: session } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
-  const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
+  const src = getYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
   return (
     <Card className="map-card-hover block w-full py-0 transition-shadow duration-300" ref={ref}>
       <CardHeader className="mx-0 flex items-center justify-between py-4 md:mx-6">

@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/tailwind";
 import { Button } from "@/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/ui/dropdown-menu";
+import { cn } from "@/utils/cn";
 import { SignInDropdownItems } from "./auth-dropdown-items";
 
 export const SignInMenu = ({ className }: { className: string }) => {

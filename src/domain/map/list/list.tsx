@@ -7,9 +7,9 @@ import type z from "zod/v4";
 import { MapCard } from "@/domain/map/list/card/base";
 import { CompactMapCard } from "@/domain/map/list/card/compact";
 import { InfiniteScrollSpinner, usePageCounter } from "@/lib/infinite-scroll";
-import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
+import { cn } from "@/utils/cn";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";
 
 const pageAtom = atom<number>(0);

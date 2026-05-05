@@ -5,7 +5,6 @@ import { type Dispatch, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { setRawMapAction, useRawMapState } from "@/app/edit/_lib/atoms/map-reducer";
-import { cn } from "@/lib/tailwind";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
@@ -13,6 +12,7 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui
 import { Form, FormField, FormItem } from "@/ui/form";
 import { SwitchFormField } from "@/ui/switch";
 import { TextareaFormField } from "@/ui/textarea";
+import { cn } from "@/utils/cn";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { LineOptionSchema } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";

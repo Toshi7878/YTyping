@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
 import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { useReplayRankingResultState } from "../../atoms/replay";
 import { store } from "../../atoms/store";
 import { useSceneState } from "../typing-card";

@@ -9,14 +9,14 @@ import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
 import { editDb } from "@/app/edit/_lib/indexed-db";
 import { CreatedMapListByVideoId } from "@/domain/map/list/created-video";
-import { cn } from "@/lib/tailwind";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";
 import { InputFormField } from "@/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H3 } from "@/ui/typography";
-import { extractYouTubeId } from "../../../../../utils/extract-youtube-id";
+import { cn } from "@/utils/cn";
+import { extractYouTubeId } from "../../../../../utils/youtube";
 
 const formSchema = z.object({
   videoId: z.string(),

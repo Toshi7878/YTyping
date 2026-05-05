@@ -1,6 +1,6 @@
 import type { getSession } from "@/auth/server";
-import { cn } from "@/lib/tailwind";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { cn } from "@/utils/cn";
 import { LeftNav, RightNav } from "./navs/navs";
 
 interface HeaderProps {

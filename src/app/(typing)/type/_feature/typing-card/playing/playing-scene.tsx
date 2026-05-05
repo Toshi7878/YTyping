@@ -5,7 +5,7 @@ import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engin
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";

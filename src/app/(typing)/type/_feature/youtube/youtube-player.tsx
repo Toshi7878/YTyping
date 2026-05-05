@@ -3,11 +3,11 @@
 import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { mutatePlayCountStats } from "@/domain/map/play-count";
-import { cn } from "@/lib/tailwind";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useIsMobileDeviceState } from "@/store/user-agent";
 import { getVolume } from "@/store/volume";
 import { LoadingOverlayProvider } from "@/ui/overlay";
+import { cn } from "@/utils/cn";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";

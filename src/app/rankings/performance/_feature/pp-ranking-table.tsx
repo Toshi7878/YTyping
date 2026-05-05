@@ -4,9 +4,9 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo } from "react";
 import { InfiniteScrollSpinner } from "@/lib/infinite-scroll";
-import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { cn } from "@/utils/cn";
 
 type PpRow = RouterOutputs["user"]["stats"]["getPPRanking"]["items"][number];
 

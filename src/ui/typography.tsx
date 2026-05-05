@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { FiExternalLink } from "react-icons/fi";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 
 interface H1Props {
   children: ReactNode;

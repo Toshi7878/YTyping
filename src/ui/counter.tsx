@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { useHotkeys } from "react-hotkeys-hook";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { Button } from "./button";
 import { TooltipWrapper } from "./tooltip";
 

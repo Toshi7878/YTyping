@@ -1,7 +1,7 @@
 "use client";
 import parse from "html-react-parser";
 import { atom, useAtomValue } from "jotai";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { store } from "../../atoms/store";
 import { useTypingOptionsState } from "../../tabs/setting/popover";
 

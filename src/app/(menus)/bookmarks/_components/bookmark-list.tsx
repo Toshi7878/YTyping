@@ -7,7 +7,7 @@ import { useTRPC } from "@/trpc/provider";
 import { Card, CardContent } from "@/ui/card";
 import { ThumbnailImage } from "@/ui/image";
 import { Small } from "@/ui/typography";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 
 type PublicBookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getAll"][number];
 
@@ -30,7 +30,7 @@ const BookmarkListCard = ({ list }: { list: PublicBookmarkList }) => {
       <Link href={`/bookmarks/${list.id}`} className="absolute z-1 size-full" />
       <CardContent className="flex items-center gap-3 p-4">
         <ThumbnailImage
-          src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+          src={getYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
           alt={list.title}
           size="2xs"
         />

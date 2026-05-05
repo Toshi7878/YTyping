@@ -1,5 +1,5 @@
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { Button } from "./button";
 
 export type SortIconState = "asc" | "desc" | "inactive" | "random-active" | "random-inactive";

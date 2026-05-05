@@ -1,10 +1,10 @@
 import { atom, useAtomValue } from "jotai";
 import type { UserResult, WordResult } from "lyrics-ime-typing-engine";
 import { useState } from "react";
-import { cn } from "@/lib/tailwind";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog";
 import { RadioButton, RadioGroup } from "@/ui/radio-group/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table/table";
+import { cn } from "@/utils/cn";
 import { getBuiltMap, useBuiltMapState } from "../../_lib/atoms/state";
 import { store } from "../provider";
 

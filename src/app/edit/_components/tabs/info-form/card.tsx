@@ -31,7 +31,6 @@ import {
   calculateTotalNotes,
   getStartLine,
 } from "@/domain/map/built-map-helper";
-import { cn } from "@/lib/tailwind";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
@@ -41,9 +40,10 @@ import { FloatingLabelInputFormField } from "@/ui/input/input-form-field";
 import { TagInputFormField } from "@/ui/input/tag-input";
 import { FloatingLabelSelectFormField } from "@/ui/select/select-form-field";
 import { TooltipWrapper } from "@/ui/tooltip";
-import { extractYouTubeId } from "@/utils/extract-youtube-id";
+import { cn } from "@/utils/cn";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
+import { extractYouTubeId } from "@/utils/youtube";
 import { MapInfoFormSchema } from "@/validator/map/map";
 import { readRawMap } from "../../../_lib/atoms/map-reducer";
 import { readUtilityParams, setCanUpload, setYTChangingVideo, useCanUploadState } from "../../../_lib/atoms/state";

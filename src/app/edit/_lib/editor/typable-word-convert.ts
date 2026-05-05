@@ -3,18 +3,13 @@ import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/domain/morph/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
-import { halfKanaToHiragana } from "@/utils/kana";
-import {
-  kanaToHira,
-  normalizeExclamationQuestionMarks,
-  normalizeFullWidthAlnum,
-  normalizeSymbols,
-} from "@/utils/string-transform";
+import { katakanaToHiragana } from "@/utils/kana";
+import { normalizeExclamationQuestionMarks, normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 import { type ConvertOption, readWordConvertOption } from "../atoms/storage";
 import { filterToTypableWordChars } from "../utils/filter-word";
 
 export const wordConvert = async (lyrics: string) => {
-  const formatedLyrics = normalizeSymbols(normalizeFullWidthAlnum(kanaToHira(halfKanaToHiragana(rubyToKana(lyrics)))));
+  const formatedLyrics = normalizeSymbols(normalizeFullWidthAlnum(katakanaToHiragana(rubyToKana(lyrics))));
   const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatedLyrics);
 
   if (isNeedsConversion) {

@@ -3,10 +3,10 @@
 import type { VariantProps } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { DIFFICULTY_TIERS } from "@/domain/map/rating/badge";
-import { cn } from "@/lib/tailwind";
 import { Button, type buttonVariants } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DualRangeSlider } from "@/ui/dual-range-slider";
+import { cn } from "@/utils/cn";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useMapListFilterQueryStates } from "./search-params";
 

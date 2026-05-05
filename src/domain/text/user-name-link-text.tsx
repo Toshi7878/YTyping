@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 
 interface UserNameLinkTextProps {
   userId: number;

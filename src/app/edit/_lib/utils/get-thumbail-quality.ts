@@ -1,9 +1,9 @@
 import type { thumbnailQualityEnum } from "@/server/drizzle/schema";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 
 export const getThumbnailQuality = (videoId: string) => {
   const img = new window.Image();
-  img.src = buildYouTubeThumbnailUrl(videoId, "maxresdefault");
+  img.src = getYouTubeThumbnailUrl(videoId, "maxresdefault");
   return new Promise<(typeof thumbnailQualityEnum.enumValues)[number]>((resolve) => {
     img.onload = () => {
       if (img.width !== 120) {

@@ -28,7 +28,7 @@ import {
 import { Form } from "@/ui/form";
 import { ThumbnailImage } from "@/ui/image";
 import { Small } from "@/ui/typography";
-import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { MapBookmarkListFormSchema } from "@/validator/map/bookmark";
 import { buildUserBookmarkListUrl, useBookmarkListIdQueryState } from "../search-params";
 
@@ -69,7 +69,7 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
         <Link href={buildUserBookmarkListUrl(id, list.id)} className="absolute z-1 size-full" />
         <div className="flex flex-row items-center gap-3">
           <ThumbnailImage
-            src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+            src={getYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
             alt={list.title}
             size="2xs"
           />

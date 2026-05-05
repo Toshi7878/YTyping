@@ -1,15 +1,3 @@
-export const kanaToHira = (text: string) => {
-  return text
-    .replaceAll(/[\u30A1-\u30F6]/g, (match) => {
-      const codePoint = match.codePointAt(0);
-      if (codePoint === undefined) return match;
-      const chr = codePoint - 0x60;
-
-      return String.fromCodePoint(chr);
-    })
-    .replaceAll("ヴ", "ゔ");
-};
-
 export const normalizeFullWidthAlnum = (text: string) => {
   return text.replaceAll(/[０-９Ａ-Ｚａ-ｚ]/g, (s) => {
     const cp = s.codePointAt(0);

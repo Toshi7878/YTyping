@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { getSession } from "@/auth/client";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { type ImeStats, readImeStats, readTypingTextarea, resetImeStats } from "../../_lib/atoms/ref";

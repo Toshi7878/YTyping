@@ -2,7 +2,7 @@
 
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { cn } from "@/lib/tailwind";
+import { cn } from "@/utils/cn";
 import { Label } from "../label";
 import type { inputVariants } from "./input";
 import { Input } from "./input";
