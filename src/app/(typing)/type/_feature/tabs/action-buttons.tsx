@@ -13,7 +13,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { BookmarkListPopover } from "@/shared/bookmark/bookmark-list-popover";
+import { BookmarkListPopover } from "@/shared/map/bookmark/lists-popover";
 import { useToggleMapLikeMutation } from "@/shared/map/like";
 import { useTRPC } from "@/trpc/provider";
 import { formatDate } from "@/utils/date";

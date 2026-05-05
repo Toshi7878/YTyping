@@ -1,7 +1,6 @@
 type LocaleString = "ja-JP";
 export const JST_OFFSET = 9 * 60 * 60 * 1000;
 
-
 export const formatDate = (
   date: Date | string | number,
   locale?: LocaleString,
