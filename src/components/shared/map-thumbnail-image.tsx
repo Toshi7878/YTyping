@@ -10,7 +10,7 @@ import {
   usePreviewVideoInfo,
   usePreviewYTPlayer,
 } from "@/app/_layout/preview-youtube";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { ThumbnailImage, thumbnailImageVariants } from "../ui/image";

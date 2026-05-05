@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 
 const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate-spin rounded-full", {
   variants: {

@@ -12,7 +12,7 @@ import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import { calcChunkRatios } from "@/lib/build-map/built-map-helper";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";

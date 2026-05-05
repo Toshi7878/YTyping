@@ -13,7 +13,7 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useSceneGroupState } from "../../typing-card/typing-card";

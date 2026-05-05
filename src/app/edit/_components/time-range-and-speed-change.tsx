@@ -4,7 +4,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { readYTPlayerStatus, setTimeRangeValue, useMediaSpeedState } from "@/app/edit/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
 import { getYTCurrentTime, playYTPlayer, seekYTPlayer, setYTPlaybackRate } from "../_lib/atoms/youtube-player";

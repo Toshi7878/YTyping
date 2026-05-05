@@ -20,7 +20,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H4, Small } from "@/components/ui/typography";
 import { getSession, useSession } from "@/lib/auth-client";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/lib/mutations/bookmark-list-item";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";

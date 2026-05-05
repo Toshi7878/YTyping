@@ -3,7 +3,7 @@
 import { Switch as SwitchPrimitive } from "radix-ui";
 import type * as React from "react";
 import { useFormContext } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "./form";
 
 function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {

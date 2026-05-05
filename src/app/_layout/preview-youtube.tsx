@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
 import { getVolume } from "@/components/shared/volume-range";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { store } from "./store";
 

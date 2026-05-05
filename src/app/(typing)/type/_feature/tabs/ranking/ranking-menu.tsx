@@ -8,7 +8,7 @@ import { overlay } from "@/components/ui/overlay";
 import { PopoverContent } from "@/components/ui/popover";
 import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { useTRPC } from "@/trpc/provider";
 import { initializeAllLineResult } from "../../atoms/line-result";
 import { setReplayRankingResult } from "../../atoms/replay";

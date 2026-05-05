@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";

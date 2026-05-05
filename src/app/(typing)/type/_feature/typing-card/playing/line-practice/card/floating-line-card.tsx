@@ -6,7 +6,7 @@ import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultState, useSelectLineIndexState } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { usePlayingInputModeState } from "../../../../atoms/typing-word";
 import { moveSetLine } from "../../move-line";
 import { ResultCardContent } from "./card-content";

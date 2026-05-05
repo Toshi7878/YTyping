@@ -8,7 +8,7 @@ import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";

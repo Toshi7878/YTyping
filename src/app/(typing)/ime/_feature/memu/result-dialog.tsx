@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { getBuiltMap, useBuiltMapState } from "../../_lib/atoms/state";
 import { store } from "../provider";
 

@@ -38,7 +38,7 @@ import {
   getStartLine,
 } from "@/lib/build-map/built-map-helper";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";

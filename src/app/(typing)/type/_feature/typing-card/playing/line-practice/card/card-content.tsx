@@ -1,6 +1,6 @@
 import { CardContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { TypeResult } from "@/validator/result/result";
 
 interface ResultCardContentProps {

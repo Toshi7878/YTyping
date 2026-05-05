@@ -5,7 +5,7 @@ import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-tabl
 import type { MouseEvent } from "react";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { Spinner } from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 

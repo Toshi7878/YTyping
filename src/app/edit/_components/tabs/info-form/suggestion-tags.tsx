@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { badgeVariants } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { TAG_MAX_LENGTH } from "./card";
 
 interface SuggestionTagsProps {

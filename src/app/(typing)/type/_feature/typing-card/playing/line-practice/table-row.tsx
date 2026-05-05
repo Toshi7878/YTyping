@@ -3,8 +3,8 @@ import type { RefObject } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { TableCell, TableRow } from "@/components/ui/table/table";
+import { cn } from "@/lib/tailwind";
 import type { BuiltMapLineWithOption } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { useMediaSpeedState } from "../../../youtube/youtube-player";
 import { useSceneState } from "../../typing-card";
 

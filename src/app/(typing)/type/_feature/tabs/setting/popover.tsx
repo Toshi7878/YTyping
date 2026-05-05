@@ -12,7 +12,7 @@ import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-gro
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";

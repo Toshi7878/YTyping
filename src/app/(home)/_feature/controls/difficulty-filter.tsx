@@ -6,7 +6,7 @@ import { DIFFICULTY_TIERS } from "@/components/shared/map/rating";
 import { Button, type buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useMapListFilterQueryStates } from "./search-params";
 

@@ -8,7 +8,7 @@ import type { ControllerRenderProps, FieldError, FieldErrorsImpl, Merge } from "
 import { useFormContext } from "react-hook-form";
 import type { inputVariants } from "@/components/ui/input/input";
 import { Input } from "@/components/ui/input/input";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";

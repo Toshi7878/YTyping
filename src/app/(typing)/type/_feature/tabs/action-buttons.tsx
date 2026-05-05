@@ -13,7 +13,7 @@ import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { formatDate } from "@/utils/date";

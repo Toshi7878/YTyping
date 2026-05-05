@@ -3,7 +3,7 @@ import type { InputMode } from "lyrics-typing-engine";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 
 interface ResultCardHeaderProps {
   lineNotes: number;

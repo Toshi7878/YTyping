@@ -3,7 +3,7 @@ import { atom, type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { Updater } from "@/utils/types";
 import { getBuiltMap } from "../../atoms/built-map";
 import { store } from "../../atoms/store";

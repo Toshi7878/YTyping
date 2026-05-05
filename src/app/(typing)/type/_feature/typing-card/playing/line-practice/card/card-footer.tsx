@@ -3,7 +3,7 @@
 import type { HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 
 interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
   point: number;

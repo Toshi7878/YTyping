@@ -6,7 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { LabeledCheckbox } from "@/components/ui/labeled-items";
 import { useSession } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
 import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";

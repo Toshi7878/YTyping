@@ -4,7 +4,7 @@ import { LikeToggleButton } from "@/components/ui/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { type Session, useSession } from "@/lib/auth-client";
 import { useToggleMapLikeMutation } from "@/lib/mutations/like";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { formatDate } from "@/utils/date";
 import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";

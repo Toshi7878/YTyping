@@ -1,7 +1,7 @@
 import type { InputMode } from "lyrics-typing-engine";
 import { useEffect, useRef } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { useReplayRankingResultState } from "../../atoms/replay";
 import {
   setMainWordElements,

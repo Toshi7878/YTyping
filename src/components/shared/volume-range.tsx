@@ -5,7 +5,7 @@ import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 import { store } from "@/app/_layout/store";
 import { useIsMobileDeviceState } from "@/app/_layout/user-agent";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { Slider } from "../ui/slider";
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, { getOnInit: true });

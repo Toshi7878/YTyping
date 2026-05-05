@@ -6,7 +6,7 @@ import { BiEdit } from "react-icons/bi";
 import { FaHandsClapping, FaRankingStar } from "react-icons/fa6";
 import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 import { TiFilter } from "react-icons/ti";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { Button } from "./button";
 
 type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild" | "type">;

@@ -1,5 +1,5 @@
 import { CardWithContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { StatusCell } from "./status-cell";
 
 export type LabelType = "score" | "type" | "kpm" | "rank" | "point" | "miss" | "lost" | "line";

@@ -3,7 +3,7 @@ import { HandsClappingButton } from "@/components/ui/icon-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useSession } from "@/lib/auth-client";
 import { useToggleClapMutation } from "@/lib/mutations/clap";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 
 interface ResultClapButtonProps {
   resultId: number;

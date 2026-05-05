@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { Checkbox } from "./checkbox/checkbox";
 import { Label } from "./label";
 

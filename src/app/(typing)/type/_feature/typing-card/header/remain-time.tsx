@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { store } from "../../atoms/store";
 
 const lineRemainTimeAtom = atom(0);

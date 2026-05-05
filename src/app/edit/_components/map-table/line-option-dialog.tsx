@@ -12,7 +12,7 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/co
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { LineOptionSchema } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";

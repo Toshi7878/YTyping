@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { H2 } from "@/components/ui/typography";
 import { useSession } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { ActivityYearButtons, TypeActivity } from "./type-activity";

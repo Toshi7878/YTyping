@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import type z from "zod/v4";
 import { MapCard } from "@/components/shared/map/card/card";
 import { CompactMapCard } from "@/components/shared/map/card/compact";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";

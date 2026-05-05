@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { useTRPC } from "@/trpc/provider";
 import { buildUserMenuLinkItems } from "../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";

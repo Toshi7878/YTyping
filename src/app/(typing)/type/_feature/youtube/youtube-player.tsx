@@ -6,7 +6,7 @@ import { useIsMobileDeviceState } from "@/app/_layout/user-agent";
 import { getVolume } from "@/components/shared/volume-range";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";

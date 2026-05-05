@@ -2,7 +2,7 @@ import type { VariantProps } from "class-variance-authority";
 import type * as React from "react";
 import { type ComponentRef, type PropsWithoutRef, useId } from "react";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select/select";
 import type { inputVariants } from "./input";
 import { Input } from "./input";

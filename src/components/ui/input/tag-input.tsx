@@ -9,7 +9,7 @@ import { useFormContext } from "react-hook-form";
 import type { badgeVariants } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";
 

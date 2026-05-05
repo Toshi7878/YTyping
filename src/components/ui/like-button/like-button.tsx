@@ -2,7 +2,7 @@
 
 import { Heart } from "lucide-react";
 import { type ComponentProps, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tailwind";
 
 import "./css/render.css";
 import { Button } from "@/components/ui/button";
