@@ -7,13 +7,13 @@ import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
+import { calcRating } from "../../../../domain/map/rating/calc";
 import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";
-import { calcRating } from "./rating";
 
 export const mapRouter = {
   getById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {

@@ -15,7 +15,12 @@ import {
 } from "@/server/drizzle/schema";
 import type { TypingLineResult } from "@/validator/result/result";
 import { CreateResultSchema } from "@/validator/result/result";
-import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "../../../../lib/pp";
+import {
+  buildRawPPInputFromResultStatus,
+  calcRawPP,
+  calcTotalPP,
+  TOTAL_PP_TOP_N,
+} from "../../../../domain/result/pp/calc";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress, gzipDecompress } from "../../utils/gzip";
 import { generateNotificationId } from "../notification";

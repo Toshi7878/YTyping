@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { MapList } from "@/shared/map/list";
+import { MapList } from "@/domain/map/list/list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { Button } from "@/ui/button";
 

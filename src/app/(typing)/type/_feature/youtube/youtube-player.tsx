@@ -2,8 +2,8 @@
 
 import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
+import { mutatePlayCountStats } from "@/domain/map/play-count";
 import { cn } from "@/lib/tailwind";
-import { mutatePlayCountStats } from "@/shared/map/play-count";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useIsMobileDeviceState } from "@/store/user-agent";
 import { getVolume } from "@/store/volume";

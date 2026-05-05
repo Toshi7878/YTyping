@@ -3,19 +3,19 @@ import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
 import { useSession } from "@/auth/client";
+import { MapListActionButtons } from "@/domain/map/action-buttons";
+import { RatingBadge } from "@/domain/map/rating/badge";
+import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
+import { DateDistanceText } from "@/domain/text/date-distance-text";
 import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { RatingBadge } from "@/shared/map/rating";
-import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
-import { DateDistanceText } from "@/shared/text/date-distance-text";
-import { useMapLinkMode } from "@/store/map-link-type";
+import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { MapListActionButtons } from "../../map/action-buttons";
 import { ResultClapButton } from "./clap-button";
 import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 
@@ -97,7 +97,7 @@ interface MapInfoProps {
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
-  const linkMode = useMapLinkMode();
+  const linkMode = useTypingLinkMode();
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (

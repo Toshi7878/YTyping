@@ -6,7 +6,7 @@ import {
   resetLineSubstatus,
   setLineSubstatus,
 } from "@/app/(typing)/type/_feature/atoms/line-substatus";
-import type { BuiltMapLineWithOption } from "@/lib/build-map/built-map-helper";
+import type { BuiltMapLineWithOption } from "@/domain/map/built-map-helper";
 import { countPerMinute } from "@/utils/math";
 import { getAllLineResult } from "../../../atoms/line-result";
 import { getTypingStats } from "../../../atoms/stats";

@@ -1,8 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/auth/client";
+import { MapCard } from "@/domain/map/list/card/base";
 import type { MapListItem } from "@/server/api/routers/map";
-import { MapCard } from "@/shared/map/card/card";
 import { useTRPC } from "@/trpc/provider";
 import { useCreatorIdState } from "../_lib/atoms/hydrate";
 import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";

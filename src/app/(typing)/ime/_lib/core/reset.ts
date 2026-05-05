@@ -1,4 +1,4 @@
-import { mutatePlayCountStats } from "@/shared/map/play-count";
+import { mutatePlayCountStats } from "@/domain/map/play-count";
 import { resetUserResultMap } from "../../_feature/memu/result-dialog";
 import { resetNotifications } from "../../_feature/notifications";
 import { getMapId, resetMapId } from "../../_feature/provider";

@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
-import type { BuiltMapLineWithOption } from "@/lib/build-map/built-map-helper";
+import type { BuiltMapLineWithOption } from "@/domain/map/built-map-helper";
 import { cn } from "@/lib/tailwind";
 import { Card, CardFooter } from "@/ui/card";
 import { Separator } from "@/ui/separator";

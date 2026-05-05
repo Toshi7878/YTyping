@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { eq } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
-import { calcRating } from "@/server/api/routers/map/rating";
+import { calcRating } from "@/domain/map/rating/calc";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties } from "@/server/drizzle/schema";
 import { RawMapLineSchema } from "@/validator/map/raw-map-json";

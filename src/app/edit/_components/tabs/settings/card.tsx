@@ -1,5 +1,5 @@
 import { useYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
-import { VolumeRange } from "@/shared/volume-range";
+import { VolumeRange } from "@/domain/volume-range";
 import { CardWithContent } from "@/ui/card";
 import { AllTimeAdjust } from "./all-time-adjust-input-field";
 import { ConvertOptionButtons } from "./convert-option-buttons";

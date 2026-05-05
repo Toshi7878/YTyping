@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "@/auth/client";
+import { VolumeRange } from "@/domain/volume-range";
 import { cn } from "@/lib/tailwind";
-import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";
 import { CardWithContent } from "@/ui/card";
 import { DifficultyFilter } from "./difficulty-filter";

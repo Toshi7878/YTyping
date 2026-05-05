@@ -5,7 +5,7 @@
  * @example pnpm pp:recalculate
  */
 import { desc, eq } from "drizzle-orm";
-import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "@/lib/pp";
+import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "@/domain/result/pp/calc";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import { ResultStatuses, Results, UserStats } from "@/server/drizzle/schema";

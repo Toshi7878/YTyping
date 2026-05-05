@@ -1,7 +1,7 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { MapList } from "@/shared/map/list";
-import { ResultList } from "@/shared/result/list";
+import { MapList } from "@/domain/map/list/list";
+import { ResultList } from "@/domain/result/list/list";
 import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";

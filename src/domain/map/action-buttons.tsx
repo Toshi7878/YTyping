@@ -1,8 +1,8 @@
 import { useProgress } from "@bprogress/next";
 import { type Session, useSession } from "@/auth/client";
+import { useToggleMapLikeMutation } from "@/domain/map/like";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
-import { useToggleMapLikeMutation } from "@/shared/map/like";
 import { BookmarkListIconButton, RankingStarIconButton } from "@/ui/icon-button";
 import { LikeToggleButton } from "@/ui/like-button/like-button";
 import { TooltipWrapper } from "@/ui/tooltip";

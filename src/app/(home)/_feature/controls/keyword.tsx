@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useIsSearching } from "@/shared/map/list";
+import { useIsSearching } from "@/domain/map/list/list";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { useMapListFilterQueryStates } from "./search-params";

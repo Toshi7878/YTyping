@@ -1,5 +1,5 @@
 import { atom, type SetStateAction } from "jotai";
-import { mutatePlayCountStats } from "@/shared/map/play-count";
+import { mutatePlayCountStats } from "@/domain/map/play-count";
 import { type BuiltMap, getBuiltMap } from "../atoms/built-map";
 import { initializeAllLineResult } from "../atoms/line-result";
 import { resetLineSubstatus } from "../atoms/line-substatus";

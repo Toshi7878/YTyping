@@ -2,11 +2,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
+import { RatingBadge } from "@/domain/map/rating/badge";
+import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
 import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { RatingBadge } from "@/shared/map/rating";
-import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
-import { useMapLinkMode } from "@/store/map-link-type";
+import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -45,7 +45,7 @@ interface MapInfoProps {
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
-  const linkMode = useMapLinkMode();
+  const linkMode = useTypingLinkMode();
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (

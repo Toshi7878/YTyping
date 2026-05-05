@@ -1,13 +1,13 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
+import { MapListActionButtons } from "@/domain/map/action-buttons";
+import { RatingBadge } from "@/domain/map/rating/badge";
+import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { MapListActionButtons } from "@/shared/map/action-buttons";
-import { RatingBadge } from "@/shared/map/rating";
-import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
-import { useMapLinkMode } from "@/store/map-link-type";
 import { useReadyInputMode } from "@/store/ready-input-mode";
+import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/ui/hover-extract-card";
 import { Separator } from "@/ui/separator";
@@ -45,7 +45,7 @@ interface MinumumMapInfoProps {
 
 const MinumumMapInfo = ({ map }: MinumumMapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
-  const linkMode = useMapLinkMode();
+  const linkMode = useTypingLinkMode();
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 
   return (

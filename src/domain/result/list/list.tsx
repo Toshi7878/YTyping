@@ -4,10 +4,10 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
+import { ResultCard } from "@/domain/result/list/card/card";
 import { InfiniteScrollSpinner, usePageCounter } from "@/lib/infinite-scroll";
 import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { ResultCard } from "@/shared/result/card/card";
 import { useTRPC } from "@/trpc/provider";
 import type { ResultListFilterSchema } from "@/validator/result/list";
 

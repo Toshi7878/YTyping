@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "@/auth/client";
+import { useToggleClapMutation } from "@/domain/result/clap";
 import { cn } from "@/lib/tailwind";
-import { useToggleClapMutation } from "@/shared/result/clap";
 import { HandsClappingButton } from "@/ui/icon-button";
 import { TooltipWrapper } from "@/ui/tooltip";
 

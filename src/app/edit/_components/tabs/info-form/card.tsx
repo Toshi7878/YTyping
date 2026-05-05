@@ -30,7 +30,7 @@ import {
   calculateSpeedDifficulty,
   calculateTotalNotes,
   getStartLine,
-} from "@/lib/build-map/built-map-helper";
+} from "@/domain/map/built-map-helper";
 import { cn } from "@/lib/tailwind";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import { useTRPC } from "@/trpc/provider";

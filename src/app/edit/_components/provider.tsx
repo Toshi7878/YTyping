@@ -2,7 +2,7 @@
 import { Provider } from "jotai";
 import type React from "react";
 import { useEffect } from "react";
-import { AtomsHydrator } from "@/lib/jotai";
+import { AtomsHydrator } from "@/lib/hydrator";
 import { creatorIdAtom, mapIdAtom, setCreatorId, setMapId, setVideoId, videoIdAtom } from "../_lib/atoms/hydrate";
 import { pathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";

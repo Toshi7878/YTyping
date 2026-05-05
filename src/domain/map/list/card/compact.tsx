@@ -3,16 +3,17 @@ import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useSession } from "@/auth/client";
-import { calcChunkRatios } from "@/lib/build-map/built-map-helper";
+import { MapListActionButtons } from "@/domain/map/action-buttons";
+import { calcChunkRatios } from "@/domain/map/built-map-helper";
+import { RatingBadge } from "@/domain/map/rating/badge";
+import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
+import { DateDistanceText } from "@/domain/text/date-distance-text";
+import { UserNameLinkText } from "@/domain/text/user-name-link-text";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { MapListActionButtons } from "@/shared/map/action-buttons";
-import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
-import { DateDistanceText } from "@/shared/text/date-distance-text";
-import { UserNameLinkText } from "@/shared/text/user-name-link-text";
-import { useMapLinkMode } from "@/store/map-link-type";
 import { useReadyInputMode } from "@/store/ready-input-mode";
+import { useTypingLinkMode } from "@/store/typing-link-type";
 import { Badge } from "@/ui/badge";
 import { CardHeader } from "@/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/ui/hover-extract-card";
@@ -21,7 +22,6 @@ import { TooltipWrapper } from "@/ui/tooltip";
 import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
-import { RatingBadge } from "../rating";
 
 interface NotificationMapCardProps {
   map: MapListItem;
@@ -97,7 +97,7 @@ interface CompactMapInfoProps {
 
 const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
   const { data: session } = useSession();
-  const linkMode = useMapLinkMode();
+  const linkMode = useTypingLinkMode();
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
 

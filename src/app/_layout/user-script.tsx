@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "sonner";
 import { getSession } from "@/auth/client";
-import { getMapLinkMode, setMapLinkMode } from "@/store/map-link-type";
+import { setTypingLinkMode } from "@/store/typing-link-type";
 
 const ytypingGlobal = {
   get toast() {
@@ -10,11 +10,8 @@ const ytypingGlobal = {
   get getSessionUser() {
     return () => getSession()?.user ?? null;
   },
-  get getMapLinkMode() {
-    return () => getMapLinkMode();
-  },
-  get setMapLinkMode() {
-    return (mode: "type" | "ime") => setMapLinkMode(mode);
+  get setTypingLinkMode() {
+    return (mode: "type" | "ime") => setTypingLinkMode(mode);
   },
 };
 
