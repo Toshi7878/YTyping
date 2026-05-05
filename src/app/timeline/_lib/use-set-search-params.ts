@@ -2,7 +2,7 @@ import {
   type ResultListSearchParams,
   resultListSerialize,
   useResultListFilterQueryStates,
-} from "@/lib/search-params/result-list";
+} from "@/app/timeline/_components/result-list";
 import { readSearchPendingParams, setIsSearching } from "./atoms";
 
 export const useSetSearchParams = () => {

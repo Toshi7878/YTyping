@@ -1,4 +1,4 @@
-import { loadResultListSearchParams } from "@/lib/search-params/result-list";
+import { loadResultListSearchParams } from "@/app/timeline/_components/result-list";
 import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { JotaiProvider } from "./_components/provider";
 import { UsersResultList } from "./_components/result-list";

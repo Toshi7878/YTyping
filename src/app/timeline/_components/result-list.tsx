@@ -1,9 +1,9 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useResultListFilterQueryStates } from "@/app/timeline/_components/result-list";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { ResultCard } from "@/components/shared/result-card/card";
-import { useResultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";

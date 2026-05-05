@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useResultListFilterQueryStates } from "@/app/timeline/_components/result-list";
 import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useResultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {

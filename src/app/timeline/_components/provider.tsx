@@ -1,8 +1,8 @@
 "use client";
 import { Provider } from "jotai";
 import type React from "react";
+import type { ResultListSearchParams } from "@/app/timeline/_components/result-list";
 import { AtomsHydrator } from "@/components/shared/jotai";
-import type { ResultListSearchParams } from "@/lib/search-params/result-list";
 import {
   getTimelineAtomStore,
   searchResultClearRateAtom,
