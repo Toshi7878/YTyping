@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { MapCard } from "@/components/shared/map-card/card";
+import { MapCard } from "@/components/shared/map/card/card";
 import { useSession } from "@/lib/auth-client";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
