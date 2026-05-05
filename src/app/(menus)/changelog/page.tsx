@@ -1,11 +1,10 @@
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, Small, UList } from "@/components/ui/typography";
-import { getCaller } from "@/trpc/server";
+import { caller } from "@/trpc/server";
 import { formatDate } from "@/utils/date";
 import { changelog } from "./changelog";
 
 export default async function Page() {
-  const caller = getCaller();
   const buildingDate = await caller.vercel.getActiveBuildingAt();
 
   return (

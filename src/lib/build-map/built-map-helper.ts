@@ -1,7 +1,10 @@
-import type { InputMode } from "lyrics-typing-engine";
+import type { BuiltMapLine, InputMode } from "lyrics-typing-engine";
+import type z from "zod/v4";
 import { medianIgnoringZeros } from "@/utils/array";
+import type { LineOptionSchema } from "@/validator/map/raw-map-json";
 import type { TypingLineResult } from "@/validator/result/result";
-import type { BuiltMapLineWithOption } from "../types";
+
+export type BuiltMapLineWithOption = BuiltMapLine<z.infer<typeof LineOptionSchema>>;
 
 export function buildInitialLineResult(
   builtMapLines: BuiltMapLineWithOption[],

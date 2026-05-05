@@ -1,7 +1,6 @@
-import { atom, type ExtractAtomValue } from "jotai";
+import { atom, type ExtractAtomValue, type SetStateAction } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import type { Updater } from "@/utils/types";
 import { store } from "../../_feature/provider";
 
 const lyricsContainerAtom = atom<HTMLDivElement | null>(null);
@@ -17,10 +16,10 @@ export type ImeStats = ExtractAtomValue<typeof imeStatsAtom>;
 const imeTimeStatsAtom = focusAtom(imeStatsAtom, (optic) => optic.prop("typingTime"));
 const imeTypeCountStatsAtom = focusAtom(imeStatsAtom, (optic) => optic.prop("imeTypeCount"));
 
-export const updateTypingTimeStats = (update: Updater<ExtractAtomValue<typeof imeTimeStatsAtom>>) => {
+export const updateTypingTimeStats = (update: SetStateAction<ExtractAtomValue<typeof imeTimeStatsAtom>>) => {
   store.set(imeTimeStatsAtom, update);
 };
-export const updateImeTypeCountStats = (update: Updater<ExtractAtomValue<typeof imeTypeCountStatsAtom>>) => {
+export const updateImeTypeCountStats = (update: SetStateAction<ExtractAtomValue<typeof imeTypeCountStatsAtom>>) => {
   store.set(imeTypeCountStatsAtom, update);
 };
 export const readImeStats = () => store.get(imeStatsAtom);

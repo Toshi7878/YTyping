@@ -1,7 +1,7 @@
 import { env } from "@/env";
-import { downloadPublicFromR2, upsertPublicToR2 } from "@/lib/r2-storage";
 import { downloadPublicFromSupabase, upsertPublicToSupabase } from "@/lib/supabase-client";
 import type { FileUploadParams } from "@/lib/types";
+import { downloadPublicFromR2, upsertPublicToR2 } from "@/server/api/lib/r2-storage";
 
 export const uploadPublicFile = async (params: FileUploadParams): Promise<void> => {
   if (env.VERCEL_ENV === "production") {

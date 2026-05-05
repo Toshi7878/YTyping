@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { caller, HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { Content } from "../_components/content";
 import { PermissionToast } from "../_components/permission-toast";
 import { JotaiProvider } from "../_components/provider";
 
-const getMapInfo = cache(async (caller: ReturnType<typeof getCaller>, mapId: number) => {
-  return await caller.map.getById({ mapId });
-});
+const getMapInfo = cache(async (mapId: number) => await caller.map.getById({ mapId }));
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const caller = getCaller();
-  const mapInfo = await getMapInfo(caller, Number(id));
+  const mapInfo = await getMapInfo(Number(id));
 
   return {
     title: `Edit ${mapInfo.info.title} - YTyping`,
@@ -21,8 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const caller = getCaller();
-  const mapInfo = await getMapInfo(caller, Number(id));
+  const mapInfo = await getMapInfo(Number(id));
 
   if (!mapInfo) notFound();
 

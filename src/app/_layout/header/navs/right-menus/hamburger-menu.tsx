@@ -2,7 +2,6 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useIsDesktopDeviceState } from "@/app/_layout/user-agent";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "@/lib/auth-client";
+import { useIsDesktopDeviceState } from "@/store/user-agent";
 import { buildUserMenuLinkItems, LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
 import { LogOutDropdownItem, SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";

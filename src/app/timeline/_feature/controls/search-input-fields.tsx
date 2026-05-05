@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { useIsSearching } from "@/components/shared/result/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
+import { useIsSearching } from "@/shared/result/list";
 import { useResultListFilterQueryStates } from "../search-params";
 
 export const SearchInputs = () => {

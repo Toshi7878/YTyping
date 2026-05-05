@@ -6,9 +6,8 @@ import {
   resetLineSubstatus,
   setLineSubstatus,
 } from "@/app/(typing)/type/_feature/atoms/line-substatus";
-import type { BuiltMapLineWithOption } from "@/lib/types";
+import type { BuiltMapLineWithOption } from "@/lib/build-map/built-map-helper";
 import { countPerMinute } from "@/utils/math";
-import type { YouTubeSpeed } from "@/utils/types";
 import { getAllLineResult } from "../../../atoms/line-result";
 import { getTypingStats } from "../../../atoms/stats";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
@@ -346,6 +345,8 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
     setActiveSkipKey(null);
   }
 };
+
+type YouTubeSpeed = 0.25 | 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2;
 
 const syncReplayLineSnapshot = (newCurrentCount: number) => {
   const lineResults = getAllLineResult();

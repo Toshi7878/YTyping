@@ -1,5 +1,5 @@
 import type { YouTubeEvent } from "react-youtube";
-import { getVolume } from "@/components/shared/volume-range";
+import { getVolume } from "@/store/volume";
 import { readMapId } from "../atoms/hydrate";
 import { readRawMap } from "../atoms/map-reducer";
 import { preventEditortabAutoFocus } from "../atoms/ref";

@@ -1,9 +1,9 @@
 import { useYTPlayer } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { playSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
-import { VolumeRange } from "@/components/shared/volume-range";
 import { CheckboxCardGroup } from "@/components/ui/checkbox/checkbox";
 import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { VolumeRange } from "@/shared/volume-range";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const SoundEffectFields = () => {

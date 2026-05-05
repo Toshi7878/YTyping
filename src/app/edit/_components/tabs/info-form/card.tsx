@@ -20,6 +20,7 @@ import {
 } from "@/app/edit/_lib/atoms/hydrate";
 import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
 import { getYTDuration, getYTVideoId, playYTPlayer, seekYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
+import { editDb } from "@/app/edit/_lib/indexed-db";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { useIsBuckupQueryState } from "@/app/edit/_lib/search-params";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,6 @@ import {
   calculateTotalNotes,
   getStartLine,
 } from "@/lib/build-map/built-map-helper";
-import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/tailwind";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import { useTRPC } from "@/trpc/provider";
@@ -133,7 +133,7 @@ export const AddMapInfoFormCard = () => {
   const { data: backupMap } = useQuery(
     queryOptions({
       queryKey: ["backup"],
-      queryFn: fetchBackupMap,
+      queryFn: editDb.backup.fetch,
       enabled: isBackup,
     }),
   );
@@ -198,7 +198,7 @@ export const AddMapInfoFormCard = () => {
       if (!value) return;
 
       debounce(() => {
-        void backupMapInfo({
+        void editDb.backup.upsertMapInfo({
           videoId,
           title: value.title || "",
           artistName: value.artistName || "",
@@ -439,7 +439,7 @@ const useOnSubmit = (form: FormType) => {
         const mapId = readMapId();
         if (!mapId) {
           window.history.replaceState(null, "", `/edit/${id}`);
-          void clearBackupMapWithInfo();
+          void editDb.backup.delete();
           setMapId(id);
           setCreatorId(creatorId);
           toast.success("アップロード完了");
@@ -462,7 +462,7 @@ const useOnSubmit = (form: FormType) => {
         const mapId = readMapId();
         if (!mapId) {
           const videoId = readVideoId();
-          await backupMapInfo({
+          await editDb.backup.upsertMapInfo({
             videoId,
             title: form.getValues("title"),
             artistName: form.getValues("artistName"),
@@ -472,7 +472,7 @@ const useOnSubmit = (form: FormType) => {
             previewTime: Number(form.getValues("previewTime") ?? 0),
           });
 
-          void backupMap({ videoId, map: readRawMap() });
+          void editDb.backup.upsertMapJson({ videoId, map: readRawMap() });
         }
       },
     }),

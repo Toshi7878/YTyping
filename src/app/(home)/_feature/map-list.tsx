@@ -1,6 +1,6 @@
 "use client";
-import { useMapListLayoutOption } from "@/app/_layout/user-options";
-import { MapList } from "@/components/shared/map/list";
+import { MapList } from "@/shared/map/list";
+import { useMapListLayoutOption } from "@/store/user-options";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "./controls/search-params";
 import { store } from "./provider";
 

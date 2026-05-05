@@ -1,6 +1,6 @@
 "use client";
-import { usePreviewYTPlayer } from "@/app/_layout/preview-youtube";
-import { VolumeRange } from "@/components/shared/volume-range";
+import { VolumeRange } from "@/shared/volume-range";
+import { usePreviewYTPlayer } from "@/store/preview-yt-player";
 import { FilterFieldsPopover } from "./filter-popover";
 import { SearchInputs } from "./search-input-fields";
 

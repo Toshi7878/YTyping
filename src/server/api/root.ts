@@ -3,7 +3,6 @@ import { authRouter } from "./routers/auth";
 import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
 import { morphRouter } from "./routers/morph";
-import { morphOpenApiRouter } from "./routers/morph-openapi";
 import { notificationRouter } from "./routers/notification";
 import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
@@ -34,7 +33,6 @@ export const appRouter = router({
 
 export const openApiRouter = router({
   map: mapOpenApiRouter,
-  morph: morphOpenApiRouter,
 });
 
 export type AppRouter = typeof appRouter;

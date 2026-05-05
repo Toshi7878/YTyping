@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { env } from "@/env";
-import { JST_OFFSET } from "@/utils/const";
+import { JST_OFFSET } from "@/utils/date";
 import { getActiveDeployment } from "../lib/vercel";
 import { publicProcedure } from "../trpc";
 

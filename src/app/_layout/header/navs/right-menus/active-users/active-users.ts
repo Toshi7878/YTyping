@@ -1,0 +1,124 @@
+import { atom, getDefaultStore, type SetStateAction, useAtomValue } from "jotai";
+import { useParams, usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "@/lib/auth-client";
+import { createPresenceChannel } from "@/lib/supabase-client";
+import { usePresenceOption } from "@/store/user-options";
+
+export interface ActiveUserStatus {
+  id: number;
+  name: string;
+  onlineAt: Date;
+  state: "type" | "edit" | "idle" | "askMe";
+  mapId: number | null;
+}
+
+const store = getDefaultStore();
+const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
+export const useActiveUsers = () => useAtomValue(onlineUsersAtom, { store });
+const setActiveUsers = (updater: SetStateAction<ActiveUserStatus[]>) => store.set(onlineUsersAtom, updater);
+
+export const useSyncActiveUsers = () => {
+  const { data: session } = useSession();
+  const pathname = usePathname();
+  const { id: mapId } = useParams();
+  const presenceState = usePresenceOption();
+
+  useEffect(() => {
+    if (!session?.user?.name) return;
+
+    let inactivityTimer: number;
+    let currentChannel: ReturnType<typeof createPresenceChannel> | null = null;
+
+    const updateUserStatus = async (channelInstance: typeof currentChannel) => {
+      if (!session?.user?.name || !channelInstance) return;
+      const isType = pathname.match("/type/") || pathname.match("/ime/");
+      const isEdit = pathname.match("/edit");
+
+      const currentState = presenceState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
+
+      const userStatus: ActiveUserStatus = {
+        id: Number(session.user.id),
+        name: session.user.name,
+        onlineAt: new Date(),
+        state: currentState,
+        mapId: currentState === "type" ? Number(mapId) : null,
+      };
+
+      await channelInstance.track(userStatus);
+    };
+
+    const createChannel = () => {
+      const channel = createPresenceChannel("active_users_room", session.user.id);
+
+      channel.on("presence", { event: "sync" }, () => {
+        const newState = channel.presenceState<ActiveUserStatus>();
+        const users = Object.keys(newState)
+          .map((key) => {
+            const [userData] = newState[key] ?? [];
+            if (!userData) return null;
+            return {
+              id: userData.id,
+              name: userData.name,
+              onlineAt: userData.onlineAt,
+              state: userData.state,
+              mapId: userData.mapId,
+            };
+          })
+          .filter((user) => user !== null);
+        setActiveUsers(users);
+      });
+
+      channel.on("presence", { event: "join" }, ({ newPresences }: { newPresences: ActiveUserStatus[] }) => {
+        setActiveUsers((prev) => [...prev, ...newPresences]);
+      });
+
+      channel.on("presence", { event: "leave" }, ({ key }: { key: string }) => {
+        setActiveUsers((prev) => prev.filter((user) => user.id.toString() !== key));
+      });
+
+      // 初回 subscribe
+      channel.subscribe(async (status) => {
+        if (status !== "SUBSCRIBED" || !session?.user?.name) return;
+        if (presenceState !== "HIDE_ONLINE") {
+          await updateUserStatus(channel);
+        }
+      });
+
+      return channel;
+    };
+
+    const ensureChannel = () => {
+      if (!currentChannel) {
+        currentChannel = createChannel();
+      }
+    };
+
+    const resetInactivityTimer = () => {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      ensureChannel();
+      inactivityTimer = window.setTimeout(() => {
+        if (currentChannel) {
+          void currentChannel.unsubscribe();
+          currentChannel = null;
+        }
+      }, 60 * 1000);
+    };
+
+    const activityEvents = ["mousemove", "keydown", "click", "scroll"];
+    for (const event of activityEvents) {
+      window.addEventListener(event, resetInactivityTimer);
+    }
+    resetInactivityTimer();
+
+    return () => {
+      for (const event of activityEvents) {
+        window.removeEventListener(event, resetInactivityTimer);
+      }
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (currentChannel) {
+        void currentChannel.unsubscribe();
+      }
+    };
+  }, [pathname, session?.user.name, mapId, session?.user.id, presenceState]);
+};

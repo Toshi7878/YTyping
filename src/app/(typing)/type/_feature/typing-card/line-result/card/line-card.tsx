@@ -5,8 +5,8 @@ import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-resu
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { BuiltMapLineWithOption } from "@/lib/build-map/built-map-helper";
 import { cn } from "@/lib/tailwind";
-import type { BuiltMapLineWithOption } from "@/lib/types";
 import { usePlayingInputModeState } from "../../../atoms/typing-word";
 import { useMediaSpeedState } from "../../../youtube/youtube-player";
 import { useSceneState } from "../../typing-card";

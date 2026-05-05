@@ -1,10 +1,9 @@
 "use client";
-import { atom, type ExtractAtomValue, useAtomValue } from "jotai";
+import { atom, type ExtractAtomValue, type SetStateAction, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
 import { uncontrolled } from "jotai-uncontrolled";
 import { cn } from "@/lib/tailwind";
-import type { Updater } from "@/utils/types";
 import { getBuiltMap } from "../../atoms/built-map";
 import { store } from "../../atoms/store";
 import { getRankingData } from "../ranking/get-ranking-result";
@@ -40,7 +39,7 @@ const typingStatusViewAtoms = {
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom);
 export const getTypingStatus = () => store.get(typingStatusAtom);
 
-export const setTypingStatus = (update: Updater<TypingStatus>) => store.set(typingStatusAtom, update);
+export const setTypingStatus = (update: SetStateAction<TypingStatus>) => store.set(typingStatusAtom, update);
 
 export const resetTypingStatus = () => {
   store.set(typingStatusAtom, RESET);

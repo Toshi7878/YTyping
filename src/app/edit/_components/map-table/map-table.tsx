@@ -7,13 +7,13 @@ import { useParams } from "next/navigation";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
+import { editDb } from "@/app/edit/_lib/indexed-db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/tailwind";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
@@ -51,7 +51,7 @@ export const NewMapTable = () => {
   const { data: backupMap } = useQuery(
     queryOptions({
       queryKey: ["backup"],
-      queryFn: fetchBackupMap,
+      queryFn: editDb.backup.fetch,
       enabled: isBackup && !mapId,
     }),
   );

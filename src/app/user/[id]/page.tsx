@@ -1,5 +1,5 @@
 import { H1 } from "@/components/ui/typography";
-import { getCaller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { caller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { loadUserPageSearchParams } from "./_features/search-params";
 import { UserTabs } from "./_features/tabs";
 import { UserProfileCard } from "./_features/user-profile-card";
@@ -7,7 +7,6 @@ import { UserProfileCard } from "./_features/user-profile-card";
 export default async function Page({ params, searchParams }: PageProps<"/user/[id]">) {
   const { id } = await params;
   const { tab, bookmarkListId } = await loadUserPageSearchParams(searchParams);
-  const caller = getCaller();
 
   const numericId = Number(id);
 

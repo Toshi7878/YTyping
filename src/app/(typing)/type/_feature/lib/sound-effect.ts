@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { getIsMobileDevice } from "@/app/_layout/user-agent";
-import { getVolume } from "@/components/shared/volume-range";
+import { getIsMobileDevice } from "@/store/user-agent";
+import { getVolume } from "@/store/volume";
 import { getTypingOptions } from "../tabs/setting/popover";
 
 const manifest = [

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { H2 } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
-import { getCaller } from "@/trpc/server";
+import { caller } from "@/trpc/server";
 import { UserNameInputForm } from "../_components/user-name-input-form";
 import { UserOptionsForm } from "./_components/option-form";
 import { FingerChartUrlInput } from "./_components/profile-settings/finger-chart-url-input";
@@ -19,7 +19,6 @@ export default async function Page() {
 const ProfileSettingCard = async () => {
   const session = await getSession();
   if (!session?.user.id) return null;
-  const caller = getCaller();
   const userProfile = await caller.user.profile.get({ userId: session?.user.id });
 
   return (
@@ -40,7 +39,6 @@ const ProfileSettingCard = async () => {
 };
 
 const OptionSettingCard = async () => {
-  const caller = getCaller();
   const userOptions = await caller.user.option.getForSession();
 
   return (

@@ -12,12 +12,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
-import { getCaller } from "@/trpc/server";
+import { caller } from "@/trpc/server";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
+import { AppAtomsHydrator } from "./_layout/hydrate";
 import { LinkProgressProvider } from "./_layout/link-progress-provider";
 import { PreviewYouTubePlayer } from "./_layout/preview-youtube";
 import { SessionProvider } from "./_layout/session-provider";
-import { JotaiProvider } from "./_layout/store";
 import { ThemeProvider } from "./_layout/theme-provider";
 import { UserScriptInit } from "./_layout/user-script";
 
@@ -35,7 +35,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";
   const session = await getSession();
-  const caller = getCaller();
   const userOptions = await caller.user.option.getForSession();
 
   return (
@@ -54,20 +53,20 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
           >
             <TRPCProvider>
-              <LinkProgressProvider>
-                <TooltipProvider delayDuration={600}>
+              <TooltipProvider delayDuration={600}>
+                <AppAtomsHydrator userOptions={userOptions} userAgent={userAgent}>
                   <SessionProvider session={session}>
-                    <Header className="fixed z-50 h-10 w-screen" session={session} />
-                    <JotaiProvider userOptions={userOptions} userAgent={userAgent}>
+                    <LinkProgressProvider>
+                      <Header className="fixed z-50 h-10 w-screen" session={session} />
                       <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
                         {children}
                         <Analytics />
                       </main>
                       <PreviewYouTubePlayer />
-                    </JotaiProvider>
+                    </LinkProgressProvider>
                   </SessionProvider>
-                </TooltipProvider>
-              </LinkProgressProvider>
+                </AppAtomsHydrator>
+              </TooltipProvider>
             </TRPCProvider>
           </ThemeProvider>
         </NuqsAdapter>

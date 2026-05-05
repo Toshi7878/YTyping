@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { backupMap } from "@/lib/indexed-db";
+import { editDb } from "@/app/edit/_lib/indexed-db";
 import { normalizeSymbols } from "@/utils/string-transform";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
@@ -44,7 +44,7 @@ export const addLineAction = (isShiftKey: boolean) => {
   if (mapId === null) {
     const map = readRawMap();
     const videoId = readVideoId();
-    void backupMap({ videoId, map });
+    void editDb.backup.upsertMapJson({ videoId, map });
   }
 
   setCanUpload(true);
@@ -109,7 +109,7 @@ export const updateLineAction = () => {
   if (mapId === null) {
     const map = readRawMap();
     const videoId = readVideoId();
-    void backupMap({ videoId, map });
+    void editDb.backup.upsertMapJson({ videoId, map });
   }
 
   setRawMapAction({ type: "update", payload: newLine, index: selectLineIndex });
@@ -160,6 +160,6 @@ export const deleteLineAction = () => {
   if (mapId === null) {
     const map = readRawMap();
     const videoId = readVideoId();
-    void backupMap({ videoId, map });
+    void editDb.backup.upsertMapJson({ videoId, map });
   }
 };

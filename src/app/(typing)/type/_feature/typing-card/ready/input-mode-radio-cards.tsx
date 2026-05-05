@@ -1,15 +1,8 @@
 "use client";
-import { useAtomValue } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import type { InputMode } from "lyrics-typing-engine";
-import { store } from "@/app/_layout/store";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/tailwind";
-
-const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma");
-export const useReadyInputMode = () => useAtomValue(readyRadioInputModeAtom, { store });
-export const setReadyInputMode = (value: InputMode) => store.set(readyRadioInputModeAtom, value);
-export const getReadyInputMode = () => store.get(readyRadioInputModeAtom);
+import { setReadyInputMode, useReadyInputMode } from "@/store/ready-input-mode";
 
 export const ReadyInputModeRadioCards = () => {
   const options: { value: InputMode; label: string }[] = [

@@ -13,6 +13,7 @@ import {
   extractTypingLineIndexes,
   hasAlphabetChunk,
 } from "@/lib/build-map/built-map-helper";
+import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
@@ -23,7 +24,6 @@ import { useTypingOptionsState } from "./tabs/setting/popover";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
-import { getReadyInputMode } from "./typing-card/ready/input-mode-radio-cards";
 import { TypingCard, useSceneGroupState } from "./typing-card/typing-card";
 import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
