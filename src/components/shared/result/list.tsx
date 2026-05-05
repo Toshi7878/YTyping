@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";
 import type { ResultListFilterSchema } from "@/validator/result/list";
-import { InfiniteScrollSpinner, usePageCounter } from "../infinite-scroll";
+import { InfiniteScrollSpinner, usePageCounter } from "../../../lib/infinite-scroll";
 
 const pageAtom = atom<number>(0);
 const isSearchingAtom = atom<boolean>(false);

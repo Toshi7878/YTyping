@@ -2,7 +2,7 @@
 import { Provider } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
-import { AtomsHydrator } from "@/components/shared/jotai";
+import { AtomsHydrator } from "@/lib/jotai";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { resetAllTypingFeatureAtoms } from "./atoms/reset";
 import { getTypingStats } from "./atoms/stats";

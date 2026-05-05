@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";
-import { InfiniteScrollSpinner, usePageCounter } from "../infinite-scroll";
+import { InfiniteScrollSpinner, usePageCounter } from "../../../lib/infinite-scroll";
 
 const pageAtom = atom<number>(0);
 const isSearchingAtom = atom<boolean>(false);

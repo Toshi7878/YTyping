@@ -5,13 +5,13 @@ import { Bell, BellDot } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
-import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
 import { NotificationMapCard } from "@/components/shared/map/card/compact";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { InfiniteScrollSpinner } from "@/lib/infinite-scroll";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 

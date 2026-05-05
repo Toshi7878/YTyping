@@ -3,7 +3,7 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo } from "react";
-import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
+import { InfiniteScrollSpinner } from "@/lib/infinite-scroll";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
