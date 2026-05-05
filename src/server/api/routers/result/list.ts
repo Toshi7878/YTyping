@@ -6,7 +6,7 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
+import type { RESULT_INPUT_METHOD_TYPES, ResultListFilterSchema } from "@/validator/result";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
 import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
@@ -163,7 +163,7 @@ export type ResultWithMapItem = ReturnType<typeof formatMapListItem>[number];
 const buildResultWithMapBaseQuery = <T extends PgSelect>(
   db: T,
   session: TRPCContext["session"],
-  input?: z.output<typeof ResultListSearchFilterSchema>,
+  input?: z.output<typeof ResultListFilterSchema>,
 ) => {
   let baseQuery = db
     .innerJoin(Maps, eq(Maps.id, Results.mapId))

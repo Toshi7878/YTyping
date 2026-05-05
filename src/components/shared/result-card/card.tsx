@@ -22,9 +22,10 @@ import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 interface ResultCardProps {
   result: ResultWithMapItem;
   initialInView: boolean;
+  imagePriority?: boolean;
 }
 
-export const ResultCard = ({ result, initialInView = false }: ResultCardProps) => {
+export const ResultCard = ({ result, initialInView = false, imagePriority = false }: ResultCardProps) => {
   const { data: session } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
@@ -68,7 +69,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
             alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
             size="xs"
-            priority={initialInView}
+            priority={imagePriority || initialInView}
             isStyledMap={result.map.info.categories.includes("CSS")}
           />
           {shouldRender && <MapInfo map={result.map} className="flex-1" />}

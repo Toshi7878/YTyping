@@ -1,8 +1,7 @@
-import { type inferParserType, useQueryStates } from "nuqs";
+import { useQueryStates } from "nuqs";
 import {
   createLoader,
   createParser,
-  createSerializer,
   parseAsInteger,
   parseAsNumberLiteral,
   parseAsString,
@@ -53,8 +52,4 @@ const resultListSearchParams = {
 };
 
 export const useResultListFilterQueryStates = () => useQueryStates(resultListSearchParams);
-
-export type ResultListSearchParams = inferParserType<typeof resultListSearchParams>;
-
 export const loadResultListSearchParams = createLoader(resultListSearchParams);
-export const resultListSerialize = createSerializer(resultListSearchParams);

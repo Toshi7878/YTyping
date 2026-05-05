@@ -1,17 +1,16 @@
 "use client";
-import { type UseInfiniteQueryResult, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
-import { useInView, useOnInView } from "react-intersection-observer";
 import type z from "zod/v4";
 import { MapCard } from "@/components/shared/map/card/card";
 import { CompactMapCard } from "@/components/shared/map/card/compact";
-import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";
+import { InfiniteScrollSpinner, usePageCounter } from "../infinite-scroll";
 
 const pageAtom = atom<number>(0);
 const isSearchingAtom = atom<boolean>(false);
@@ -121,44 +120,4 @@ const TwoColumnMapList = ({ items, initialInView, imagePriority, onEnter, pageIn
       ))}
     </section>
   );
-};
-
-const usePageCounter = ({ onEnter, pageIndex }: { onEnter: (page: number) => void; pageIndex: number }) => {
-  const { ref, inView } = useInView();
-
-  useEffect(() => {
-    if (inView) {
-      onEnter(pageIndex);
-    }
-  }, [inView, onEnter, pageIndex]);
-
-  return ref;
-};
-
-type InfiniteScrollControls<TData = unknown, TError = unknown> = Pick<
-  UseInfiniteQueryResult<TData, TError>,
-  "fetchNextPage" | "hasNextPage"
->;
-
-interface InfiniteScrollSpinnerProps {
-  rootMarginY: `${number}px`;
-  className?: string;
-}
-
-export const InfiniteScrollSpinner = ({
-  rootMarginY,
-  className,
-  fetchNextPage,
-  hasNextPage,
-}: InfiniteScrollSpinnerProps & InfiniteScrollControls) => {
-  const ref = useOnInView(
-    (inView) => {
-      if (!inView) return;
-      void fetchNextPage();
-    },
-    { rootMargin: `${rootMarginY} 0px` },
-  );
-
-  if (!hasNextPage) return null;
-  return <Spinner ref={ref} className={className} />;
 };

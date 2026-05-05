@@ -1,26 +1,26 @@
 "use client";
 import { useState } from "react";
-import { useResultListFilterQueryStates } from "@/app/timeline/_components/result-list";
-import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
+import { useIsSearching } from "@/components/shared/result/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useSetSearchParams } from "../../_lib/use-set-search-params";
+import { useResultListFilterQueryStates } from "../search-params";
 
 export const SearchInputs = () => {
-  const isSearching = useIsSearchingState();
-  const [filterParams] = useResultListFilterQueryStates();
+  const isSearching = useIsSearching();
+  const [filterParams, setFilterParams] = useResultListFilterQueryStates();
+  const [keywords, setKeywords] = useState({
+    mapKeyword: filterParams.mapKeyword,
+    username: filterParams.username,
+  });
 
-  const [keywords, setKeywords] = useState({ mapKeyword: filterParams.mapKeyword, username: filterParams.username });
-  const setSearchParams = useSetSearchParams();
+  const applyKeywords = () => {
+    setFilterParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+  };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearchParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+      applyKeywords();
     }
-  };
-
-  const onClick = () => {
-    setSearchParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
   };
 
   return (
@@ -39,7 +39,7 @@ export const SearchInputs = () => {
         onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
         onKeyDown={onKeyDown}
       />
-      <Button className="w-[30%]" onClick={onClick} disabled={isSearching} loading={isSearching}>
+      <Button className="w-[30%]" onClick={applyKeywords} disabled={isSearching} loading={isSearching}>
         検索
       </Button>
     </div>

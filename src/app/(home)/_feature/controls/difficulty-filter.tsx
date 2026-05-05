@@ -15,7 +15,6 @@ const RANGE = { min: 0, max: 16 };
 
 export const DifficultyFilter = ({ className }: { className?: string }) => {
   const [params, setFilterParams] = useMapListFilterQueryStates();
-  const { debounce } = useDebounce(500);
 
   const handleTierClick = (tier: (typeof DIFFICULTY_TIERS)[number]) => {
     const isTierExact = params.minRate === tier.min && params.maxRate === tier.max;
@@ -51,9 +50,7 @@ export const DifficultyFilter = ({ className }: { className?: string }) => {
         <DifficultyDualSlider
           minRate={params.minRate ?? RANGE.min}
           maxRate={params.maxRate ?? RANGE.max}
-          onChange={(minRate, maxRate) =>
-            debounce(() => void setFilterParams({ minRate: minRate ?? 0, maxRate: maxRate ?? null }))
-          }
+          onChange={(minRate, maxRate) => void setFilterParams({ minRate: minRate ?? 0, maxRate: maxRate ?? null })}
           className="w-full"
         />
       </CardContent>

@@ -52,7 +52,7 @@ export const KPM_LIMIT = { min: 0, max: 1200 };
 export const CLEAR_RATE_LIMIT = { min: 0, max: 100 };
 export const PLAY_SPEED_LIMIT = { min: 1, max: 2 };
 
-export const ResultListSearchFilterSchema = z.object({
+export const ResultListFilterSchema = z.object({
   mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullish(),
   minKpm: z.number().nullish(),
   maxKpm: z.number().nullish(),
@@ -65,14 +65,10 @@ export const ResultListSearchFilterSchema = z.object({
   playerId: z.number().nullish(),
 });
 
-/** `pageSize` 未指定時はサーバーで 25 件。指定時は 1〜50 の整数。 */
 export const SelectResultListApiSchema = z
-  .object({
-    cursor: z.number().optional(),
-  })
-  .extend(ResultListSearchFilterSchema.shape);
+  .object({ cursor: z.number().optional() })
+  .extend(ResultListFilterSchema.shape);
 
-/** ユーザーの PP 順リザルト一覧用。限定公開譜面も含む。 */
 export const SelectResultPpListApiSchema = z.object({
   playerId: z.number(),
   cursor: z.number().optional(),
