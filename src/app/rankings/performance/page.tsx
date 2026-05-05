@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { H1 } from "@/ui/typography";
-import { PPRankingInfoTrigger } from "./_components/pp-ranking-info-trigger";
-import { PPRankingTable } from "./_components/pp-ranking-table";
+import { PPRankingInfoTrigger } from "./_feature/pp-ranking-info-trigger";
+import { PPRankingTable } from "./_feature/pp-ranking-table";
 
 export const metadata: Metadata = {
   title: "PP ランキング | YTyping",

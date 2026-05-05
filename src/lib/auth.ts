@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noDuplicateObjectKeys: Better Auth config objects trigger false-positives */
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import md5 from "md5";
@@ -7,6 +6,7 @@ import { cache } from "react";
 import { env } from "@/env";
 import { db, schema } from "@/server/drizzle/client";
 import type { Session } from "./auth-client";
+import "server-only";
 
 const baseUrl =
   env.VERCEL_ENV === "production"
