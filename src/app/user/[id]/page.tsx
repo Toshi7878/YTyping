@@ -1,38 +1,52 @@
 import { H1 } from "@/components/ui/typography";
-import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { getCaller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { UserTabs } from "./_components/tabs";
 import { UserProfileCard } from "./_components/user-profile-card";
 import { loadUserPageSearchParams } from "./_lib/search-params";
 
 export default async function Page({ params, searchParams }: PageProps<"/user/[id]">) {
   const { id } = await params;
-  const { tab } = await loadUserPageSearchParams(searchParams);
-
-  prefetch(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
-  prefetch(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
-  prefetch(trpc.result.list.getCount.queryOptions({ playerId: Number(id) }));
-  prefetch(trpc.map.bookmark.lists.getCount.queryOptions({ userId: Number(id) }));
-
-  if (tab === "stats") {
-    prefetch(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.user.stats.getActivityOldestYear.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.result.pp.userTopList.infiniteQueryOptions({ playerId: Number(id) }));
-  } else if (tab === "bookmarks") {
-    prefetch(trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: Number(id) }));
-    prefetch(
-      trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sortType: "bookmark", isSortDesc: true }),
-    );
-  } else if (tab === "maps") {
-    prefetch(trpc.map.list.get.infiniteQueryOptions({ creatorId: Number(id) }));
-  } else if (tab === "results") {
-    prefetch(trpc.result.list.get.infiniteQueryOptions({ playerId: Number(id) }));
-    prefetch(trpc.user.stats.getRankingSummary.queryOptions({ userId: Number(id) }));
-  } else if (tab === "liked") {
-    prefetch(trpc.map.list.get.infiniteQueryOptions({ likerId: Number(id) }));
-  }
-
+  const { tab, bookmarkListId } = await loadUserPageSearchParams(searchParams);
   const caller = getCaller();
-  const userProfile = await caller.user.profile.get({ userId: Number(id) });
+
+  const numericId = Number(id);
+
+  const tabQueryOptions = (() => {
+    switch (tab) {
+      case "stats":
+        return [
+          trpc.user.stats.get.queryOptions({ userId: numericId }),
+          trpc.user.stats.getActivityOldestYear.queryOptions({ userId: numericId }),
+          trpc.result.pp.userTopList.infiniteQueryOptions({ playerId: numericId }),
+        ];
+      case "maps":
+        return [trpc.map.list.get.infiniteQueryOptions({ creatorId: numericId, sort: {} })];
+      case "liked":
+        return [trpc.map.list.get.infiniteQueryOptions({ likerId: numericId, sort: { type: "like", isDesc: true } })];
+      case "bookmarks": {
+        if (bookmarkListId) {
+          return [
+            trpc.map.list.get.infiniteQueryOptions({
+              bookmarkListId: Number(bookmarkListId),
+              sort: { type: "bookmark", isDesc: true },
+            }),
+          ];
+        }
+        return [trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: numericId })];
+      }
+      default:
+        return [];
+    }
+  })();
+
+  const [userProfile] = await Promise.all([
+    caller.user.profile.get({ userId: Number(id) }),
+    prefetchAsync(trpc.map.list.getCount.queryOptions({ creatorId: numericId })),
+    prefetchAsync(trpc.map.list.getCount.queryOptions({ likerId: numericId })),
+    prefetchAsync(trpc.result.list.getCount.queryOptions({ playerId: numericId })),
+    prefetchAsync(trpc.map.bookmark.lists.getCount.queryOptions({ userId: numericId })),
+    ...tabQueryOptions.map(prefetchAsync),
+  ]);
 
   return (
     <HydrateClient>

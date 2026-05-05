@@ -2,6 +2,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MapListActionButtons } from "@/components/shared/list-action-buttons";
+import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
+import { DateDistanceText } from "@/components/shared/text/date-distance-text";
+import { UserNameLinkText } from "@/components/shared/text/user-name-link-text";
+import { Badge } from "@/components/ui/badge";
 import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
@@ -15,12 +20,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
-import { Badge } from "../../ui/badge";
-import { MapListActionButtons } from "../list-action-buttons";
-import { RatingBadge } from "../map/rating";
-import { MapThumbnailImage } from "../map-thumbnail-image";
-import { DateDistanceText } from "../text/date-distance-text";
-import { UserNameLinkText } from "../text/user-name-link-text";
+import { RatingBadge } from "../rating";
 
 interface NotificationMapCardProps {
   map: MapListItem;

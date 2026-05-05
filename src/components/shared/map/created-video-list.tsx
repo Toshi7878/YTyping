@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/provider";
-import { Spinner } from "../ui/spinner";
-import { MapCard } from "./map-card/card";
+import { Spinner } from "../../ui/spinner";
+import { MapCard } from "./card/card";
 
 interface CreatedMapListByVideoIdProps {
   videoId: string;

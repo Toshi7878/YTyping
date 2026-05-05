@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { MinimumMapCard } from "@/components/shared/map-card/minimum-card";
+import { MinimumMapCard } from "@/components/shared/map/card/minimum";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

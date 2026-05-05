@@ -47,15 +47,15 @@ export const SortControls = () => {
 };
 
 const deriveNextSortParam = (
-  value: (typeof MAP_SORT_OPTIONS)[number],
+  type: (typeof MAP_SORT_OPTIONS)[number],
   currentSort: MapListSortSearchParams,
 ): MapListSortSearchParams => {
-  if (value === "random") {
-    return currentSort.value === "random" ? { value: "publishedAt", desc: true } : { value: "random", desc: false };
+  if (type === "random") {
+    return currentSort.type === "random" ? { type: "publishedAt", isDesc: true } : { type: "random", isDesc: false };
   }
-  if (currentSort.value !== value) return { value, desc: true };
-  if (currentSort.desc) return { value, desc: false };
-  return { value: "publishedAt", desc: true };
+  if (currentSort.type !== type) return { type, isDesc: true };
+  if (currentSort.isDesc) return { type, isDesc: false };
+  return { type: "publishedAt", isDesc: true };
 };
 
 const isSortOptionVisible = (
@@ -71,10 +71,10 @@ const isSortOptionVisible = (
 };
 
 const deriveSortIconState = (
-  value: (typeof MAP_SORT_OPTIONS)[number],
+  type: (typeof MAP_SORT_OPTIONS)[number],
   currentSort: MapListSortSearchParams,
 ): SortIconState => {
-  if (value === "random") return currentSort.value === "random" ? "random-active" : "random-inactive";
-  if (currentSort.value !== value) return "inactive";
-  return currentSort.desc ? "desc" : "asc";
+  if (type === "random") return currentSort.type === "random" ? "random-active" : "random-inactive";
+  if (currentSort.type !== type) return "inactive";
+  return currentSort.isDesc ? "desc" : "asc";
 };

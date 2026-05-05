@@ -121,7 +121,7 @@ const BookmarkListSelect = () => {
           setSearchParams({ ...params, bookmarkListId: null, sort: undefined });
           return;
         }
-        setSearchParams({ ...params, bookmarkListId: Number(nextValue), sort: { value: "bookmark", desc: true } });
+        setSearchParams({ ...params, bookmarkListId: Number(nextValue), sort: { type: "bookmark", isDesc: true } });
       }}
     >
       <SelectTrigger
@@ -202,11 +202,11 @@ const deriveSortParam = ({
   filterType,
   rankingStatus,
 }: Pick<MapListFilterSearchParams, "filterType" | "rankingStatus">): MapListSortSearchParams => {
-  if (filterType === "liked") return { value: "like", desc: true };
+  if (filterType === "liked") return { type: "like", isDesc: true };
   if (rankingStatus && RANKING_REGISTERED_FILTER_OPTIONS.includes(rankingStatus)) {
-    return { value: "ranking-register", desc: true };
+    return { type: "ranking-register", isDesc: true };
   }
-  return { value: "publishedAt", desc: true };
+  return { type: "publishedAt", isDesc: true };
 };
 
 const getNextFilterParams = (

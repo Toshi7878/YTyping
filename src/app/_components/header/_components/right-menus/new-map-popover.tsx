@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { CreatedMapListByVideoId } from "@/components/shared/created-video-map-list";
+import { CreatedMapListByVideoId } from "@/components/shared/map/created-video-list";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";

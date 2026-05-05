@@ -4,7 +4,6 @@ import { Spinner } from "../ui/spinner";
 
 const INFINITE_SCROLL_IN_VIEW_PRESETS = {
   default: { rootMargin: "1500px 0px" },
-  threeColumnMapList: { rootMargin: "300px 0px" },
   resultListWithMap: { rootMargin: "2000px 0px" },
   notificationSheet: { threshold: 0.8 },
   ppRanking: { rootMargin: "1000px 0px" },

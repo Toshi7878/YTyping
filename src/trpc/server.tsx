@@ -47,3 +47,13 @@ export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(queryOptio
     void queryClient.prefetchQuery(queryOptions);
   }
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: <queryOptions 型をうまく表現できないため any を使用>
+export async function prefetchAsync<T extends ReturnType<TRPCQueryOptions<any>>>(queryOptions: T) {
+  const queryClient = getQueryClient();
+  if (queryOptions.queryKey[1]?.type === "infinite") {
+    // biome-ignore lint/suspicious/noExplicitAny: <queryOptions 型をうまく表現できないため any を使用>
+    return queryClient.prefetchInfiniteQuery(queryOptions as any);
+  }
+  return queryClient.prefetchQuery(queryOptions);
+}

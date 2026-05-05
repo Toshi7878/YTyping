@@ -28,7 +28,7 @@ export const DifficultyFilter = ({ className }: { className?: string }) => {
   };
 
   return (
-    <Card className={cn("flex-1 py-3", className)}>
+    <Card className={cn("flex-1 justify-end py-3", className)}>
       <CardContent className="flex w-full select-none flex-col gap-4">
         <div className="flex flex-wrap gap-2">
           {DIFFICULTY_TIERS.map((tier) => {

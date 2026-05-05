@@ -28,12 +28,13 @@ export const MapSearchFilterSchema = z.object({
   likerId: z.number().nullish(),
 });
 
+export const mapSortSchema = z.object({
+  type: z.enum(MAP_SORT_OPTIONS).nullish(),
+  isDesc: z.boolean().nullish(),
+});
+
 export const SelectMapListApiSchema = z
-  .object({
-    cursor: z.number().optional(),
-    sortType: z.enum(MAP_SORT_OPTIONS).nullish(),
-    isSortDesc: z.boolean().nullish(),
-  })
+  .object({ cursor: z.number().optional(), sort: mapSortSchema })
   .extend(MapSearchFilterSchema.shape);
 
 export const MAP_SORT_OPTIONS_WITH_OPEN_API = [

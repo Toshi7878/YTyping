@@ -11,16 +11,16 @@ import {
 import { MAP_RANKING_STATUS_FILTER_OPTIONS, MAP_SORT_OPTIONS, MAP_USER_FILTER_OPTIONS } from "@/validator/map/list";
 
 const parseAsSort = createParser({
-  parse(query): { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean } | null {
-    const [value = "", direction = ""] = query.split(":");
-    const desc = parseAsStringLiteral(["asc", "desc"]).parse(direction) ?? "desc";
+  parse(query): { type: (typeof MAP_SORT_OPTIONS)[number]; isDesc: boolean } | null {
+    const [type = "", direction = ""] = query.split(":");
+    const isDesc = parseAsStringLiteral(["asc", "desc"]).parse(direction) ?? "desc";
 
-    if (!MAP_SORT_OPTIONS.includes(value as (typeof MAP_SORT_OPTIONS)[number])) return null;
+    if (!MAP_SORT_OPTIONS.includes(type as (typeof MAP_SORT_OPTIONS)[number])) return null;
 
-    return { value: value as (typeof MAP_SORT_OPTIONS)[number], desc: desc === "desc" };
+    return { type: type as (typeof MAP_SORT_OPTIONS)[number], isDesc: isDesc === "desc" };
   },
-  serialize({ value, desc }: { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean }) {
-    return `${value}:${desc ? "desc" : "asc"}`;
+  serialize({ type, isDesc }: { type: (typeof MAP_SORT_OPTIONS)[number]; isDesc: boolean }) {
+    return `${type}:${isDesc ? "desc" : "asc"}`;
   },
 });
 
@@ -47,7 +47,7 @@ const mapListFilterParsers = {
   minAlphabetChunkCount: parseAsInteger,
   bookmarkListId: parseAsInteger,
 };
-const mapListSortParser = parseAsSort.withDefault({ value: "publishedAt", desc: true });
+const mapListSortParser = parseAsSort.withDefault({ type: "publishedAt", isDesc: true });
 
 export const useMapListFilterQueryStates = () => useQueryStates(mapListFilterParsers);
 export const useMapListSortQueryState = () => useQueryState("sort", mapListSortParser);

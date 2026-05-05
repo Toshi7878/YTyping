@@ -16,9 +16,9 @@ import {
 } from "@/server/drizzle/schema";
 import {
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
-  type MAP_SORT_OPTIONS,
   type MAP_USER_FILTER_OPTIONS,
   MapSearchFilterSchema,
+  type mapSortSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
 import { bookmarkedMapExists } from "../../lib/map";
@@ -34,7 +34,7 @@ const MyResultStatus = alias(ResultStatuses, "my_result_status");
 
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
-    const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
+    const { cursor, sort, ...searchInput } = input ?? {};
     const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
@@ -46,7 +46,7 @@ export const mapListRouter = {
     )
       .limit(limit)
       .offset(offset)
-      .orderBy(...mapOrderBy(sortValue, sortDesc, searchInput));
+      .orderBy(...mapOrderBy(sort, searchInput));
 
     return buildPageResult(maps);
   }),
@@ -225,14 +225,10 @@ function filterByFilterType(
   }
 }
 
-function mapOrderBy(
-  sortField: (typeof MAP_SORT_OPTIONS)[number] | undefined | null,
-  isDesc: boolean | undefined | null = true,
-  searchInput: z.output<typeof MapSearchFilterSchema>,
-) {
-  const order = (isDesc ?? true) ? desc : asc;
+function mapOrderBy(sort: z.output<typeof mapSortSchema>, searchInput: z.output<typeof MapSearchFilterSchema>) {
+  const order = (sort.isDesc ?? true) ? desc : asc;
 
-  switch (sortField) {
+  switch (sort.type) {
     case "random":
       return [sql`RANDOM()`];
 

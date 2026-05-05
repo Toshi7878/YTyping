@@ -6,7 +6,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { buildBookmarkListUrl } from "@/app/user/[id]/_components/bookmark-lists";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
-import { NotificationMapCard } from "@/components/shared/map-card/compact-card";
+import { NotificationMapCard } from "@/components/shared/map/card/compact";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
