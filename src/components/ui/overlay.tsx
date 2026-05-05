@@ -59,10 +59,25 @@ interface LoadingOverlayProviderProps {
   description: ReactNode;
   children: ReactNode;
   asChild?: boolean;
+  overlayClassName?: string;
 }
 
-export const LoadingOverlayProvider = ({ isLoading, description, children, asChild }: LoadingOverlayProviderProps) => {
-  const overlay = <OverlayView show={isLoading} showSpinner={true} description={description} position="absolute" />;
+export const LoadingOverlayProvider = ({
+  isLoading,
+  description,
+  children,
+  asChild,
+  overlayClassName,
+}: LoadingOverlayProviderProps) => {
+  const overlay = (
+    <OverlayView
+      show={isLoading}
+      showSpinner={true}
+      description={description}
+      position="absolute"
+      overlayClassName={overlayClassName}
+    />
+  );
 
   return asChild ? (
     <>
@@ -84,9 +99,10 @@ interface OverlayProps {
   showSpinner: boolean;
   description: ReactNode;
   position: "fixed" | "absolute";
+  overlayClassName?: string;
 }
 
-const OverlayView = ({ show, showSpinner, description, position }: OverlayProps) => (
+const OverlayView = ({ show, showSpinner, description, position, overlayClassName }: OverlayProps) => (
   <AnimatePresence mode="wait">
     {show && (
       <motion.div
@@ -94,7 +110,11 @@ const OverlayView = ({ show, showSpinner, description, position }: OverlayProps)
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        className={cn("inset-0 z-25 flex flex-col items-center justify-center bg-overlay-background", position)}
+        className={cn(
+          "inset-0 z-25 flex flex-col items-center justify-center bg-overlay-background",
+          position,
+          overlayClassName,
+        )}
         aria-busy="true"
         aria-label="Loading"
       >

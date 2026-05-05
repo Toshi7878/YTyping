@@ -71,6 +71,6 @@
     color-mix(in oklch, var(--color-background) 70.7%, transparent)
   );
 
-  --overlay-background: rgba(255, 255, 255, 0.568);
+  --overlay-background: oklch(1 0 0 / 56.8%);
   --overlay-foreground: #000;
 }

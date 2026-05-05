@@ -60,7 +60,11 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
   const isMobile = useIsMobileDeviceState();
 
   return (
-    <LoadingOverlayProvider isLoading={isMapLoading} description="譜面読み込み中...">
+    <LoadingOverlayProvider
+      isLoading={isMapLoading}
+      description="譜面読み込み中..."
+      overlayClassName="bg-overlay-background/50"
+    >
       {isMobile && <MobileCover />}
       <YouTube
         className={cn("mt-2 aspect-video select-none", className)}
