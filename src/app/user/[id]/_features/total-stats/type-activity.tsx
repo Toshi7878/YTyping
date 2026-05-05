@@ -11,7 +11,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { getTimezone, getYearsDesc } from "@/utils/date";
-import { useTargetYearQueryState } from "../../_lib/search-params";
+import { useTargetYearQueryState } from "../search-params";
 
 export const TypeActivity = () => {
   const trpc = useTRPC();

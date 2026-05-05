@@ -1,14 +1,14 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { MapList } from "@/components/shared/map/list";
+import { ResultList } from "@/components/shared/result/list";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
-import { type TABS, useTabQueryState } from "../_lib/search-params";
-import { UserBookmarkLists } from "./bookmark-lists";
-import { PPResultCardList } from "./user-pp-list/list";
-import { UserResultList } from "./user-result-list";
-import { UserStatsCard } from "./user-stats/card";
+import { UserBookmarkLists } from "./bookmark-lists/list";
+import { type TABS, useTabQueryState } from "./search-params";
+import { UserTotalStatsCard } from "./total-stats/card";
+import { UserTopPpList } from "./total-stats/top-pp-list";
 
 const TAB_OPTIONS = [
   { label: "タイピング統計情報", value: "stats" },
@@ -41,8 +41,8 @@ export const UserTabs = ({ id }: { id: string }) => {
         ))}
       </TabsList>
       <TabsContent value="stats" className="space-y-6">
-        <PPResultCardList id={id} />
-        <UserStatsCard />
+        <UserTopPpList id={id} />
+        <UserTotalStatsCard id={id} />
       </TabsContent>
       <TabsContent value="bookmarks">
         <UserBookmarkLists id={id} />
@@ -51,7 +51,7 @@ export const UserTabs = ({ id }: { id: string }) => {
         <MapList filterParams={{ creatorId: Number(id) }} />
       </TabsContent>
       <TabsContent value="results">
-        <UserResultList id={id} />
+        <ResultList filterParams={{ playerId: Number(id) }} />
       </TabsContent>
       <TabsContent value="liked">
         <MapList filterParams={{ likerId: Number(id) }} sortParams={{ type: "like", isDesc: true }} />

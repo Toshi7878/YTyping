@@ -1,40 +1,9 @@
 "use client";
 
-import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
-import { ResultCard } from "@/components/shared/result-card/card";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
-
-export const UserResultList = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
-
-  const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.result.list.get.infiniteQueryOptions(
-      { playerId: Number(id) },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        refetchOnWindowFocus: false,
-        gcTime: Infinity,
-      },
-    ),
-  );
-
-  return (
-    <div className="space-y-4">
-      <StatsList userId={id} />
-      <section className="grid grid-cols-1 gap-3">
-        {data.pages.map((page, pageIndex) =>
-          page.items.map((result) => (
-            <ResultCard key={result.id} result={result} initialInView={data.pages.length - 1 === pageIndex} />
-          )),
-        )}
-        <InfiniteScrollSpinner inViewPreset="resultListWithMap" {...pagination} />
-      </section>
-    </div>
-  );
-};
 
 const StatsList = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();

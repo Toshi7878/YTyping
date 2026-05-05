@@ -24,17 +24,16 @@ const formatTime = (totalSeconds: number) => {
   return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`;
 };
 
-export const UserStatsCard = () => {
+export const UserTotalStatsCard = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
-  const { id: userId } = useParams<{ id: string }>();
-  const { data: userStats } = useSuspenseQuery(trpc.user.stats.get.queryOptions({ userId: Number(userId) }));
+  const { data: userStats } = useSuspenseQuery(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
 
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
   const isHideUserStats = userStats?.options?.hideUserStats ?? false;
-  const isMyStats = session?.user?.id === Number(userId);
+  const isMyStats = session?.user?.id === Number(id);
   const isMyStatsWithHide = isMyStats && isHideUserStats;
 
   return (

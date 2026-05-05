@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,7 +30,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapBookmarkListFormSchema } from "@/validator/map/bookmark";
-import { serializeUserPageSearchParams, useBookmarkListIdQueryState } from "../_lib/search-params";
+import { buildUserBookmarkListUrl, useBookmarkListIdQueryState } from "../search-params";
 
 type BookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
 
@@ -63,14 +62,11 @@ const BookmarkListCardList = ({ id }: { id: string }) => {
   );
 };
 
-export const buildBookmarkListUrl = (userId: string, listId: number) => {
-  return `/user/${userId}${serializeUserPageSearchParams({ tab: "bookmarks", bookmarkListId: listId })}`;
-};
 const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu: boolean; id: string }) => {
   return (
     <Card className="hover-card-shadow-primary py-0 transition-shadow">
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
-        <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute z-1 size-full" />
+        <Link href={buildUserBookmarkListUrl(id, list.id)} className="absolute z-1 size-full" />
         <div className="flex flex-row items-center gap-3">
           <ThumbnailImage
             src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}

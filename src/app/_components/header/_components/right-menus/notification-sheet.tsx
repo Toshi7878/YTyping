@@ -2,10 +2,10 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
-import type { Route } from "next";
 import Link from "next/link";
-import { buildBookmarkListUrl } from "@/app/user/[id]/_components/bookmark-lists";
-import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
+import { useRef } from "react";
+import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
 import { NotificationMapCard } from "@/components/shared/map/card/compact";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,7 @@ export const NotificationSheet = () => {
 
 const NotificationContent = () => {
   const trpc = useTRPC();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const { data, isPending, ...pagination } = useInfiniteQuery(
     trpc.notification.getInfinite.infiniteQueryOptions(
       {},
@@ -67,7 +68,7 @@ const NotificationContent = () => {
   );
 
   return (
-    <div className="h-full overflow-y-auto px-3">
+    <div ref={scrollRef} className="h-full overflow-y-auto px-3">
       {isPending ? (
         <Spinner />
       ) : (
@@ -94,7 +95,7 @@ const NotificationContent = () => {
           ) : (
             <div className="py-8 text-center text-muted-foreground">まだ通知はありません</div>
           )}
-          <InfiniteScrollSpinner className="py-4" inViewPreset="notificationSheet" {...pagination} />
+          <InfiniteScrollSpinner className="pt-4 pb-8" rootMarginY="200px" root={scrollRef.current} {...pagination} />
         </div>
       )}
     </div>
@@ -153,7 +154,7 @@ const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkN
       title={
         <span>
           さんが譜面を
-          <Link className="underline" href={buildBookmarkListUrl(String(bookmarker.id), mapBookmark.list.id) as Route}>
+          <Link className="underline" href={buildUserBookmarkListUrl(String(bookmarker.id), mapBookmark.list.id)}>
             {mapBookmark.list.title}
           </Link>
           リストにブックマークしました

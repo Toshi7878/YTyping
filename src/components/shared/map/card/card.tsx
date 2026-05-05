@@ -1,7 +1,7 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
-import { MapListActionButtons } from "@/components/shared/list-action-buttons";
+import { MapListActionButtons } from "@/components/shared/map/action-buttons";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { UserNameLinkText } from "@/components/shared/text/user-name-link-text";

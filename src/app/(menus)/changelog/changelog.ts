@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-5-5",
+    descriptions: ["ライムラインページの詳細フィルターでEnterを押さずに検索できるように改善"],
+  },
+  {
     date: "2026-5-4",
     descriptions: [
       "非公開ブックマークに譜面を追加したときに譜面作成者に通知が送られる問題を修正",

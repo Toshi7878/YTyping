@@ -4,7 +4,7 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
-import { ResultCard } from "@/components/shared/result-card/card";
+import { ResultCard } from "@/components/shared/result/card/card";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";

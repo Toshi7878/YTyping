@@ -3,7 +3,7 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo } from "react";
-import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
@@ -63,11 +63,7 @@ export const PPRankingTable = () => {
         ))}
       </ul>
 
-      <div className="flex min-h-8 flex-col items-center justify-center gap-2 py-4">
-        <InfiniteScrollSpinner inViewPreset="ppRanking" fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
-        {isFetchingNextPage ? <p className="text-muted-foreground text-xs">読み込み中…</p> : null}
-        {!hasNextPage && rows.length > 0 ? <p className="text-muted-foreground text-sm">すべて表示しました</p> : null}
-      </div>
+      <InfiniteScrollSpinner rootMarginY="1000px" fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
     </div>
   );
 };

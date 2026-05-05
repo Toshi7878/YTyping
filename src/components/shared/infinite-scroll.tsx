@@ -23,11 +23,13 @@ type InfiniteScrollControls<TData = unknown, TError = unknown> = Pick<
 interface InfiniteScrollSpinnerProps {
   rootMarginY: `${number}px`;
   className?: string;
+  root?: Element | null;
 }
 
 export const InfiniteScrollSpinner = ({
   rootMarginY,
   className,
+  root,
   fetchNextPage,
   hasNextPage,
 }: InfiniteScrollSpinnerProps & InfiniteScrollControls) => {
@@ -36,7 +38,7 @@ export const InfiniteScrollSpinner = ({
       if (!inView) return;
       void fetchNextPage();
     },
-    { rootMargin: `${rootMarginY} 0px` },
+    { rootMargin: `${rootMarginY} 0px`, root },
   );
 
   if (!hasNextPage) return null;

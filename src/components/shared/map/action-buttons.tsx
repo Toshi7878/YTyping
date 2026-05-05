@@ -7,7 +7,7 @@ import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { formatDate } from "@/utils/date";
-import { BookmarkListPopover } from "./bookmark/bookmark-list-popover";
+import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
 
 export const MapListActionButtons = ({
   showBookmark = true,

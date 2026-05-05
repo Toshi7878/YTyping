@@ -1,8 +1,8 @@
 import { H1 } from "@/components/ui/typography";
 import { getCaller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
-import { UserTabs } from "./_components/tabs";
-import { UserProfileCard } from "./_components/user-profile-card";
-import { loadUserPageSearchParams } from "./_lib/search-params";
+import { loadUserPageSearchParams } from "./_features/search-params";
+import { UserTabs } from "./_features/tabs";
+import { UserProfileCard } from "./_features/user-profile-card";
 
 export default async function Page({ params, searchParams }: PageProps<"/user/[id]">) {
   const { id } = await params;

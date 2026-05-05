@@ -2,6 +2,9 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
+import { RatingBadge } from "@/components/shared/map/rating";
+import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
+import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -12,10 +15,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
-import { MapListActionButtons } from "../list-action-buttons";
-import { RatingBadge } from "../map/rating";
-import { MapThumbnailImage } from "../map-thumbnail-image";
-import { DateDistanceText } from "../text/date-distance-text";
+import { MapListActionButtons } from "../../map/action-buttons";
 import { ResultClapButton } from "./clap-button";
 import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 

@@ -19,4 +19,8 @@ export const usePpOrderQueryState = () =>
   useQueryState("ppOrder", userPageSearchParamsParsers.ppOrder.withOptions({ shallow: true }));
 
 export const loadUserPageSearchParams = createLoader(userPageSearchParamsParsers);
-export const serializeUserPageSearchParams = createSerializer(userPageSearchParamsParsers);
+
+const serializer = createSerializer(userPageSearchParamsParsers);
+export const buildUserBookmarkListUrl = (userId: string, listId: number): `/user/${string}` => {
+  return `/user/${userId}${serializer({ tab: "bookmarks", bookmarkListId: listId })}`;
+};
