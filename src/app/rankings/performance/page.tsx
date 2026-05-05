@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { H1 } from "@/components/ui/typography";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { PPRankingInfoTrigger } from "./_components/pp-ranking-info-trigger";
 import { PPRankingTable } from "./_components/pp-ranking-table";
 
@@ -11,9 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  prefetch(
-    trpc.user.stats.getPPRanking.infiniteQueryOptions({}, { getNextPageParam: (last) => last.nextCursor ?? undefined }),
-  );
+  await prefetchAsync(trpc.user.stats.getPPRanking.infiniteQueryOptions({}));
 
   return (
     <HydrateClient>
