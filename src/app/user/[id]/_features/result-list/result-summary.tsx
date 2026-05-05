@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
 
-const StatsList = ({ userId }: { userId: string }) => {
+export const ResultSummary = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
   const { data: stats, isPending } = useQuery(
     trpc.user.stats.getRankingSummary.queryOptions({ userId: Number(userId) }),
@@ -14,9 +14,9 @@ const StatsList = ({ userId }: { userId: string }) => {
   if (isPending) {
     return (
       <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatsItem label="登録済み譜面数" loading />
-        <StatsItem label="1位譜面数" loading />
-        <StatsItem label="1位譜面率" loading />
+        <SummaryItem label="登録済み譜面数" loading />
+        <SummaryItem label="1位譜面数" loading />
+        <SummaryItem label="1位譜面率" loading />
       </section>
     );
   }
@@ -27,14 +27,14 @@ const StatsList = ({ userId }: { userId: string }) => {
 
   return (
     <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <StatsItem label="登録済み譜面数" value={totalResultCount.toLocaleString()} />
-      <StatsItem label="1位譜面数" value={firstRankCount.toLocaleString()} />
-      <StatsItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
+      <SummaryItem label="登録済み譜面数" value={totalResultCount.toLocaleString()} />
+      <SummaryItem label="1位譜面数" value={firstRankCount.toLocaleString()} />
+      <SummaryItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
     </section>
   );
 };
 
-const StatsItem = ({ label, value, loading }: { label: string; value?: string; loading?: boolean }) => {
+const SummaryItem = ({ label, value, loading }: { label: string; value?: string; loading?: boolean }) => {
   return (
     <div className="relative rounded-sm border p-3">
       <Small className="text-muted-foreground">{label}</Small>

@@ -24,7 +24,7 @@ const formatTime = (totalSeconds: number) => {
   return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`;
 };
 
-export const UserTotalStatsCard = ({ id }: { id: string }) => {
+export const UserPlaySummary = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
   const { data: userStats } = useSuspenseQuery(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
@@ -45,9 +45,9 @@ export const UserTotalStatsCard = ({ id }: { id: string }) => {
       </CardHeader>
       <CardContent className="mx-8">
         {(isHideUserStats && !isMyStats) || isHidePreview ? (
-          <HideUserStats isMyStatsWithHide={isMyStatsWithHide} />
+          <HideSummary isMyStatsWithHide={isMyStatsWithHide} />
         ) : (
-          <UserStatsContent userStats={userStats} isMyStatsWithHide={isMyStatsWithHide} />
+          <SummaryContent userStats={userStats} isMyStatsWithHide={isMyStatsWithHide} />
         )}
       </CardContent>
       <CardFooter className="mx-8" />
@@ -55,12 +55,12 @@ export const UserTotalStatsCard = ({ id }: { id: string }) => {
   );
 };
 
-interface UserStatsContentProps {
+interface SummaryContentProps {
   userStats: RouterOutputs["user"]["stats"]["get"];
   isMyStatsWithHide: boolean;
 }
 
-const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProps) => {
+const SummaryContent = ({ userStats, isMyStatsWithHide }: SummaryContentProps) => {
   if (!userStats) {
     return <div>データがありません</div>;
   }
@@ -103,7 +103,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {generalStatsData.map((item) => (
-          <StatsCard key={item.label} label={item.label} value={item.value} />
+          <SummaryCard key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
 
@@ -116,14 +116,14 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {keystrokeStatsData.map((item) => (
-          <StatsCard key={item.label} label={item.label} value={item.value} />
+          <SummaryCard key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
     </div>
   );
 };
 
-const StatsCard = ({ label, value }: { label: string; value: string | number | ReactNode }) => {
+const SummaryCard = ({ label, value }: { label: string; value: string | number | ReactNode }) => {
   return (
     <Card className="gap-1 rounded-sm border border-accent-foreground/50 bg-background py-4 pl-8">
       <CardTitle className="font-normal text-lg">{label}</CardTitle>
@@ -132,7 +132,7 @@ const StatsCard = ({ label, value }: { label: string; value: string | number | R
   );
 };
 
-const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
+const HideSummary = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
   return (
     <div>
       {isMyStatsWithHide && <MyHideOptionInfo />}

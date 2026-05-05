@@ -6,9 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
 import { UserBookmarkLists } from "./bookmark-lists/list";
+import { UserPlaySummary } from "./play-summary/summary";
+import { UserTopPpList } from "./play-summary/top-pp-list";
+import { ResultSummary } from "./result-list/result-summary";
 import { type TABS, useTabQueryState } from "./search-params";
-import { UserTotalStatsCard } from "./total-stats/card";
-import { UserTopPpList } from "./total-stats/top-pp-list";
 
 const TAB_OPTIONS = [
   { label: "タイピング統計情報", value: "stats" },
@@ -42,7 +43,7 @@ export const UserTabs = ({ id }: { id: string }) => {
       </TabsList>
       <TabsContent value="stats" className="space-y-6">
         <UserTopPpList id={id} />
-        <UserTotalStatsCard id={id} />
+        <UserPlaySummary id={id} />
       </TabsContent>
       <TabsContent value="bookmarks">
         <UserBookmarkLists id={id} />
@@ -50,7 +51,8 @@ export const UserTabs = ({ id }: { id: string }) => {
       <TabsContent value="maps">
         <MapList filterParams={{ creatorId: Number(id) }} />
       </TabsContent>
-      <TabsContent value="results">
+      <TabsContent value="results" className="space-y-2">
+        <ResultSummary userId={id} />
         <ResultList filterParams={{ playerId: Number(id) }} />
       </TabsContent>
       <TabsContent value="liked">
