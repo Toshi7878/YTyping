@@ -3,8 +3,12 @@ import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/domain/morph/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
-import { katakanaToHiragana } from "@/utils/kana";
-import { normalizeExclamationQuestionMarks, normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
+import {
+  katakanaToHiragana,
+  normalizeExclamationQuestionMarks,
+  normalizeFullWidthAlnum,
+  normalizeSymbols,
+} from "@/utils/string";
 import { type ConvertOption, readWordConvertOption } from "../atoms/storage";
 import { filterToTypableWordChars } from "../utils/filter-word";
 

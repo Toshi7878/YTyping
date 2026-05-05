@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { normalizeSymbols } from "@/utils/string-transform";
+import { normalizeSymbols } from "@/utils/string";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { getEditAtomStore } from "./store";
 

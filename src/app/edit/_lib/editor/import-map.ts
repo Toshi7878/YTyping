@@ -1,5 +1,5 @@
 import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
-import { normalizeSymbols } from "@/utils/string-transform";
+import { normalizeSymbols } from "@/utils/string";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { getYTDuration } from "../atoms/youtube-player";

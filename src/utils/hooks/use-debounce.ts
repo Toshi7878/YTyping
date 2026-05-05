@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState } from "react";
 
 type Debounce = (fn: () => void | Promise<void>) => void;

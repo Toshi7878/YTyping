@@ -12,7 +12,7 @@ import { Textarea } from "@/ui/textarea";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
+import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string";
 
 export const ManyPhraseTextarea = () => {
   const manyPhrase = useManyPhraseState();

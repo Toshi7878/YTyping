@@ -1,5 +1,4 @@
 import { createDisplayWord } from "lyrics-typing-engine";
-import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { countPerMinute } from "@/utils/math";
 import { getBuiltMap } from "../../atoms/built-map";
 import { getAllLineResult, setLineResult } from "../../atoms/line-result";
@@ -119,4 +118,9 @@ const generateLostWord = () => {
       return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
     }
   }
+};
+
+const countKanaWordWithDakuonSplit = ({ kanaWord }: { kanaWord: string }) => {
+  const dakuHandakuLineNotes = (kanaWord.match(/[ゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ]/g) || []).length;
+  return kanaWord.length + dakuHandakuLineNotes;
 };

@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { editDb } from "@/app/edit/_lib/indexed-db";
-import { normalizeSymbols } from "@/utils/string-transform";
+import { normalizeSymbols } from "@/utils/string";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { readMapId, readVideoId } from "../atoms/hydrate";
