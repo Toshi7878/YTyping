@@ -15,7 +15,7 @@ const resolveCssColorToRgb = (cssColor: string) => {
   return resolved;
 };
 
-export function applyThemeColor() {
+function applyThemeColor() {
   if (typeof document === "undefined") return;
 
   let meta = document.querySelector('meta[name="theme-color"][data-dynamic="true"]') as HTMLMetaElement | null;

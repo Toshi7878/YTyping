@@ -19,8 +19,6 @@ export const ResultListFilterSchema = z.object({
   playerId: z.number().nullish(),
 });
 
-export const ResultListSortSchema = z.object({});
-
 export const SelectResultListApiSchema = z
   .object({ cursor: z.number().optional() })
   .extend(ResultListFilterSchema.shape);

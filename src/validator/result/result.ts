@@ -30,15 +30,34 @@ const CreateTypingResultJsonSchema = z.array(
     ),
   }),
 );
-/** pp / starRatingSnapshot はサーバーで map の難易度と同期して算出する */
-export const CreateResultStatusSchema = createInsertSchema(ResultStatuses)
-  .omit({ resultId: true, pp: true, starRatingSnapshot: true })
+
+const CreateResultStatusSchema = createInsertSchema(ResultStatuses)
+  .pick({
+    rkpm: true,
+    kpm: true,
+    score: true,
+    minPlaySpeed: true,
+    kanaToRomaKpm: true,
+    kanaToRomaRkpm: true,
+    romaType: true,
+    kanaType: true,
+    flickType: true,
+    englishType: true,
+    spaceType: true,
+    symbolType: true,
+    numType: true,
+    miss: true,
+    lost: true,
+    maxCombo: true,
+    clearRate: true,
+    isCaseSensitive: true,
+  })
   .required();
 
 export const CreateResultSchema = z
   .object({
     mapId: z.number(),
-    status: CreateResultStatusSchema.required(),
+    status: CreateResultStatusSchema,
     lineResults: CreateTypingResultJsonSchema,
   })
   .refine(() => true, { error: "リザルトデータの形式が無効です" });

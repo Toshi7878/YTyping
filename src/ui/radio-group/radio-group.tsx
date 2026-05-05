@@ -47,7 +47,7 @@ const radioGroupIndicatorVariants = cva("fill-primary absolute top-1/2 left-1/2 
   },
 });
 
-export interface RadioGroupItemProps
+interface RadioGroupItemProps
   extends React.ComponentProps<typeof RadioGroupPrimitive.Item>,
     VariantProps<typeof radioGroupItemVariants> {}
 

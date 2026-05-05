@@ -1,7 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
-import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import type z from "zod";
 import {
@@ -60,8 +59,6 @@ export const mapListOpenApiRouter = {
       return buildPageResult(maps);
     }),
 } satisfies TRPCRouterRecord;
-
-export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
 const buildBaseSelect = () =>
   ({

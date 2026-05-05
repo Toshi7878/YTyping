@@ -7,7 +7,7 @@ import { Label } from "../label";
 import type { inputVariants } from "./input";
 import { Input } from "./input";
 
-export interface LabeledInputProps
+interface LabeledInputProps
   extends Omit<React.ComponentPropsWithRef<typeof Input>, "size">,
     VariantProps<typeof inputVariants> {
   label?: React.ReactNode;

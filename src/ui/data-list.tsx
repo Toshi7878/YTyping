@@ -78,7 +78,7 @@ const DataListLabel = ({
   <dt ref={ref} className={cn("font-medium", className)} {...props} />
 );
 
-export interface DataListValueProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DataListValueProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
