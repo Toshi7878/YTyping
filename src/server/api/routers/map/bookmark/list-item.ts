@@ -9,7 +9,7 @@ import {
   Notifications,
 } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../../trpc";
-import { generateNotificationId } from "../../../utils/id";
+import { generateNotificationId } from "../../notification";
 
 export const mapBookmarkListItemRouter = {
   add: protectedProcedure

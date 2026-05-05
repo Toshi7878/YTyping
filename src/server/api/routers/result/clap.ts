@@ -3,7 +3,7 @@ import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { NotificationClaps, Notifications, ResultClaps, Results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../trpc";
-import { generateNotificationId } from "../../utils/id";
+import { generateNotificationId } from "../notification";
 
 export const resultClapRouter = {
   toggleClap: protectedProcedure

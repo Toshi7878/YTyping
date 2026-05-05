@@ -1,5 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, type DBQueryConfig, desc, eq } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import z from "zod";
 import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
 import { bookmarkedMapExists } from "../lib/map";
@@ -238,3 +239,5 @@ export const notificationRouter = {
       .where(and(eq(Notifications.recipientId, session.user.id), eq(Notifications.checked, false)));
   }),
 } satisfies TRPCRouterRecord;
+
+export const generateNotificationId = () => nanoid(10);

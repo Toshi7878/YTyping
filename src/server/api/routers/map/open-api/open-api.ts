@@ -2,7 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
-import { downloadPublicFile } from "@/server/api/utils/storage";
+import { downloadPublicFile } from "@/server/api/lib/storage";
 import { MapDifficulties, Maps, Users } from "@/server/drizzle/schema";
 import { getByIdOpenApiResponseSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";

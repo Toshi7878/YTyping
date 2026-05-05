@@ -3,7 +3,7 @@ import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../trpc";
-import { generateNotificationId } from "../../utils/id";
+import { generateNotificationId } from "../notification";
 
 export const mapLikeRouter = {
   toggle: protectedProcedure

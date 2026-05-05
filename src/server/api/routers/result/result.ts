@@ -1,7 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
-import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
+import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {
@@ -18,7 +18,7 @@ import { CreateResultSchema } from "@/validator/result/result";
 import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "../../../../lib/pp";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress, gzipDecompress } from "../../utils/gzip";
-import { generateNotificationId } from "../../utils/id";
+import { generateNotificationId } from "../notification";
 import { resultClapRouter } from "./clap";
 import { resultListRouter } from "./list";
 import { resultPpRouter } from "./pp";

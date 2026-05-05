@@ -2,7 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
-import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
+import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/map";
