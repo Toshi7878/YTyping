@@ -1,10 +1,10 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { MapList } from "@/components/shared/map/list";
 import { ResultList } from "@/components/shared/result/list";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTRPC } from "@/trpc/provider";
 import { UserBookmarkLists } from "./bookmark-lists/list";
 import { UserPlaySummary } from "./play-summary/summary";
 import { UserTopPpList } from "./play-summary/top-pp-list";

@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Large, Small } from "@/components/ui/typography";
+import { useTRPC } from "@/trpc/provider";
 
 export const ResultSummary = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();

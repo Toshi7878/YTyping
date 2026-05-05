@@ -5,7 +5,6 @@ import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { store } from "@/app/_layout/store";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { MinimumMapCard } from "@/components/shared/map/card/minimum";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useTRPC } from "@/trpc/provider";
 import { useActiveUsers } from "./use-active-user";
 
 export interface ActiveUserStatus {

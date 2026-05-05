@@ -1,5 +1,5 @@
-import { getQueryClient, getTRPCOptions } from "@/app/_layout/trpc/provider";
 import type { Session } from "@/lib/auth-client";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getMapId } from "../../provider";
 
 export const getRankingMyResult = ({ mapId, session }: { mapId: number; session: Session }) => {

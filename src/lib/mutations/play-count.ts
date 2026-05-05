@@ -1,4 +1,4 @@
-import { getTRPCClient } from "@/app/_layout/trpc/provider";
+import { getTRPCClient } from "@/trpc/provider";
 
 export const mutatePlayCountStats = ({ mapId }: { mapId: number }) => {
   const trpcClient = getTRPCClient();

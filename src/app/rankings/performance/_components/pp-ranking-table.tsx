@@ -3,10 +3,10 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo } from "react";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
 
 type PpRow = RouterOutputs["user"]["stats"]["getPPRanking"]["items"][number];
 

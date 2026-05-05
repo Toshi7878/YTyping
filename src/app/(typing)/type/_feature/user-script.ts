@@ -48,8 +48,8 @@
  * const topPps = await window.__ytyping_type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
-import { getQueryClient, getTRPCOptions } from "@/app/_layout/trpc/provider";
 import { calcRawPP } from "@/lib/pp";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
 import { getAllLineResult, getSelectLineIndex } from "./atoms/line-result";
 import { getLineSubstatus } from "./atoms/line-substatus";

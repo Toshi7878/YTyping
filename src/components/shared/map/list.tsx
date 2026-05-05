@@ -4,11 +4,11 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { MapCard } from "@/components/shared/map/card/card";
 import { CompactMapCard } from "@/components/shared/map/card/compact";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
+import { useTRPC } from "@/trpc/provider";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";
 import { InfiniteScrollSpinner, usePageCounter } from "../infinite-scroll";
 

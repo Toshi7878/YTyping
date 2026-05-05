@@ -1,8 +1,8 @@
 import { toast } from "sonner";
-import { getQueryClient, getTRPCOptions } from "@/app/_layout/trpc/provider";
 import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { halfKanaToHiragana } from "@/utils/kana";
 import {
   kanaToHira,

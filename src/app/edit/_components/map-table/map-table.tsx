@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
@@ -16,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
+import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
 import { readRawMap, setRawMapAction, useRawMapState } from "../../_lib/atoms/map-reducer";

@@ -5,9 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import { useTRPC } from "@/trpc/provider";
 import { FingerChartUrlFormSchema } from "@/validator/user/profile";
 
 interface FingerChartUrlInputProps {

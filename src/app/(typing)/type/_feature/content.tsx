@@ -4,7 +4,6 @@ import { buildTypingMap } from "lyrics-typing-engine";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -14,6 +13,7 @@ import {
   extractTypingLineIndexes,
   hasAlphabetChunk,
 } from "@/lib/build-map/built-map-helper";
+import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { initializeAllLineResult, setSelectLineIndex } from "./atoms/line-result";

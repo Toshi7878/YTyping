@@ -1,6 +1,6 @@
-import { HydrateClient, prefetch, trpc } from "@/app/_layout/trpc/server";
 import type { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { LeftNav, RightNav } from "./navs/navs";
 
 interface HeaderProps {

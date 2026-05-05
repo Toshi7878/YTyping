@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTRPC } from "@/app/_layout/trpc/provider";
 import type { MapListItem } from "@/server/api/routers/map";
+import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
 function calculateLikeState(
