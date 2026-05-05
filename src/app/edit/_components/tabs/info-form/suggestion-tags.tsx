@@ -1,10 +1,10 @@
 import type { VariantProps } from "class-variance-authority";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import type { badgeVariants } from "@/components/ui/badge";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/tailwind";
+import type { badgeVariants } from "@/ui/badge";
+import { Badge } from "@/ui/badge";
+import { Skeleton } from "@/ui/skeleton";
 import { TAG_MAX_LENGTH } from "./card";
 
 interface SuggestionTagsProps {

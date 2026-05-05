@@ -1,11 +1,11 @@
 "use client";
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { DualRangeSlider } from "@/components/ui/dual-range-slider";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { Button } from "@/ui/button";
+import { DualRangeSlider } from "@/ui/dual-range-slider";
+import { Label } from "@/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+import { RadioCard, RadioGroup } from "@/ui/radio-group/radio-group";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD_TYPES } from "@/validator/result/list";
 import { useResultListFilterQueryStates } from "../search-params";

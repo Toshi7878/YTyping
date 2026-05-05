@@ -1,7 +1,7 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { H2 } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
 import { caller } from "@/trpc/server";
+import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
+import { H2 } from "@/ui/typography";
 import { UserNameInputForm } from "../_components/user-name-input-form";
 import { UserOptionsForm } from "./_components/option-form";
 import { FingerChartUrlInput } from "./_components/profile-settings/finger-chart-url-input";

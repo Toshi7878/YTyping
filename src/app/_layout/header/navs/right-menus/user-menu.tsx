@@ -3,16 +3,16 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/tailwind";
+import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/tailwind";
-import { useTRPC } from "@/trpc/provider";
+} from "@/ui/dropdown-menu";
 import { buildUserMenuLinkItems } from "../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";

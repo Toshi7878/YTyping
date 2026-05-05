@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { useFormContext } from "react-hook-form";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/ui/form";
 import { FloatingLabelSelect } from "../input/floating-label-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 

@@ -1,6 +1,6 @@
-import { LabeledSelect } from "@/components/ui/select/labeled-select";
-import { H4 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
+import { LabeledSelect } from "@/ui/select/labeled-select";
+import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const HotKeySelectFields = () => {

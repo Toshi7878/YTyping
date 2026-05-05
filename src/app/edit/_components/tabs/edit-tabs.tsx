@@ -1,5 +1,5 @@
 "use client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { useMapIdState } from "../../_lib/atoms/hydrate";
 import { setTabName, TAB_NAMES, useTabNameState } from "../../_lib/atoms/state";
 import { EditorCard } from "./editor/card";

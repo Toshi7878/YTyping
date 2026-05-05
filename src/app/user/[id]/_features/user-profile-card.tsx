@@ -3,13 +3,13 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { DataList, DataListItem, DataListLabel, DataListValue } from "@/components/ui/data-list";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { H2, LinkText } from "@/components/ui/typography";
 import { useSession } from "@/lib/auth-client";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { Button } from "@/ui/button";
+import { Card, CardContent } from "@/ui/card";
+import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
+import { TooltipWrapper } from "@/ui/tooltip";
+import { H2, LinkText } from "@/ui/typography";
 
 interface UserProfileCardProps {
   userProfile: RouterOutputs["user"]["profile"]["get"];

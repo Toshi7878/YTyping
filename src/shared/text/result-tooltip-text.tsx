@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { Separator } from "@/ui/separator";
 
 interface ResultToolTipTextProps {
   typeCounts: RouterOutputs["result"]["list"]["getRanking"][number]["typeCounts"];

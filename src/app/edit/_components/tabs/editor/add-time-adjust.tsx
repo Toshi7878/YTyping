@@ -1,8 +1,8 @@
 "use client";
 
 import { setTimeOffset, useTimeOffsetState } from "@/app/edit/_lib/atoms/storage";
-import { CounterInput } from "@/components/ui/counter";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { CounterInput } from "@/ui/counter";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 const MAX_TIME_OFFSET = -0.1;
 const MIN_TIME_OFFSET = -0.4;

@@ -2,7 +2,7 @@
 import { Ticker } from "@pixi/ticker";
 import { type RefObject, useRef, useState } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
 import type { TypingLineResult } from "@/validator/result/result";
 import { setSelectLineIndex } from "../../atoms/line-result";
 import { moveSetLine } from "../playing/move-line";

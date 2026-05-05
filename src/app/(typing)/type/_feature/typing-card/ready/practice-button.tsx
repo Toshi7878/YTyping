@@ -3,10 +3,10 @@ import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atom
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";
-import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/overlay";
 import { getSession } from "@/lib/auth-client";
 import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
+import { overlay } from "@/ui/overlay";
 import { initializeAllLineResult } from "../../atoms/line-result";
 import { getMapId } from "../../provider";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";

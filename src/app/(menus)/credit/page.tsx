@@ -1,6 +1,6 @@
 import type { Route } from "next";
-import { CardWithContent } from "@/components/ui/card";
-import { H1, H2, Large, LinkText, UList } from "@/components/ui/typography";
+import { CardWithContent } from "@/ui/card";
+import { H1, H2, Large, LinkText, UList } from "@/ui/typography";
 
 export default function Page() {
   return (

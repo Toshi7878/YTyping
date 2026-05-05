@@ -3,15 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CardWithContent } from "@/components/ui/card";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { MinimumMapCard } from "@/shared/map/card/minimum";
 import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
 import { useTRPC } from "@/trpc/provider";
+import { Badge } from "@/ui/badge";
+import { Button } from "@/ui/button";
+import { CardWithContent } from "@/ui/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
+import { Table, TableBody, TableCell, TableRow } from "@/ui/table/table";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { type ActiveUserStatus, useActiveUsers, useSyncActiveUsers } from "./active-users";
 
 export const ActiveUsersSheet = () => {

@@ -3,8 +3,8 @@
 import { HoverCard as HoverCardPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Card, CardContent, type CardWithContent } from "@/components/ui/card";
 import { cn } from "@/lib/tailwind";
+import { Card, CardContent, type CardWithContent } from "@/ui/card";
 
 type HoverExtractCtx = {
   openHover: () => void;

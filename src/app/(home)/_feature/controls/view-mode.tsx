@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { TfiLayoutGrid2Alt, TfiLayoutGrid3Alt } from "react-icons/tfi";
-import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/tailwind";
 import type { MAP_LIST_LAYOUT_TYPES } from "@/server/drizzle/schema";
 import { setUserOptions, useMapListLayoutOption } from "@/store/user-options";
 import { useTRPC } from "@/trpc/provider";
+import { RadioButton, RadioGroup } from "@/ui/radio-group/radio-group";
 
 export const MapListLayoutModeSelector = ({ className }: { className?: string }) => {
   const trpc = useTRPC();

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input/input";
 import { useIsSearching } from "@/shared/map/list";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input/input";
 import { useMapListFilterQueryStates } from "./search-params";
 
 export const KeywordInput = () => {

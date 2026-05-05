@@ -5,10 +5,10 @@ import { dispatchEditHistory } from "@/app/edit/_lib/atoms/history-reducer";
 import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import { setCanUpload } from "@/app/edit/_lib/atoms/state";
 import { timeValidate } from "@/app/edit/_lib/editor/time-validate";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input/input";
-import { Label } from "@/components/ui/label";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input/input";
+import { Label } from "@/ui/label";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 export const AllTimeAdjust = () => {
   const [totalAdjustValue, setTotalAdjustValue] = useState("0");

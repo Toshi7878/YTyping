@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
-import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/provider";
+import { MutationInputFormField } from "@/ui/input/input-form-field";
 import { keyboardFormSchema } from "@/validator/user/profile";
 
 interface KeyboardInputProps {

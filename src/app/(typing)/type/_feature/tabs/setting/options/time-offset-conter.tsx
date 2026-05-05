@@ -1,5 +1,5 @@
 "use client";
-import { CounterInput } from "@/components/ui/counter";
+import { CounterInput } from "@/ui/counter";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const MAX_TIME_OFFSET = 1;

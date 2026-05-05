@@ -1,10 +1,10 @@
 import { headers } from "next/headers";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { CardWithContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
-import { H1, P, Small } from "@/components/ui/typography";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/accordion";
+import { Badge } from "@/ui/badge";
+import { CardWithContent } from "@/ui/card";
+import { Separator } from "@/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table/table";
+import { H1, P, Small } from "@/ui/typography";
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete"] as const;
 

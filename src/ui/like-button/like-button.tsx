@@ -5,7 +5,7 @@ import { type ComponentProps, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/tailwind";
 
 import "./css/render.css";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 
 const iconSizeVariants = {
   default: "",

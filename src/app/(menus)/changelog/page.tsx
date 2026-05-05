@@ -1,6 +1,6 @@
-import { CardWithContent } from "@/components/ui/card";
-import { H1, Large, Small, UList } from "@/components/ui/typography";
 import { caller } from "@/trpc/server";
+import { CardWithContent } from "@/ui/card";
+import { H1, Large, Small, UList } from "@/ui/typography";
 import { formatDate } from "@/utils/date";
 import { changelog } from "./changelog";
 

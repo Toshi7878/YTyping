@@ -2,8 +2,8 @@ import { ExternalLink } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Separator } from "@/components/ui/separator";
-import { H3, OList, P } from "@/components/ui/typography";
+import { Separator } from "@/ui/separator";
+import { H3, OList, P } from "@/ui/typography";
 
 function FormulaBlock({ children }: { children: ReactNode }) {
   return (

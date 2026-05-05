@@ -13,8 +13,8 @@ import {
   wordConvertAction,
 } from "@/app/edit/_lib/editor/editor-actions";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
-import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
+import { Button } from "@/ui/button";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 
 export const AddLineButton = () => {

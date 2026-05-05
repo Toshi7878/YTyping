@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { H1, H2 } from "@/components/ui/typography";
+import { Card, CardContent, CardDescription, CardHeader } from "@/ui/card";
+import { H1, H2 } from "@/ui/typography";
 import { InstallationSteps } from "./installation-steps";
 
 export default function Page() {

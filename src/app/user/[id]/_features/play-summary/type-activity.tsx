@@ -4,12 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { cloneElement, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
+import { Separator } from "@/ui/separator";
+import { Skeleton } from "@/ui/skeleton";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { getTimezone, getYearsDesc } from "@/utils/date";
 import { useTargetYearQueryState } from "../search-params";
 

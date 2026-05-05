@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { restartPlay } from "@/app/(typing)/type/_feature/lib/play-restart";
-import { Button } from "@/components/ui/button";
-import { confirmDialog } from "@/components/ui/confirm-dialog";
 import { type Session, useSession } from "@/lib/auth-client";
+import { Button } from "@/ui/button";
+import { confirmDialog } from "@/ui/confirm-dialog";
 import { useMinMediaSpeedState } from "../../youtube/youtube-player";
 import { EndResultLineSheet } from "../line-result/line-result-sheet";
 import { type EndSceneType, type PlayingSceneType, type SceneType, useSceneState } from "../typing-card";

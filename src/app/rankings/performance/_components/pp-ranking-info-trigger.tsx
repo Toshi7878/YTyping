@@ -1,8 +1,8 @@
 "use client";
 
 import { CircleHelp } from "lucide-react";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/tailwind";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 const ppExplanationBody = [
   "PPはプレイ実力を表すポイントです。 難易度が高い譜面で高い正確率とクリア率を出すほど、より多くのPPを獲得できます。合計PPは、獲得PPの高い譜面上位200件をもとに加重方式で計算されます。",

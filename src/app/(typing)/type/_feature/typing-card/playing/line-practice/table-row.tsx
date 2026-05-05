@@ -2,9 +2,9 @@
 import type { RefObject } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
-import { TableCell, TableRow } from "@/components/ui/table/table";
 import type { BuiltMapLineWithOption } from "@/lib/build-map/built-map-helper";
 import { cn } from "@/lib/tailwind";
+import { TableCell, TableRow } from "@/ui/table/table";
 import { useMediaSpeedState } from "../../../youtube/youtube-player";
 import { useSceneState } from "../../typing-card";
 

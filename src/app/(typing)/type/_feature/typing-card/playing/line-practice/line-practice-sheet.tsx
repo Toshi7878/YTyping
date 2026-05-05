@@ -2,9 +2,9 @@
 import { atom } from "jotai";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Table, TableBody } from "@/components/ui/table/table";
+import { ScrollArea } from "@/ui/scroll-area";
+import { Sheet, SheetContent } from "@/ui/sheet";
+import { Table, TableBody } from "@/ui/table/table";
 import type { TypingLineResult } from "@/validator/result/result";
 import { setSelectLineIndex } from "../../../atoms/line-result";
 import { store } from "../../../atoms/store";

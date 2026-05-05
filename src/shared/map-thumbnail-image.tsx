@@ -3,8 +3,6 @@ import { Palette } from "lucide-react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { useIsPreviewEnabled } from "@/app/_layout/preview-youtube";
-import { ThumbnailImage, thumbnailImageVariants } from "@/components/ui/image";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import {
@@ -14,6 +12,8 @@ import {
   usePreviewVideoInfo,
   usePreviewYTPlayer,
 } from "@/store/preview-yt-player";
+import { ThumbnailImage, thumbnailImageVariants } from "@/ui/image";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 
 interface MapThumbnailImageProps {

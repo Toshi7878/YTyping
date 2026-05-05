@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { useTRPC } from "@/trpc/provider";
+import { Badge } from "@/ui/badge";
 import { useMapListFilterQueryStates } from "./search-params";
 
 export const MapCountBadge = () => {

@@ -1,8 +1,8 @@
 "use client";
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/tailwind";
+import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
 import { useBuiltMapState } from "../atoms/built-map";
 import { store } from "../atoms/store";
 import { useYTStartedState } from "../youtube/youtube-player";

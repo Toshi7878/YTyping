@@ -6,10 +6,10 @@ import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_l
 import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
 import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
 import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
-import { confirmDialog } from "@/components/ui/confirm-dialog";
-import { FilterIconButton } from "@/components/ui/icon-button";
-import { Textarea } from "@/components/ui/textarea";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { confirmDialog } from "@/ui/confirm-dialog";
+import { FilterIconButton } from "@/ui/icon-button";
+import { Textarea } from "@/ui/textarea";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";

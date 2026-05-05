@@ -1,7 +1,7 @@
 import type { Route } from "next";
-import { CardWithContent } from "@/components/ui/card";
-import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { env } from "@/env";
+import { CardWithContent } from "@/ui/card";
+import { H1, Large, LinkText, P, Small, UList } from "@/ui/typography";
 import { ByUser } from "./_components/by-user";
 
 const TOOLS = [

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { H1, H2 } from "@/components/ui/typography";
+import { Card, CardContent, CardDescription, CardHeader } from "@/ui/card";
+import { H1, H2 } from "@/ui/typography";
 import { DifficultySteps, PPSteps } from "./steps";
 
 export default function Page() {

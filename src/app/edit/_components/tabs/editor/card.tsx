@@ -1,4 +1,4 @@
-import { CardWithContent } from "@/components/ui/card";
+import { CardWithContent } from "@/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
 import { AddLineButton, DeleteLineButton, UpdateLineButton, WordConvertButton } from "./button";
 import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./input";

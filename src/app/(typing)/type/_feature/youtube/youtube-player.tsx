@@ -2,12 +2,12 @@
 
 import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
-import { LoadingOverlayProvider } from "@/components/ui/overlay";
 import { cn } from "@/lib/tailwind";
 import { mutatePlayCountStats } from "@/shared/map/play-count";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useIsMobileDeviceState } from "@/store/user-agent";
 import { getVolume } from "@/store/volume";
+import { LoadingOverlayProvider } from "@/ui/overlay";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { windowFocus } from "@/utils/window-focus";
 import { getBuiltMap, setLastLineEndTime } from "../atoms/built-map";

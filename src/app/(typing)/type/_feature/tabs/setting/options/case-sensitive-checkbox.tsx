@@ -1,6 +1,6 @@
 "use client";
-import { CheckboxCardGroup } from "@/components/ui/checkbox/checkbox";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { CheckboxCardGroup } from "@/ui/checkbox/checkbox";
 import { useSceneState } from "../../../typing-card/typing-card";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 

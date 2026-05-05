@@ -1,4 +1,4 @@
-import { type SortIconState, SortToggleButton } from "@/components/ui/sort-toggle-button";
+import { type SortIconState, SortToggleButton } from "@/ui/sort-toggle-button";
 import type { MAP_SORT_OPTIONS } from "@/validator/map/list";
 import { type MapListSortSearchParams, useMapListFilterQueryStates, useMapListSortQueryState } from "./search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./tag-filter";

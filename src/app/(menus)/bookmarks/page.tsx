@@ -1,5 +1,5 @@
-import { H1 } from "@/components/ui/typography";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { H1 } from "@/ui/typography";
 import { BookmarkListView } from "./_components/bookmark-list";
 
 export default async function Page() {

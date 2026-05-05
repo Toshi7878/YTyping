@@ -1,7 +1,7 @@
 "use client";
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { store } from "../atoms/store";
 import { MapActionIconButtons } from "./action-buttons";
 import { RankingTableCard } from "./ranking/ranking-card";

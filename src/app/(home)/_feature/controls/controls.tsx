@@ -1,9 +1,9 @@
 "use client";
-import { CardWithContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/tailwind";
 import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";
+import { CardWithContent } from "@/ui/card";
 import { DifficultyFilter } from "./difficulty-filter";
 import { KeywordInput } from "./keyword";
 import { MapCountBadge } from "./list-count";

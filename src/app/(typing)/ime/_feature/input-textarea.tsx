@@ -2,8 +2,8 @@ import { Ticker } from "@pixi/ticker";
 import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { getSession } from "@/lib/auth-client";
+import { Textarea } from "@/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   getBuiltMap,

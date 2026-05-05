@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CardWithContent } from "@/components/ui/card";
-import { H1, H2, P } from "@/components/ui/typography";
+import { CardWithContent } from "@/ui/card";
+import { H1, H2, P } from "@/ui/typography";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー - YTyping",

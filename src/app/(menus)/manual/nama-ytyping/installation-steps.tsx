@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
-import { H3, LinkText, OList, P } from "@/components/ui/typography";
+import { Separator } from "@/ui/separator";
+import { H3, LinkText, OList, P } from "@/ui/typography";
 
 export function InstallationSteps() {
   const steps = [

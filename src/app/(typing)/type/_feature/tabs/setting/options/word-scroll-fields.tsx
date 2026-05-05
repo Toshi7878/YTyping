@@ -1,7 +1,7 @@
 "use client";
-import { CounterInput } from "@/components/ui/counter";
-import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
-import { H4 } from "@/components/ui/typography";
+import { CounterInput } from "@/ui/counter";
+import { LabeledRadioGroup } from "@/ui/radio-group/labeled-radio-group";
+import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const MAX_SCROLL = 80;

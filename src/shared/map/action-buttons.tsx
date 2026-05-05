@@ -1,11 +1,11 @@
 import { useProgress } from "@bprogress/next";
-import { BookmarkListIconButton, RankingStarIconButton } from "@/components/ui/icon-button";
-import { LikeToggleButton } from "@/components/ui/like-button/like-button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { type Session, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useToggleMapLikeMutation } from "@/shared/map/like";
+import { BookmarkListIconButton, RankingStarIconButton } from "@/ui/icon-button";
+import { LikeToggleButton } from "@/ui/like-button/like-button";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { formatDate } from "@/utils/date";
 import { BookmarkListPopover } from "./bookmark/lists-popover";
 

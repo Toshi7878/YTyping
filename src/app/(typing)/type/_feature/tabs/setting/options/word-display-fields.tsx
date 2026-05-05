@@ -1,11 +1,11 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import { CounterInput } from "@/components/ui/counter";
-import { LabeledSelect } from "@/components/ui/select/labeled-select";
-import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
+import { Button } from "@/ui/button";
+import { CounterInput } from "@/ui/counter";
+import { LabeledSelect } from "@/ui/select/labeled-select";
+import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 const WORD_OPTIONS_CONFIG = {

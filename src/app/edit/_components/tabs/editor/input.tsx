@@ -9,9 +9,9 @@ import {
   useWordState,
 } from "@/app/edit/_lib/atoms/state";
 import { handleEnterAddRuby } from "@/app/edit/_lib/editor/enter-add-ruby";
-import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
-import { Input } from "@/components/ui/input/input";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { FloatingLabelInput } from "@/ui/input/floating-label-input";
+import { Input } from "@/ui/input/input";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 export const LyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);

@@ -1,7 +1,7 @@
 import type { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView, useOnInView } from "react-intersection-observer";
-import { Spinner } from "../components/ui/spinner";
+import { Spinner } from "@/ui/spinner";
 
 export const usePageCounter = ({ onEnter, pageIndex }: { onEnter: (page: number) => void; pageIndex: number }) => {
   const { ref, inView } = useInView();

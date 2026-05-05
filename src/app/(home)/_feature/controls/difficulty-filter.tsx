@@ -2,11 +2,11 @@
 
 import type { VariantProps } from "class-variance-authority";
 import { useEffect, useState } from "react";
-import { Button, type buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/tailwind";
 import { DIFFICULTY_TIERS } from "@/shared/map/rating";
+import { Button, type buttonVariants } from "@/ui/button";
+import { Card, CardContent } from "@/ui/card";
+import { DualRangeSlider } from "@/ui/dual-range-slider";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useMapListFilterQueryStates } from "./search-params";
 

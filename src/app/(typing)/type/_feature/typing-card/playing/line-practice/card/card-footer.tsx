@@ -1,9 +1,9 @@
 "use client";
 
 import type { HTMLAttributes } from "react";
-import { Badge } from "@/components/ui/badge";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/tailwind";
+import { Badge } from "@/ui/badge";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
   point: number;

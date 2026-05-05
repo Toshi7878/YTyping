@@ -8,14 +8,14 @@ import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
 import { editDb } from "@/app/edit/_lib/indexed-db";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { InputFormField } from "@/components/ui/input/input-form-field";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/tailwind";
 import { CreatedMapListByVideoId } from "@/shared/map/created-video-list";
+import { Button } from "@/ui/button";
+import { Form } from "@/ui/form";
+import { InputFormField } from "@/ui/input/input-form-field";
+import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+import { TooltipWrapper } from "@/ui/tooltip";
+import { H3 } from "@/ui/typography";
 import { extractYouTubeId } from "../../../../../utils/extract-youtube-id";
 
 const formSchema = z.object({

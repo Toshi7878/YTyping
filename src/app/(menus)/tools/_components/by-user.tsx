@@ -2,8 +2,8 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
-import { LinkText } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
+import { LinkText } from "@/ui/typography";
 
 export const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();

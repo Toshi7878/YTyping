@@ -2,14 +2,14 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContentWithThumbnail } from "@/components/ui/card";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { RatingBadge } from "@/shared/map/rating";
 import { MapThumbnailImage } from "@/shared/map-thumbnail-image";
 import { useMapLinkMode } from "@/store/map-link-type";
+import { Badge } from "@/ui/badge";
+import { Card, CardContentWithThumbnail } from "@/ui/card";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 

@@ -1,8 +1,8 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/tailwind";
 import { setReadyInputMode, useReadyInputMode } from "@/store/ready-input-mode";
+import { RadioCard, RadioGroup } from "@/ui/radio-group/radio-group";
 
 export const ReadyInputModeRadioCards = () => {
   const options: { value: InputMode; label: string }[] = [

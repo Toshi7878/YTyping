@@ -5,9 +5,9 @@ import type React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { importMapFromTextAutoDetect } from "@/app/edit/_lib/editor/import-map";
-import { Button } from "@/components/ui/button";
-import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog";
-import { overlay } from "@/components/ui/overlay";
+import { Button } from "@/ui/button";
+import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
+import { overlay } from "@/ui/overlay";
 
 const readFileAsText = async (file: File): Promise<string> => {
   const buffer = await file.arrayBuffer();

@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/ui/badge";
 
 export const RatingBadge = ({ rating }: { rating: number }) => {
   return (

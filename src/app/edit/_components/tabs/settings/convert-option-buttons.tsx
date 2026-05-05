@@ -2,9 +2,9 @@
 import type { ConvertOption } from "@/app/edit/_lib/atoms/storage";
 import { setWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
-import { Label } from "@/components/ui/label";
-import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { Label } from "@/ui/label";
+import { RadioButton, RadioGroup } from "@/ui/radio-group/radio-group";
+import { TooltipWrapper } from "@/ui/tooltip";
 
 const CONVERT_OPTIONS = [
   {

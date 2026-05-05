@@ -9,10 +9,10 @@ import {
 } from "lyrics-ime-typing-engine";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { overlay } from "@/components/ui/overlay";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
+import { overlay } from "@/ui/overlay";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { readImeStats } from "../_lib/atoms/ref";
 import { readScene, setBuiltMap } from "../_lib/atoms/state";

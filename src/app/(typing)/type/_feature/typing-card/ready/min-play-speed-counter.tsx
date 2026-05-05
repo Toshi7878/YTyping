@@ -1,8 +1,8 @@
 import type React from "react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Button } from "@/components/ui/button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
+import { Button } from "@/ui/button";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { useMediaSpeedState } from "../../youtube/youtube-player";

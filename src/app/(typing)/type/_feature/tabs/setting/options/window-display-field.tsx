@@ -1,9 +1,9 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import { CounterInput } from "@/components/ui/counter";
-import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { Button } from "@/ui/button";
+import { CounterInput } from "@/ui/counter";
+import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const WindowDisplayField = () => {

@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/provider";
+import { Spinner } from "@/ui/spinner";
 import { MapCard } from "./card/card";
 
 interface CreatedMapListByVideoIdProps {

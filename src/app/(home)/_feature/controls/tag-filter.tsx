@@ -3,11 +3,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import type React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { cn } from "@/lib/tailwind";
 import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
+import { Card, CardContent } from "@/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select/select";
 import type { MAP_RANKING_STATUS_FILTER_OPTIONS, MAP_USER_FILTER_OPTIONS } from "@/validator/map/list";
 import {
   type MapListFilterSearchParams,
