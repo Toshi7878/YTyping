@@ -108,7 +108,7 @@ const SearchRange = ({
   onRangeChange,
   isMaxLabel = false,
 }: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label" | "onValueChange">) => {
-  const { debounce } = useDebounce(1000);
+  const { debounce } = useDebounce(500);
   const [pendingMin, setPendingMin] = useState(value[0]);
   const [pendingMax, setPendingMax] = useState(value[1]);
 
