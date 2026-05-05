@@ -8,22 +8,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/utils";
 import { useDebounce } from "@/utils/hooks/use-debounce";
-import { useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
+import { useMapListFilterQueryStates } from "./search-params";
 
 type ButtonVariant = VariantProps<typeof buttonVariants>["variant"];
 const RANGE = { min: 0, max: 16 };
 
 export const DifficultyFilter = ({ className }: { className?: string }) => {
-  const [params] = useMapListFilterQueryStates();
-  const setSearchParams = useSetSearchParams();
+  const [params, setFilterParams] = useMapListFilterQueryStates();
   const { debounce } = useDebounce(500);
 
   const handleTierClick = (tier: (typeof DIFFICULTY_TIERS)[number]) => {
     const isTierExact = params.minRate === tier.min && params.maxRate === tier.max;
     if (isTierExact) {
-      setSearchParams({ minRate: undefined, maxRate: undefined });
+      void setFilterParams({ minRate: null, maxRate: null });
     } else {
-      setSearchParams({ minRate: tier.min, maxRate: tier.max });
+      void setFilterParams({ minRate: tier.min, maxRate: tier.max });
     }
   };
 
@@ -52,7 +51,9 @@ export const DifficultyFilter = ({ className }: { className?: string }) => {
         <DifficultyDualSlider
           minRate={params.minRate ?? RANGE.min}
           maxRate={params.maxRate ?? RANGE.max}
-          onChange={(minRate, maxRate) => debounce(() => setSearchParams({ minRate, maxRate }))}
+          onChange={(minRate, maxRate) =>
+            debounce(() => void setFilterParams({ minRate: minRate ?? 0, maxRate: maxRate ?? null }))
+          }
           className="w-full"
         />
       </CardContent>

@@ -2,7 +2,6 @@ import { type inferParserType, useQueryState, useQueryStates } from "nuqs";
 import {
   createLoader,
   createParser,
-  createSerializer,
   parseAsFloat,
   parseAsInteger,
   parseAsString,
@@ -56,18 +55,3 @@ export type MapListFilterSearchParams = inferParserType<typeof mapListFilterPars
 export type MapListSortSearchParams = inferParserType<typeof mapListSortParser>;
 
 export const loadMapListSearchParams = createLoader({ ...mapListFilterParsers, sort: mapListSortParser });
-const mapListSerialize = createSerializer({ ...mapListFilterParsers, sort: mapListSortParser });
-
-export const useSetSearchParams = () => {
-  const [filterParams] = useMapListFilterQueryStates();
-  const [sortParams] = useMapListSortQueryState();
-
-  return (updates?: Partial<MapListFilterSearchParams & { sort: MapListSortSearchParams }>) => {
-    const currentParams = { ...filterParams, sort: sortParams };
-    const mergedParams = { ...currentParams, ...updates };
-    const isChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
-    if (!isChanged) return;
-
-    window.history.replaceState(null, "", mapListSerialize(mergedParams) || window.location.pathname);
-  };
-};

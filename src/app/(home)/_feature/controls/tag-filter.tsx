@@ -13,7 +13,7 @@ import {
   type MapListFilterSearchParams,
   type MapListSortSearchParams,
   useMapListFilterQueryStates,
-  useSetSearchParams,
+  useMapListSortQueryState,
 } from "./search-params";
 
 type FilterMenuConfig<K extends keyof MapListFilterSearchParams> = {
@@ -67,8 +67,8 @@ interface FilterMenuProps {
 }
 
 const FilterMenu = ({ filter, children }: FilterMenuProps) => {
-  const [params] = useMapListFilterQueryStates();
-  const setSearchParams = useSetSearchParams();
+  const [params, setFilterParams] = useMapListFilterQueryStates();
+  const [, setSortParam] = useMapListSortQueryState();
 
   return (
     <>
@@ -87,7 +87,8 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
               onClick={(e) => {
                 e.preventDefault();
                 const nextParams = getNextFilterParams(filter.name, param.value, !isActive, params);
-                setSearchParams({ ...nextParams, sort: deriveSortParam(nextParams) });
+                void setFilterParams(nextParams);
+                void setSortParam(deriveSortParam(nextParams));
               }}
               className={cn(
                 "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
@@ -107,8 +108,8 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 const BookmarkListSelect = () => {
   const trpc = useTRPC();
   const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getForSession.queryOptions());
-  const [params] = useMapListFilterQueryStates();
-  const setSearchParams = useSetSearchParams();
+  const [params, setFilterParams] = useMapListFilterQueryStates();
+  const [, setSortParam] = useMapListSortQueryState();
 
   const CLEAR_VALUE = "__clear__";
   const value = !params.bookmarkListId ? "" : String(params.bookmarkListId);
@@ -118,10 +119,12 @@ const BookmarkListSelect = () => {
       value={value}
       onValueChange={(nextValue) => {
         if (nextValue === CLEAR_VALUE) {
-          setSearchParams({ ...params, bookmarkListId: null, sort: undefined });
+          void setFilterParams({ ...params, bookmarkListId: null });
+          void setSortParam(null);
           return;
         }
-        setSearchParams({ ...params, bookmarkListId: Number(nextValue), sort: { type: "bookmark", isDesc: true } });
+        void setFilterParams({ ...params, bookmarkListId: Number(nextValue) });
+        void setSortParam({ type: "bookmark", isDesc: true });
       }}
     >
       <SelectTrigger
@@ -153,8 +156,7 @@ const GENRE_FILTERS = [
 ] as const;
 
 const GenreFilterRow = () => {
-  const [params] = useMapListFilterQueryStates();
-  const setSearchParams = useSetSearchParams();
+  const [params, setFilterParams] = useMapListFilterQueryStates();
 
   return (
     <>
@@ -173,7 +175,7 @@ const GenreFilterRow = () => {
               variant="ghost"
               onClick={(e) => {
                 e.preventDefault();
-                setSearchParams(
+                void setFilterParams(
                   isActive ? { maxKanaChunkCount: null, minAlphabetChunkCount: null } : { ...filter.params },
                 );
               }}

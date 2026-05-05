@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { useIsSearching } from "@/components/shared/map/list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useMapListFilterQueryStates, useSetSearchParams } from "./search-params";
+import { useMapListFilterQueryStates } from "./search-params";
 
 export const KeywordInput = () => {
-  const [params] = useMapListFilterQueryStates();
+  const [params, setFilterParams] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearching();
-  const setSearchParams = useSetSearchParams();
 
   useEffect(() => {
     setKeyword(params.keyword ?? "");
@@ -21,7 +20,7 @@ export const KeywordInput = () => {
       className="flex select-none items-center gap-3"
       onSubmit={(e) => {
         e.preventDefault();
-        setSearchParams({ keyword: keyword.trim() });
+        void setFilterParams({ keyword: keyword.trim() });
       }}
     >
       <Input

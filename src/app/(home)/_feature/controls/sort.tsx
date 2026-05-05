@@ -1,11 +1,6 @@
 import { type SortIconState, SortToggleButton } from "@/components/ui/sort-toggle-button";
 import type { MAP_SORT_OPTIONS } from "@/validator/map/list";
-import {
-  type MapListSortSearchParams,
-  useMapListFilterQueryStates,
-  useMapListSortQueryState,
-  useSetSearchParams,
-} from "./search-params";
+import { type MapListSortSearchParams, useMapListFilterQueryStates, useMapListSortQueryState } from "./search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./tag-filter";
 
 const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[] = [
@@ -28,9 +23,8 @@ const RANKING_STATUS_FOR_REGISTER_SORT: (typeof RANKING_STATUS_FILTER_MENU.optio
 ];
 
 export const SortControls = () => {
-  const setSearchParams = useSetSearchParams();
   const [params] = useMapListFilterQueryStates();
-  const [currentSort] = useMapListSortQueryState();
+  const [currentSort, setSortParam] = useMapListSortQueryState();
 
   return (
     <div className="flex select-none flex-wrap items-center gap-0.5">
@@ -39,7 +33,7 @@ export const SortControls = () => {
           key={value}
           label={label}
           sortState={deriveSortIconState(value, currentSort)}
-          onClick={() => setSearchParams({ sort: deriveNextSortParam(value, currentSort) })}
+          onClick={() => void setSortParam(deriveNextSortParam(value, currentSort))}
         />
       ))}
     </div>
