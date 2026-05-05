@@ -5,10 +5,11 @@ import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
 import { ResultCard } from "@/domain/result/list/card/card";
-import { InfiniteScrollSpinner, usePageCounter } from "@/lib/infinite-scroll";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";
+import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
+import { usePageCounter } from "@/utils/hooks/intersection";
 import type { ResultListFilterSchema } from "@/validator/result/list";
 
 const pageAtom = atom<number>(0);
@@ -25,7 +26,7 @@ export const ResultList = ({ filterParams = {}, atomStore = getDefaultStore() }:
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom, { store: atomStore });
 
-  const { data, isFetchedAfterMount, isPlaceholderData, ...pagination } = useInfiniteQuery(
+  const { data, isFetchedAfterMount, isPlaceholderData, fetchNextPage, hasNextPage } = useInfiniteQuery(
     trpc.result.list.get.infiniteQueryOptions(filterParams, {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
@@ -64,7 +65,7 @@ export const ResultList = ({ filterParams = {}, atomStore = getDefaultStore() }:
           />
         );
       })}
-      <InfiniteScrollSpinner rootMarginY="2000px" {...pagination} />
+      <ScrollSpinner rootMarginY="2000px" onEnter={fetchNextPage} hasMore={hasNextPage} />
     </div>
   );
 };

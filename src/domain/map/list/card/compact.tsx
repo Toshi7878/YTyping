@@ -6,16 +6,16 @@ import { useSession } from "@/auth/client";
 import { MapListActionButtons } from "@/domain/map/action-buttons";
 import { calcChunkRatios } from "@/domain/map/built-map-helper";
 import { RatingBadge } from "@/domain/map/rating/badge";
-import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
-import { DateDistanceText } from "@/domain/text/date-distance-text";
-import { UserNameLinkText } from "@/domain/text/user-name-link-text";
+import { MapThumbnailImage } from "@/domain/map/thumbnail-image";
+import { UserNameLinkText } from "@/domain/user/user-name-link";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useReadyInputMode } from "@/store/ready-input-mode";
-import { useTypingLinkMode } from "@/store/typing-link-type";
+import { useTypingLinkMode } from "@/store/typing-link-mode";
 import { Badge } from "@/ui/badge";
 import { CardHeader } from "@/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/ui/hover-extract-card";
+import { RelativeTime } from "@/ui/relative-time";
 import { Separator } from "@/ui/separator";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
@@ -138,7 +138,7 @@ const MapCreatorInfo = ({ creator, updatedAt, isUnlisted, className }: MapCreato
     <div className={cn("truncate text-[0.6rem]", className)}>
       <UserNameLinkText userId={creator.id} userName={creator.name} />
       <span className="mx-1">
-        - <DateDistanceText date={updatedAt} />
+        - <RelativeTime date={updatedAt} />
       </span>
       {isUnlisted ? (
         <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">

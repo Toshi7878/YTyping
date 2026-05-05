@@ -3,9 +3,9 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo } from "react";
-import { InfiniteScrollSpinner } from "@/lib/infinite-scroll";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
 
 type PpRow = RouterOutputs["user"]["stats"]["getPPRanking"]["items"][number];
@@ -63,7 +63,7 @@ export const PPRankingTable = () => {
         ))}
       </ul>
 
-      <InfiniteScrollSpinner rootMarginY="1000px" fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
+      <ScrollSpinner rootMarginY="1000px" onEnter={fetchNextPage} hasMore={hasNextPage} />
     </div>
   );
 };

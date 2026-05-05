@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import type z from "zod/v4";
 import { MapCard } from "@/domain/map/list/card/base";
 import { CompactMapCard } from "@/domain/map/list/card/compact";
-import { InfiniteScrollSpinner, usePageCounter } from "@/lib/infinite-scroll";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
+import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
+import { usePageCounter } from "@/utils/hooks/intersection";
 import type { MapSearchFilterSchema, mapSortSchema } from "@/validator/map/list";
 
 const pageAtom = atom<number>(0);
@@ -33,7 +34,7 @@ export const MapList = ({
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom, { store: atomStore });
 
-  const { data, isFetchedAfterMount, isPending, isPlaceholderData, ...pagination } = useInfiniteQuery(
+  const { data, isFetchedAfterMount, isPlaceholderData, fetchNextPage, hasNextPage } = useInfiniteQuery(
     trpc.map.list.get.infiniteQueryOptions(
       { ...filterParams, sort: sortParams },
       {
@@ -85,7 +86,11 @@ export const MapList = ({
         );
       })}
 
-      <InfiniteScrollSpinner rootMarginY={layoutType === "THREE_COLUMNS" ? "300px" : "1500px"} {...pagination} />
+      <ScrollSpinner
+        rootMarginY={layoutType === "THREE_COLUMNS" ? "300px" : "1500px"}
+        onEnter={fetchNextPage}
+        hasMore={hasNextPage}
+      />
     </div>
   );
 };

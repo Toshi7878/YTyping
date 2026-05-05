@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { updateInfiniteQueryCache, updateQueryCache } from "../../lib/update-query-cache";
+import { updateInfiniteQueryCache, updateQueryCache } from "../../lib/react-query";
 
 function calculateLikeState(
   current: { count: number; hasLiked: boolean },

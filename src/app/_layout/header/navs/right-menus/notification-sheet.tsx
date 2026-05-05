@@ -6,13 +6,12 @@ import Link from "next/link";
 import { useRef } from "react";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
 import { NotificationMapCard } from "@/domain/map/list/card/compact";
-import { DateDistanceText } from "@/domain/text/date-distance-text";
-import { InfiniteScrollSpinner } from "@/lib/infinite-scroll";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
+import { RelativeTime } from "@/ui/relative-time";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
-import { Spinner } from "@/ui/spinner";
+import { ScrollSpinner, Spinner } from "@/ui/spinner";
 import { TooltipWrapper } from "@/ui/tooltip";
 
 export const NotificationSheet = () => {
@@ -56,7 +55,7 @@ export const NotificationSheet = () => {
 const NotificationContent = () => {
   const trpc = useTRPC();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { data, isPending, ...pagination } = useInfiniteQuery(
+  const { data, isPending, fetchNextPage, hasNextPage } = useInfiniteQuery(
     trpc.notification.getInfinite.infiniteQueryOptions(
       {},
       {
@@ -84,10 +83,7 @@ const NotificationContent = () => {
                     {notification.type === "MAP_BOOKMARK" && (
                       <BookMarkNotificationMapCard notification={notification} />
                     )}
-                    <DateDistanceText
-                      date={notification.updatedAt}
-                      className="flex justify-end text-muted-foreground"
-                    />
+                    <RelativeTime date={notification.updatedAt} className="flex justify-end text-muted-foreground" />
                   </div>
                 );
               });
@@ -95,7 +91,13 @@ const NotificationContent = () => {
           ) : (
             <div className="py-8 text-center text-muted-foreground">まだ通知はありません</div>
           )}
-          <InfiniteScrollSpinner className="pt-4 pb-8" rootMarginY="200px" root={scrollRef.current} {...pagination} />
+          <ScrollSpinner
+            className="pt-4 pb-8"
+            rootMarginY="200px"
+            root={scrollRef.current}
+            onEnter={fetchNextPage}
+            hasMore={hasNextPage}
+          />
         </div>
       )}
     </div>

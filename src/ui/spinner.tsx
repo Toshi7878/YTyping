@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type React from "react";
+import { useOnInView } from "react-intersection-observer";
 import { cn } from "@/utils/cn";
 
 const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate-spin rounded-full", {
@@ -25,4 +26,25 @@ export const Spinner = ({ size, className, ...rest }: SpinnerProps) => {
       <div className={spinnerVariants({ size })} />
     </div>
   );
+};
+
+interface ScrollSpinnerProps {
+  rootMarginY: `${number}px`;
+  className?: string;
+  root?: Element | null;
+  onEnter: () => void;
+  hasMore: boolean;
+}
+
+export const ScrollSpinner = ({ rootMarginY, className, root, onEnter, hasMore }: ScrollSpinnerProps) => {
+  const ref = useOnInView(
+    (inView) => {
+      if (!inView) return;
+      onEnter();
+    },
+    { rootMargin: `${rootMarginY} 0px`, root },
+  );
+
+  if (!hasMore) return null;
+  return <Spinner ref={ref} className={className} />;
 };

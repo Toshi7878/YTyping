@@ -3,16 +3,16 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
+import { ResultToolTipText } from "@/app/(typing)/type/_feature/tabs/ranking/result-tooltip-text";
 import { useSession } from "@/auth/client";
 import { useToggleClapMutation } from "@/domain/result/clap";
-import { ClearRateText } from "@/domain/text/clear-rate-text";
-import { DateDistanceText } from "@/domain/text/date-distance-text";
-import { InputModeText } from "@/domain/text/input-mode-text";
-import { ResultToolTipText } from "@/domain/text/result-tooltip-text";
+import { ClearRateText } from "@/domain/result/clear-rate-text";
+import { InputModeText } from "@/domain/result/input-mode-text";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
+import { RelativeTime } from "@/ui/relative-time";
 import { DataTable } from "@/ui/table/data-table";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
@@ -131,7 +131,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
       id: "time",
       header: () => "時間",
       size: 40,
-      cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} className="pointer-events-none" />,
+      cell: ({ row }) => <RelativeTime date={row.original.updatedAt} className="pointer-events-none" />,
       meta: {
         cellClassName: () => "hidden sm:table-cell",
         headerClassName: "hidden sm:table-cell",

@@ -1,5 +1,5 @@
-import { ClearRateText } from "@/domain/text/clear-rate-text";
-import { InputModeText } from "@/domain/text/input-mode-text";
+import { ClearRateText } from "@/domain/result/clear-rate-text";
+import { InputModeText } from "@/domain/result/input-mode-text";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { Badge } from "@/ui/badge";
 import { cn } from "@/utils/cn";

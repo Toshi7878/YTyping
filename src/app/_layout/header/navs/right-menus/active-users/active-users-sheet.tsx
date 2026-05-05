@@ -4,7 +4,7 @@ import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { MinimumMapCard } from "@/domain/map/list/card/minimum";
-import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
+import { MapThumbnailImage } from "@/domain/map/thumbnail-image";
 import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";

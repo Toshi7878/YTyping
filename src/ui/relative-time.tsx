@@ -1,17 +1,14 @@
-"use client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { cn } from "@/utils/cn";
 import { formatDate, toLocaleDateString } from "@/utils/date";
 
-interface DateDistanceTextProps {
+interface RelativeTimeProps {
   date: Date | string;
-  text?: string;
-  addSuffix?: boolean;
   className?: string;
 }
 
-export const DateDistanceText = ({ date, text, addSuffix = true, className }: DateDistanceTextProps) => {
+export const RelativeTime = ({ date, className }: RelativeTimeProps) => {
   return (
     <time
       dateTime={toLocaleDateString(date)}
@@ -19,8 +16,7 @@ export const DateDistanceText = ({ date, text, addSuffix = true, className }: Da
       className={cn("overflow-hidden truncate text-ellipsis whitespace-nowrap", className)}
       suppressHydrationWarning
     >
-      {formatDistanceToNowStrict(date, { addSuffix, locale: ja })}
-      {text && text}
+      {formatDistanceToNowStrict(date, { addSuffix: true, locale: ja })}
     </time>
   );
 };

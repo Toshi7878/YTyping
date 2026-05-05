@@ -1,5 +1,3 @@
-"use client";
-
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";

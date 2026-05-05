@@ -3,7 +3,7 @@ import { atom, createStore, type ExtractAtomValue, Provider, useAtomValue } from
 import { atomWithReset } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
-import { AtomsHydrator } from "@/lib/hydrator";
+import { AtomsHydrator } from "@/lib/jotai-hydrator";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 

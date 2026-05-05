@@ -2,7 +2,8 @@
 "use client";
 import { Check } from "lucide-react";
 import { useTheme } from "next-themes";
-import { THEME_LIST } from "@/styles/const";
+import { THEME_LIST } from "@/theme/const";
+import { applyFavicon } from "@/theme/use-favicon-theme";
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -13,7 +14,6 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "@/ui/dropdown-menu";
-import { applyFavicon } from "@/utils/hooks/use-favicon-theme";
 
 export const ThemeDropdownSubmenu = () => {
   const { setTheme, resolvedTheme } = useTheme();

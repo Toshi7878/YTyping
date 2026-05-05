@@ -6,7 +6,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { getSession } from "@/auth/server";
-import { THEME_LIST } from "@/styles/const";
+import { THEME_LIST } from "@/theme/const";
 import TRPCProvider from "@/trpc/provider";
 import { caller } from "@/trpc/server";
 import { ConfirmDialogHost } from "@/ui/confirm-dialog";

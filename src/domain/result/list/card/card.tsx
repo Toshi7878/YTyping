@@ -5,12 +5,12 @@ import type { HTMLAttributes } from "react";
 import { useSession } from "@/auth/client";
 import { MapListActionButtons } from "@/domain/map/action-buttons";
 import { RatingBadge } from "@/domain/map/rating/badge";
-import { MapThumbnailImage } from "@/domain/map-thumbnail-image";
-import { DateDistanceText } from "@/domain/text/date-distance-text";
+import { MapThumbnailImage } from "@/domain/map/thumbnail-image";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { useTypingLinkMode } from "@/store/typing-link-type";
+import { useTypingLinkMode } from "@/store/typing-link-mode";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/ui/card";
+import { RelativeTime } from "@/ui/relative-time";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 import { useInViewRender } from "@/utils/hooks/intersection";
@@ -42,7 +42,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
                 {result.player.name}
               </Link>
               {" - "}
-              <DateDistanceText date={result.updatedAt} />
+              <RelativeTime date={result.updatedAt} />
             </>
           )}
         </div>

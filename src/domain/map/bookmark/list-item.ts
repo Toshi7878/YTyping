@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { updateInfiniteQueryCache, updateQueryCache } from "../../../lib/update-query-cache";
+import { updateInfiniteQueryCache, updateQueryCache } from "../../../lib/react-query";
 
 type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
 type MapInfo = RouterOutputs["map"]["getById"];
