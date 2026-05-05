@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
+import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "./menu-items";
 
 export const SiteLogo = () => {
   const isHome = usePathname() === "/";

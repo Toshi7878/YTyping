@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { getIsDesktopDevice } from "@/lib/atoms/user-agent";
+import { getIsDesktopDevice } from "@/app/_layout/user-agent";
 import { cycleMediaSpeed, getNextMediaSpeed } from "@/utils/media-speed-change";
 import { setMinMediaSpeed } from "../youtube/youtube-player";
 import { store } from "./store";

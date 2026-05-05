@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
@@ -6,7 +7,6 @@ import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typin
 import { Button } from "@/components/ui/button";
 import { overlay } from "@/components/ui/overlay";
 import { getSession } from "@/lib/auth-client";
-import { useTRPC } from "@/trpc/provider";
 import { initializeAllLineResult } from "../../atoms/line-result";
 import { getMapId } from "../../provider";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";

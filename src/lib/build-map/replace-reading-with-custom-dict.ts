@@ -1,5 +1,5 @@
+import { getQueryClient, getTRPCOptions } from "@/app/_layout/trpc/provider";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const replaceReadingWithCustomDict = async (tokenizedSentence: RouterOutputs["morph"]["tokenizeSentence"]) => {
   const trpc = getTRPCOptions();

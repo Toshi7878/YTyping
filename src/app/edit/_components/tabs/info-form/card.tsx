@@ -8,6 +8,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import {
   readMapId,
   readVideoId,
@@ -40,11 +41,10 @@ import {
 import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
-import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
-import { MapInfoFormSchema } from "@/validator/map/item";
+import { MapInfoFormSchema } from "@/validator/map/map";
 import { readRawMap } from "../../../_lib/atoms/map-reducer";
 import { readUtilityParams, setCanUpload, setYTChangingVideo, useCanUploadState } from "../../../_lib/atoms/state";
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";

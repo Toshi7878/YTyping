@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { HydrateClient, prefetch, trpc } from "@/app/_layout/trpc/server";
 import { MapList } from "@/components/shared/map/list";
 import { Button } from "@/components/ui/button";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;

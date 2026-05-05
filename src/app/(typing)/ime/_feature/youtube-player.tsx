@@ -1,7 +1,7 @@
 "use client";
 import type { CSSProperties } from "react";
 import YouTube from "react-youtube";
-import { getVolume } from "@/lib/atoms/global-atoms";
+import { getVolume } from "@/components/shared/volume-range";
 import { readScene } from "../_lib/atoms/state";
 import { seekYTPlayer, setYTPlayer, stopYTPlayer } from "../_lib/atoms/yt-player";
 import { initializePlayScene } from "../_lib/core/reset";

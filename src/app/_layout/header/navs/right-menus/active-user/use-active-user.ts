@@ -1,16 +1,16 @@
 import { useParams, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import type { ActiveUserStatus } from "@/lib/atoms/global-atoms";
-import { usePresenceOptionState, useSetOnlineUsers } from "@/lib/atoms/global-atoms";
+import { usePresenceOption } from "@/app/_layout/user-options";
 import { useSession } from "@/lib/auth-client";
 import { createPresenceChannel } from "@/lib/supabase-client";
+import { type ActiveUserStatus, useSetOnlineUsers } from "./active-users-sheet";
 
 export const useActiveUsers = () => {
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsers();
   const pathname = usePathname();
   const { id: mapId } = useParams();
-  const presenceState = usePresenceOptionState();
+  const presenceState = usePresenceOption();
 
   useEffect(() => {
     if (!session?.user?.name) return;

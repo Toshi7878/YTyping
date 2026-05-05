@@ -2,14 +2,14 @@ import type { VariantProps } from "class-variance-authority";
 import { Palette } from "lucide-react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
-import { useIsPreviewEnabled } from "@/app/_components/preview-youtube-player";
 import {
   getPreviewYTPlayer,
   resetPreviewVideoInfo,
   setPreviewVideoInfo,
-  usePreviewPlayerState,
-  usePreviewVideoInfoState,
-} from "@/lib/atoms/global-atoms";
+  useIsPreviewEnabled,
+  usePreviewVideoInfo,
+  usePreviewYTPlayer,
+} from "@/app/_layout/preview-youtube";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
@@ -30,7 +30,7 @@ export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
   const { alt, media, size, className, imageClassName, priority = false, isStyledMap = false } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
-  const previewYTPlayer = usePreviewPlayerState();
+  const previewYTPlayer = usePreviewYTPlayer();
 
   return (
     <div className={cn("group relative my-auto select-none", className)}>
@@ -65,7 +65,7 @@ const StyledMapBadge = () => {
 
 const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: string }) => {
   const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
-  const { videoId } = usePreviewVideoInfoState();
+  const { videoId } = usePreviewVideoInfo();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
   const previewYouTube = () => {

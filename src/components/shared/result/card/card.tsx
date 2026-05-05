@@ -2,13 +2,13 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
+import { useMapLinkMode } from "@/app/_layout/user-script";
 import { RatingBadge } from "@/components/shared/map/rating";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useMapLinkMode } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";

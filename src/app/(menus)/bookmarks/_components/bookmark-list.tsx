@@ -2,11 +2,11 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { ThumbnailImage } from "@/components/ui/image";
 import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 
 type PublicBookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getAll"][number];

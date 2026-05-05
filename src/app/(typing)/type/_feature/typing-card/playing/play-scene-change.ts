@@ -1,10 +1,10 @@
-import { getReadyInputMode } from "@/lib/atoms/global-atoms";
 import { resetReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
 import { setYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
 import { getMediaSpeed, setMinMediaSpeed } from "../../youtube/youtube-player";
 import { setNotify } from "../header/notify";
+import { getReadyInputMode } from "../ready/input-mode-radio-cards";
 import { getScene, setScene } from "../typing-card";
 
 export const commitPlayModeChange = () => {

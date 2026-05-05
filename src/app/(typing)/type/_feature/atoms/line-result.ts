@@ -1,7 +1,7 @@
 import deepEqual from "fast-deep-equal";
 import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai-family";
-import type { TypingLineResult } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
 import { getBuiltMap } from "./built-map";
 import { store } from "./store";
 

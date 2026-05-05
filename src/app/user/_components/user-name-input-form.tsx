@@ -6,11 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useSession } from "@/lib/auth-client";
-import { useTRPC } from "@/trpc/provider";
 import { UserNameSchema } from "@/validator/user/profile";
 
 interface UserNameInputFormProps {

@@ -1,11 +1,14 @@
 "use client";
+import { getDefaultStore } from "jotai";
 import type { ReactNode } from "react";
 import { UAParser } from "ua-parser-js";
+import { userAgentAtom } from "@/app/_layout/user-agent";
 import { AtomsHydrator } from "@/components/shared/jotai";
-import { userOptionsAtom } from "@/lib/atoms/global-atoms";
-import { userAgentAtom } from "@/lib/atoms/user-agent";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_USER_OPTIONS } from "@/server/drizzle/schema";
+import { userOptionsAtom } from "./user-options";
+
+export const store = getDefaultStore();
 
 export const JotaiProvider = ({
   children,

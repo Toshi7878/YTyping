@@ -1,7 +1,6 @@
-import { atom, getDefaultStore, useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import type { UAParser } from "ua-parser-js";
-
-const store = getDefaultStore();
+import { store } from "./store";
 
 export const userAgentAtom = atom<UAParser | null>(null);
 export const useBrowserTypeState = () => {

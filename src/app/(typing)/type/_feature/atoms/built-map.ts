@@ -4,7 +4,7 @@ import { atomWithReset, RESET } from "jotai/utils";
 import type { BuiltMapLine } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { LineOptionSchema } from "@/validator/map/raw-map-json";
-import type { TypingLineResult } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
 import { store } from "./store";
 
 export const builtMapAtom = atomWithReset<{

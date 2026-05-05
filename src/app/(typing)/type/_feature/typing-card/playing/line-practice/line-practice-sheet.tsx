@@ -5,7 +5,7 @@ import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/at
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Table, TableBody } from "@/components/ui/table/table";
-import type { TypingLineResult } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
 import { setSelectLineIndex } from "../../../atoms/line-result";
 import { store } from "../../../atoms/store";
 import { useLineFailureCountState } from "../../../atoms/substatus";

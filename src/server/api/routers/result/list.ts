@@ -6,8 +6,14 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import type { RESULT_INPUT_METHOD_TYPES, ResultListFilterSchema } from "@/validator/result";
-import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
+import {
+  CLEAR_RATE_LIMIT,
+  KPM_LIMIT,
+  PLAY_SPEED_LIMIT,
+  type RESULT_INPUT_METHOD_TYPES,
+  type ResultListFilterSchema,
+  SelectResultListApiSchema,
+} from "@/validator/result/list";
 import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";

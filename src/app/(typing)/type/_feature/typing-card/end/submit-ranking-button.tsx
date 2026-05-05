@@ -2,12 +2,12 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getAllLineResult } from "@/app/(typing)/type/_feature/atoms/line-result";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/ui/confirm-dialog";
-import { useTRPC } from "@/trpc/provider";
-import type { TypingLineResult } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
 import { getTypingSubstatus, type TypingSubstatus } from "../../atoms/substatus";
 import { getMapId } from "../../provider";
 import { getTypingOptions, type TypingOptions } from "../../tabs/setting/popover";

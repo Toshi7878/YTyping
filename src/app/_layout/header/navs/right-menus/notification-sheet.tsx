@@ -4,6 +4,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 import { Bell, BellDot } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll";
 import { NotificationMapCard } from "@/components/shared/map/card/compact";
@@ -13,7 +14,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
 
 export const NotificationSheet = () => {
   const trpc = useTRPC();

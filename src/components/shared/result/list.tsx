@@ -4,11 +4,11 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla/store";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { ResultCard } from "@/components/shared/result/card/card";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import { useTRPC } from "@/trpc/provider";
-import type { ResultListFilterSchema } from "@/validator/result";
+import type { ResultListFilterSchema } from "@/validator/result/list";
 import { InfiniteScrollSpinner, usePageCounter } from "../infinite-scroll";
 
 const pageAtom = atom<number>(0);

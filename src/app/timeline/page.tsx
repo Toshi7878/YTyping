@@ -1,5 +1,5 @@
+import { HydrateClient, prefetchAsync, trpc } from "@/app/_layout/trpc/server";
 import { loadResultListSearchParams } from "@/app/timeline/_feature/search-params";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { SearchContent } from "./_feature/controls/controls";
 import { TimelineResultList } from "./_feature/result-list";
 

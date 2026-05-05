@@ -2,9 +2,9 @@
 
 import { atom, type SetStateAction, useAtomValue } from "jotai";
 import YouTube, { type YouTubeEvent } from "react-youtube";
+import { useIsMobileDeviceState } from "@/app/_layout/user-agent";
+import { getVolume } from "@/components/shared/volume-range";
 import { LoadingOverlayProvider } from "@/components/ui/overlay";
-import { getReadyInputMode, getVolume } from "@/lib/atoms/global-atoms";
-import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -19,6 +19,7 @@ import { setTabName } from "../tabs/tabs";
 import { setNotify } from "../typing-card/header/notify";
 import { setLineCount } from "../typing-card/playing/playing-scene";
 import { startTimer, stopTimer } from "../typing-card/playing/timer/timer";
+import { getReadyInputMode } from "../typing-card/ready/input-mode-radio-cards";
 import { getScene, getSceneGroup, setScene } from "../typing-card/typing-card";
 import { dispatchTypeEvent } from "../user-script";
 

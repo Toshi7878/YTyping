@@ -1,9 +1,9 @@
 "use client";
 import type { Route } from "next";
 import Image from "next/image";
+import { useBrowserTypeState } from "@/app/_layout/user-agent";
 import { Separator } from "@/components/ui/separator";
 import { H3, LinkText, OList, P } from "@/components/ui/typography";
-import { useBrowserTypeState } from "@/lib/atoms/user-agent";
 
 const browserLinks: Record<"Chrome" | "Firefox" | "Edge", { url: Route; text: string }> = {
   Chrome: {

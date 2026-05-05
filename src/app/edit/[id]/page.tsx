@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { getCaller, HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { getCaller, HydrateClient, prefetch, trpc } from "@/app/_layout/trpc/server";
 import { Content } from "../_components/content";
 import { PermissionToast } from "../_components/permission-toast";
 import { JotaiProvider } from "../_components/provider";

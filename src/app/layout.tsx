@@ -1,25 +1,25 @@
-import { Header } from "@/app/_components/header/header";
+import { Header } from "@/app/_layout/header/header";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import TRPCProvider from "@/app/_layout/trpc/provider";
+import { getCaller } from "@/app/_layout/trpc/server";
 import { ConfirmDialogHost } from "@/components/ui/confirm-dialog";
 import { OverlayHost } from "@/components/ui/overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSession } from "@/lib/auth";
 import { THEME_LIST } from "@/styles/const";
-import TRPCProvider from "@/trpc/provider";
-import { getCaller } from "@/trpc/server";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
-import { JotaiProvider } from "./_components/jotai-provider";
-import { LinkProgressProvider } from "./_components/link-progress-provider";
-import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
-import { SessionProvider } from "./_components/session-provider";
-import { ThemeProvider } from "./_components/theme-provider";
-import { UserScriptInit } from "./user-script";
+import { LinkProgressProvider } from "./_layout/link-progress-provider";
+import { PreviewYouTubePlayer } from "./_layout/preview-youtube";
+import { SessionProvider } from "./_layout/session-provider";
+import { JotaiProvider } from "./_layout/store";
+import { ThemeProvider } from "./_layout/theme-provider";
+import { UserScriptInit } from "./_layout/user-script";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],

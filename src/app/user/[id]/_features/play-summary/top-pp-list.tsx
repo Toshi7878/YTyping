@@ -2,13 +2,13 @@
 
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { PPResultCard } from "@/components/shared/result/pp-card/card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group/radio-group";
 import { TOTAL_PP_TOP_N } from "@/lib/pp";
-import { useTRPC } from "@/trpc/provider";
 import { usePpOrderQueryState } from "../search-params";
 
 export function UserTopPpList({ id }: { id: string }) {

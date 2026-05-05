@@ -1,11 +1,11 @@
 "use client";
+import { useMapListLayoutOption } from "@/app/_layout/user-options";
 import { MapList } from "@/components/shared/map/list";
-import { useMapListLayoutTypeState } from "@/lib/atoms/global-atoms";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "./controls/search-params";
 import { store } from "./provider";
 
 export const HomeMapList = () => {
-  const layoutType = useMapListLayoutTypeState();
+  const layoutType = useMapListLayoutOption();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
 

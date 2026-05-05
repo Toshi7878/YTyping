@@ -1,7 +1,7 @@
 import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { InputMode } from "lyrics-typing-engine";
-import type { TypeResult } from "@/validator/result";
+import type { TypeResult } from "@/validator/result/result";
 import { store } from "./store";
 
 const lineSubstatusAtom = atomWithReset({

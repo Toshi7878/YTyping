@@ -1,10 +1,18 @@
 "use client";
+import { useAtomValue } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
-import { setVolume, useVolumeState } from "@/lib/atoms/global-atoms";
-import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
+import { store } from "@/app/_layout/store";
+import { useIsMobileDeviceState } from "@/app/_layout/user-agent";
 import { cn } from "@/lib/utils";
 import { Slider } from "../ui/slider";
+
+const volumeAtom = atomWithStorage("volume", 30, undefined, { getOnInit: true });
+
+export const useVolume = () => useAtomValue(volumeAtom, { store });
+export const getVolume = () => store.get(volumeAtom);
+export const setVolume = (value: number) => store.set(volumeAtom, value);
 
 interface VolumeRangeProps {
   YTPlayer: YT.Player | null;
@@ -19,7 +27,7 @@ export const VolumeRange = ({
   sliderClassName,
   ...props
 }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
-  const volume = useVolumeState();
+  const volume = useVolume();
   const isMobile = useIsMobileDeviceState();
 
   if (isMobile) return null;

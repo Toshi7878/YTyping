@@ -1,8 +1,15 @@
 "use client";
+import { useAtomValue } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import type { InputMode } from "lyrics-typing-engine";
+import { store } from "@/app/_layout/store";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
-import { setReadyInputMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
+
+const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma");
+export const useReadyInputMode = () => useAtomValue(readyRadioInputModeAtom, { store });
+export const setReadyInputMode = (value: InputMode) => store.set(readyRadioInputModeAtom, value);
+export const getReadyInputMode = () => store.get(readyRadioInputModeAtom);
 
 export const ReadyInputModeRadioCards = () => {
   const options: { value: InputMode; label: string }[] = [
@@ -11,7 +18,7 @@ export const ReadyInputModeRadioCards = () => {
     { value: "flick", label: "フリック入力" },
   ];
 
-  const readyInputMode = useReadyInputModeState();
+  const readyInputMode = useReadyInputMode();
 
   const handleChange = (value: InputMode) => {
     setReadyInputMode(value);

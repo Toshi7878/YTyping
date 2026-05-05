@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { HydrateClient, prefetchAsync, trpc } from "@/app/_layout/trpc/server";
 import { H1 } from "@/components/ui/typography";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { PPRankingInfoTrigger } from "./_components/pp-ranking-info-trigger";
 import { PPRankingTable } from "./_components/pp-ranking-table";
 

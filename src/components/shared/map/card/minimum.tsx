@@ -1,6 +1,8 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
+import { useMapLinkMode } from "@/app/_layout/user-script";
+import { useReadyInputMode } from "@/app/(typing)/type/_feature/typing-card/ready/input-mode-radio-cards";
 import { MapListActionButtons } from "@/components/shared/map/action-buttons";
 import { RatingBadge } from "@/components/shared/map/rating";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
@@ -8,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
@@ -86,7 +87,7 @@ const MapBadges = ({ map, href }: MapBadgesProps) => {
 type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
-  const inputMode = useReadyInputModeState();
+  const inputMode = useReadyInputMode();
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
   return (

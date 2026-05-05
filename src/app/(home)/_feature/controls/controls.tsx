@@ -1,7 +1,7 @@
 "use client";
+import { usePreviewYTPlayer } from "@/app/_layout/preview-youtube";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { CardWithContent } from "@/components/ui/card";
-import { usePreviewPlayerState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { DifficultyFilter } from "./difficulty-filter";
@@ -12,7 +12,7 @@ import { MapListTagFilter } from "./tag-filter";
 import { MapListLayoutModeSelector } from "./view-mode";
 
 export const MapListControls = () => {
-  const YTPlayer = usePreviewPlayerState();
+  const YTPlayer = usePreviewYTPlayer();
   const { data: session } = useSession();
   const isLogin = !!session?.user?.id;
 

@@ -1,11 +1,11 @@
 "use client";
+import { usePreviewYTPlayer } from "@/app/_layout/preview-youtube";
 import { VolumeRange } from "@/components/shared/volume-range";
-import { usePreviewPlayerState } from "@/lib/atoms/global-atoms";
 import { FilterFieldsPopover } from "./filter-popover";
 import { SearchInputs } from "./search-input-fields";
 
 export const SearchContent = () => {
-  const YTPlayer = usePreviewPlayerState();
+  const YTPlayer = usePreviewYTPlayer();
 
   return (
     <section className="space-y-6">

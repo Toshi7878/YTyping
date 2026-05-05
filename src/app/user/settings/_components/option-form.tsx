@@ -2,13 +2,13 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useTRPC } from "@/app/_layout/trpc/provider";
+import { setUserOptions } from "@/app/_layout/user-options";
 import { CheckboxFormField } from "@/components/ui/checkbox/checkbox-form-field";
 import { Form } from "@/components/ui/form";
 import { SelectFormField } from "@/components/ui/select/select-form-field";
-import { setUserOptions } from "@/lib/atoms/global-atoms";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_USER_OPTIONS, type PRESENCE_STATES } from "@/server/drizzle/schema";
-import { useTRPC } from "@/trpc/provider";
 
 interface UserOptionsFormProps {
   userOptions: RouterOutputs["user"]["option"]["getForSession"];

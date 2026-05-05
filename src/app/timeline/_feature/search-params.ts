@@ -13,7 +13,7 @@ import {
   PLAY_SPEED_LIMIT,
   RESULT_INPUT_METHOD_TYPES,
   RESULT_PLAY_SPEEDS,
-} from "@/validator/result";
+} from "@/validator/result/list";
 
 const parseAsKpm = createParser({
   parse(query) {

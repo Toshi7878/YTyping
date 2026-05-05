@@ -3,7 +3,7 @@ import {
   applyKanaInputMode,
   applyRomaInputMode,
 } from "@/app/(typing)/type/_feature/typing-card/playing/toggle-input-mode";
-import type { TypeResult } from "@/validator/result";
+import type { TypeResult } from "@/validator/result/result";
 import { getAllLineResult } from "../../../atoms/line-result";
 import { getReplayRankingResult } from "../../../atoms/replay";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";

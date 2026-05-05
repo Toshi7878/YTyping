@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "@/lib/update-query-cache";
 import type { MapListItem } from "@/server/api/routers/map";
-import { useTRPC } from "@/trpc/provider";
 
 function calculateRankingState(
   current: MapListItem["ranking"],

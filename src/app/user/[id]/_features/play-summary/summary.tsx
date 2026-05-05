@@ -7,6 +7,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { useTRPC } from "@/app/_layout/trpc/provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,6 @@ import { H2 } from "@/components/ui/typography";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
 import { ActivityYearButtons, TypeActivity } from "./type-activity";
 
 const formatTime = (totalSeconds: number) => {

@@ -1,5 +1,5 @@
+import { getTRPCClient } from "@/app/_layout/trpc/provider";
 import { getSession } from "@/lib/auth-client";
-import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
 import { type ImeStats, resetImeStats } from "../atoms/ref";
 

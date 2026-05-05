@@ -1,5 +1,5 @@
+import { getQueryClient, getTRPCOptions } from "@/app/_layout/trpc/provider";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const ensureLyricsWithReadings = async (comparisonLyrics: string[][]) => {
   const trpc = getTRPCOptions();

@@ -2,6 +2,8 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { useMapLinkMode } from "@/app/_layout/user-script";
+import { useReadyInputMode } from "@/app/(typing)/type/_feature/typing-card/ready/input-mode-radio-cards";
 import { MapListActionButtons } from "@/components/shared/map/action-buttons";
 import { MapThumbnailImage } from "@/components/shared/map-thumbnail-image";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
@@ -11,7 +13,6 @@ import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useMapLinkMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { useSession } from "@/lib/auth-client";
 import { calcChunkRatios } from "@/lib/build-map/built-map-helper";
 import { cn } from "@/lib/utils";
@@ -166,7 +167,7 @@ const MapBadges = ({ map, href }: MapBadgesProps) => {
 type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
-  const inputMode = useReadyInputModeState();
+  const inputMode = useReadyInputMode();
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
   const { kanaRatio, alphabetRatio, otherRatio } = calcChunkRatios(map.difficulty);

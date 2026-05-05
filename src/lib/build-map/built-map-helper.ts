@@ -1,6 +1,6 @@
 import type { InputMode } from "lyrics-typing-engine";
 import { medianIgnoringZeros } from "@/utils/array";
-import type { TypingLineResult } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
 import type { BuiltMapLineWithOption } from "../types";
 
 export function buildInitialLineResult(

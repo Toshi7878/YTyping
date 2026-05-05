@@ -13,8 +13,8 @@ import {
   Results,
   UserStats,
 } from "@/server/drizzle/schema";
-import type { TypingLineResult } from "@/validator/result";
-import { CreateResultSchema } from "@/validator/result";
+import type { TypingLineResult } from "@/validator/result/result";
+import { CreateResultSchema } from "@/validator/result/result";
 import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "../../../../lib/pp";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress, gzipDecompress } from "../../utils/gzip";
