@@ -16,7 +16,7 @@ const rowGrid =
 
 export const PPRankingTable = () => {
   const trpc = useTRPC();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
+  const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
     trpc.user.stats.getPPRanking.infiniteQueryOptions({}, { getNextPageParam: (last) => last.nextCursor ?? undefined }),
   );
 
