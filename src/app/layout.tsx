@@ -1,5 +1,5 @@
 import { Header } from "@/app/_layout/header/header";
-import "@/styles/globals.css";
+import "@/theme/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
