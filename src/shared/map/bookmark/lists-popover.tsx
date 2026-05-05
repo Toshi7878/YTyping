@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
-import { getSession, useSession } from "@/lib/auth-client";
+import { getSession, useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/shared/map/bookmark/list-item";

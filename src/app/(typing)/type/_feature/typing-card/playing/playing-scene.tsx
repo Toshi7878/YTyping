@@ -4,7 +4,7 @@ import { atom, type SetStateAction } from "jotai";
 import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { getSession } from "@/lib/auth-client";
+import { getSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";

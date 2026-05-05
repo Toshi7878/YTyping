@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";

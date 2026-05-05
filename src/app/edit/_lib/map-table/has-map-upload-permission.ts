@@ -1,4 +1,4 @@
-import type { Session } from "@/lib/auth-client";
+import type { Session } from "@/auth/client";
 
 export const hasMapUploadPermission = (session: Session | null, creatorId: number | null) => {
   if (!session) return false;

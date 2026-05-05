@@ -1,5 +1,5 @@
 import { useProgress } from "@bprogress/next";
-import { type Session, useSession } from "@/lib/auth-client";
+import { type Session, useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useToggleMapLikeMutation } from "@/shared/map/like";

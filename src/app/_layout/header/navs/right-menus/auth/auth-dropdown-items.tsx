@@ -1,6 +1,6 @@
 import { useProgress } from "@bprogress/next";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
-import { signIn, signOut } from "@/lib/auth-client";
+import { signIn, signOut } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { DropdownMenuItem } from "@/ui/dropdown-menu";
 

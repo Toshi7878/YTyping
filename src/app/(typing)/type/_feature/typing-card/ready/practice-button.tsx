@@ -3,7 +3,7 @@ import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atom
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";
-import { getSession } from "@/lib/auth-client";
+import { getSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";

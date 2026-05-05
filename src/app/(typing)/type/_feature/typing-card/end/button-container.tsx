@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { restartPlay } from "@/app/(typing)/type/_feature/lib/play-restart";
-import { type Session, useSession } from "@/lib/auth-client";
+import { type Session, useSession } from "@/auth/client";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { useMinMediaSpeedState } from "../../youtube/youtube-player";

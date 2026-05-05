@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth-client";
+import { getSession } from "@/auth/client";
 import { getTRPCClient } from "@/trpc/provider";
 import { getTimezone } from "@/utils/date";
 import { resetTypingStats, type TypingStats } from "../atoms/stats";

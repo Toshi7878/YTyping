@@ -3,7 +3,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";

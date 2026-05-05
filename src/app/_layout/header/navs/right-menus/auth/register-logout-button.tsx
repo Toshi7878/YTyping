@@ -1,6 +1,6 @@
 import { useProgress } from "@bprogress/next";
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth-client";
+import { signOut } from "@/auth/client";
 import { Button } from "@/ui/button";
 
 export const RegisterLogoutButton = () => {

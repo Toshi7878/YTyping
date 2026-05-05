@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 import { useTypingStatusState } from "../../tabs/typing-status/status-cell";

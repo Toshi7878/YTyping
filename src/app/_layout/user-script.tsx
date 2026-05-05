@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "sonner";
-import { getSession } from "@/lib/auth-client";
+import { getSession } from "@/auth/client";
 import { getMapLinkMode, setMapLinkMode } from "@/store/map-link-type";
 
 const ytypingGlobal = {

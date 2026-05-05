@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useToggleClapMutation } from "@/shared/result/clap";

@@ -1,7 +1,7 @@
 import { atom, getDefaultStore, type SetStateAction, useAtomValue } from "jotai";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { createPresenceChannel } from "@/lib/supabase-client";
 import { usePresenceOption } from "@/store/user-options";
 

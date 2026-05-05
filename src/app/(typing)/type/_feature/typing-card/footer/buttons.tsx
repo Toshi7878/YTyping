@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { Button } from "@/ui/button";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "@/ui/button-with-kbd";

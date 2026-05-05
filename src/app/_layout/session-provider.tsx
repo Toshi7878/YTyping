@@ -1,7 +1,7 @@
 "use client";
 
-import { SessionContext } from "@/lib/auth-client";
-import type { getSession } from "@/server/auth";
+import { SessionContext } from "@/auth/client";
+import type { getSession } from "@/auth/server";
 
 export function SessionProvider({
   session,

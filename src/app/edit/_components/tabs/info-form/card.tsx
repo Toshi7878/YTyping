@@ -23,7 +23,7 @@ import { getYTDuration, getYTVideoId, playYTPlayer, seekYTPlayer } from "@/app/e
 import { editDb } from "@/app/edit/_lib/indexed-db";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { useIsBuckupQueryState } from "@/app/edit/_lib/search-params";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import {
   calcChunkCounts,
   calculateDuration,

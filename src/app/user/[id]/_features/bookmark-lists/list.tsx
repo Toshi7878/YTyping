@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
-import { getSession, useSession } from "@/lib/auth-client";
+import { getSession, useSession } from "@/auth/client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { BookmarkListFormFields } from "@/shared/map/bookmark/lists-popover";
 import { MapList } from "@/shared/map/list";

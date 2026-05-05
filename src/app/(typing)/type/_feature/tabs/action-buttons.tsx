@@ -5,7 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { BookmarkListPopover } from "@/shared/map/bookmark/lists-popover";

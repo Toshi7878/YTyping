@@ -2,7 +2,7 @@ import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } 
 import { headers } from "next/headers";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
-import { type Auth, getSession } from "@/server/auth";
+import { type Auth, getSession } from "@/auth/server";
 import { db } from "../drizzle/client";
 import type { RateLimitDef } from "./lib/rate-limit-config";
 import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";

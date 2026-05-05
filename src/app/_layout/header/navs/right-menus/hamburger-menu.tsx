@@ -2,7 +2,7 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { useIsDesktopDeviceState } from "@/store/user-agent";
 import { Button } from "@/ui/button";
 import {

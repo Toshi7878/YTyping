@@ -1,4 +1,4 @@
-import { type Session, useSession } from "@/lib/auth-client";
+import { type Session, useSession } from "@/auth/client";
 import { useMinMediaSpeedState } from "../../youtube/youtube-player";
 import { type SceneType, useSceneState } from "../typing-card";
 import { RandomEmoji } from "./random-emoji";

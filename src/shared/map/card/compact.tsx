@@ -2,7 +2,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { calcChunkRatios } from "@/lib/build-map/built-map-helper";
 import { cn } from "@/lib/tailwind";
 import type { MapListItem } from "@/server/api/routers/map";

@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";

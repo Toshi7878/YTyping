@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getSession } from "@/lib/auth-client";
+import { getSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";

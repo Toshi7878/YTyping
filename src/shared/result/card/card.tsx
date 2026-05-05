@@ -2,7 +2,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession } from "@/auth/client";
 import { cn } from "@/lib/tailwind";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { RatingBadge } from "@/shared/map/rating";

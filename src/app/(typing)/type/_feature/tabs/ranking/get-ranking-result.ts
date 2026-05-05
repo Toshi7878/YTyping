@@ -1,4 +1,4 @@
-import type { Session } from "@/lib/auth-client";
+import type { Session } from "@/auth/client";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getMapId } from "../../provider";
 
