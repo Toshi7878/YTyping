@@ -11,8 +11,8 @@ import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
 import { calcRating } from "@/domain/map/rating/calc";
 import { db } from "@/server/drizzle/client";
-import { MapDifficulties } from "@/server/drizzle/schema";
 import { RawMapLineSchema } from "@/validator/map/raw-map-json";
+import { mapDifficulties } from "../schema";
 
 const rawMapLinesSchema = z.array(RawMapLineSchema);
 
@@ -57,10 +57,10 @@ async function main() {
       const rating = calcRating(builtMapLines);
 
       const rows = await db
-        .update(MapDifficulties)
+        .update(mapDifficulties)
         .set({ rating })
-        .where(eq(MapDifficulties.mapId, mapId))
-        .returning({ mapId: MapDifficulties.mapId });
+        .where(eq(mapDifficulties.mapId, mapId))
+        .returning({ mapId: mapDifficulties.mapId });
 
       if (rows.length === 0) {
         console.warn(`skip mapId=${mapId}: map_difficulties に行がありません`);
