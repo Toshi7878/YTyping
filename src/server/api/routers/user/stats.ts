@@ -1,15 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
-import { and, asc, count, desc, eq, gt, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, sql } from "drizzle-orm";
 import z from "zod";
 import {
-  Maps,
-  Results,
-  UserDailyTypeCounts,
-  UserMapCompletionPlayCounts,
-  UserOptions,
-  UserStats,
-  Users,
+  maps,
+  results,
+  userDailyTypeCounts,
+  userMapCompletionPlayCounts,
+  userOptions,
+  userStats,
+  users,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
 import { createRateLimitMiddleware, protectedProcedure, publicProcedure } from "../../trpc";
@@ -26,36 +26,36 @@ export const userStatsRouter = {
   get: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;
 
-    const userStats = await db
+    const stats = await db
       .select({
-        createdAt: UserStats.createdAt,
-        totalPlayCount: UserStats.totalPlayCount,
-        totalRankingCount: UserStats.totalRankingCount,
-        maxCombo: UserStats.maxCombo,
-        totalPP: UserStats.totalPP,
-        totalTypingTime: UserStats.totalTypingTime,
+        createdAt: userStats.createdAt,
+        totalPlayCount: userStats.totalPlayCount,
+        totalRankingCount: userStats.totalRankingCount,
+        maxCombo: userStats.maxCombo,
+        totalPP: userStats.totalPp,
+        totalTypingTime: userStats.totalTypingTime,
         typeCounts: {
-          romaTypeTotalCount: UserStats.romaTypeTotalCount,
-          kanaTypeTotalCount: UserStats.kanaTypeTotalCount,
-          flickTypeTotalCount: UserStats.flickTypeTotalCount,
-          englishTypeTotalCount: UserStats.englishTypeTotalCount,
-          spaceTypeTotalCount: UserStats.spaceTypeTotalCount,
-          symbolTypeTotalCount: UserStats.symbolTypeTotalCount,
-          numTypeTotalCount: UserStats.numTypeTotalCount,
-          totalPlayCount: UserStats.totalPlayCount,
-          imeTypeTotalCount: UserStats.imeTypeTotalCount,
+          romaTypeTotalCount: userStats.romaTypeTotalCount,
+          kanaTypeTotalCount: userStats.kanaTypeTotalCount,
+          flickTypeTotalCount: userStats.flickTypeTotalCount,
+          englishTypeTotalCount: userStats.englishTypeTotalCount,
+          spaceTypeTotalCount: userStats.spaceTypeTotalCount,
+          symbolTypeTotalCount: userStats.symbolTypeTotalCount,
+          numTypeTotalCount: userStats.numTypeTotalCount,
+          totalPlayCount: userStats.totalPlayCount,
+          imeTypeTotalCount: userStats.imeTypeTotalCount,
         },
         options: {
-          hideUserStats: UserOptions.hideUserStats,
+          hideUserStats: userOptions.hideUserStats,
         },
       })
-      .from(UserStats)
-      .leftJoin(UserOptions, eq(UserOptions.userId, input.userId))
-      .where(eq(UserStats.userId, input.userId))
+      .from(userStats)
+      .leftJoin(userOptions, eq(userOptions.userId, input.userId))
+      .where(eq(userStats.userId, input.userId))
       .limit(1)
       .then((rows) => rows?.[0] ?? null);
 
-    return userStats;
+    return stats;
   }),
 
   /** total PP 順のユーザーランキング（ページネーション） */
@@ -72,14 +72,14 @@ export const userStatsRouter = {
 
       const rows = await db
         .select({
-          userId: Users.id,
-          name: Users.name,
-          totalPP: UserStats.totalPP,
+          userId: users.id,
+          name: users.name,
+          totalPP: userStats.totalPp,
         })
-        .from(UserStats)
-        .innerJoin(Users, eq(Users.id, UserStats.userId))
-        .where(eq(Users.banned, false))
-        .orderBy(desc(UserStats.totalPP), asc(Users.id))
+        .from(userStats)
+        .innerJoin(users, eq(users.id, userStats.userId))
+        .where(eq(users.banned, false))
+        .orderBy(desc(userStats.totalPp), asc(users.id))
         .limit(limit)
         .offset(offset);
 
@@ -96,26 +96,26 @@ export const userStatsRouter = {
     const { db, session } = ctx;
 
     const myStats = await db
-      .select({ totalPP: UserStats.totalPP })
-      .from(UserStats)
-      .where(eq(UserStats.userId, session.user.id))
+      .select({ totalPP: userStats.totalPp })
+      .from(userStats)
+      .where(eq(userStats.userId, session.user.id))
       .limit(1)
       .then((rows) => rows[0] ?? null);
 
     if (!myStats) {
       return db
         .select({ count: count() })
-        .from(UserStats)
-        .innerJoin(Users, eq(Users.id, UserStats.userId))
-        .where(eq(Users.banned, false))
+        .from(userStats)
+        .innerJoin(users, eq(users.id, userStats.userId))
+        .where(eq(users.banned, false))
         .then((rows) => rows[0]?.count ?? 0);
     }
 
     const aboveCount = await db
       .select({ count: count() })
-      .from(UserStats)
-      .innerJoin(Users, eq(Users.id, UserStats.userId))
-      .where(and(eq(Users.banned, false), gt(UserStats.totalPP, myStats.totalPP)))
+      .from(userStats)
+      .innerJoin(users, eq(users.id, userStats.userId))
+      .where(and(eq(users.banned, false), gt(userStats.totalPp, myStats.totalPP)))
       .then((rows) => rows[0]?.count ?? 0);
 
     return aboveCount + 1;
@@ -128,10 +128,10 @@ export const userStatsRouter = {
     return db
       .select({
         totalResultCount: count(),
-        firstRankCount: sql<number>`cast(count(*) filter (where ${Results.rank} = 1) as int)`,
+        firstRankCount: sql<number>`cast(count(*) filter (where ${results.rank} = 1) as int)`,
       })
-      .from(Results)
-      .where(eq(Results.userId, userId))
+      .from(results)
+      .where(eq(results.userId, userId))
       .then((rows) => rows[0] ?? { totalResultCount: 0, firstRankCount: 0 });
   }),
 
@@ -142,32 +142,38 @@ export const userStatsRouter = {
 
       const currentYear = getNowInTimeZone(input.timezone).getFullYear();
       const { startOfYear, endOfYear } = getYearDateRangeInTimeZone(input.targetYear ?? currentYear);
+      const startDateKey = formatDateKeyInTimeZone(startOfYear);
+      const endDateKey = formatDateKeyInTimeZone(endOfYear);
 
-      const dataMap = await db.query.UserDailyTypeCounts.findMany({
-        columns: {
-          romaTypeCount: true,
-          kanaTypeCount: true,
-          flickTypeCount: true,
-          englishTypeCount: true,
-          otherTypeCount: true,
-          imeTypeCount: true,
-          date: true,
-        },
-        where: and(
-          eq(UserDailyTypeCounts.userId, input.userId),
-          gte(UserDailyTypeCounts.date, startOfYear),
-          lte(UserDailyTypeCounts.date, endOfYear),
-        ),
-        orderBy: asc(UserDailyTypeCounts.date),
-      }).then((records) => {
-        return new Map(
-          records.map((record) => {
-            const dateKey = formatDateKeyInTimeZone(record.date, input.timezone);
-            const { date: _, ...dayData } = record;
-            return [dateKey, dayData];
-          }),
-        );
-      });
+      const dataMap = await db.query.userDailyTypeCounts
+        .findMany({
+          columns: {
+            romaTypeCount: true,
+            kanaTypeCount: true,
+            flickTypeCount: true,
+            englishTypeCount: true,
+            otherTypeCount: true,
+            imeTypeCount: true,
+            date: true,
+          },
+          where: {
+            userId: input.userId,
+            date: {
+              gte: startDateKey,
+              lte: endDateKey,
+            },
+          },
+          orderBy: { date: "asc" },
+        })
+        .then((records) => {
+          return new Map(
+            records.map((record) => {
+              const dateKey = record.date;
+              const { date: _, ...dayData } = record;
+              return [dateKey, dayData];
+            }),
+          );
+        });
 
       const days = eachDayOfInterval({ start: startOfYear, end: endOfYear });
 
@@ -200,11 +206,13 @@ export const userStatsRouter = {
   getActivityOldestYear: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;
 
-    return await db.query.UserDailyTypeCounts.findFirst({
-      columns: { date: true },
-      where: eq(UserDailyTypeCounts.userId, input.userId),
-      orderBy: asc(UserDailyTypeCounts.date),
-    }).then((res) => (res?.date ?? new Date()).getUTCFullYear());
+    return await db.query.userDailyTypeCounts
+      .findFirst({
+        columns: { date: true },
+        where: { userId: input.userId },
+        orderBy: { date: "asc" },
+      })
+      .then((res) => (res?.date ? new Date(res.date) : new Date()).getUTCFullYear());
   }),
 
   incrementMapCompletionPlayCount: protectedProcedure
@@ -215,11 +223,11 @@ export const userStatsRouter = {
       const { mapId } = input;
 
       await db
-        .insert(UserMapCompletionPlayCounts)
+        .insert(userMapCompletionPlayCounts)
         .values({ userId: session.user.id, mapId: mapId, count: 1 })
         .onConflictDoUpdate({
-          target: [UserMapCompletionPlayCounts.userId, UserMapCompletionPlayCounts.mapId],
-          set: { count: sql`${UserMapCompletionPlayCounts.count} + 1` },
+          target: [userMapCompletionPlayCounts.userId, userMapCompletionPlayCounts.mapId],
+          set: { count: sql`${userMapCompletionPlayCounts.count} + 1` },
         });
     }),
 
@@ -238,17 +246,17 @@ export const userStatsRouter = {
       const { mapId } = input;
 
       await db
-        .update(Maps)
-        .set({ playCount: sql`${Maps.playCount} + 1` })
-        .where(eq(Maps.id, mapId));
+        .update(maps)
+        .set({ playCount: sql`${maps.playCount} + 1` })
+        .where(eq(maps.id, mapId));
 
       if (!session) return;
       await db
-        .insert(UserStats)
+        .insert(userStats)
         .values({ userId: session.user.id, totalPlayCount: 1 })
         .onConflictDoUpdate({
-          target: [UserStats.userId],
-          set: { totalPlayCount: sql`${UserStats.totalPlayCount} + 1` },
+          target: [userStats.userId],
+          set: { totalPlayCount: sql`${userStats.totalPlayCount} + 1` },
         });
     }),
 
@@ -266,24 +274,24 @@ export const userStatsRouter = {
       const { db, session } = ctx;
 
       await db
-        .insert(UserStats)
+        .insert(userStats)
         .values({ userId: session.user.id, ...input })
         .onConflictDoUpdate({
-          target: [UserStats.userId],
+          target: [userStats.userId],
           set: {
-            imeTypeTotalCount: sql`${UserStats.imeTypeTotalCount} + ${input.imeTypeCount}`,
-            totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
+            imeTypeTotalCount: sql`${userStats.imeTypeTotalCount} + ${input.imeTypeCount}`,
+            totalTypingTime: sql`${userStats.totalTypingTime} + ${input.typingTime}`,
           },
         });
 
-      const date = getNowInTimeZone(input.timezone);
+      const date = formatDateKeyInTimeZone(getNowInTimeZone(input.timezone));
 
       await db
-        .insert(UserDailyTypeCounts)
+        .insert(userDailyTypeCounts)
         .values({ userId: session.user.id, date, imeTypeCount: input.imeTypeCount })
         .onConflictDoUpdate({
-          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.date],
-          set: { imeTypeCount: sql`${UserDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
+          target: [userDailyTypeCounts.userId, userDailyTypeCounts.date],
+          set: { imeTypeCount: sql`${userDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
         });
     }),
 
@@ -300,35 +308,37 @@ export const userStatsRouter = {
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
 
-      const currentMaxCombo = await db.query.UserStats.findFirst({
-        columns: { maxCombo: true },
-        where: eq(UserStats.userId, session.user.id),
-      }).then((res) => res?.maxCombo ?? 0);
+      const currentMaxCombo = await db.query.userStats
+        .findFirst({
+          columns: { maxCombo: true },
+          where: { userId: session.user.id },
+        })
+        .then((res) => res?.maxCombo ?? 0);
 
       const isUpdateMaxCombo = input.maxCombo > currentMaxCombo;
 
       await db
-        .insert(UserStats)
+        .insert(userStats)
         .values({ userId: session.user.id, ...input })
         .onConflictDoUpdate({
-          target: [UserStats.userId],
+          target: [userStats.userId],
           set: {
-            romaTypeTotalCount: sql`${UserStats.romaTypeTotalCount} + ${input.romaType}`,
-            kanaTypeTotalCount: sql`${UserStats.kanaTypeTotalCount} + ${input.kanaType}`,
-            flickTypeTotalCount: sql`${UserStats.flickTypeTotalCount} + ${input.flickType}`,
-            englishTypeTotalCount: sql`${UserStats.englishTypeTotalCount} + ${input.englishType}`,
-            numTypeTotalCount: sql`${UserStats.numTypeTotalCount} + ${input.numType}`,
-            symbolTypeTotalCount: sql`${UserStats.symbolTypeTotalCount} + ${input.symbolType}`,
-            spaceTypeTotalCount: sql`${UserStats.spaceTypeTotalCount} + ${input.spaceType}`,
-            totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
+            romaTypeTotalCount: sql`${userStats.romaTypeTotalCount} + ${input.romaType}`,
+            kanaTypeTotalCount: sql`${userStats.kanaTypeTotalCount} + ${input.kanaType}`,
+            flickTypeTotalCount: sql`${userStats.flickTypeTotalCount} + ${input.flickType}`,
+            englishTypeTotalCount: sql`${userStats.englishTypeTotalCount} + ${input.englishType}`,
+            numTypeTotalCount: sql`${userStats.numTypeTotalCount} + ${input.numType}`,
+            symbolTypeTotalCount: sql`${userStats.symbolTypeTotalCount} + ${input.symbolType}`,
+            spaceTypeTotalCount: sql`${userStats.spaceTypeTotalCount} + ${input.spaceType}`,
+            totalTypingTime: sql`${userStats.totalTypingTime} + ${input.typingTime}`,
             ...(isUpdateMaxCombo ? { maxCombo: input.maxCombo } : {}),
           },
         });
 
-      const date = getNowInTimeZone(input.timezone);
+      const date = formatDateKeyInTimeZone(getNowInTimeZone(input.timezone));
 
       await db
-        .insert(UserDailyTypeCounts)
+        .insert(userDailyTypeCounts)
         .values({
           userId: session.user.id,
           date,
@@ -339,13 +349,13 @@ export const userStatsRouter = {
           otherTypeCount: input.spaceType + input.numType + input.symbolType,
         })
         .onConflictDoUpdate({
-          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.date],
+          target: [userDailyTypeCounts.userId, userDailyTypeCounts.date],
           set: {
-            romaTypeCount: sql`${UserDailyTypeCounts.romaTypeCount} + ${input.romaType}`,
-            kanaTypeCount: sql`${UserDailyTypeCounts.kanaTypeCount} + ${input.kanaType}`,
-            flickTypeCount: sql`${UserDailyTypeCounts.flickTypeCount} + ${input.flickType}`,
-            englishTypeCount: sql`${UserDailyTypeCounts.englishTypeCount} + ${input.englishType}`,
-            otherTypeCount: sql`${UserDailyTypeCounts.otherTypeCount} + ${input.spaceType + input.numType + input.symbolType}`,
+            romaTypeCount: sql`${userDailyTypeCounts.romaTypeCount} + ${input.romaType}`,
+            kanaTypeCount: sql`${userDailyTypeCounts.kanaTypeCount} + ${input.kanaType}`,
+            flickTypeCount: sql`${userDailyTypeCounts.flickTypeCount} + ${input.flickType}`,
+            englishTypeCount: sql`${userDailyTypeCounts.englishTypeCount} + ${input.englishType}`,
+            otherTypeCount: sql`${userDailyTypeCounts.otherTypeCount} + ${input.spaceType + input.numType + input.symbolType}`,
           },
         });
     }),

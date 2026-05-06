@@ -4,12 +4,12 @@ import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-o
 import type { OpenApiContentType } from "trpc-to-openapi";
 import type z from "zod";
 import {
-  MapBookmarkListItems,
-  MapBookmarkLists,
-  MapDifficulties,
-  MapLikes,
-  Maps,
-  Users,
+  mapBookmarkListItems,
+  mapBookmarkLists,
+  mapDifficulties,
+  mapLikes,
+  maps,
+  users,
 } from "@/server/drizzle/schema";
 import {
   GetMapListOpenApiResponseSchema,
@@ -22,8 +22,8 @@ import { createRateLimitMiddleware, publicProcedure } from "../../../trpc";
 import { createPagination } from "../../../utils/pagination";
 
 const PAGE_SIZE = 30;
-const Creator = alias(Users, "creator");
-const Liker = alias(MapLikes, "liker");
+const creator = alias(users, "creator");
+const liker = alias(mapLikes, "liker");
 
 export const mapListOpenApiRouter = {
   get: publicProcedure
@@ -51,85 +51,85 @@ export const mapListOpenApiRouter = {
 
       const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-      const maps = await buildBaseQuery(db.select(buildBaseSelect()).from(Maps).$dynamic(), searchInput)
+      const mapRows = await buildBaseQuery(db.select(buildBaseSelect()).from(maps).$dynamic(), searchInput)
         .limit(limit)
         .offset(offset)
         .orderBy(...buildSortConditions(sortValue, sortDesc, searchInput));
 
-      return buildPageResult(maps);
+      return buildPageResult(mapRows);
     }),
 } satisfies TRPCRouterRecord;
 
 const buildBaseSelect = () =>
   ({
-    id: Maps.id,
-    updatedAt: Maps.updatedAt,
+    id: maps.id,
+    updatedAt: maps.updatedAt,
     media: {
-      videoId: Maps.videoId,
-      previewTime: Maps.previewTime,
-      thumbnailQuality: Maps.thumbnailQuality,
+      videoId: maps.videoId,
+      previewTime: maps.previewTime,
+      thumbnailQuality: maps.thumbnailQuality,
     },
     info: {
-      title: Maps.title,
-      artistName: Maps.artistName,
-      source: Maps.musicSource,
-      duration: Maps.duration,
-      categories: Maps.category,
-      visibility: Maps.visibility,
+      title: maps.title,
+      artistName: maps.artistName,
+      source: maps.musicSource,
+      duration: maps.duration,
+      categories: maps.category,
+      visibility: maps.visibility,
     },
     creator: {
-      id: Creator.id,
-      name: Creator.name,
+      id: creator.id,
+      name: creator.name,
     },
     difficulty: {
-      romaKpmMedian: MapDifficulties.romaKpmMedian,
-      kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-      romaKpmMax: MapDifficulties.romaKpmMax,
-      kanaKpmMax: MapDifficulties.kanaKpmMax,
-      romaTotalNotes: MapDifficulties.romaTotalNotes,
-      kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+      romaKpmMedian: mapDifficulties.romaKpmMedian,
+      kanaKpmMedian: mapDifficulties.kanaKpmMedian,
+      romaKpmMax: mapDifficulties.romaKpmMax,
+      kanaKpmMax: mapDifficulties.kanaKpmMax,
+      romaTotalNotes: mapDifficulties.romaTotalNotes,
+      kanaTotalNotes: mapDifficulties.kanaTotalNotes,
     },
     like: {
-      count: Maps.likeCount,
+      count: maps.likeCount,
     },
     ranking: {
-      count: Maps.rankingCount,
+      count: maps.rankingCount,
     },
   }) satisfies SelectedFields;
 
 const buildBaseQuery = <T extends PgSelectQueryBuilder>(db: T, input?: z.output<typeof MapSearchFilterSchema>) => {
   let baseQuery = db
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
+    .innerJoin(mapDifficulties, eq(mapDifficulties.mapId, maps.id))
+    .innerJoin(creator, eq(creator.id, maps.creatorId));
 
   if (!input) return baseQuery;
 
   if (input?.likerId) {
     // @ts-expect-error
-    baseQuery = baseQuery.innerJoin(Liker, and(eq(Liker.mapId, Maps.id), eq(Liker.userId, input.likerId)));
+    baseQuery = baseQuery.innerJoin(liker, and(eq(liker.mapId, maps.id), eq(liker.userId, input.likerId)));
   }
 
   if (input?.bookmarkListId) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .innerJoin(MapBookmarkLists, and(eq(MapBookmarkLists.id, input.bookmarkListId)))
+      .innerJoin(mapBookmarkLists, and(eq(mapBookmarkLists.id, input.bookmarkListId)))
       .innerJoin(
-        MapBookmarkListItems,
-        and(eq(MapBookmarkListItems.listId, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id)),
+        mapBookmarkListItems,
+        and(eq(mapBookmarkListItems.listId, input.bookmarkListId), eq(mapBookmarkListItems.mapId, maps.id)),
       );
   }
 
   const searchConditions = [
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
     buildKeywordCondition(input.keyword),
-    input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
-    input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
+    input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
+    input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
     input.bookmarkListId
-      ? and(eq(MapBookmarkLists.id, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id))
+      ? and(eq(mapBookmarkLists.id, input.bookmarkListId), eq(mapBookmarkListItems.mapId, maps.id))
       : undefined,
   ];
 
-  return baseQuery.where(and(eq(Maps.visibility, "PUBLIC"), ...searchConditions));
+  return baseQuery.where(and(eq(maps.visibility, "PUBLIC"), ...searchConditions));
 };
 
 function buildSortConditions(
@@ -144,22 +144,22 @@ function buildSortConditions(
       return [sql`RANDOM()`];
 
     case "difficulty":
-      return [order(MapDifficulties.romaKpmMedian)];
+      return [order(mapDifficulties.romaKpmMedian)];
     case "ranking-count":
-      return [order(Maps.rankingCount), order(Maps.id)];
+      return [order(maps.rankingCount), order(maps.id)];
     case "like-count":
-      return [order(Maps.likeCount), order(Maps.id)];
+      return [order(maps.likeCount), order(maps.id)];
     case "duration":
-      return [order(Maps.duration)];
+      return [order(maps.duration)];
     case "bookmark": {
       if (searchInput.bookmarkListId) {
-        return [order(MapBookmarkListItems.createdAt)];
+        return [order(mapBookmarkListItems.createdAt)];
       }
 
-      return [desc(Maps.publishedAt)];
+      return [desc(maps.publishedAt)];
     }
     default:
-      return [order(sql`COALESCE(${Maps.publishedAt}, ${Maps.createdAt})`), order(Maps.id)];
+      return [order(sql`COALESCE(${maps.publishedAt}, ${maps.createdAt})`), order(maps.id)];
   }
 }
 
@@ -172,11 +172,11 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
   const conditions = [];
 
   if (minRate && minRate >= 0) {
-    conditions.push(gte(MapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
+    conditions.push(gte(mapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
   }
 
   if (maxRate) {
-    conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
+    conditions.push(lte(mapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
   }
 
   return and(...conditions);
@@ -190,11 +190,11 @@ const buildKeywordCondition = (keyword?: string | null) => {
   const conditions = keywords.map((keyword) => {
     const pattern = `%${keyword}%`;
     return or(
-      ilike(Maps.title, pattern),
-      ilike(Maps.artistName, pattern),
-      ilike(Maps.musicSource, pattern),
-      sql`array_to_string(${Maps.tags}, ',') ilike ${pattern}`,
-      ilike(Creator.name, pattern),
+      ilike(maps.title, pattern),
+      ilike(maps.artistName, pattern),
+      ilike(maps.musicSource, pattern),
+      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
+      ilike(creator.name, pattern),
     );
   });
 

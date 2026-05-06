@@ -1,17 +1,18 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
+import { env } from "@/env";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {
-  MapDifficulties,
-  Maps,
-  NotificationOverTakes,
-  Notifications,
-  ResultStatuses,
-  Results,
-  UserStats,
+  mapDifficulties,
+  maps,
+  notificationOverTakes,
+  notifications,
+  resultStatuses,
+  results,
+  userStats,
 } from "@/server/drizzle/schema";
 import type { TypingLineResult } from "@/validator/result/result";
 import { CreateResultSchema } from "@/validator/result/result";
@@ -43,15 +44,17 @@ export const resultRouter = {
   }),
 
   upsert: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
+    if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
+
     const { session } = ctx;
     const { id: userId } = session.user;
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
       const ratingRow = await tx
-        .select({ rating: MapDifficulties.rating })
-        .from(MapDifficulties)
-        .where(eq(MapDifficulties.mapId, mapId))
+        .select({ rating: mapDifficulties.rating })
+        .from(mapDifficulties)
+        .where(eq(mapDifficulties.mapId, mapId))
         .limit(1)
         .then((rows) => rows[0]);
 
@@ -65,9 +68,9 @@ export const resultRouter = {
       const statusWithPp = { ...status, pp, starRatingSnapshot: rating };
 
       const existingResult = await tx
-        .select({ id: Results.id })
-        .from(Results)
-        .where(and(eq(Results.userId, userId), eq(Results.mapId, mapId)))
+        .select({ id: results.id })
+        .from(results)
+        .where(and(eq(results.userId, userId), eq(results.mapId, mapId)))
         .limit(1)
         .then((rows) => rows[0]);
 
@@ -75,18 +78,18 @@ export const resultRouter = {
 
       if (existingResult) {
         resultId = await tx
-          .update(Results)
+          .update(results)
           .set({ updatedAt: new Date() })
-          .where(eq(Results.id, existingResult.id))
-          .returning({ id: Results.id })
+          .where(eq(results.id, existingResult.id))
+          .returning({ id: results.id })
           .then((res) => res[0]?.id);
       } else {
         const nextId = await getNextResultId(tx);
 
         resultId = await tx
-          .insert(Results)
+          .insert(results)
           .values({ id: nextId, mapId, userId })
-          .returning({ id: Results.id })
+          .returning({ id: results.id })
           .then((res) => res[0]?.id);
       }
       if (!resultId) {
@@ -94,9 +97,9 @@ export const resultRouter = {
       }
 
       await tx
-        .insert(ResultStatuses)
+        .insert(resultStatuses)
         .values({ resultId, ...statusWithPp })
-        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: statusWithPp });
+        .onConflictDoUpdate({ target: [resultStatuses.resultId], set: statusWithPp });
 
       await recalculateUserTotalPP(tx, userId);
 
@@ -111,19 +114,19 @@ export const resultRouter = {
 
       const rankedUsers = await tx
         .select({
-          userId: Results.userId,
-          rank: Results.rank,
-          score: ResultStatuses.score,
+          userId: results.userId,
+          rank: results.rank,
+          score: resultStatuses.score,
         })
-        .from(Results)
-        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .where(eq(Results.mapId, mapId))
-        .orderBy(desc(ResultStatuses.score));
+        .from(results)
+        .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
+        .where(eq(results.mapId, mapId))
+        .orderBy(desc(resultStatuses.score));
 
       await cleanupOutdatedOvertakeNotifications({ tx, mapId, userId, rankedUsers });
       await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
 
-      await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
+      await tx.update(maps).set({ rankingCount: rankedUsers.length }).where(eq(maps.id, mapId));
 
       const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
       const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
@@ -139,8 +142,8 @@ export const resultRouter = {
 
 const getNextResultId = async (db: TXType) => {
   const maxId = await db
-    .select({ maxId: max(Results.id) })
-    .from(Results)
+    .select({ maxId: max(results.id) })
+    .from(results)
     .then((rows) => rows[0]?.maxId ?? 0);
 
   return maxId + 1;
@@ -162,22 +165,22 @@ const cleanupOutdatedOvertakeNotifications = async ({
 
   const overtakeNotifications = await tx
     .select({
-      notificationId: NotificationOverTakes.notificationId,
-      visitorId: NotificationOverTakes.visitorId,
-      visitorScore: ResultStatuses.score,
+      notificationId: notificationOverTakes.notificationId,
+      visitorId: notificationOverTakes.visitorId,
+      visitorScore: resultStatuses.score,
     })
-    .from(NotificationOverTakes)
-    .innerJoin(Notifications, eq(Notifications.id, NotificationOverTakes.notificationId))
+    .from(notificationOverTakes)
+    .innerJoin(notifications, eq(notifications.id, notificationOverTakes.notificationId))
     .innerJoin(
-      Results,
-      and(eq(Results.userId, NotificationOverTakes.visitorId), eq(Results.mapId, NotificationOverTakes.mapId)),
+      results,
+      and(eq(results.userId, notificationOverTakes.visitorId), eq(results.mapId, notificationOverTakes.mapId)),
     )
-    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+    .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
     .where(
       and(
-        eq(NotificationOverTakes.visitedId, userId),
-        eq(NotificationOverTakes.mapId, mapId),
-        eq(Notifications.type, "OVER_TAKE"),
+        eq(notificationOverTakes.visitedId, userId),
+        eq(notificationOverTakes.mapId, mapId),
+        eq(notifications.type, "OVER_TAKE"),
       ),
     );
 
@@ -188,7 +191,7 @@ const cleanupOutdatedOvertakeNotifications = async ({
 
   if (notificationIdsToDelete.length > 0) {
     // Notificationsを削除すると、NotificationOverTakesもカスケード削除される
-    await tx.delete(Notifications).where(inArray(Notifications.id, notificationIdsToDelete));
+    await tx.delete(notifications).where(inArray(notifications.id, notificationIdsToDelete));
   }
 };
 
@@ -208,22 +211,22 @@ const updateRankingsAndNotifyOvertakes = async ({
     const prevRank = rankedUser.rank;
 
     await tx
-      .update(Results)
+      .update(results)
       .set({ rank: nextRank })
-      .where(and(eq(Results.mapId, mapId), eq(Results.userId, rankedUser.userId)));
+      .where(and(eq(results.mapId, mapId), eq(results.userId, rankedUser.userId)));
 
     const isOtherUser = rankedUser.userId !== userId;
     if (isOtherUser && prevRank <= 5 && prevRank !== nextRank) {
       const { userId: recipientId } = rankedUser;
 
       const existingNotificationId = await tx
-        .select({ notificationId: NotificationOverTakes.notificationId })
-        .from(NotificationOverTakes)
+        .select({ notificationId: notificationOverTakes.notificationId })
+        .from(notificationOverTakes)
         .where(
           and(
-            eq(NotificationOverTakes.visitorId, userId),
-            eq(NotificationOverTakes.visitedId, recipientId),
-            eq(NotificationOverTakes.mapId, mapId),
+            eq(notificationOverTakes.visitorId, userId),
+            eq(notificationOverTakes.visitedId, recipientId),
+            eq(notificationOverTakes.mapId, mapId),
           ),
         )
         .limit(1)
@@ -231,24 +234,24 @@ const updateRankingsAndNotifyOvertakes = async ({
 
       if (existingNotificationId) {
         await tx
-          .update(Notifications)
+          .update(notifications)
           .set({ checked: false, updatedAt: new Date() })
-          .where(eq(Notifications.id, existingNotificationId));
+          .where(eq(notifications.id, existingNotificationId));
 
         await tx
-          .update(NotificationOverTakes)
+          .update(notificationOverTakes)
           .set({ prevRank })
-          .where(eq(NotificationOverTakes.notificationId, existingNotificationId));
+          .where(eq(notificationOverTakes.notificationId, existingNotificationId));
       } else {
         const notificationId = generateNotificationId();
 
-        await tx.insert(Notifications).values({
+        await tx.insert(notifications).values({
           id: notificationId,
           recipientId,
           type: "OVER_TAKE",
         });
 
-        await tx.insert(NotificationOverTakes).values({
+        await tx.insert(notificationOverTakes).values({
           notificationId,
           visitorId: userId,
           visitedId: recipientId,
@@ -263,20 +266,20 @@ const updateRankingsAndNotifyOvertakes = async ({
 /** ユーザーの全スコア pp から total pp を再計算し `user_stats.total_pp` を更新する */
 async function recalculateUserTotalPP(tx: TXType, userId: number) {
   const rows = await tx
-    .select({ pp: ResultStatuses.pp })
-    .from(ResultStatuses)
-    .innerJoin(Results, eq(Results.id, ResultStatuses.resultId))
-    .where(eq(Results.userId, userId))
-    .orderBy(desc(ResultStatuses.pp))
+    .select({ pp: resultStatuses.pp })
+    .from(resultStatuses)
+    .innerJoin(results, eq(results.id, resultStatuses.resultId))
+    .where(eq(results.userId, userId))
+    .orderBy(desc(resultStatuses.pp))
     .limit(TOTAL_PP_TOP_N);
 
   const totalPP = Math.round(calcTotalPP(rows));
 
   await tx
-    .insert(UserStats)
-    .values({ userId, totalPP })
+    .insert(userStats)
+    .values({ userId, totalPp: totalPP })
     .onConflictDoUpdate({
-      target: [UserStats.userId],
-      set: { totalPP },
+      target: [userStats.userId],
+      set: { totalPp: totalPP },
     });
 }

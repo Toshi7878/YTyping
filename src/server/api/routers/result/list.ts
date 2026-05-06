@@ -5,7 +5,15 @@ import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
-import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
+import {
+  mapDifficulties,
+  mapLikes,
+  maps,
+  resultClaps,
+  resultStatuses,
+  results,
+  users as Users,
+} from "@/server/drizzle/schema";
 import {
   CLEAR_RATE_LIMIT,
   KPM_LIMIT,
@@ -20,11 +28,11 @@ import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { filterByMapVisibility } from "../map/list";
 
-const Player = alias(Users, "player");
-const Creator = alias(Users, "creator");
-const MyResult = alias(Results, "my_result");
-const MyLike = alias(MapLikes, "my_like");
-const MyClap = alias(ResultClaps, "my_clap");
+const player = alias(Users, "player");
+const creator = alias(Users, "creator");
+const myResult = alias(results, "my_result");
+const myLike = alias(mapLikes, "my_like");
+const myClap = alias(resultClaps, "my_clap");
 
 const PAGE_SIZE = 25;
 
@@ -37,11 +45,11 @@ export const resultListRouter = {
     const baseSelect = buildBaseSelect(db, session);
 
     const items = await buildResultWithMapBaseQuery(
-      db.select(baseSelect).from(Results).$dynamic(),
+      db.select(baseSelect).from(results).$dynamic(),
       session,
       searchInput,
     )
-      .orderBy(desc(Results.updatedAt))
+      .orderBy(desc(results.updatedAt))
       .limit(limit)
       .offset(offset);
 
@@ -53,7 +61,7 @@ export const resultListRouter = {
     const { db, session } = ctx;
 
     const baseQuery = buildResultWithMapBaseQuery(
-      db.select({ count: count() }).from(Results).$dynamic(),
+      db.select({ count: count() }).from(results).$dynamic(),
       session,
       searchInput,
     );
@@ -71,88 +79,88 @@ export const resultListRouter = {
 
     return db
       .select(resultSelect)
-      .from(Results)
-      .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-      .innerJoin(Player, eq(Player.id, Results.userId))
+      .from(results)
+      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
+      .innerJoin(player, eq(player.id, results.userId))
       .leftJoin(
-        MyClap,
+        myClap,
         session
-          ? and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, session.user.id))
-          : eq(MyClap.resultId, Results.id),
+          ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
+          : eq(myClap.resultId, results.id),
       )
-      .where(eq(Results.mapId, mapId))
-      .orderBy(desc(ResultStatuses.score));
+      .where(eq(results.mapId, mapId))
+      .orderBy(desc(resultStatuses.score));
   }),
 } satisfies TRPCRouterRecord;
 
 const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
   ({
-    id: Results.id,
-    updatedAt: Results.updatedAt,
-    rank: Results.rank,
-    score: ResultStatuses.score,
-    player: { id: Player.id, name: Player.name },
+    id: results.id,
+    updatedAt: results.updatedAt,
+    rank: results.rank,
+    score: resultStatuses.score,
+    player: { id: player.id, name: player.name },
     typeCounts: {
-      romaType: ResultStatuses.romaType,
-      kanaType: ResultStatuses.kanaType,
-      flickType: ResultStatuses.flickType,
-      englishType: ResultStatuses.englishType,
-      symbolType: ResultStatuses.symbolType,
-      spaceType: ResultStatuses.spaceType,
-      numType: ResultStatuses.numType,
+      romaType: resultStatuses.romaType,
+      kanaType: resultStatuses.kanaType,
+      flickType: resultStatuses.flickType,
+      englishType: resultStatuses.englishType,
+      symbolType: resultStatuses.symbolType,
+      spaceType: resultStatuses.spaceType,
+      numType: resultStatuses.numType,
     },
     otherStatus: {
-      playSpeed: ResultStatuses.minPlaySpeed,
-      miss: ResultStatuses.miss,
-      lost: ResultStatuses.lost,
-      maxCombo: ResultStatuses.maxCombo,
-      clearRate: ResultStatuses.clearRate,
-      isCaseSensitive: ResultStatuses.isCaseSensitive,
-      pp: ResultStatuses.pp,
+      playSpeed: resultStatuses.minPlaySpeed,
+      miss: resultStatuses.miss,
+      lost: resultStatuses.lost,
+      maxCombo: resultStatuses.maxCombo,
+      clearRate: resultStatuses.clearRate,
+      isCaseSensitive: resultStatuses.isCaseSensitive,
+      pp: resultStatuses.pp,
     },
     typeSpeed: {
-      kpm: ResultStatuses.kpm,
-      rkpm: ResultStatuses.rkpm,
-      kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
-      kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
+      kpm: resultStatuses.kpm,
+      rkpm: resultStatuses.rkpm,
+      kanaToRomaKpm: resultStatuses.kanaToRomaKpm,
+      kanaToRomaRkpm: resultStatuses.kanaToRomaRkpm,
     },
     clap: {
-      count: Results.clapCount,
-      hasClapped: session ? sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      count: results.clapCount,
+      hasClapped: session ? sql`COALESCE(${myClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
     },
     map: {
-      id: Maps.id,
-      videoId: Maps.videoId,
-      title: Maps.title,
-      artistName: Maps.artistName,
-      musicSource: Maps.musicSource,
-      previewTime: Maps.previewTime,
-      thumbnailQuality: Maps.thumbnailQuality,
-      likeCount: Maps.likeCount,
-      rankingCount: Maps.rankingCount,
-      visibility: Maps.visibility,
-      updatedAt: Maps.updatedAt,
-      creatorId: Creator.id,
-      creatorName: Creator.name,
-      duration: Maps.duration,
-      romaKpmMedian: MapDifficulties.romaKpmMedian,
-      kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-      romaKpmMax: MapDifficulties.romaKpmMax,
-      kanaKpmMax: MapDifficulties.kanaKpmMax,
-      romaTotalNotes: MapDifficulties.romaTotalNotes,
-      kanaTotalNotes: MapDifficulties.kanaTotalNotes,
-      kanaChunkCount: MapDifficulties.kanaChunkCount,
-      alphabetChunkCount: MapDifficulties.alphabetChunkCount,
-      numChunkCount: MapDifficulties.numChunkCount,
-      spaceChunkCount: MapDifficulties.spaceChunkCount,
-      symbolChunkCount: MapDifficulties.symbolChunkCount,
-      rating: MapDifficulties.rating,
-      categories: Maps.category,
+      id: maps.id,
+      videoId: maps.videoId,
+      title: maps.title,
+      artistName: maps.artistName,
+      musicSource: maps.musicSource,
+      previewTime: maps.previewTime,
+      thumbnailQuality: maps.thumbnailQuality,
+      likeCount: maps.likeCount,
+      rankingCount: maps.rankingCount,
+      visibility: maps.visibility,
+      updatedAt: maps.updatedAt,
+      creatorId: creator.id,
+      creatorName: creator.name,
+      duration: maps.duration,
+      romaKpmMedian: mapDifficulties.romaKpmMedian,
+      kanaKpmMedian: mapDifficulties.kanaKpmMedian,
+      romaKpmMax: mapDifficulties.romaKpmMax,
+      kanaKpmMax: mapDifficulties.kanaKpmMax,
+      romaTotalNotes: mapDifficulties.romaTotalNotes,
+      kanaTotalNotes: mapDifficulties.kanaTotalNotes,
+      kanaChunkCount: mapDifficulties.kanaChunkCount,
+      alphabetChunkCount: mapDifficulties.alphabetChunkCount,
+      numChunkCount: mapDifficulties.numChunkCount,
+      spaceChunkCount: mapDifficulties.spaceChunkCount,
+      symbolChunkCount: mapDifficulties.symbolChunkCount,
+      rating: mapDifficulties.rating,
+      categories: maps.category,
       hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
-      hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
-      myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      hasLiked: session ? sql`COALESCE(${myLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      myRank: session ? sql<number | null>`${myResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: session
-        ? sql`${MyResult.updatedAt}`.mapWith({
+        ? sql`${myResult.updatedAt}`.mapWith({
             mapFromDriverValue: (value) => {
               if (value === null) return null;
               return new Date(value);
@@ -172,11 +180,11 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   input?: z.output<typeof ResultListFilterSchema>,
 ) => {
   let baseQuery = db
-    .innerJoin(Maps, eq(Maps.id, Results.mapId))
-    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-    .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-    .innerJoin(Player, eq(Player.id, Results.userId))
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id));
+    .innerJoin(maps, eq(maps.id, results.mapId))
+    .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
+    .innerJoin(creator, eq(creator.id, maps.creatorId))
+    .innerJoin(player, eq(player.id, results.userId))
+    .innerJoin(mapDifficulties, eq(mapDifficulties.mapId, maps.id));
 
   /**
    * @see https://github.com/drizzle-team/drizzle-orm/issues/4232
@@ -184,15 +192,15 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   if (session) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, session.user.id)))
-      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, session.user.id)))
-      .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, session.user.id)));
+      .leftJoin(myLike, and(eq(myLike.mapId, maps.id), eq(myLike.userId, session.user.id)))
+      .leftJoin(myResult, and(eq(myResult.mapId, maps.id), eq(myResult.userId, session.user.id)))
+      .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
   if (!input) return baseQuery;
 
   const whereConditions = [
-    input.playerId ? eq(Player.id, input.playerId) : undefined,
+    input.playerId ? eq(player.id, input.playerId) : undefined,
     filterByInputMode({ mode: input.mode }),
     filterByKpm({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
     filterByClearRate({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
@@ -250,13 +258,13 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
 const filterByInputMode = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
   switch (mode) {
     case "roma":
-      return and(gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0));
+      return and(gt(resultStatuses.romaType, 0), eq(resultStatuses.kanaType, 0));
     case "kana":
-      return and(gt(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0));
+      return and(gt(resultStatuses.kanaType, 0), eq(resultStatuses.romaType, 0));
     case "romakana":
-      return and(gt(ResultStatuses.kanaType, 0), gt(ResultStatuses.romaType, 0));
+      return and(gt(resultStatuses.kanaType, 0), gt(resultStatuses.romaType, 0));
     case "english":
-      return and(eq(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0), gt(ResultStatuses.englishType, 0));
+      return and(eq(resultStatuses.kanaType, 0), eq(resultStatuses.romaType, 0), gt(resultStatuses.englishType, 0));
     default:
       return undefined;
   }
@@ -265,10 +273,10 @@ const filterByInputMode = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)
 const filterByKpm = ({ minKpm, maxKpm }: { minKpm?: number | null; maxKpm?: number | null }) => {
   const conditions: SQL<unknown>[] = [];
   if (minKpm && minKpm > KPM_LIMIT.min) {
-    conditions.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
+    conditions.push(gte(resultStatuses.kanaToRomaKpm, minKpm));
   }
   if (maxKpm && KPM_LIMIT.max > maxKpm) {
-    conditions.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
+    conditions.push(lte(resultStatuses.kanaToRomaKpm, maxKpm));
   }
   return and(...conditions);
 };
@@ -282,10 +290,10 @@ const filterByClearRate = ({
 }) => {
   const conditions: SQL<unknown>[] = [];
   if (minClearRate && minClearRate > CLEAR_RATE_LIMIT.min) {
-    conditions.push(gte(ResultStatuses.clearRate, minClearRate));
+    conditions.push(gte(resultStatuses.clearRate, minClearRate));
   }
   if (maxClearRate && CLEAR_RATE_LIMIT.max > maxClearRate) {
-    conditions.push(lte(ResultStatuses.clearRate, maxClearRate));
+    conditions.push(lte(resultStatuses.clearRate, maxClearRate));
   }
 
   return and(...conditions);
@@ -300,11 +308,11 @@ const filterByPlaySpeed = ({
 }) => {
   const conditions: SQL<unknown>[] = [];
   if (minPlaySpeed && minPlaySpeed > PLAY_SPEED_LIMIT.min) {
-    conditions.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
+    conditions.push(gte(resultStatuses.minPlaySpeed, minPlaySpeed));
   }
 
   if (maxPlaySpeed && PLAY_SPEED_LIMIT.max > maxPlaySpeed) {
-    conditions.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
+    conditions.push(lte(resultStatuses.minPlaySpeed, maxPlaySpeed));
   }
 
   return and(...conditions);
@@ -315,16 +323,16 @@ const filterByKeyword = ({ username, mapKeyword }: { username?: string | null; m
 
   if (username) {
     const pattern = `%${username}%`;
-    conditions.push(ilike(Player.name, pattern));
+    conditions.push(ilike(player.name, pattern));
   }
 
   if (mapKeyword) {
     const pattern = `%${mapKeyword}%`;
     const keywordOr = or(
-      ilike(Maps.title, pattern),
-      ilike(Maps.artistName, pattern),
-      ilike(Maps.musicSource, pattern),
-      ilike(Creator.name, pattern),
+      ilike(maps.title, pattern),
+      ilike(maps.artistName, pattern),
+      ilike(maps.musicSource, pattern),
+      ilike(creator.name, pattern),
     );
 
     conditions.push(keywordOr);

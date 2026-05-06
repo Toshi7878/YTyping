@@ -4,7 +4,8 @@ import md5 from "md5";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { env } from "@/env";
-import { db, schema } from "@/server/drizzle/client";
+import { db } from "@/server/drizzle/client";
+import * as schema from "../server/drizzle/schema";
 import type { Session } from "./client";
 import "server-only";
 
@@ -17,17 +18,7 @@ const baseUrl =
 
 export const auth = betterAuth({
   baseURL: baseUrl,
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    usePlural: true,
-    schema: {
-      ...schema,
-      users: schema.Users,
-      sessions: schema.Sessions,
-      accounts: schema.Accounts,
-      verifications: schema.Verifications,
-    },
-  }),
+  database: drizzleAdapter(db, { provider: "pg", usePlural: true, schema }),
   databaseHooks: {
     user: {
       create: {

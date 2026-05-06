@@ -1,7 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq, ne } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import z from "zod";
-import { UserProfiles, Users } from "@/server/drizzle/schema";
+import { userProfiles, users } from "@/server/drizzle/schema";
 import { FingerChartUrlApiSchema, keyboardApiSchema } from "@/validator/user/profile";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
@@ -10,13 +10,13 @@ export const userProfileRouter = {
     const { db } = ctx;
     const userProfile = await db
       .select({
-        name: Users.name,
-        fingerChartUrl: UserProfiles.fingerChartUrl,
-        keyboard: UserProfiles.keyboard,
+        name: users.name,
+        fingerChartUrl: userProfiles.fingerChartUrl,
+        keyboard: userProfiles.keyboard,
       })
-      .from(Users)
-      .leftJoin(UserProfiles, eq(UserProfiles.userId, input.userId))
-      .where(eq(Users.id, input.userId))
+      .from(users)
+      .leftJoin(userProfiles, eq(userProfiles.userId, input.userId))
+      .where(eq(users.id, input.userId))
       .limit(1)
       .then((rows) => rows[0]);
 
@@ -25,10 +25,12 @@ export const userProfileRouter = {
 
   checkUsernameAvailability: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
     const { db, session } = ctx;
-    const existing = await db.query.Users.findFirst({
-      columns: { name: true },
-      where: and(eq(Users.name, input), ne(Users.id, session.user.id)),
-    }).then((res) => !!res?.name);
+    const existing = await db.query.users
+      .findFirst({
+        columns: { name: true },
+        where: { name: input, NOT: { id: session.user.id } },
+      })
+      .then((res) => !!res?.name);
 
     if (existing) {
       throw new TRPCError({
@@ -44,17 +46,17 @@ export const userProfileRouter = {
     const { db, session } = ctx;
 
     await db
-      .insert(UserProfiles)
+      .insert(userProfiles)
       .values({ userId: session.user.id, fingerChartUrl: input })
-      .onConflictDoUpdate({ target: [UserProfiles.userId], set: { fingerChartUrl: input } });
+      .onConflictDoUpdate({ target: [userProfiles.userId], set: { fingerChartUrl: input } });
   }),
 
   upsertKeyboard: protectedProcedure.input(keyboardApiSchema).mutation(async ({ input, ctx }) => {
     const { db, session } = ctx;
 
     await db
-      .insert(UserProfiles)
+      .insert(userProfiles)
       .values({ userId: session.user.id, keyboard: input })
-      .onConflictDoUpdate({ target: [UserProfiles.userId], set: { keyboard: input } });
+      .onConflictDoUpdate({ target: [userProfiles.userId], set: { keyboard: input } });
   }),
 } satisfies TRPCRouterRecord;

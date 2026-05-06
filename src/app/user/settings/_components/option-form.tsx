@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { DEFAULT_USER_OPTIONS, type PRESENCE_STATES } from "@/server/drizzle/schema";
+import { DEFAULT_USER_OPTIONS, type PRESENCE_STATE_TYPES } from "@/server/drizzle/schema";
 import { setUserOptions } from "@/store/user-options";
 import { useTRPC } from "@/trpc/provider";
 import { CheckboxFormField } from "@/ui/checkbox/checkbox-form-field";
@@ -40,9 +40,9 @@ export const UserOptionsForm = ({ userOptions }: UserOptionsFormProps) => {
               { label: "プレイ中の曲を共有", value: "ONLINE" as const },
               { label: "プレイ中の曲を隠す", value: "ASK_ME" as const },
               { label: "オンライン状態を非表示", value: "HIDE_ONLINE" as const },
-            ] satisfies { label: string; value: (typeof PRESENCE_STATES)[number] }[]
+            ] satisfies { label: string; value: (typeof PRESENCE_STATE_TYPES)[number] }[]
           }
-          onValueChange={(value: (typeof PRESENCE_STATES)[number]) => {
+          onValueChange={(value: (typeof PRESENCE_STATE_TYPES)[number]) => {
             setUserOptions((prev) => ({ ...prev, presenceState: value }));
             upsertUserOption.mutate({ presenceState: value });
           }}

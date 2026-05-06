@@ -1,6 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { UserTypingOptions } from "@/server/drizzle/schema";
+import { userTypingOptions } from "@/server/drizzle/schema";
 import { CreateUserTypingOptionSchema } from "@/validator/user/option";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
@@ -10,9 +9,9 @@ export const userTypingOptionRouter = {
     if (!session) return null;
 
     return (
-      (await db.query.UserTypingOptions.findFirst({
+      (await db.query.userTypingOptions.findFirst({
         columns: { userId: false },
-        where: eq(UserTypingOptions.userId, session.user.id),
+        where: { userId: session.user.id },
       })) ?? null
     );
   }),
@@ -21,8 +20,8 @@ export const userTypingOptionRouter = {
     const { db, session } = ctx;
 
     await db
-      .insert(UserTypingOptions)
+      .insert(userTypingOptions)
       .values({ userId: session.user.id, ...input })
-      .onConflictDoUpdate({ target: [UserTypingOptions.userId], set: { ...input } });
+      .onConflictDoUpdate({ target: [userTypingOptions.userId], set: { ...input } });
   }),
 } satisfies TRPCRouterRecord;

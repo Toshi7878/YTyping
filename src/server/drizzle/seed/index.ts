@@ -7,7 +7,8 @@ import { sql as rawSql } from "drizzle-orm";
 import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
-import { type MAP_VISIBILITY_TYPES, MapDifficulties, Maps, Users, type YOUTUBE_THUMBNAIL_QUALITIES } from "../schema";
+import { mapDifficulties, maps, type mapVisibility, type thumbnailQuality } from "../schema/map";
+import { users } from "../schema/user/user";
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -78,9 +79,9 @@ function parseMapRow(row: Record<string, string>) {
     likeCount: Number(row.like_count ?? 0),
     rankingCount: Number(row.ranking_count ?? 0),
     category: JSON.parse(row.category ?? "[]"),
-    thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as (typeof YOUTUBE_THUMBNAIL_QUALITIES)[number],
+    thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as (typeof thumbnailQuality.enumValues)[number],
     publishedAt: row.published_at ? new Date(row.published_at.replace(" ", "T")) : null,
-    visibility: (row.visibility ?? "PUBLIC") as (typeof MAP_VISIBILITY_TYPES)[number],
+    visibility: (row.visibility ?? "PUBLIC") as (typeof mapVisibility.enumValues)[number],
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
@@ -124,7 +125,7 @@ async function main() {
   const usersCSV = await readFile(join(tableDir, "users_rows.csv"), "utf-8");
   const userRows = parseCSV(usersCSV).map(parseUserRow);
 
-  await db.insert(Users).values(userRows);
+  await db.insert(users).values(userRows);
   console.log(`✅ Inserted ${userRows.length} users`);
 
   // 3. Maps テーブルにシードデータを挿入
@@ -132,7 +133,7 @@ async function main() {
   const mapsCSV = await readFile(join(tableDir, "maps_rows.csv"), "utf-8");
   const mapRows = parseCSV(mapsCSV).map(parseMapRow);
 
-  await db.insert(Maps).values(mapRows);
+  await db.insert(maps).values(mapRows);
   console.log(`✅ Inserted ${mapRows.length} maps`);
 
   // 4. MapDifficulties テーブルにシードデータを挿入
@@ -140,7 +141,7 @@ async function main() {
   const difficultiesCSV = await readFile(join(tableDir, "map_difficulties_rows.csv"), "utf-8");
   const difficultyRows = parseCSV(difficultiesCSV).map(parseMapDifficultyRow);
 
-  await db.insert(MapDifficulties).values(difficultyRows);
+  await db.insert(mapDifficulties).values(difficultyRows);
   console.log(`✅ Inserted ${difficultyRows.length} map difficulties`);
 
   // 5. map-json ファイルを Supabase Storage にアップロード

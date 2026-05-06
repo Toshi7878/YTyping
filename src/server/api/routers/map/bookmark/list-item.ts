@@ -1,13 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
-import {
-  MapBookmarkListItems,
-  MapBookmarkLists,
-  Maps,
-  NotificationMapBookmarks,
-  Notifications,
-} from "@/server/drizzle/schema";
+import { mapBookmarkListItems, notificationMapBookmarks, notifications } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../../trpc";
 import { generateNotificationId } from "../../notification";
 
@@ -17,41 +11,41 @@ export const mapBookmarkListItemRouter = {
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
 
-      const list = await db.query.MapBookmarkLists.findFirst({
-        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)),
+      const list = await db.query.mapBookmarkLists.findFirst({
+        where: { id: input.listId, userId: session.user.id },
       });
       if (!list) throw new Error("List not found");
 
-      const existing = await db.query.MapBookmarkListItems.findFirst({
-        where: and(eq(MapBookmarkListItems.listId, input.listId), eq(MapBookmarkListItems.mapId, input.mapId)),
+      const existing = await db.query.mapBookmarkListItems.findFirst({
+        where: { listId: input.listId, mapId: input.mapId },
       });
 
       if (!existing) {
-        await db.insert(MapBookmarkListItems).values({ listId: input.listId, mapId: input.mapId });
+        await db.insert(mapBookmarkListItems).values({ listId: input.listId, mapId: input.mapId });
 
-        const map = await db.query.Maps.findFirst({
+        const map = await db.query.maps.findFirst({
           columns: { creatorId: true },
-          where: eq(Maps.id, input.mapId),
+          where: { id: input.mapId },
         });
 
         if (map && map.creatorId !== session.user.id) {
-          const existingNotification = await db.query.NotificationMapBookmarks.findFirst({
-            where: and(
-              eq(NotificationMapBookmarks.bookmarkerId, session.user.id),
-              eq(NotificationMapBookmarks.listId, input.listId),
-              eq(NotificationMapBookmarks.mapId, input.mapId),
-            ),
+          const existingNotification = await db.query.notificationMapBookmarks.findFirst({
+            where: {
+              bookmarkerId: session.user.id,
+              listId: input.listId,
+              mapId: input.mapId,
+            },
           });
 
           if (!existingNotification && list.isPublic) {
             const notificationId = generateNotificationId();
             await db.transaction(async (tx) => {
-              await tx.insert(Notifications).values({
+              await tx.insert(notifications).values({
                 id: notificationId,
                 recipientId: map.creatorId,
                 type: "MAP_BOOKMARK",
               });
-              await tx.insert(NotificationMapBookmarks).values({
+              await tx.insert(notificationMapBookmarks).values({
                 notificationId,
                 bookmarkerId: session.user.id,
                 listId: input.listId,
@@ -70,14 +64,14 @@ export const mapBookmarkListItemRouter = {
     .mutation(async ({ input, ctx }) => {
       const { db, session } = ctx;
 
-      const list = await db.query.MapBookmarkLists.findFirst({
-        where: and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)),
+      const list = await db.query.mapBookmarkLists.findFirst({
+        where: { id: input.listId, userId: session.user.id },
       });
       if (!list) throw new Error("List not found");
 
       await db
-        .delete(MapBookmarkListItems)
-        .where(and(eq(MapBookmarkListItems.listId, input.listId), eq(MapBookmarkListItems.mapId, input.mapId)));
+        .delete(mapBookmarkListItems)
+        .where(and(eq(mapBookmarkListItems.listId, input.listId), eq(mapBookmarkListItems.mapId, input.mapId)));
 
       return { action: "removed" as const };
     }),
