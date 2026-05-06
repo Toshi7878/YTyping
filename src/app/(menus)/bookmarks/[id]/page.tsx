@@ -7,7 +7,10 @@ import { Button } from "@/ui/button";
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;
   prefetch(
-    trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sort: { type: "bookmark", isDesc: true } }),
+    trpc.map.list.get.infiniteQueryOptions(
+      { bookmarkListId: Number(id), sort: { type: "bookmark", isDesc: true } },
+      { getNextPageParam: ({ nextCursor }) => nextCursor },
+    ),
   );
 
   return (

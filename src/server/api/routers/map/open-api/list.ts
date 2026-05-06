@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, type SQL, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import type z from "zod";
@@ -169,7 +169,7 @@ interface GetDifficultyFilterSqlParams {
 }
 
 function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (minRate && minRate >= 0) {
     conditions.push(gte(mapDifficulties.romaKpmMedian, Math.round(minRate * 100)));

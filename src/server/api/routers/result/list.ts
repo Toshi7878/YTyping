@@ -319,7 +319,7 @@ const filterByPlaySpeed = ({
 };
 
 const filterByKeyword = ({ username, mapKeyword }: { username?: string | null; mapKeyword?: string | null }) => {
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (username) {
     const pattern = `%${username}%`;
@@ -335,7 +335,9 @@ const filterByKeyword = ({ username, mapKeyword }: { username?: string | null; m
       ilike(creator.name, pattern),
     );
 
-    conditions.push(keywordOr);
+    if (keywordOr) {
+      conditions.push(keywordOr);
+    }
   }
 
   return and(...conditions);

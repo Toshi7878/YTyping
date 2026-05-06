@@ -11,7 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  await prefetchAsync(trpc.user.stats.getPPRanking.infiniteQueryOptions({}));
+  await prefetchAsync(
+    trpc.user.stats.getPPRanking.infiniteQueryOptions({}, { getNextPageParam: ({ nextCursor }) => nextCursor }),
+  );
 
   return (
     <HydrateClient>

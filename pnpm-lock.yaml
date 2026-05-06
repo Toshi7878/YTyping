@@ -137,8 +137,8 @@ importers:
         specifier: ^1.2.12
         version: 1.2.12
       lyrics-typing-engine:
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.0.5
+        version: 2.0.5
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -3797,8 +3797,8 @@ packages:
   lyrics-ime-typing-engine@1.2.12:
     resolution: {integrity: sha512-ZCv92zQEHpk1wf1q8NklB926cKNvLHMCjYnZRnhsehTJRSvcU301LnqTjb2uglT4GCYj15/36Ap4s+w9cOLYDQ==}
 
-  lyrics-typing-engine@2.0.3:
-    resolution: {integrity: sha512-ia7VpZu2Y9OpTwKuWN1ffCAjl9CdjjNuUGuRGvFqKJ1yfTHDH2crDMdfMbQYd97bWZQDS/GLzCn4NBhkwP+hiQ==}
+  lyrics-typing-engine@2.0.5:
+    resolution: {integrity: sha512-F2mlwU7lEOc6goGjwpPle0z3NskxylljD0M6qsEdLzm+lRy2D0oFi/gcjl8SmvbFimlhorMe5zeWUtxGKxF2qg==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -8350,7 +8350,7 @@ snapshots:
 
   lyrics-ime-typing-engine@1.2.12: {}
 
-  lyrics-typing-engine@2.0.3: {}
+  lyrics-typing-engine@2.0.5: {}
 
   magic-string@0.30.21:
     dependencies:
