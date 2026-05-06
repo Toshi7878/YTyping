@@ -19,7 +19,9 @@
     "noUncheckedSideEffectImports": false,
     "types": ["node", "react", "react-dom", "youtube"],
     "strict": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true
   },
   "rootDir": "./src",
   "include": [

@@ -47,20 +47,20 @@ importers:
         specifier: ^4.1.13
         version: 4.2.2
       '@tanstack/react-query':
-        specifier: ^5.90.2
-        version: 5.97.0(react@19.2.5)
+        specifier: ^5.100.9
+        version: 5.100.9(react@19.2.5)
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@trpc/client':
-        specifier: ^11.6.0
-        version: 11.11.0(@trpc/server@11.11.0(typescript@6.0.3))(typescript@6.0.3)
+        specifier: ^11.17.0
+        version: 11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3)
       '@trpc/server':
-        specifier: ^11.6.0
-        version: 11.11.0(typescript@6.0.3)
+        specifier: ^11.17.0
+        version: 11.17.0(typescript@6.0.3)
       '@trpc/tanstack-react-query':
-        specifier: ^11.6.0
-        version: 11.11.0(@tanstack/react-query@5.97.0(react@19.2.5))(@trpc/client@11.11.0(@trpc/server@11.11.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.11.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)
+        specifier: ^11.17.0
+        version: 11.17.0(@tanstack/react-query@5.100.9(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)
       '@upstash/ratelimit':
         specifier: ^2.0.8
         version: 2.0.8(@upstash/redis@1.37.0)
@@ -116,17 +116,17 @@ importers:
         specifier: ^0.7.0
         version: 0.7.2
       jotai:
-        specifier: ^2.14.0
-        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
+        specifier: ^2.20.0
+        version: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
       jotai-family:
         specifier: ^1.0.1
-        version: 1.0.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))
+        version: 1.0.1(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))
       jotai-optics:
         specifier: ^0.4.0
-        version: 0.4.0(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(optics-ts@2.4.1)
+        version: 0.4.0(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(optics-ts@2.4.1)
       jotai-uncontrolled:
         specifier: ^0.4.1
-        version: 0.4.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+        version: 0.4.1(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       jschardet:
         specifier: ^3.1.4
         version: 3.1.4
@@ -137,8 +137,8 @@ importers:
         specifier: ^1.2.12
         version: 1.2.12
       lyrics-typing-engine:
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: ^2.0.3
+        version: 2.0.3
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -207,7 +207,7 @@ importers:
         version: 1.0.7(tailwindcss@4.2.2)
       trpc-to-openapi:
         specifier: ^3.2.0
-        version: 3.2.0(@trpc/server@11.11.0(typescript@6.0.3))(zod-openapi@5.4.6(zod@4.3.6))(zod@4.3.6)
+        version: 3.2.0(@trpc/server@11.17.0(typescript@6.0.3))(zod-openapi@5.4.6(zod@4.3.6))(zod@4.3.6)
       ua-parser-js:
         specifier: ^2.0.5
         version: 2.0.9
@@ -2400,11 +2400,11 @@ packages:
   '@tailwindcss/postcss@4.2.2':
     resolution: {integrity: sha512-n4goKQbW8RVXIbNKRB/45LzyUqN451deQK0nzIeauVEqjlI49slUlgKYJM2QyUzap/PcpnS7kzSUmPb1sCRvYQ==}
 
-  '@tanstack/query-core@5.97.0':
-    resolution: {integrity: sha512-QdpLP5VzVMgo4VtaPppRA2W04UFjIqX+bxke/ZJhE5cfd5UPkRzqIAJQt9uXkQJjqE8LBOMbKv7f8HCsZltXlg==}
+  '@tanstack/query-core@5.100.9':
+    resolution: {integrity: sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ==}
 
-  '@tanstack/react-query@5.97.0':
-    resolution: {integrity: sha512-y4So4eGcQoK2WVMAcDNZE9ofB/p5v1OlKvtc1F3uqHwrtifobT7q+ZnXk2mRkc8E84HKYSlAE9z6HXl2V0+ySQ==}
+  '@tanstack/react-query@5.100.9':
+    resolution: {integrity: sha512-Oa44XkaI3kCNN6ME0KByU3xT3SEUNOMfZpHxL6+wFoTm+OeUFYHKdeYVe0aOXlRDm/f15sgLwEt2HDorIdW8+A==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2419,23 +2419,26 @@ packages:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
 
-  '@trpc/client@11.11.0':
-    resolution: {integrity: sha512-tIPeetFO8GT/o0In+Lk5JA3f29m8qCBSaKNatQdAx6BOfZFjpqHOaoAsCmE/MdUu9AVhPRPorcoqUlZUdDc5gA==}
+  '@trpc/client@11.17.0':
+    resolution: {integrity: sha512-KpJBFrbKTDeVCFv/3ckL1XBBH5Yssn8hethI/rUy7GIpTj+VzjtPjykDqJpzobuVOz+d26cXCSu1t4I6MYI5Zg==}
+    hasBin: true
     peerDependencies:
-      '@trpc/server': 11.11.0
+      '@trpc/server': 11.17.0
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.11.0':
-    resolution: {integrity: sha512-5CBK5Oit8qv2k2zgIHrUsa12tnCIVpZIJLvMa4n2tejuWz/d7Qb1B1v9zZioapr7y8sEvnk8zPcNnxcT2LlQxg==}
+  '@trpc/server@11.17.0':
+    resolution: {integrity: sha512-jbAOUe0PpUTCYqziyu+8vYXZdDXPudZgnEhWCQ2NjKnVEjfE93RqHTt1oycZJv/HNf51YlRXfEEwSIAbb161rw==}
+    hasBin: true
     peerDependencies:
       typescript: '>=5.7.2'
 
-  '@trpc/tanstack-react-query@11.11.0':
-    resolution: {integrity: sha512-Y89xM3CiaEUP0GLaM4yGfGdcZLTJKq/nsuL8SHcKxYP5JddS9uTuZzRQaqQsL2DlZLlXaF8KsEr622Yu7oAwYA==}
+  '@trpc/tanstack-react-query@11.17.0':
+    resolution: {integrity: sha512-OFxjvCgisP0yaCj7lgP6qPaFwJvJDgnrAUxH3cNIPPR89TpYbndn5vsdKNkc7EnvER9b6wq9Yz8aCcPcOBpDXg==}
+    hasBin: true
     peerDependencies:
       '@tanstack/react-query': ^5.80.3
-      '@trpc/client': 11.11.0
-      '@trpc/server': 11.11.0
+      '@trpc/client': 11.17.0
+      '@trpc/server': 11.17.0
       react: '>=18.2.0'
       typescript: '>=5.7.2'
 
@@ -3625,8 +3628,8 @@ packages:
       jotai: '>=1.11.0'
       react: '>=17.0.0'
 
-  jotai@2.18.0:
-    resolution: {integrity: sha512-XI38kGWAvtxAZ+cwHcTgJsd+kJOJGf3OfL4XYaXWZMZ7IIY8e53abpIHvtVn1eAgJ5dlgwlGFnP4psrZ/vZbtA==}
+  jotai@2.20.0:
+    resolution: {integrity: sha512-b5GAqgmXmXzB4WPaTH26ppk9Sl7AA9WSQX7yfdM+gJ1rFROiWcVbi97gFuN/yVCojOcbcvop2sfLL+fjxW0JVg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -3794,8 +3797,8 @@ packages:
   lyrics-ime-typing-engine@1.2.12:
     resolution: {integrity: sha512-ZCv92zQEHpk1wf1q8NklB926cKNvLHMCjYnZRnhsehTJRSvcU301LnqTjb2uglT4GCYj15/36Ap4s+w9cOLYDQ==}
 
-  lyrics-typing-engine@2.0.2:
-    resolution: {integrity: sha512-v7aZEFwRN5tgovKRAn7u0c/J50ImelxB22m8yueDt4+yA06iYeq3K7ONu8NAx/1z60FvXWdbGQSgGc45b+E57w==}
+  lyrics-typing-engine@2.0.3:
+    resolution: {integrity: sha512-ia7VpZu2Y9OpTwKuWN1ffCAjl9CdjjNuUGuRGvFqKJ1yfTHDH2crDMdfMbQYd97bWZQDS/GLzCn4NBhkwP+hiQ==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -7254,11 +7257,11 @@ snapshots:
       postcss: 8.5.9
       tailwindcss: 4.2.2
 
-  '@tanstack/query-core@5.97.0': {}
+  '@tanstack/query-core@5.100.9': {}
 
-  '@tanstack/react-query@5.97.0(react@19.2.5)':
+  '@tanstack/react-query@5.100.9(react@19.2.5)':
     dependencies:
-      '@tanstack/query-core': 5.97.0
+      '@tanstack/query-core': 5.100.9
       react: 19.2.5
 
   '@tanstack/react-table@8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
@@ -7269,20 +7272,20 @@ snapshots:
 
   '@tanstack/table-core@8.21.3': {}
 
-  '@trpc/client@11.11.0(@trpc/server@11.11.0(typescript@6.0.3))(typescript@6.0.3)':
+  '@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
-      '@trpc/server': 11.11.0(typescript@6.0.3)
+      '@trpc/server': 11.17.0(typescript@6.0.3)
       typescript: 6.0.3
 
-  '@trpc/server@11.11.0(typescript@6.0.3)':
+  '@trpc/server@11.17.0(typescript@6.0.3)':
     dependencies:
       typescript: 6.0.3
 
-  '@trpc/tanstack-react-query@11.11.0(@tanstack/react-query@5.97.0(react@19.2.5))(@trpc/client@11.11.0(@trpc/server@11.11.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.11.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)':
+  '@trpc/tanstack-react-query@11.17.0(@tanstack/react-query@5.100.9(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)':
     dependencies:
-      '@tanstack/react-query': 5.97.0(react@19.2.5)
-      '@trpc/client': 11.11.0(@trpc/server@11.11.0(typescript@6.0.3))(typescript@6.0.3)
-      '@trpc/server': 11.11.0(typescript@6.0.3)
+      '@tanstack/react-query': 5.100.9(react@19.2.5)
+      '@trpc/client': 11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3)
+      '@trpc/server': 11.17.0(typescript@6.0.3)
       react: 19.2.5
       typescript: 6.0.3
 
@@ -8218,21 +8221,21 @@ snapshots:
 
   jose@6.2.2: {}
 
-  jotai-family@1.0.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)):
+  jotai-family@1.0.1(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)):
     dependencies:
-      jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
+      jotai: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
 
-  jotai-optics@0.4.0(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(optics-ts@2.4.1):
+  jotai-optics@0.4.0(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(optics-ts@2.4.1):
     dependencies:
-      jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
+      jotai: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
       optics-ts: 2.4.1
 
-  jotai-uncontrolled@0.4.1(jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
+  jotai-uncontrolled@0.4.1(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
     dependencies:
-      jotai: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
+      jotai: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
       react: 19.2.5
 
-  jotai@2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5):
+  jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5):
     optionalDependencies:
       '@babel/core': 7.29.0
       '@babel/template': 7.28.6
@@ -8347,7 +8350,7 @@ snapshots:
 
   lyrics-ime-typing-engine@1.2.12: {}
 
-  lyrics-typing-engine@2.0.2: {}
+  lyrics-typing-engine@2.0.3: {}
 
   magic-string@0.30.21:
     dependencies:
@@ -9120,9 +9123,9 @@ snapshots:
       punycode: 2.3.1
     optional: true
 
-  trpc-to-openapi@3.2.0(@trpc/server@11.11.0(typescript@6.0.3))(zod-openapi@5.4.6(zod@4.3.6))(zod@4.3.6):
+  trpc-to-openapi@3.2.0(@trpc/server@11.17.0(typescript@6.0.3))(zod-openapi@5.4.6(zod@4.3.6))(zod@4.3.6):
     dependencies:
-      '@trpc/server': 11.11.0(typescript@6.0.3)
+      '@trpc/server': 11.17.0(typescript@6.0.3)
       co-body: 6.2.0
       h3: 1.15.1
       openapi3-ts: 4.4.0
