@@ -1,7 +1,7 @@
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-orm/zod";
 import z from "zod/v4";
 import { STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "@/server/drizzle/const";
-import { MAP_VISIBILITY_TYPES, MapDifficulties, YOUTUBE_THUMBNAIL_QUALITIES } from "@/server/drizzle/schema";
+import { MAP_VISIBILITY_TYPES, mapDifficulties, YOUTUBE_THUMBNAIL_QUALITIES } from "@/server/drizzle/schema";
 import { RawMapSchema } from "./raw-map-json";
 
 export const getByIdOpenApiResponseSchema = z.object({
@@ -68,7 +68,7 @@ const MapInfoApiSchema = MapInfoBaseSchema.extend({
   duration: z.number(),
 });
 
-const CreateMapDifficultySchema = createInsertSchema(MapDifficulties).pick({
+const CreateMapDifficultySchema = createInsertSchema(mapDifficulties).pick({
   romaKpmMedian: true,
   kanaKpmMedian: true,
   romaKpmMax: true,
