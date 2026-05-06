@@ -213,7 +213,7 @@ const handlePlaybackRateChange = ({ target: player }: { target: YT.Player }) => 
 };
 
 const handleStateChange = (event: YouTubeEvent) => {
-  if (event.data === YT.PlayerState.BUFFERING) {
+  if (event.data === YouTube.PlayerState.BUFFERING) {
     handleSeeked(event.target as YT.Player);
   }
   dispatchTypeEvent("yt:stateChange", { state: event.data });

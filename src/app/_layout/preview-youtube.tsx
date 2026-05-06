@@ -61,7 +61,7 @@ export const PreviewYouTubePlayer = () => {
 
 const onStateChange = ({ data, target: YTPlayer }: { data: YT.PlayerState; target: YT.Player }) => {
   switch (data) {
-    case YT.PlayerState.CUED: {
+    case YouTube.PlayerState.CUED: {
       const { previewTime } = getPreviewVideoInfo();
       YTPlayer.seekTo(Number(previewTime), true);
       YTPlayer.playVideo();

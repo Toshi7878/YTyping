@@ -1,4 +1,4 @@
-import type { YouTubeEvent } from "react-youtube";
+import YouTube, { type YouTubeEvent } from "react-youtube";
 import { getVolume } from "@/store/volume";
 import { readMapId } from "../atoms/hydrate";
 import { readRawMap } from "../atoms/map-reducer";
@@ -79,7 +79,7 @@ export const onStateChange = (event: YouTubeEvent) => {
     document.activeElement.blur();
   }
 
-  if (event.data === YT.PlayerState.BUFFERING) {
+  if (event.data === YouTube.PlayerState.BUFFERING) {
     // seek時の処理
     onSeeked(event);
   }
