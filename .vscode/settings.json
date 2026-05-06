@@ -10,5 +10,17 @@
   },
   "files.associations": {
     "*.css": "tailwindcss"
+  },
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true
+  },
+  "search.exclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true
+  },
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true
   }
 }

@@ -1,11 +1,16 @@
 packages:
   - ./
 
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-
 patchedDependencies:
   '@pixi/sound': patches/@pixi__sound.patch
+
+allowBuilds:
+  '@prisma/client': false
+  '@tailwindcss/oxide': true
+  better-sqlite3: false
+  esbuild: true
+  sharp: true
+  supabase: true
 
 # minimumReleaseAge: 1440
 minimumReleaseAgeExclude:

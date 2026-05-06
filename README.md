@@ -4,7 +4,7 @@
 
 <https://nodejs.org/ja/download/>
 
-## pnpm v10をインストール
+## pnpm v11をインストール
 
 <https://pnpm.io/installation>
 
