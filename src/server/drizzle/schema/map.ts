@@ -7,74 +7,98 @@ import {
   pgTable,
   primaryKey,
   real,
+  serial,
   text,
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "../const";
-import { Users } from "./user";
-
-export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
+import { users } from "./user/user";
 
 export const MAP_CATEGORIES = ["CSS", "SPEED_SHIFT", "CASE_SENSITIVE"] as const;
-export const categoryEnum = pgEnum("category", MAP_CATEGORIES);
+export const category = pgEnum("category", ["CSS", "SPEED_SHIFT", "CASE_SENSITIVE"]);
 export const YOUTUBE_THUMBNAIL_QUALITIES = ["mqdefault", "maxresdefault"] as const;
-export const thumbnailQualityEnum = pgEnum("thumbnail_quality", YOUTUBE_THUMBNAIL_QUALITIES);
-export const mapVisibilityEnum = pgEnum("map_visibility", MAP_VISIBILITY_TYPES);
-export const Maps = pgTable("maps", {
-  id: integer("id").primaryKey(),
+export const thumbnailQuality = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"]);
+export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
+export const mapVisibility = pgEnum("map_visibility", ["PUBLIC", "UNLISTED"]);
+
+export const maps = pgTable("maps", {
+  id: integer().primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
-  title: varchar("title", { length: STRING_SHORT_LENGTH }).notNull(),
-  artistName: varchar("artist_name", { length: STRING_SHORT_LENGTH }).notNull(),
-  musicSource: varchar("music_source", { length: STRING_SHORT_LENGTH }).notNull(),
-  creatorComment: varchar("creator_comment", { length: STRING_LONG_LENGTH }).notNull(),
-  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
+  title: varchar({ length: 256 }).notNull(),
+  artistName: varchar("artist_name", { length: 256 }).notNull(),
+  musicSource: varchar("music_source", { length: 256 }).notNull(),
+  creatorComment: varchar("creator_comment", { length: 1024 }).notNull(),
+  tags: text().array().default(sql`ARRAY[]`).notNull(),
   creatorId: integer("creator_id")
     .notNull()
-    .references(() => Users.id),
-  previewTime: real("preview_time").notNull().default(0),
-  duration: real("duration").notNull().default(0),
-  playCount: integer("play_count").notNull().default(0),
-  likeCount: integer("like_count").notNull().default(0),
-  rankingCount: integer("ranking_count").notNull().default(0),
-  category: categoryEnum("category").array().notNull().default(sql`ARRAY[]::category[]`),
-  thumbnailQuality: thumbnailQualityEnum("thumbnail_quality").notNull().default("mqdefault"),
-  publishedAt: timestamp("published_at", { mode: "date" }),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  visibility: mapVisibilityEnum("visibility").notNull(),
-  // リプレイデータに影響が出る変更があった場合に更新される
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+    .references(() => users.id),
+  previewTime: real("preview_time").default(0).notNull(),
+  duration: real().default(0).notNull(),
+  playCount: integer("play_count").default(0).notNull(),
+  likeCount: integer("like_count").default(0).notNull(),
+  rankingCount: integer("ranking_count").default(0).notNull(),
+  category: category().array().default(sql`ARRAY[]`).notNull(),
+  thumbnailQuality: thumbnailQuality("thumbnail_quality").default("mqdefault").notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+  updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
+  publishedAt: timestamp("published_at"),
+  visibility: mapVisibility().notNull(),
 });
 
-export const MapDifficulties = pgTable("map_difficulties", {
+export const mapDifficulties = pgTable("map_difficulties", {
   mapId: integer("map_id")
     .primaryKey()
-    .references(() => Maps.id, { onDelete: "cascade" }),
-  romaKpmMedian: integer("roma_kpm_median").notNull().default(0),
-  romaKpmMax: integer("roma_kpm_max").notNull().default(0),
-  kanaKpmMedian: integer("kana_kpm_median").notNull().default(0),
-  kanaKpmMax: integer("kana_kpm_max").notNull().default(0),
-  romaTotalNotes: integer("roma_total_notes").notNull().default(0),
-  kanaTotalNotes: integer("kana_total_notes").notNull().default(0),
-  kanaChunkCount: integer("kana_chunk_count").notNull().default(0),
-  alphabetChunkCount: integer("alphabet_chunk_count").notNull().default(0),
-  numChunkCount: integer("num_chunk_count").notNull().default(0),
-  spaceChunkCount: integer("space_chunk_count").notNull().default(0),
-  symbolChunkCount: integer("symbol_chunk_count").notNull().default(0),
-  rating: real("rating").notNull(),
+    .references(() => maps.id, { onDelete: "cascade" }),
+  romaKpmMedian: integer("roma_kpm_median").default(0).notNull(),
+  romaKpmMax: integer("roma_kpm_max").default(0).notNull(),
+  kanaKpmMedian: integer("kana_kpm_median").default(0).notNull(),
+  kanaKpmMax: integer("kana_kpm_max").default(0).notNull(),
+  romaTotalNotes: integer("roma_total_notes").default(0).notNull(),
+  kanaTotalNotes: integer("kana_total_notes").default(0).notNull(),
+  alphabetChunkCount: integer("alphabet_chunk_count").default(0).notNull(),
+  symbolChunkCount: integer("symbol_chunk_count").default(0).notNull(),
+  numChunkCount: integer("num_chunk_count").default(0).notNull(),
+  rating: real().notNull(),
+  kanaChunkCount: integer("kana_chunk_count").default(0).notNull(),
+  spaceChunkCount: integer("space_chunk_count").default(0).notNull(),
 });
 
-export const MapLikes = pgTable(
+export const mapLikes = pgTable(
   "map_likes",
   {
     userId: integer("user_id")
       .notNull()
-      .references(() => Users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" }),
     mapId: integer("map_id")
       .notNull()
-      .references(() => Maps.id, { onDelete: "cascade" }),
+      .references(() => maps.id, { onDelete: "cascade" }),
     hasLiked: boolean("has_liked").notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.mapId] })],
+  (table) => [primaryKey({ columns: [table.userId, table.mapId], name: "map_likes_user_id_map_id_pk" })],
 );
+
+export const mapBookmarkListItems = pgTable(
+  "map_bookmark_list_items",
+  {
+    listId: integer("list_id")
+      .notNull()
+      .references(() => mapBookmarkLists.id, { onDelete: "cascade" }),
+    mapId: integer("map_id")
+      .notNull()
+      .references(() => maps.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.listId, table.mapId], name: "map_bookmark_list_items_list_id_map_id_pk" })],
+);
+
+export const mapBookmarkLists = pgTable("map_bookmark_lists", {
+  id: serial().primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: varchar({ length: 256 }).notNull(),
+  isPublic: boolean("is_public").default(true).notNull(),
+  createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+  updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
+});

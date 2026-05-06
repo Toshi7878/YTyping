@@ -1,79 +1,89 @@
 import { sql } from "drizzle-orm";
 import { boolean, check, integer, pgTable, primaryKey, real, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
-import { Maps } from "./map";
-import { Users } from "./user";
+import { maps } from "./map";
+import { users } from "./user/user";
 
-export const Results = pgTable(
+export const results = pgTable(
   "results",
   {
-    id: integer("id").primaryKey(),
+    id: integer().primaryKey(),
     mapId: integer("map_id")
       .notNull()
-      .references(() => Maps.id, { onDelete: "cascade" }),
+      .references(() => maps.id, { onDelete: "cascade" }),
     userId: integer("user_id")
       .notNull()
-      .references(() => Users.id, { onDelete: "cascade" }),
-    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-    clapCount: integer("clap_count").notNull().default(0),
-    rank: integer("rank").notNull().default(1),
+      .references(() => users.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
+    clapCount: integer("clap_count").default(0).notNull(),
+    rank: integer().default(1).notNull(),
   },
-  (t) => [uniqueIndex("uq_results_user_id_map_id").on(t.userId, t.mapId)],
+  (table) => [
+    uniqueIndex("uq_results_user_id_map_id").using(
+      "btree",
+      table.userId.asc().nullsLast(),
+      table.mapId.asc().nullsLast(),
+    ),
+  ],
 );
 
-export const ImeResults = pgTable("ime_results", {
-  id: integer("id").primaryKey(),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => Users.id, { onDelete: "cascade" }),
-  mapId: integer("map_id")
-    .notNull()
-    .references(() => Maps.id, { onDelete: "cascade" }),
-  typeCount: integer("type_count").notNull().default(0),
-  score: integer("score").notNull().default(0),
-});
-
-export const ResultStatuses = pgTable(
-  "result_statuses",
-  {
-    resultId: integer("result_id")
-      .primaryKey()
-      .references(() => Results.id, { onDelete: "cascade" }),
-    score: integer("score").notNull().default(0),
-    minPlaySpeed: real("min_play_speed").notNull().default(1),
-    kpm: integer("kpm").notNull().default(0),
-    rkpm: integer("rkpm").notNull().default(0),
-    kanaToRomaKpm: integer("kana_to_roma_kpm").notNull().default(0),
-    kanaToRomaRkpm: integer("kana_to_roma_rkpm").notNull().default(0),
-    romaType: integer("roma_type").notNull().default(0),
-    kanaType: integer("kana_type").notNull().default(0),
-    flickType: integer("flick_type").notNull().default(0),
-    englishType: integer("english_type").notNull().default(0),
-    spaceType: integer("space_type").notNull().default(0),
-    symbolType: integer("symbol_type").notNull().default(0),
-    numType: integer("num_type").notNull().default(0),
-    miss: integer("miss").notNull().default(0),
-    lost: integer("lost").notNull().default(0),
-    maxCombo: integer("max_combo").notNull().default(0),
-    clearRate: real("clear_rate").notNull().default(0),
-    isCaseSensitive: boolean("is_case_sensitive").notNull().default(false),
-    /** 登録時点の星難易度（再計算・合計ppはこれを用い、現行 `map_difficulties.rating` には従わない） */
-    starRatingSnapshot: real("star_rating_snapshot").notNull().default(0),
-    pp: real("pp").notNull().default(0),
-  },
-  (t) => [check("valid_play_speed_values", sql`${t.minPlaySpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],
-);
-
-export const ResultClaps = pgTable(
+export const resultClaps = pgTable(
   "result_claps",
   {
     userId: integer("user_id")
       .notNull()
-      .references(() => Users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" }),
     resultId: integer("result_id")
       .notNull()
-      .references(() => Results.id, { onDelete: "cascade" }),
+      .references(() => results.id, { onDelete: "cascade" }),
     hasClapped: boolean("has_clapped").notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`).notNull(),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.resultId] })],
+  (table) => [primaryKey({ columns: [table.userId, table.resultId], name: "result_claps_user_id_result_id_pk" })],
 );
+
+export const resultStatuses = pgTable(
+  "result_statuses",
+  {
+    resultId: integer("result_id")
+      .primaryKey()
+      .references(() => results.id, { onDelete: "cascade" }),
+    score: integer().default(0).notNull(),
+    minPlaySpeed: real("min_play_speed").default(1).notNull(),
+    kpm: integer().default(0).notNull(),
+    rkpm: integer().default(0).notNull(),
+    kanaToRomaKpm: integer("kana_to_roma_kpm").default(0).notNull(),
+    kanaToRomaRkpm: integer("kana_to_roma_rkpm").default(0).notNull(),
+    romaType: integer("roma_type").default(0).notNull(),
+    kanaType: integer("kana_type").default(0).notNull(),
+    flickType: integer("flick_type").default(0).notNull(),
+    englishType: integer("english_type").default(0).notNull(),
+    spaceType: integer("space_type").default(0).notNull(),
+    symbolType: integer("symbol_type").default(0).notNull(),
+    numType: integer("num_type").default(0).notNull(),
+    miss: integer().default(0).notNull(),
+    lost: integer().default(0).notNull(),
+    maxCombo: integer("max_combo").default(0).notNull(),
+    clearRate: real("clear_rate").default(0).notNull(),
+    isCaseSensitive: boolean("is_case_sensitive").default(false).notNull(),
+    starRatingSnapshot: real("star_rating_snapshot").default(0).notNull(),
+    pp: real().default(0).notNull(),
+  },
+  () => [
+    check(
+      "valid_play_speed_values",
+      sql`(min_play_speed = ANY (ARRAY[(0.25)::real, (0.5)::real, (0.75)::real, (1.00)::real, (1.25)::real, (1.50)::real, (1.75)::real, (2.00)::real]))`,
+    ),
+  ],
+);
+
+export const imeResults = pgTable("ime_results", {
+  id: integer().primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  mapId: integer("map_id")
+    .notNull()
+    .references(() => maps.id, { onDelete: "cascade" }),
+  typeCount: integer("type_count").default(0).notNull(),
+  score: integer().default(0).notNull(),
+});
