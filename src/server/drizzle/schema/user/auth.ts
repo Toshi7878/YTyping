@@ -22,7 +22,9 @@ export const accounts = pgTable(
     scope: text(),
     password: text(),
     createdAt: timestamp("created_at").default(sql`now()`).notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => new Date())
+      .notNull(),
   },
   (table) => [index("accounts_userId_idx").using("btree", table.userId.asc().nullsLast())],
 );
@@ -36,7 +38,9 @@ export const sessions = pgTable(
     expiresAt: timestamp("expires_at").notNull(),
     token: text().notNull(),
     createdAt: timestamp("created_at").default(sql`now()`).notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => new Date())
+      .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     userId: integer("user_id")
@@ -58,5 +62,7 @@ export const verifications = pgTable("verifications", {
   value: text().notNull(),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdate(() => new Date())
+    .notNull(),
 });

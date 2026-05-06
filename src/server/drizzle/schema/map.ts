@@ -100,5 +100,7 @@ export const mapBookmarkLists = pgTable("map_bookmark_lists", {
   title: varchar({ length: 256 }).notNull(),
   isPublic: boolean("is_public").default(true).notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
-  updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
+  updatedAt: timestamp("updated_at")
+    .$onUpdateFn(() => sql`now()`)
+    .notNull(),
 });
