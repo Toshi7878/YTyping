@@ -1,7 +1,7 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
-import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
+import type { WORD_DISPLAY_TYPES } from "@/server/drizzle/schema";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
 import { LabeledSelect } from "@/ui/select/labeled-select";
@@ -145,11 +145,9 @@ export const WordDisplayFields = () => {
             { label: "かなのみ", value: "KANA_ONLY" },
             { label: "ローマ字大文字のみ", value: "ROMA_UPPERCASE_ONLY" },
             { label: "ローマ字小文字のみ", value: "ROMA_LOWERCASE_ONLY" },
-          ] satisfies { label: string; value: (typeof mainWordDisplayEnum.enumValues)[number] }[]
+          ] satisfies { label: string; value: (typeof WORD_DISPLAY_TYPES)[number] }[]
         }
-        onValueChange={(value) =>
-          setTypingOptions({ wordDisplay: value as (typeof mainWordDisplayEnum.enumValues)[number] })
-        }
+        onValueChange={(value) => setTypingOptions({ wordDisplay: value as (typeof WORD_DISPLAY_TYPES)[number] })}
         value={wordDisplay}
       />
     </section>

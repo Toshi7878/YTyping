@@ -1,6 +1,6 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
 import { H4 } from "@/ui/typography";

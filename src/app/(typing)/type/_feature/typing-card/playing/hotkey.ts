@@ -102,7 +102,7 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
     case "KanaMode":
     case "Romaji":
-      if (typingOptions.InputModeToggleKey === "ALT_KANA") {
+      if (typingOptions.inputModeToggleKey === "ALT_KANA") {
         if (scene !== "replay") {
           togglePlayInputMode();
         }
@@ -119,7 +119,7 @@ export const playHotkey = (event: KeyboardEvent) => {
       break;
 
     case "Tab":
-      if (typingOptions.InputModeToggleKey === "TAB") {
+      if (typingOptions.inputModeToggleKey === "TAB") {
         if (scene !== "replay") {
           togglePlayInputMode();
         }
