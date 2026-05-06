@@ -5,14 +5,14 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import {
-  MapBookmarkListItems,
-  MapBookmarkLists,
-  MapDifficulties,
-  MapLikes,
-  Maps,
-  ResultStatuses,
-  Results,
-  Users,
+  mapBookmarkListItems,
+  mapBookmarkLists,
+  mapDifficulties,
+  mapLikes,
+  maps,
+  resultStatuses,
+  results,
+  users,
 } from "@/server/drizzle/schema";
 import {
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
@@ -26,11 +26,11 @@ import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trp
 import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
-const Creator = alias(Users, "creator");
-const Liker = alias(MapLikes, "liker");
-const MyLike = alias(MapLikes, "my_like");
-const MyResult = alias(Results, "my_result");
-const MyResultStatus = alias(ResultStatuses, "my_result_status");
+const creator = alias(users, "creator");
+const liker = alias(mapLikes, "liker");
+const myLike = alias(mapLikes, "my_like");
+const myResult = alias(results, "my_result");
+const myResultStatus = alias(resultStatuses, "my_result_status");
 
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
@@ -39,8 +39,8 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-    const maps = await buildBaseQuery(
-      db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(),
+    const mapItems = await buildBaseQuery(
+      db.select(buildBaseSelect(db, session)).from(maps).$dynamic(),
       session,
       searchInput,
     )
@@ -48,12 +48,12 @@ export const mapListRouter = {
       .offset(offset)
       .orderBy(...mapOrderBy(sort, searchInput));
 
-    return buildPageResult(maps);
+    return buildPageResult(mapItems);
   }),
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
-    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(Maps).$dynamic(), session, input);
+    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
@@ -63,25 +63,25 @@ export const mapListRouter = {
     const { db, session } = ctx;
     const { videoId } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
-      .where(eq(Maps.videoId, videoId))
-      .orderBy(desc(Maps.id));
+    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+      .where(eq(maps.videoId, videoId))
+      .orderBy(desc(maps.id));
   }),
 
   getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { title } = input;
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
-      .where(eq(Maps.title, title))
-      .orderBy(desc(Maps.id));
+    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+      .where(eq(maps.title, title))
+      .orderBy(desc(maps.id));
   }),
 
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
 
-    const map = await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(Maps).$dynamic(), session)
-      .where(eq(Maps.id, input.mapId))
+    const map = await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+      .where(eq(maps.id, input.mapId))
       .limit(1)
       .then((rows) => rows[0]);
 
@@ -93,51 +93,51 @@ export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelec
 
 const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
   ({
-    id: Maps.id,
-    updatedAt: Maps.updatedAt,
+    id: maps.id,
+    updatedAt: maps.updatedAt,
     media: {
-      videoId: Maps.videoId,
-      previewTime: Maps.previewTime,
-      thumbnailQuality: Maps.thumbnailQuality,
+      videoId: maps.videoId,
+      previewTime: maps.previewTime,
+      thumbnailQuality: maps.thumbnailQuality,
     },
     info: {
-      title: Maps.title,
-      artistName: Maps.artistName,
-      source: Maps.musicSource,
-      duration: Maps.duration,
-      categories: Maps.category,
-      visibility: Maps.visibility,
+      title: maps.title,
+      artistName: maps.artistName,
+      source: maps.musicSource,
+      duration: maps.duration,
+      categories: maps.category,
+      visibility: maps.visibility,
     },
     creator: {
-      id: Creator.id,
-      name: Creator.name,
+      id: creator.id,
+      name: creator.name,
     },
     difficulty: {
-      romaKpmMedian: MapDifficulties.romaKpmMedian,
-      kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-      romaKpmMax: MapDifficulties.romaKpmMax,
-      kanaKpmMax: MapDifficulties.kanaKpmMax,
-      romaTotalNotes: MapDifficulties.romaTotalNotes,
-      kanaTotalNotes: MapDifficulties.kanaTotalNotes,
-      kanaChunkCount: MapDifficulties.kanaChunkCount,
-      alphabetChunkCount: MapDifficulties.alphabetChunkCount,
-      numChunkCount: MapDifficulties.numChunkCount,
-      spaceChunkCount: MapDifficulties.spaceChunkCount,
-      symbolChunkCount: MapDifficulties.symbolChunkCount,
-      rating: MapDifficulties.rating,
+      romaKpmMedian: mapDifficulties.romaKpmMedian,
+      kanaKpmMedian: mapDifficulties.kanaKpmMedian,
+      romaKpmMax: mapDifficulties.romaKpmMax,
+      kanaKpmMax: mapDifficulties.kanaKpmMax,
+      romaTotalNotes: mapDifficulties.romaTotalNotes,
+      kanaTotalNotes: mapDifficulties.kanaTotalNotes,
+      kanaChunkCount: mapDifficulties.kanaChunkCount,
+      alphabetChunkCount: mapDifficulties.alphabetChunkCount,
+      numChunkCount: mapDifficulties.numChunkCount,
+      spaceChunkCount: mapDifficulties.spaceChunkCount,
+      symbolChunkCount: mapDifficulties.symbolChunkCount,
+      rating: mapDifficulties.rating,
     },
     bookmark: {
       hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
     },
     like: {
-      count: Maps.likeCount,
-      hasLiked: session ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      count: maps.likeCount,
+      hasLiked: session ? sql`COALESCE(${myLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
     },
     ranking: {
-      count: Maps.rankingCount,
-      myRank: session ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      count: maps.rankingCount,
+      myRank: session ? sql<number | null>`${myResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: session
-        ? sql`${MyResult.updatedAt}`.mapWith({
+        ? sql`${myResult.updatedAt}`.mapWith({
             mapFromDriverValue: (value) => {
               if (value === null) return null;
               return new Date(value);
@@ -153,14 +153,14 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
   let baseQuery = db
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
+    .innerJoin(mapDifficulties, eq(mapDifficulties.mapId, maps.id))
+    .innerJoin(creator, eq(creator.id, maps.creatorId));
 
   if (session) {
     // @ts-expect-error
     baseQuery = baseQuery
-      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, session.user.id)))
-      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, session.user.id)));
+      .leftJoin(myLike, and(eq(myLike.mapId, maps.id), eq(myLike.userId, session.user.id)))
+      .leftJoin(myResult, and(eq(myResult.mapId, maps.id), eq(myResult.userId, session.user.id)));
   }
 
   if (!input) return baseQuery;
@@ -170,27 +170,27 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
    */
   if (input?.rankingStatus === "perfect") {
     // @ts-expect-error
-    baseQuery = baseQuery.innerJoin(MyResultStatus, eq(MyResultStatus.resultId, MyResult.id));
+    baseQuery = baseQuery.innerJoin(myResultStatus, eq(myResultStatus.resultId, myResult.id));
   }
 
   if (input?.likerId) {
     // @ts-expect-error
-    baseQuery = baseQuery.innerJoin(Liker, and(eq(Liker.mapId, Maps.id), eq(Liker.userId, input.likerId)));
+    baseQuery = baseQuery.innerJoin(liker, and(eq(liker.mapId, maps.id), eq(liker.userId, input.likerId)));
   }
 
   if (input?.bookmarkListId) {
     // @ts-expect-error
     baseQuery = baseQuery
       .innerJoin(
-        MapBookmarkLists,
+        mapBookmarkLists,
         and(
-          eq(MapBookmarkLists.id, input.bookmarkListId),
-          or(eq(MapBookmarkLists.isPublic, true), session ? eq(MapBookmarkLists.userId, session.user.id) : sql`false`),
+          eq(mapBookmarkLists.id, input.bookmarkListId),
+          or(eq(mapBookmarkLists.isPublic, true), session ? eq(mapBookmarkLists.userId, session.user.id) : sql`false`),
         ),
       )
       .innerJoin(
-        MapBookmarkListItems,
-        and(eq(MapBookmarkListItems.listId, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id)),
+        mapBookmarkListItems,
+        and(eq(mapBookmarkListItems.listId, input.bookmarkListId), eq(mapBookmarkListItems.mapId, maps.id)),
       );
   }
 
@@ -200,10 +200,10 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     filterByDifficulty({ minRate: input.minRate, maxRate: input.maxRate }),
     filterByKeyword(input.keyword),
     input ? filterByChunkCount(input) : undefined,
-    input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
-    input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
+    input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
+    input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
     input.bookmarkListId
-      ? and(eq(MapBookmarkLists.id, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id))
+      ? and(eq(mapBookmarkLists.id, input.bookmarkListId), eq(mapBookmarkListItems.mapId, maps.id))
       : undefined,
   ];
 
@@ -216,10 +216,10 @@ function filterByFilterType(
 ) {
   switch (filterType) {
     case "liked": {
-      return eq(MyLike.hasLiked, true);
+      return eq(myLike.hasLiked, true);
     }
     case "created":
-      return eq(Maps.creatorId, session.user.id);
+      return eq(maps.creatorId, session.user.id);
     default:
       return undefined;
   }
@@ -233,26 +233,26 @@ function mapOrderBy(sort: z.output<typeof mapSortSchema>, searchInput: z.output<
       return [sql`RANDOM()`];
 
     case "difficulty":
-      return [order(MapDifficulties.rating), order(Maps.id)];
+      return [order(mapDifficulties.rating), order(maps.id)];
     case "ranking-count":
-      return [order(Maps.rankingCount), order(Maps.id)];
+      return [order(maps.rankingCount), order(maps.id)];
     case "ranking-register":
-      return [order(MyResult.updatedAt), order(Maps.id)];
+      return [order(myResult.updatedAt), order(maps.id)];
     case "like-count":
-      return [order(Maps.likeCount), order(Maps.id)];
+      return [order(maps.likeCount), order(maps.id)];
     case "duration":
-      return [order(Maps.duration)];
+      return [order(maps.duration)];
     case "like":
-      return [order(MyLike.createdAt)];
+      return [order(myLike.createdAt)];
     case "bookmark": {
       if (searchInput.bookmarkListId) {
-        return [order(MapBookmarkListItems.createdAt)];
+        return [order(mapBookmarkListItems.createdAt)];
       }
 
-      return [desc(Maps.publishedAt)];
+      return [desc(maps.publishedAt)];
     }
     default:
-      return [order(sql`COALESCE(${Maps.publishedAt}, ${Maps.createdAt})`), order(Maps.id)];
+      return [order(sql`COALESCE(${maps.publishedAt}, ${maps.createdAt})`), order(maps.id)];
   }
 }
 
@@ -260,11 +260,11 @@ function filterByDifficulty({ minRate, maxRate }: { minRate?: number | null; max
   const conditions = [];
 
   if (minRate) {
-    conditions.push(gte(MapDifficulties.rating, minRate));
+    conditions.push(gte(mapDifficulties.rating, minRate));
   }
 
   if (maxRate) {
-    conditions.push(lte(MapDifficulties.rating, maxRate));
+    conditions.push(lte(mapDifficulties.rating, maxRate));
   }
 
   return and(...conditions);
@@ -275,15 +275,15 @@ const filterByRankingStatus = (
 ) => {
   switch (rankingStatus) {
     case "registerd":
-      return isNotNull(MyResult.id);
+      return isNotNull(myResult.id);
     case "unregisterd":
-      return isNull(MyResult.id);
+      return isNull(myResult.id);
     case "1st":
-      return eq(MyResult.rank, 1);
+      return eq(myResult.rank, 1);
     case "not-first":
-      return sql`${MyResult.rank} > 1`;
+      return sql`${myResult.rank} > 1`;
     case "perfect":
-      return and(eq(MyResultStatus.miss, 0), eq(MyResultStatus.lost, 0));
+      return and(eq(myResultStatus.miss, 0), eq(myResultStatus.lost, 0));
     default:
       return;
   }
@@ -297,11 +297,11 @@ const filterByKeyword = (keyword?: string | null) => {
   const conditions = keywords.map((keyword) => {
     const pattern = `%${keyword}%`;
     return or(
-      ilike(Maps.title, pattern),
-      ilike(Maps.artistName, pattern),
-      ilike(Maps.musicSource, pattern),
-      sql`array_to_string(${Maps.tags}, ',') ilike ${pattern}`,
-      ilike(Creator.name, pattern),
+      ilike(maps.title, pattern),
+      ilike(maps.artistName, pattern),
+      ilike(maps.musicSource, pattern),
+      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
+      ilike(creator.name, pattern),
     );
   });
 
@@ -313,14 +313,14 @@ export const filterByMapVisibility = (
   inputFilter?: z.output<typeof MapSearchFilterSchema>["filterType"],
 ) => {
   if (!session) {
-    return eq(Maps.visibility, "PUBLIC");
+    return eq(maps.visibility, "PUBLIC");
   }
 
   if (inputFilter === "unlisted") {
-    return and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id));
+    return and(eq(maps.visibility, "UNLISTED"), eq(maps.creatorId, session.user.id));
   }
 
-  return or(eq(Maps.visibility, "PUBLIC"), and(eq(Maps.visibility, "UNLISTED"), eq(Maps.creatorId, session.user.id)));
+  return or(eq(maps.visibility, "PUBLIC"), and(eq(maps.visibility, "UNLISTED"), eq(maps.creatorId, session.user.id)));
 };
 
 const filterByChunkCount = (
@@ -330,11 +330,11 @@ const filterByChunkCount = (
   const { maxKanaChunkCount, minAlphabetChunkCount } = input ?? {};
 
   if (typeof maxKanaChunkCount === "number" && maxKanaChunkCount >= 0) {
-    conditions.push(lte(MapDifficulties.kanaChunkCount, maxKanaChunkCount));
+    conditions.push(lte(mapDifficulties.kanaChunkCount, maxKanaChunkCount));
   }
 
   if (typeof minAlphabetChunkCount === "number" && minAlphabetChunkCount >= 0) {
-    conditions.push(gte(MapDifficulties.alphabetChunkCount, minAlphabetChunkCount));
+    conditions.push(gte(mapDifficulties.alphabetChunkCount, minAlphabetChunkCount));
   }
 
   return and(...conditions);

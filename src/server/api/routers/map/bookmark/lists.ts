@@ -4,12 +4,12 @@ import { and, count, desc, eq, gt, inArray, sql } from "drizzle-orm";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import {
-  MapBookmarkListItems,
-  MapBookmarkLists,
-  Maps,
-  NotificationMapBookmarks,
-  Notifications,
-  Users,
+  mapBookmarkListItems,
+  mapBookmarkLists,
+  maps,
+  notificationMapBookmarks,
+  notifications,
+  users,
 } from "@/server/drizzle/schema";
 import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/map/bookmark";
 import { protectedProcedure, publicProcedure } from "../../../trpc";
@@ -22,36 +22,36 @@ export const mapBookmarkListsRouter = {
 
     return db
       .select({
-        id: MapBookmarkLists.id,
-        title: MapBookmarkLists.title,
-        count: sql<number>`count(${MapBookmarkListItems.mapId})`.mapWith(Number),
+        id: mapBookmarkLists.id,
+        title: mapBookmarkLists.title,
+        count: sql<number>`count(${mapBookmarkListItems.mapId})`.mapWith(Number),
         firstMapVideoId: sql<string | null>`max(${firstMapByListSubquery.videoId})`,
-        updatedAt: MapBookmarkLists.updatedAt,
-        userName: Users.name,
-        userId: MapBookmarkLists.userId,
+        updatedAt: mapBookmarkLists.updatedAt,
+        userName: users.name,
+        userId: mapBookmarkLists.userId,
       })
-      .from(MapBookmarkLists)
-      .innerJoin(Users, eq(Users.id, MapBookmarkLists.userId))
-      .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
+      .from(mapBookmarkLists)
+      .innerJoin(users, eq(users.id, mapBookmarkLists.userId))
+      .leftJoin(mapBookmarkListItems, eq(mapBookmarkListItems.listId, mapBookmarkLists.id))
       .leftJoin(
         firstMapByListSubquery,
-        and(eq(firstMapByListSubquery.listId, MapBookmarkLists.id), eq(firstMapByListSubquery.rn, 1)),
+        and(eq(firstMapByListSubquery.listId, mapBookmarkLists.id), eq(firstMapByListSubquery.rn, 1)),
       )
-      .where(eq(MapBookmarkLists.isPublic, true))
-      .groupBy(MapBookmarkLists.id, Users.name)
+      .where(eq(mapBookmarkLists.isPublic, true))
+      .groupBy(mapBookmarkLists.id, users.name)
       .having(({ count }) => gt(count, 1))
-      .orderBy(desc(MapBookmarkLists.updatedAt));
+      .orderBy(desc(mapBookmarkLists.updatedAt));
   }),
 
   getForSession: protectedProcedure.query(async ({ ctx }) => {
     const { db, session } = ctx;
 
     return db
-      .select({ id: MapBookmarkLists.id, title: MapBookmarkLists.title })
-      .from(MapBookmarkLists)
-      .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
-      .groupBy(MapBookmarkLists.id)
-      .where(eq(MapBookmarkLists.userId, session.user.id));
+      .select({ id: mapBookmarkLists.id, title: mapBookmarkLists.title })
+      .from(mapBookmarkLists)
+      .leftJoin(mapBookmarkListItems, eq(mapBookmarkListItems.listId, mapBookmarkLists.id))
+      .groupBy(mapBookmarkLists.id)
+      .where(eq(mapBookmarkLists.userId, session.user.id));
   }),
 
   getByUserId: publicProcedure
@@ -63,32 +63,32 @@ export const mapBookmarkListsRouter = {
 
       return db
         .select({
-          id: MapBookmarkLists.id,
-          title: MapBookmarkLists.title,
-          isPublic: MapBookmarkLists.isPublic,
-          count: sql<number>`count(${MapBookmarkListItems.mapId})`.mapWith(Number),
+          id: mapBookmarkLists.id,
+          title: mapBookmarkLists.title,
+          isPublic: mapBookmarkLists.isPublic,
+          count: sql<number>`count(${mapBookmarkListItems.mapId})`.mapWith(Number),
           hasMap: input.includeMapId
-            ? sql<boolean>`coalesce(bool_or(${MapBookmarkListItems.mapId} = ${input.includeMapId}), false)`.mapWith(
+            ? sql<boolean>`coalesce(bool_or(${mapBookmarkListItems.mapId} = ${input.includeMapId}), false)`.mapWith(
                 Boolean,
               )
             : sql<boolean>`false`.mapWith(Boolean),
           firstMapVideoId: sql<string | null>`max(${firstMapByListSubquery.videoId})`,
-          updatedAt: MapBookmarkLists.updatedAt,
+          updatedAt: mapBookmarkLists.updatedAt,
         })
-        .from(MapBookmarkLists)
-        .leftJoin(MapBookmarkListItems, eq(MapBookmarkListItems.listId, MapBookmarkLists.id))
+        .from(mapBookmarkLists)
+        .leftJoin(mapBookmarkListItems, eq(mapBookmarkListItems.listId, mapBookmarkLists.id))
         .leftJoin(
           firstMapByListSubquery,
-          and(eq(firstMapByListSubquery.listId, MapBookmarkLists.id), eq(firstMapByListSubquery.rn, 1)),
+          and(eq(firstMapByListSubquery.listId, mapBookmarkLists.id), eq(firstMapByListSubquery.rn, 1)),
         )
         .where(
           and(
-            eq(MapBookmarkLists.userId, input.userId),
-            input.userId !== session?.user.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
+            eq(mapBookmarkLists.userId, input.userId),
+            input.userId !== session?.user.id ? eq(mapBookmarkLists.isPublic, true) : undefined,
           ),
         )
-        .groupBy(MapBookmarkLists.id)
-        .orderBy(desc(MapBookmarkLists.updatedAt));
+        .groupBy(mapBookmarkLists.id)
+        .orderBy(desc(mapBookmarkLists.updatedAt));
     }),
 
   getCount: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -96,11 +96,11 @@ export const mapBookmarkListsRouter = {
 
     const total = await db
       .select({ count: count() })
-      .from(MapBookmarkLists)
+      .from(mapBookmarkLists)
       .where(
         and(
-          eq(MapBookmarkLists.userId, input.userId),
-          input.userId !== session?.user.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
+          eq(mapBookmarkLists.userId, input.userId),
+          input.userId !== session?.user.id ? eq(mapBookmarkLists.isPublic, true) : undefined,
         ),
       );
 
@@ -112,8 +112,8 @@ export const mapBookmarkListsRouter = {
 
     const listCount = await db
       .select({ count: count() })
-      .from(MapBookmarkLists)
-      .where(eq(MapBookmarkLists.userId, session.user.id))
+      .from(mapBookmarkLists)
+      .where(eq(mapBookmarkLists.userId, session.user.id))
       .then((rows) => rows[0]?.count ?? 0);
 
     if (listCount >= 15) {
@@ -123,7 +123,7 @@ export const mapBookmarkListsRouter = {
       });
     }
 
-    return db.insert(MapBookmarkLists).values({
+    return db.insert(mapBookmarkLists).values({
       userId: session.user.id,
       title: input.title,
       isPublic: input.isPublic,
@@ -133,12 +133,12 @@ export const mapBookmarkListsRouter = {
   update: protectedProcedure.input(UpdateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
     const { db, session } = ctx;
     return db
-      .update(MapBookmarkLists)
+      .update(mapBookmarkLists)
       .set({
         title: input.title,
         isPublic: input.isPublic,
       })
-      .where(and(eq(MapBookmarkLists.id, input.id), eq(MapBookmarkLists.userId, session.user.id)));
+      .where(and(eq(mapBookmarkLists.id, input.id), eq(mapBookmarkLists.userId, session.user.id)));
   }),
 
   delete: protectedProcedure.input(z.object({ listId: z.number() })).mutation(async ({ input, ctx }) => {
@@ -148,23 +148,23 @@ export const mapBookmarkListsRouter = {
       // list削除の cascade で notification_map_bookmarks 側は消えるが、notifications は残り得る。
       // 先に紐づく notifications を消して、孤児通知を作らないようにする。
       const relatedNotificationIds = await tx
-        .select({ id: NotificationMapBookmarks.notificationId })
-        .from(NotificationMapBookmarks)
-        .innerJoin(MapBookmarkLists, eq(MapBookmarkLists.id, NotificationMapBookmarks.listId))
-        .where(and(eq(NotificationMapBookmarks.listId, input.listId), eq(MapBookmarkLists.userId, session.user.id)));
+        .select({ id: notificationMapBookmarks.notificationId })
+        .from(notificationMapBookmarks)
+        .innerJoin(mapBookmarkLists, eq(mapBookmarkLists.id, notificationMapBookmarks.listId))
+        .where(and(eq(notificationMapBookmarks.listId, input.listId), eq(mapBookmarkLists.userId, session.user.id)));
 
       if (relatedNotificationIds.length > 0) {
-        await tx.delete(Notifications).where(
+        await tx.delete(notifications).where(
           inArray(
-            Notifications.id,
+            notifications.id,
             relatedNotificationIds.map((r) => r.id),
           ),
         );
       }
 
       return await tx
-        .delete(MapBookmarkLists)
-        .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, session.user.id)));
+        .delete(mapBookmarkLists)
+        .where(and(eq(mapBookmarkLists.id, input.listId), eq(mapBookmarkLists.userId, session.user.id)));
     });
   }),
 } satisfies TRPCRouterRecord;
@@ -172,14 +172,14 @@ export const mapBookmarkListsRouter = {
 const getFirstMapByListSubquery = (db: DBType) => {
   return db
     .select({
-      listId: MapBookmarkListItems.listId,
-      videoId: Maps.videoId,
+      listId: mapBookmarkListItems.listId,
+      videoId: maps.videoId,
       rn: sql<number>`row_number() over (
-    partition by ${MapBookmarkListItems.listId}
-    order by ${MapBookmarkListItems.createdAt} asc, ${MapBookmarkListItems.mapId} asc
+    partition by ${mapBookmarkListItems.listId}
+    order by ${mapBookmarkListItems.createdAt} asc, ${mapBookmarkListItems.mapId} asc
   )`.as("rn"),
     })
-    .from(MapBookmarkListItems)
-    .innerJoin(Maps, eq(Maps.id, MapBookmarkListItems.mapId))
+    .from(mapBookmarkListItems)
+    .innerJoin(maps, eq(maps.id, mapBookmarkListItems.mapId))
     .as("first_map_by_list");
 };

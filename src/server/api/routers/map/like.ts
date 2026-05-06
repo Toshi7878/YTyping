@@ -1,7 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
-import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizzle/schema";
+import { mapLikes, maps, notificationLikes, notifications } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../trpc";
 import { generateNotificationId } from "../notification";
 
@@ -13,39 +13,39 @@ export const mapLikeRouter = {
       const { mapId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
-        const isFirstLike = await tx.query.MapLikes.findFirst({
-          where: and(eq(MapLikes.userId, session.user.id), eq(MapLikes.mapId, mapId)),
-        }).then((res) => !res);
+        const isFirstLike = await tx.query.mapLikes
+          .findFirst({ where: { userId: session.user.id, mapId } })
+          .then((res) => !res);
 
         await tx
-          .insert(MapLikes)
+          .insert(mapLikes)
           .values({ userId: session.user.id, mapId, hasLiked: true })
-          .onConflictDoUpdate({ target: [MapLikes.userId, MapLikes.mapId], set: { hasLiked: newState } });
+          .onConflictDoUpdate({ target: [mapLikes.userId, mapLikes.mapId], set: { hasLiked: newState } });
 
         const newLikeCount = await tx
           .select({ c: count() })
-          .from(MapLikes)
-          .where(and(eq(MapLikes.mapId, mapId), eq(MapLikes.hasLiked, true)))
+          .from(mapLikes)
+          .where(and(eq(mapLikes.mapId, mapId), eq(mapLikes.hasLiked, true)))
           .then((rows) => rows[0]?.c ?? 0);
 
-        await tx.update(Maps).set({ likeCount: newLikeCount }).where(eq(Maps.id, mapId));
+        await tx.update(maps).set({ likeCount: newLikeCount }).where(eq(maps.id, mapId));
 
         if (isFirstLike) {
-          const map = await tx.query.Maps.findFirst({
-            where: eq(Maps.id, mapId),
+          const map = await tx.query.maps.findFirst({
+            where: { id: mapId },
             columns: { creatorId: true },
           });
 
           if (map && map.creatorId !== session.user.id) {
             const notificationId = generateNotificationId();
 
-            await tx.insert(Notifications).values({
+            await tx.insert(notifications).values({
               id: notificationId,
               recipientId: map.creatorId,
               type: "LIKE",
             });
 
-            await tx.insert(NotificationLikes).values({
+            await tx.insert(notificationLikes).values({
               notificationId,
               likerId: session.user.id,
               mapId,

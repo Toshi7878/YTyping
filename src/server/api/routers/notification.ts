@@ -1,8 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { and, type DBQueryConfig, desc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
-import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
+import { notifications } from "@/server/drizzle/schema";
 import { bookmarkedMapExists } from "../lib/map";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
@@ -12,10 +12,12 @@ export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {
     const { db, session } = ctx;
 
-    const isUnreadNotificationFound = await db.query.Notifications.findFirst({
-      columns: { checked: true },
-      where: and(eq(Notifications.recipientId, session.user.id), eq(Notifications.checked, false)),
-    }).then((res) => res !== undefined);
+    const isUnreadNotificationFound = await db.query.notifications
+      .findFirst({
+        columns: { checked: true },
+        where: { recipientId: session.user.id, checked: false },
+      })
+      .then((res) => res !== undefined);
 
     return isUnreadNotificationFound;
   }),
@@ -33,9 +35,9 @@ export const notificationRouter = {
         playCount: false,
         tags: false,
       },
-      extras: (table) => ({
-        hasBookmarked: bookmarkedMapExists(db, session, table.id).as("has_bookmarked"),
-      }),
+      extras: {
+        hasBookmarked: bookmarkedMapExists(db, session).as("has_bookmarked"),
+      },
       with: {
         creator: { columns: { id: true, name: true } },
         difficulty: {
@@ -55,19 +57,19 @@ export const notificationRouter = {
           },
         },
         mapLikes: {
-          where: and(eq(MapLikes.userId, session.user.id)),
+          where: { userId: session.user.id },
           columns: { hasLiked: true },
           limit: 1,
         },
         results: {
-          where: and(eq(Results.userId, session.user.id)),
+          where: { userId: session.user.id },
           columns: { rank: true, updatedAt: true },
           limit: 1,
         },
       },
-    } satisfies DBQueryConfig;
+    } as const;
 
-    const notifications = await db.query.Notifications.findMany({
+    const notifications = await db.query.notifications.findMany({
       columns: {
         id: true,
         type: true,
@@ -116,13 +118,14 @@ export const notificationRouter = {
           },
         },
       },
-      where: eq(Notifications.recipientId, session.user.id),
-      orderBy: desc(Notifications.updatedAt),
+      where: { recipientId: session.user.id },
+      orderBy: { updatedAt: "desc" },
       limit,
       offset,
     });
 
-    const toMapListItem = (map: (typeof notifications)[number]["overTake"]["map"], previewSpeed?: number) => {
+    type NotificationMap = NonNullable<NonNullable<(typeof notifications)[number]["overTake"]>["map"]>;
+    const toMapListItem = (map: NotificationMap, previewSpeed?: number) => {
       return {
         id: map.id,
         updatedAt: map.updatedAt,
@@ -234,9 +237,9 @@ export const notificationRouter = {
     const { db, session } = ctx;
 
     await db
-      .update(Notifications)
+      .update(notifications)
       .set({ checked: true })
-      .where(and(eq(Notifications.recipientId, session.user.id), eq(Notifications.checked, false)));
+      .where(and(eq(notifications.recipientId, session.user.id), eq(notifications.checked, false)));
   }),
 } satisfies TRPCRouterRecord;
 

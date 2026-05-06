@@ -1,6 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { UserOptions } from "@/server/drizzle/schema";
+import { userOptions } from "@/server/drizzle/schema";
 import { UpsertUserOptionSchema } from "@/validator/user/option";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
@@ -9,9 +8,9 @@ export const userOptionRouter = {
     const { db, session } = ctx;
     if (!session) return null;
 
-    const userOption = await db.query.UserOptions.findFirst({
+    const userOption = await db.query.userOptions.findFirst({
       columns: { userId: false },
-      where: eq(UserOptions.userId, session.user.id),
+      where: { userId: session.user.id },
     });
 
     return userOption ?? null;
@@ -20,20 +19,20 @@ export const userOptionRouter = {
   upsert: protectedProcedure.input(UpsertUserOptionSchema).mutation(async ({ input, ctx }) => {
     const { db, session } = ctx;
 
-    const [newUserOptions] = await db
-      .insert(UserOptions)
+    const [newuserOptions] = await db
+      .insert(userOptions)
       .values({ userId: session.user.id, ...input })
-      .onConflictDoUpdate({ target: [UserOptions.userId], set: { ...input } })
+      .onConflictDoUpdate({ target: [userOptions.userId], set: { ...input } })
       .returning({
-        presenceState: UserOptions.presenceState,
-        hideUserStats: UserOptions.hideUserStats,
-        mapListLayout: UserOptions.mapListLayout,
+        presenceState: userOptions.presenceState,
+        hideUserStats: userOptions.hideUserStats,
+        mapListLayout: userOptions.mapListLayout,
       });
 
-    if (!newUserOptions) {
+    if (!newuserOptions) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    return newUserOptions;
+    return newuserOptions;
   }),
 } satisfies TRPCRouterRecord;
