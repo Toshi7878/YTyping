@@ -1,37 +1,27 @@
 "use client";
-import type React from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { importMapFromTextAutoDetect } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
+import { FileImportButton } from "@/ui/file-import-button";
 import { overlay } from "@/ui/overlay";
 import { decodeText } from "@/utils/text-decoder";
-
-const readFileAsText = async (file: File): Promise<string> => {
-  const buffer = await file.arrayBuffer();
-  return decodeText(buffer);
-};
 
 export const LrcImportButton = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileSelect = async (file: File) => {
     try {
-      const content = await readFileAsText(file);
-      setText(content);
+      const buffer = await file.arrayBuffer();
+      setText(decodeText(buffer));
     } catch {
       toast.error("ファイル読み込みエラー");
-    } finally {
-      e.target.value = "";
     }
   };
 
-  const handleConfirm = async () => {
+  const handleImport = async () => {
     if (!text.trim()) {
       toast.error("テキストが空です");
       return;
@@ -60,8 +50,6 @@ export const LrcImportButton = () => {
 
   return (
     <>
-      <input type="file" hidden ref={fileInputRef} accept=".lrc,.json" onChange={handleFileChange} />
-
       <Button size="sm" onClick={() => setOpen(true)}>
         lrcインポート
       </Button>
@@ -72,9 +60,15 @@ export const LrcImportButton = () => {
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
-          <Button size="sm" variant="outline" className="self-start" onClick={() => fileInputRef.current?.click()}>
+          <FileImportButton
+            accept=".lrc,.json"
+            size="sm"
+            variant="outline"
+            className="self-start"
+            onFileSelect={handleFileSelect}
+          >
             lrcファイルから読み込む
-          </Button>
+          </FileImportButton>
 
           <textarea
             className="h-64 w-full resize-y rounded-md border bg-background p-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -85,7 +79,7 @@ export const LrcImportButton = () => {
         </div>
 
         <DialogFooter>
-          <Button onClick={handleConfirm}>確定</Button>
+          <Button onClick={handleImport}>確定</Button>
         </DialogFooter>
       </DialogWithContent>
     </>
