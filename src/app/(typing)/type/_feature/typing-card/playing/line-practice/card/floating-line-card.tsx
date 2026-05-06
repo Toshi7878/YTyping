@@ -1,45 +1,16 @@
-import { DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensors } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
-
-import { useState } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { useLineResultByIndex, useSelectLineIndexState } from "@/app/(typing)/type/_feature/atoms/line-results";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/ui/card";
 import { cn } from "@/utils/cn";
+import { useDraggablePosition } from "@/utils/hooks/use-draggable-position";
 import { usePlayingInputModeState } from "../../../../atoms/typing-word";
 import { moveSetLine } from "../../move-line";
 import { ResultCardContent } from "./card-content";
 import { ResultCardFooter } from "./card-footer";
 
-const ACTIVATION_CONSTRAINT = { distance: 5 };
-
 export const FloatingPracticeLineCard = () => {
-  const [{ x, y }, setCoordinates] = useState({ x: 0, y: 0 });
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: ACTIVATION_CONSTRAINT }),
-    useSensor(TouchSensor, { activationConstraint: ACTIVATION_CONSTRAINT }),
-  );
-
-  return (
-    <DndContext
-      sensors={sensors}
-      onDragEnd={({ delta }) => {
-        setCoordinates(({ x, y }) => ({
-          x: x + delta.x,
-          y: y + delta.y,
-        }));
-      }}
-    >
-      <DraggableCard x={x} y={y} />
-    </DndContext>
-  );
-};
-
-const DraggableCard = ({ x, y }: { x: number; y: number }) => {
-  const { attributes, isDragging, listeners, setNodeRef, transform } = useDraggable({
-    id: "practice-line-card",
-  });
+  const { dragProps, isDragging, wasDraggedRef, x, y } = useDraggablePosition();
   const map = useBuiltMapState();
   const lineSelectIndex = useSelectLineIndexState();
   const inputMode = usePlayingInputModeState();
@@ -70,19 +41,17 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
 
   return (
     <Card
-      {...listeners}
-      {...attributes}
-      ref={setNodeRef}
+      {...dragProps}
       style={{
-        transform: CSS.Translate.toString(
-          transform ? { x: x + transform.x, y: y + transform.y, scaleX: 1, scaleY: 1 } : { x, y, scaleX: 1, scaleY: 1 },
-        ),
+        transform: `translate3d(${x}px, ${y}px, 0)`,
       }}
       className={cn(
-        "practice-card relative top-4 z-10 hidden h-fit max-w-4xl border py-1.5 sm:block",
+        "practice-card relative top-4 z-10 hidden h-fit max-w-4xl touch-none select-none border py-1.5 sm:block",
         isDragging ? "cursor-grabbing" : "cursor-grab",
       )}
       onClick={() => {
+        if (wasDraggedRef.current) return;
+
         const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
         if (seekCount) {
           moveSetLine(seekCount);
