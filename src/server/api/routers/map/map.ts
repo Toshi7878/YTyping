@@ -2,6 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, max, sql } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
+import { env } from "@/env";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, users } from "@/server/drizzle/schema";
@@ -96,6 +97,8 @@ export const mapRouter = {
     }),
 
   upsert: protectedProcedure.input(upsertMapItemSchema).mutation(async ({ input, ctx }) => {
+    if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
+
     const { db, session } = ctx;
     const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
     const { id: userId, role: userRole } = session.user;

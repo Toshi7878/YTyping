@@ -11,7 +11,7 @@ export interface FileUploadParams {
 }
 
 export const uploadPublicFile = async (params: FileUploadParams): Promise<void> => {
-  if (env.VERCEL_ENV === "production") {
+  if (env.R2_ACCOUNT_ID) {
     return upsertPublicToR2(params);
   }
 

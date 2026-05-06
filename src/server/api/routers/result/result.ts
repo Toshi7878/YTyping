@@ -1,6 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
+import { env } from "@/env";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
@@ -43,6 +44,8 @@ export const resultRouter = {
   }),
 
   upsert: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
+    if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
+
     const { session } = ctx;
     const { id: userId } = session.user;
     const { mapId, lineResults, status } = input;
