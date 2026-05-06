@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useIsSearching } from "@/domain/result/list/list";
+import { useIsSearching } from "@/shared/result/list/list";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { useResultListFilterQueryStates } from "../search-params";

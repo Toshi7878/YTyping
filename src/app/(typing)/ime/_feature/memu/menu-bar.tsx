@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { ComponentProps } from "react";
-import { VolumeRange } from "@/domain/volume-range";
+import { VolumeRange } from "@/shared/volume-range";
 import { Button } from "@/ui/button";
 import start from "../../_img/control.png";
 import gear from "../../_img/gear.png";

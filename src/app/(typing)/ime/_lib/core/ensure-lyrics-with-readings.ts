@@ -1,4 +1,4 @@
-import { replaceReadingWithCustomDict } from "@/domain/morph/replace-reading-with-custom-dict";
+import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const ensureLyricsWithReadings = async (comparisonLyrics: string[][]) => {

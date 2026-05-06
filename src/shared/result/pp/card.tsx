@@ -2,9 +2,9 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
-import { RatingBadge } from "@/domain/map/rating/badge";
-import { MapThumbnailImage } from "@/domain/map/thumbnail-image";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
+import { RatingBadge } from "@/shared/map/rating/badge";
+import { MapThumbnailImage } from "@/shared/map/thumbnail-image";
 import { useTypingLinkMode } from "@/store/typing-link-mode";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail } from "@/ui/card";

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
 import { editDb } from "@/app/edit/_lib/indexed-db";
-import { CreatedMapListByVideoId } from "@/domain/map/list/created-video";
+import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";
 import { InputFormField } from "@/ui/input/input-form-field";

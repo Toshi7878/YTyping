@@ -5,7 +5,7 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import type { DBType } from "@/server/drizzle/client";
 import { mapDifficulties, mapLikes, maps, resultClaps, resultStatuses, results, users } from "@/server/drizzle/schema";
 import { SelectResultPpListApiSchema } from "@/validator/result/pp";
-import { TOTAL_PP_TOP_N } from "../../../../domain/result/pp/calc";
+import { TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
 import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";

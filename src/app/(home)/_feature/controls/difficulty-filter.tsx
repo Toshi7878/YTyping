@@ -2,7 +2,7 @@
 
 import type { VariantProps } from "class-variance-authority";
 import { useEffect, useState } from "react";
-import { DIFFICULTY_TIERS } from "@/domain/map/rating/badge";
+import { DIFFICULTY_TIERS } from "@/shared/map/rating/badge";
 import { Button, type buttonVariants } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DualRangeSlider } from "@/ui/dual-range-slider";

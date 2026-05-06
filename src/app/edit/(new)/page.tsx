@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CreatedMapListByVideoId } from "@/domain/map/list/created-video";
+import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 import { SimilarMapListByVideoId } from "../_components/similar-map-list";

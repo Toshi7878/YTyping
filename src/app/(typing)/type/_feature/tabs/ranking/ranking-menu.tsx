@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
-import { useToggleClapMutation } from "@/domain/result/clap";
+import { useToggleClapMutation } from "@/shared/result/clap";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";

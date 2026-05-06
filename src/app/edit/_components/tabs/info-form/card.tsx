@@ -24,14 +24,14 @@ import { editDb } from "@/app/edit/_lib/indexed-db";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { useIsBuckupQueryState } from "@/app/edit/_lib/search-params";
 import { useSession } from "@/auth/client";
+import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import {
   calcChunkCounts,
   calculateDuration,
   calculateSpeedDifficulty,
   calculateTotalNotes,
   getStartLine,
-} from "@/domain/map/built-map-helper";
-import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
+} from "@/shared/map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { CardWithContent } from "@/ui/card";

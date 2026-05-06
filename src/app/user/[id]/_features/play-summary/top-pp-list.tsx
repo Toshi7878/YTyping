@@ -2,8 +2,8 @@
 
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { TOTAL_PP_TOP_N } from "@/domain/result/pp/calc";
-import { PPResultCard } from "@/domain/result/pp/card";
+import { TOTAL_PP_TOP_N } from "@/shared/result/pp/calc";
+import { PPResultCard } from "@/shared/result/pp/card";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";

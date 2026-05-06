@@ -1,5 +1,5 @@
 "use client";
-import { VolumeRange } from "@/domain/volume-range";
+import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";
 import { FilterFieldsPopover } from "./filter-popover";
 import { SearchInputs } from "./search-input-fields";

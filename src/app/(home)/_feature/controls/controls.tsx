@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "@/auth/client";
-import { VolumeRange } from "@/domain/volume-range";
+import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";
 import { CardWithContent } from "@/ui/card";
 import { cn } from "@/utils/cn";

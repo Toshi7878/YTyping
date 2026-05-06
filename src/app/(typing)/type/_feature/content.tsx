@@ -12,7 +12,7 @@ import {
   extractChangeCSSIndexes,
   extractTypingLineIndexes,
   hasAlphabetChunk,
-} from "@/domain/map/built-map-helper";
+} from "@/shared/map/built-map-helper";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";

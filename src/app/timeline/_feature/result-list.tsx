@@ -1,5 +1,5 @@
 "use client";
-import { ResultList } from "@/domain/result/list/list";
+import { ResultList } from "@/shared/result/list/list";
 import { useResultListFilterQueryStates } from "./search-params";
 
 export const TimelineResultList = () => {
