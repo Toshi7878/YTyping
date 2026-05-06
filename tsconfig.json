@@ -9,14 +9,8 @@
     "moduleResolution": "nodenext",
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./src/*"] },
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
