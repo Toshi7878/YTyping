@@ -107,9 +107,6 @@ importers:
       html-react-parser:
         specifier: ^5.2.6
         version: 5.2.17(@types/react@19.2.14)(react@19.2.5)
-      iconv-lite:
-        specifier: ^0.7.0
-        version: 0.7.2
       jotai:
         specifier: ^2.20.0
         version: 2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
@@ -122,9 +119,6 @@ importers:
       jotai-uncontrolled:
         specifier: ^0.4.1
         version: 0.4.1(jotai@2.20.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
-      jschardet:
-        specifier: ^3.1.4
-        version: 3.1.4
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.5)
@@ -3618,10 +3612,6 @@ packages:
 
   jsbi@4.3.2:
     resolution: {integrity: sha512-9fqMSQbhJykSeii05nxKl4m6Eqn2P6rOlYiS+C5Dr/HPIU/7yZxu5qzbs40tgaFORiw2Amd0mirjxatXYMkIew==}
-
-  jschardet@3.1.4:
-    resolution: {integrity: sha512-/kmVISmrwVwtyYU40iQUOp3SUPk2dhNCMsZBQX0R1/jZ8maaXJ/oZIzUOiyOqcgtLnETFKYChbJ5iDC/eWmFHg==}
-    engines: {node: '>=0.1.90'}
 
   jsesc@3.1.0:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
@@ -8134,8 +8124,6 @@ snapshots:
   js-tokens@4.0.0: {}
 
   jsbi@4.3.2: {}
-
-  jschardet@3.1.4: {}
 
   jsesc@3.1.0: {}
 

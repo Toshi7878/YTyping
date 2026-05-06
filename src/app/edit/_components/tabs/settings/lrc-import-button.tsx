@@ -1,6 +1,4 @@
 "use client";
-import iconv from "iconv-lite";
-import jschardet from "jschardet";
 import type React from "react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -8,12 +6,11 @@ import { importMapFromTextAutoDetect } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
 import { overlay } from "@/ui/overlay";
+import { decodeText } from "@/utils/text-decoder";
 
 const readFileAsText = async (file: File): Promise<string> => {
   const buffer = await file.arrayBuffer();
-  const bytes = Buffer.from(buffer);
-  const { encoding } = jschardet.detect(bytes);
-  return iconv.decode(bytes, encoding ?? "UTF-8");
+  return decodeText(buffer);
 };
 
 export const LrcImportButton = () => {
