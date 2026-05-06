@@ -1,6 +1,6 @@
+import { createHash } from "node:crypto";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import md5 from "md5";
 import { headers } from "next/headers";
 import { cache } from "react";
 import { env } from "@/env";
@@ -15,6 +15,8 @@ const baseUrl =
     : env.VERCEL_ENV === "preview"
       ? "https://ytyping-dev.vercel.app"
       : "http://localhost:3000";
+
+const createMd5Hash = (value: string) => createHash("md5").update(value).digest("hex");
 
 export const auth = betterAuth({
   baseURL: baseUrl,
@@ -52,7 +54,7 @@ export const auth = betterAuth({
       clientId: env.AUTH_DISCORD_ID,
       clientSecret: env.AUTH_DISCORD_SECRET,
       mapProfileToUser: ({ email }) => {
-        const emailHash = md5(email);
+        const emailHash = createMd5Hash(email);
         return { email: emailHash, image: undefined, name: undefined };
       },
     },
@@ -60,7 +62,7 @@ export const auth = betterAuth({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
       mapProfileToUser: ({ email }) => {
-        const emailHash = md5(email);
+        const emailHash = createMd5Hash(email);
         return { email: emailHash, name: undefined, image: undefined };
       },
     },

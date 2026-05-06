@@ -61,24 +61,11 @@
           "options": {
             "filenameCases": ["kebab-case"]
           }
-        },
-        "noRestrictedImports": {
-          "options": {
-            "paths": {
-              "use-breakpoint": "Using use-breakpoint is not encouraged"
-            }
-          }
         }
       }
     }
   },
   "overrides": [
-    {
-      "includes": ["**/ime/_feature/user.js"],
-      "linter": {
-        "enabled": false
-      }
-    },
     {
       "includes": ["**/layout.tsx", "**/page.tsx", "**/loading.tsx", "**/error.tsx", "**/not-found.tsx"],
       "linter": {

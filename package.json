@@ -68,7 +68,6 @@
     "lucide-react": "^0.577.0",
     "lyrics-ime-typing-engine": "^1.2.14",
     "lyrics-typing-engine": "^2.0.5",
-    "md5": "^2.3.0",
     "nanoid": "^5.1.6",
     "next": "16.2.4",
     "next-themes": "^0.4.6",
@@ -91,7 +90,6 @@
     "tailwindcss-animate": "^1.0.7",
     "trpc-to-openapi": "^3.2.0",
     "ua-parser-js": "^2.0.5",
-    "use-breakpoint": "^4.0.6",
     "zod": "^4.1.11"
   },
   "devDependencies": {
