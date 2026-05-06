@@ -5,7 +5,9 @@ import { TimelineResultList } from "./_feature/result-list";
 
 export default async function Home({ searchParams }: PageProps<"/timeline">) {
   const params = loadResultListSearchParams(await searchParams);
-  await prefetchAsync(trpc.result.list.get.infiniteQueryOptions(params));
+  await prefetchAsync(
+    trpc.result.list.get.infiniteQueryOptions(params, { getNextPageParam: ({ nextCursor }) => nextCursor }),
+  );
 
   return (
     <HydrateClient>

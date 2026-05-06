@@ -6,7 +6,7 @@ const store = getDefaultStore();
 const typingLinkModeAtom = atomWithStorage<"type" | "ime">(
   "typingLinkMode",
   "type",
-  createJSONStorage(() => sessionStorage),
+  createJSONStorage<"type" | "ime">(() => sessionStorage),
 );
 export const useTypingLinkMode = () => useAtomValue(typingLinkModeAtom, { store });
 export const setTypingLinkMode = (value: "type" | "ime") => store.set(typingLinkModeAtom, value);

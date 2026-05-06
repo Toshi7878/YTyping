@@ -3,12 +3,10 @@
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "isolatedModules": true,
     "noEmit": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
@@ -19,13 +17,20 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
     "noFallthroughCasesInSwitch": true,
-    "allowJs": true
+    "allowJs": true,
+    "noUncheckedSideEffectImports": false,
+    "types": ["node", "react", "react-dom", "youtube"],
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "resolveJsonModule": true,
+    "strict": true
   },
+  "rootDir": "./src",
   "include": [
     "next-env.d.ts",
     "src/**/*.ts",

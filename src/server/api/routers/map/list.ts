@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, type SQL, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
@@ -257,7 +257,7 @@ function mapOrderBy(sort: z.output<typeof mapSortSchema>, searchInput: z.output<
 }
 
 function filterByDifficulty({ minRate, maxRate }: { minRate?: number | null; maxRate?: number | null }) {
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (minRate) {
     conditions.push(gte(mapDifficulties.rating, minRate));
@@ -326,7 +326,7 @@ export const filterByMapVisibility = (
 const filterByChunkCount = (
   input: Pick<z.output<typeof MapSearchFilterSchema>, "maxKanaChunkCount" | "minAlphabetChunkCount">,
 ) => {
-  const conditions = [];
+  const conditions: SQL[] = [];
   const { maxKanaChunkCount, minAlphabetChunkCount } = input ?? {};
 
   if (typeof maxKanaChunkCount === "number" && maxKanaChunkCount >= 0) {

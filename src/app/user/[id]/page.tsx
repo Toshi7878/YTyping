@@ -16,19 +16,35 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
         return [
           trpc.user.stats.get.queryOptions({ userId: numericId }),
           trpc.user.stats.getActivityOldestYear.queryOptions({ userId: numericId }),
-          trpc.result.pp.userTopList.infiniteQueryOptions({ playerId: numericId }),
+          trpc.result.pp.userTopList.infiniteQueryOptions(
+            { playerId: numericId },
+            { getNextPageParam: ({ nextCursor }) => nextCursor },
+          ),
         ];
       case "maps":
-        return [trpc.map.list.get.infiniteQueryOptions({ creatorId: numericId, sort: {} })];
+        return [
+          trpc.map.list.get.infiniteQueryOptions(
+            { creatorId: numericId, sort: {} },
+            { getNextPageParam: ({ nextCursor }) => nextCursor },
+          ),
+        ];
       case "liked":
-        return [trpc.map.list.get.infiniteQueryOptions({ likerId: numericId, sort: { type: "like", isDesc: true } })];
+        return [
+          trpc.map.list.get.infiniteQueryOptions(
+            { likerId: numericId, sort: { type: "like", isDesc: true } },
+            { getNextPageParam: ({ nextCursor }) => nextCursor },
+          ),
+        ];
       case "bookmarks": {
         if (bookmarkListId) {
           return [
-            trpc.map.list.get.infiniteQueryOptions({
-              bookmarkListId: Number(bookmarkListId),
-              sort: { type: "bookmark", isDesc: true },
-            }),
+            trpc.map.list.get.infiniteQueryOptions(
+              {
+                bookmarkListId: Number(bookmarkListId),
+                sort: { type: "bookmark", isDesc: true },
+              },
+              { getNextPageParam: ({ nextCursor }) => nextCursor },
+            ),
           ];
         }
         return [trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: numericId })];

@@ -1,6 +1,5 @@
 import { readdir, readFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
 import { sql as rawSql } from "drizzle-orm";
@@ -104,8 +103,6 @@ function parseMapDifficultyRow(row: Record<string, string>) {
 }
 
 async function main() {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
   const tableDir = join(__dirname, "table");
   const mapJsonDir = join(__dirname, "map-json");
   const sqlDir = join(__dirname, "sql");

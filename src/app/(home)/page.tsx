@@ -10,7 +10,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const session = await getSession();
 
   await Promise.all([
-    prefetchAsync(trpc.map.list.get.infiniteQueryOptions({ ...mapListFilterParams, sort })),
+    prefetchAsync(
+      trpc.map.list.get.infiniteQueryOptions(
+        { ...mapListFilterParams, sort },
+        { getNextPageParam: ({ nextCursor }) => nextCursor },
+      ),
+    ),
     session ? prefetchAsync(trpc.map.bookmark.lists.getForSession.queryOptions()) : Promise.resolve(),
   ]);
 
