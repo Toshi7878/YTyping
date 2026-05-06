@@ -27,7 +27,8 @@
     "esModuleInterop": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strict": true
   },
   "rootDir": "./src",
   "include": [
