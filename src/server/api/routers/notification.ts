@@ -2,7 +2,7 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
-import { notifications } from "@/server/drizzle/schema";
+import { type maps, notifications } from "@/server/drizzle/schema";
 import { bookmarkedMapExists } from "../lib/map";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
@@ -36,7 +36,7 @@ export const notificationRouter = {
         tags: false,
       },
       extras: {
-        hasBookmarked: bookmarkedMapExists(db, session).as("has_bookmarked"),
+        hasBookmarked: (map: typeof maps) => bookmarkedMapExists(db, session, map.id).as("has_bookmarked"),
       },
       with: {
         creator: { columns: { id: true, name: true } },
