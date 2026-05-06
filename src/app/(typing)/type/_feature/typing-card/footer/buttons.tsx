@@ -141,10 +141,10 @@ const LineMoveButton = () => {
 };
 
 const ResultListButton = () => {
-  const { InputModeToggleKey } = useTypingOptionsState();
+  const { inputModeToggleKey } = useTypingOptionsState();
   const [open, setOpen] = useState(false);
 
-  useHotkeys(InputModeToggleKey === "TAB" ? "F1" : "Tab", () => setOpen(true), {
+  useHotkeys(inputModeToggleKey === "TAB" ? "F1" : "Tab", () => setOpen(true), {
     enableOnFormTags: false,
     preventDefault: true,
   });
@@ -153,7 +153,7 @@ const ResultListButton = () => {
     <>
       <ButtonWithKbd
         buttonLabel="リスト"
-        kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
+        kbdLabel={inputModeToggleKey === "TAB" ? "F1" : "Tab"}
         onClickCapture={(event) => {
           event.stopPropagation();
           setOpen(true);

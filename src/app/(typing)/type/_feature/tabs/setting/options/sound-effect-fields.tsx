@@ -1,7 +1,7 @@
 import { useYTPlayer } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { playSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { VolumeRange } from "@/domain/volume-range";
-import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
 import { CheckboxCardGroup } from "@/ui/checkbox/checkbox";
 import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";

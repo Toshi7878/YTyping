@@ -1,7 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
-import { NotificationClaps, Notifications, ResultClaps, Results } from "@/server/drizzle/schema";
+import { notificationClaps, notifications, resultClaps, results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../../trpc";
 import { generateNotificationId } from "../notification";
 
@@ -13,30 +13,32 @@ export const resultClapRouter = {
       const { resultId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
-        const isFirstClap = await tx.query.ResultClaps.findFirst({
-          where: and(eq(ResultClaps.userId, session.user.id), eq(ResultClaps.resultId, resultId)),
-        }).then((res) => !res);
+        const isFirstClap = await tx.query.resultClaps
+          .findFirst({
+            where: { userId: session.user.id, resultId },
+          })
+          .then((res) => !res);
 
         await tx
-          .insert(ResultClaps)
+          .insert(resultClaps)
           .values({ userId: session.user.id, resultId, hasClapped: true })
           .onConflictDoUpdate({
-            target: [ResultClaps.userId, ResultClaps.resultId],
+            target: [resultClaps.userId, resultClaps.resultId],
             set: { hasClapped: newState },
           })
-          .returning({ hasClapped: ResultClaps.hasClapped });
+          .returning({ hasClapped: resultClaps.hasClapped });
 
         const newClapCount = await tx
           .select({ c: count() })
-          .from(ResultClaps)
-          .where(and(eq(ResultClaps.resultId, resultId), eq(ResultClaps.hasClapped, true)))
+          .from(resultClaps)
+          .where(and(eq(resultClaps.resultId, resultId), eq(resultClaps.hasClapped, true)))
           .then((rows) => rows[0]?.c ?? 0);
 
         const mapId = await tx
-          .update(Results)
+          .update(results)
           .set({ clapCount: newClapCount })
-          .where(eq(Results.id, resultId))
-          .returning({ mapId: Results.mapId })
+          .where(eq(results.id, resultId))
+          .returning({ mapId: results.mapId })
           .then((res) => res[0]?.mapId);
 
         if (!mapId) {
@@ -44,21 +46,21 @@ export const resultClapRouter = {
         }
 
         if (isFirstClap) {
-          const result = await tx.query.Results.findFirst({
-            where: eq(Results.id, resultId),
+          const result = await tx.query.results.findFirst({
+            where: { id: resultId },
             columns: { userId: true },
           });
 
           if (result && result.userId !== session.user.id) {
             const notificationId = generateNotificationId();
 
-            await tx.insert(Notifications).values({
+            await tx.insert(notifications).values({
               id: notificationId,
               recipientId: result.userId,
               type: "CLAP",
             });
 
-            await tx.insert(NotificationClaps).values({
+            await tx.insert(notificationClaps).values({
               notificationId,
               clapperId: session.user.id,
               resultId,

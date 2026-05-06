@@ -2,7 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { env } from "@/env";
-import { FixWordEditLogs, ReadingConversionDict } from "@/server/drizzle/schema";
+import { fixWordEditLogs, readingConversionDict } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
 
 export const morphRouter = {
@@ -25,21 +25,21 @@ export const morphRouter = {
   getCustomDict: protectedProcedure.query(async ({ ctx }) => {
     const dictionaryDict = await ctx.db
       .select({
-        surface: ReadingConversionDict.surface,
-        reading: ReadingConversionDict.reading,
+        surface: readingConversionDict.surface,
+        reading: readingConversionDict.reading,
       })
-      .from(ReadingConversionDict)
-      .where(eq(ReadingConversionDict.type, "DICTIONARY"))
-      .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
+      .from(readingConversionDict)
+      .where(eq(readingConversionDict.type, "DICTIONARY"))
+      .orderBy(desc(sql`char_length(${readingConversionDict.surface})`));
 
     const regexDict = await ctx.db
       .select({
-        surface: ReadingConversionDict.surface,
-        reading: ReadingConversionDict.reading,
+        surface: readingConversionDict.surface,
+        reading: readingConversionDict.reading,
       })
-      .from(ReadingConversionDict)
-      .where(eq(ReadingConversionDict.type, "REGEX"))
-      .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
+      .from(readingConversionDict)
+      .where(eq(readingConversionDict.type, "REGEX"))
+      .orderBy(desc(sql`char_length(${readingConversionDict.surface})`));
 
     return { dictionaryDict, regexDict };
   }),
@@ -49,7 +49,7 @@ export const morphRouter = {
     .mutation(async ({ input, ctx }) => {
       const { lyrics, word } = input;
 
-      await ctx.db.insert(FixWordEditLogs).values({ lyrics, word });
+      await ctx.db.insert(fixWordEditLogs).values({ lyrics, word });
     }),
 } satisfies TRPCRouterRecord;
 

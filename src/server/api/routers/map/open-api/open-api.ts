@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile } from "@/server/api/lib/storage";
-import { MapDifficulties, Maps, Users } from "@/server/drizzle/schema";
+import { mapDifficulties, maps, users } from "@/server/drizzle/schema";
 import { getByIdOpenApiResponseSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { OPENAPI_RATE_LIMITS } from "../../../lib/rate-limit-config";
@@ -37,39 +37,39 @@ export const mapOpenApiRouter = {
 
       const [mapInfo] = await db
         .select({
-          id: Maps.id,
+          id: maps.id,
           media: {
-            previewTime: Maps.previewTime,
-            thumbnailQuality: Maps.thumbnailQuality,
-            videoId: Maps.videoId,
+            previewTime: maps.previewTime,
+            thumbnailQuality: maps.thumbnailQuality,
+            videoId: maps.videoId,
           },
           info: {
-            tags: Maps.tags,
-            title: Maps.title,
-            artistName: Maps.artistName,
-            source: Maps.musicSource,
-            duration: Maps.duration,
+            tags: maps.tags,
+            title: maps.title,
+            artistName: maps.artistName,
+            source: maps.musicSource,
+            duration: maps.duration,
           },
           creator: {
-            id: Users.id,
-            name: Users.name,
-            comment: Maps.creatorComment,
+            id: users.id,
+            name: users.name,
+            comment: maps.creatorComment,
           },
           difficulty: {
-            romaKpmMedian: MapDifficulties.romaKpmMedian,
-            kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-            romaKpmMax: MapDifficulties.romaKpmMax,
-            kanaKpmMax: MapDifficulties.kanaKpmMax,
-            romaTotalNotes: MapDifficulties.romaTotalNotes,
-            kanaTotalNotes: MapDifficulties.kanaTotalNotes,
+            romaKpmMedian: mapDifficulties.romaKpmMedian,
+            kanaKpmMedian: mapDifficulties.kanaKpmMedian,
+            romaKpmMax: mapDifficulties.romaKpmMax,
+            kanaKpmMax: mapDifficulties.kanaKpmMax,
+            romaTotalNotes: mapDifficulties.romaTotalNotes,
+            kanaTotalNotes: mapDifficulties.kanaTotalNotes,
           },
-          createdAt: Maps.createdAt,
-          updatedAt: Maps.updatedAt,
+          createdAt: maps.createdAt,
+          updatedAt: maps.updatedAt,
         })
-        .from(Maps)
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .where(eq(Maps.id, mapId))
+        .from(maps)
+        .innerJoin(users, eq(users.id, maps.creatorId))
+        .innerJoin(mapDifficulties, eq(mapDifficulties.mapId, maps.id))
+        .where(eq(maps.id, mapId))
         .limit(1);
 
       if (!mapInfo) {

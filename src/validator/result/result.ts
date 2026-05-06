@@ -1,6 +1,6 @@
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-orm/zod";
 import z from "zod";
-import { ResultStatuses } from "@/server/drizzle/schema";
+import { resultStatuses } from "@/server/drizzle/schema";
 
 const CreateTypingResultJsonSchema = z.array(
   z.object({
@@ -31,7 +31,7 @@ const CreateTypingResultJsonSchema = z.array(
   }),
 );
 
-const CreateResultStatusSchema = createInsertSchema(ResultStatuses)
+const CreateResultStatusSchema = createInsertSchema(resultStatuses)
   .pick({
     rkpm: true,
     kpm: true,

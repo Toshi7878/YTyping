@@ -1,10 +1,10 @@
-import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
+import type { INPUT_MODE_KEY_TYPES, TIME_OFFSET_KEY_TYPES } from "@/server/drizzle/schema";
 import { LabeledSelect } from "@/ui/select/labeled-select";
 import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const HotKeySelectFields = () => {
-  const { timeOffsetAdjustKey, InputModeToggleKey } = useTypingOptionsState();
+  const { timeOffsetAdjustKey, inputModeToggleKey } = useTypingOptionsState();
 
   return (
     <section className="flex flex-col gap-2">
@@ -19,7 +19,7 @@ export const HotKeySelectFields = () => {
           ]}
           value={timeOffsetAdjustKey}
           onValueChange={(value) => {
-            setTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });
+            setTypingOptions({ timeOffsetAdjustKey: value as (typeof TIME_OFFSET_KEY_TYPES)[number] });
           }}
         />
       </div>
@@ -31,9 +31,9 @@ export const HotKeySelectFields = () => {
             { label: "Tab", value: "TAB" },
             { label: "無効化", value: "NONE" },
           ]}
-          value={InputModeToggleKey}
+          value={inputModeToggleKey}
           onValueChange={(value: string) => {
-            setTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] });
+            setTypingOptions({ inputModeToggleKey: value as (typeof INPUT_MODE_KEY_TYPES)[number] });
           }}
         />
       </div>

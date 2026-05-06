@@ -4,8 +4,8 @@ import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
-import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
+import type { LINE_COMPLETED_DISPLAY_TYPES, NEXT_DISPLAY_TYPES } from "@/server/drizzle/schema";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
@@ -157,7 +157,7 @@ const LineCompletedRadioGroup = () => {
       labelClassName="mb-2 block text-lg font-semibold"
       value={lineCompletedDisplay}
       onValueChange={(value) => {
-        setTypingOptions({ lineCompletedDisplay: value as (typeof lineCompletedDisplayEnum.enumValues)[number] });
+        setTypingOptions({ lineCompletedDisplay: value as (typeof LINE_COMPLETED_DISPLAY_TYPES)[number] });
       }}
       className="flex flex-row gap-5"
       items={items}
@@ -177,7 +177,7 @@ const NextDisplayRadioGroup = () => {
     <LabeledRadioGroup
       value={nextDisplay}
       onValueChange={(value) => {
-        setTypingOptions({ nextDisplay: value as (typeof nextDisplayEnum.enumValues)[number] });
+        setTypingOptions({ nextDisplay: value as (typeof NEXT_DISPLAY_TYPES)[number] });
       }}
       label="次の歌詞表示"
       className="flex flex-row gap-5"

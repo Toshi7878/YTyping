@@ -1,7 +1,7 @@
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
-import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "@/server/drizzle/schema";
+import { createInsertSchema, createUpdateSchema } from "drizzle-orm/zod";
+import { userImeTypingOptions, userOptions, userTypingOptions } from "@/server/drizzle/schema";
 
-export const CreateUserTypingOptionSchema = createInsertSchema(UserTypingOptions).pick({
+export const CreateUserTypingOptionSchema = createInsertSchema(userTypingOptions).pick({
   timeOffset: true,
   mainWordScrollStart: true,
   subWordScrollStart: true,
@@ -18,12 +18,12 @@ export const CreateUserTypingOptionSchema = createInsertSchema(UserTypingOptions
   nextDisplay: true,
   lineCompletedDisplay: true,
   timeOffsetAdjustKey: true,
-  InputModeToggleKey: true,
+  inputModeToggleKey: true,
   wordDisplay: true,
   isCaseSensitive: true,
 });
 
-export const CreateUserImeTypingOptionSchema = createInsertSchema(UserImeTypingOptions).pick({
+export const CreateUserImeTypingOptionSchema = createInsertSchema(userImeTypingOptions).pick({
   isCaseSensitive: true,
   enableIncludeRegex: true,
   insertEnglishSpaces: true,
@@ -32,7 +32,7 @@ export const CreateUserImeTypingOptionSchema = createInsertSchema(UserImeTypingO
   enableLargeVideoDisplay: true,
 });
 
-export const UpsertUserOptionSchema = createUpdateSchema(UserOptions).pick({
+export const UpsertUserOptionSchema = createUpdateSchema(userOptions).pick({
   presenceState: true,
   hideUserStats: true,
   mapListLayout: true,

@@ -4,7 +4,7 @@ import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
-import { MAP_CATEGORIES, MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
+import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { calcRating } from "../../../../domain/map/rating/calc";
@@ -22,48 +22,48 @@ export const mapRouter = {
 
     const mapInfo = await db
       .select({
-        id: Maps.id,
+        id: maps.id,
         media: {
-          previewTime: Maps.previewTime,
-          thumbnailQuality: Maps.thumbnailQuality,
-          videoId: Maps.videoId,
+          previewTime: maps.previewTime,
+          thumbnailQuality: maps.thumbnailQuality,
+          videoId: maps.videoId,
         },
         info: {
-          tags: Maps.tags,
-          title: Maps.title,
-          artistName: Maps.artistName,
-          source: Maps.musicSource,
-          duration: Maps.duration,
-          visibility: Maps.visibility,
+          tags: maps.tags,
+          title: maps.title,
+          artistName: maps.artistName,
+          source: maps.musicSource,
+          duration: maps.duration,
+          visibility: maps.visibility,
         },
         creator: {
-          id: Users.id,
-          name: Users.name,
-          comment: Maps.creatorComment,
+          id: users.id,
+          name: users.name,
+          comment: maps.creatorComment,
         },
         difficulty: {
-          romaKpmMedian: MapDifficulties.romaKpmMedian,
-          kanaKpmMedian: MapDifficulties.kanaKpmMedian,
-          romaKpmMax: MapDifficulties.romaKpmMax,
-          kanaKpmMax: MapDifficulties.kanaKpmMax,
-          romaTotalNotes: MapDifficulties.romaTotalNotes,
-          kanaTotalNotes: MapDifficulties.kanaTotalNotes,
-          rating: MapDifficulties.rating,
+          romaKpmMedian: mapDifficulties.romaKpmMedian,
+          kanaKpmMedian: mapDifficulties.kanaKpmMedian,
+          romaKpmMax: mapDifficulties.romaKpmMax,
+          kanaKpmMax: mapDifficulties.kanaKpmMax,
+          romaTotalNotes: mapDifficulties.romaTotalNotes,
+          kanaTotalNotes: mapDifficulties.kanaTotalNotes,
+          rating: mapDifficulties.rating,
         },
         like: {
-          hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
+          hasLiked: sql`COALESCE(${mapLikes.hasLiked}, false)`.mapWith(Boolean),
         },
         bookmark: {
           hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
         },
-        createdAt: Maps.createdAt,
-        updatedAt: Maps.updatedAt,
+        createdAt: maps.createdAt,
+        updatedAt: maps.updatedAt,
       })
-      .from(Maps)
-      .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, session?.user.id ?? 0)))
-      .where(eq(Maps.id, mapId))
+      .from(maps)
+      .innerJoin(users, eq(users.id, maps.creatorId))
+      .innerJoin(mapDifficulties, eq(mapDifficulties.mapId, maps.id))
+      .leftJoin(mapLikes, and(eq(mapLikes.mapId, maps.id), eq(mapLikes.userId, session?.user.id ?? 0)))
+      .where(eq(maps.id, mapId))
       .limit(1)
       .then((rows) => rows[0]);
 
@@ -102,9 +102,9 @@ export const mapRouter = {
 
     const existingMapRow =
       typeof mapId === "number"
-        ? await db.query.Maps.findFirst({
+        ? await db.query.maps.findFirst({
             columns: { publishedAt: true, creatorId: true },
-            where: eq(Maps.id, mapId),
+            where: { id: mapId },
           })
         : null;
 
@@ -124,7 +124,7 @@ export const mapRouter = {
         const nextId = await getNextMapId(tx);
 
         newId = await tx
-          .insert(Maps)
+          .insert(maps)
           .values({
             id: nextId,
             ...mapInfo,
@@ -133,11 +133,11 @@ export const mapRouter = {
             publishedAt: mapInfo.visibility === "PUBLIC" ? new Date() : undefined,
             visibility: mapInfo.visibility,
           })
-          .returning({ id: Maps.id })
+          .returning({ id: maps.id })
           .then((res) => res[0]?.id);
       } else {
         newId = await tx
-          .update(Maps)
+          .update(maps)
           .set({
             ...mapInfo,
             category: getMapCategories(rawMapJson),
@@ -146,8 +146,8 @@ export const mapRouter = {
               ? { publishedAt: new Date() }
               : {}),
           })
-          .where(eq(Maps.id, mapId))
-          .returning({ id: Maps.id })
+          .where(eq(maps.id, mapId))
+          .returning({ id: maps.id })
           .then((res) => res[0]?.id);
       }
 
@@ -159,9 +159,9 @@ export const mapRouter = {
       const rating = calcRating(builtMapLines);
 
       await tx
-        .insert(MapDifficulties)
+        .insert(mapDifficulties)
         .values({ mapId: newId, ...mapDifficulty, rating })
-        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: { ...mapDifficulty, rating } });
+        .onConflictDoUpdate({ target: [mapDifficulties.mapId], set: { ...mapDifficulty, rating } });
 
       await uploadPublicFile({
         key: `map-json/${mapId === null ? newId : mapId}.json`,
@@ -182,8 +182,8 @@ export const mapRouter = {
 
 const getNextMapId = async (db: TXType) => {
   const maxId = await db
-    .select({ maxId: max(Maps.id) })
-    .from(Maps)
+    .select({ maxId: max(maps.id) })
+    .from(maps)
     .then((rows) => rows[0]?.maxId ?? 0);
 
   return maxId + 1;

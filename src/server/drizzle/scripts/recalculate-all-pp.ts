@@ -8,28 +8,28 @@ import { desc, eq } from "drizzle-orm";
 import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "@/domain/result/pp/calc";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
-import { ResultStatuses, Results, UserStats } from "@/server/drizzle/schema";
+import { resultStatuses, results, userStats } from "../schema";
 
 const BATCH = 150;
 
 async function main() {
   const rows = await db
     .select({
-      resultId: Results.id,
-      starRatingSnapshot: ResultStatuses.starRatingSnapshot,
-      romaType: ResultStatuses.romaType,
-      kanaType: ResultStatuses.kanaType,
-      flickType: ResultStatuses.flickType,
-      englishType: ResultStatuses.englishType,
-      spaceType: ResultStatuses.spaceType,
-      symbolType: ResultStatuses.symbolType,
-      numType: ResultStatuses.numType,
-      miss: ResultStatuses.miss,
-      clearRate: ResultStatuses.clearRate,
-      minPlaySpeed: ResultStatuses.minPlaySpeed,
+      resultId: results.id,
+      starRatingSnapshot: resultStatuses.starRatingSnapshot,
+      romaType: resultStatuses.romaType,
+      kanaType: resultStatuses.kanaType,
+      flickType: resultStatuses.flickType,
+      englishType: resultStatuses.englishType,
+      spaceType: resultStatuses.spaceType,
+      symbolType: resultStatuses.symbolType,
+      numType: resultStatuses.numType,
+      miss: resultStatuses.miss,
+      clearRate: resultStatuses.clearRate,
+      minPlaySpeed: resultStatuses.minPlaySpeed,
     })
-    .from(Results)
-    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
+    .from(results)
+    .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id));
 
   if (rows.length === 0) {
     console.log("対象のスコアがありません。終了します。");
@@ -44,13 +44,13 @@ async function main() {
       for (const row of chunk) {
         const rawInput = buildRawPPInputFromResultStatus(row);
         const pp = calcRawPP(rawInput, row.starRatingSnapshot);
-        await tx.update(ResultStatuses).set({ pp }).where(eq(ResultStatuses.resultId, row.resultId));
+        await tx.update(resultStatuses).set({ pp }).where(eq(resultStatuses.resultId, row.resultId));
       }
     });
     console.log(`  result_statuses 更新: ${Math.min(i + BATCH, rows.length)} / ${rows.length}`);
   }
 
-  const userRows = await db.select({ userId: Results.userId }).from(Results).groupBy(Results.userId);
+  const userRows = await db.select({ userId: results.userId }).from(results).groupBy(results.userId);
 
   console.log(`ユーザー total_pp 再計算: ${userRows.length} 人`);
 
@@ -69,21 +69,21 @@ async function main() {
 
 async function syncUserTotalPP(tx: TXType, userId: number) {
   const ppRows = await tx
-    .select({ pp: ResultStatuses.pp })
-    .from(ResultStatuses)
-    .innerJoin(Results, eq(Results.id, ResultStatuses.resultId))
-    .where(eq(Results.userId, userId))
-    .orderBy(desc(ResultStatuses.pp))
+    .select({ pp: resultStatuses.pp })
+    .from(resultStatuses)
+    .innerJoin(results, eq(results.id, resultStatuses.resultId))
+    .where(eq(results.userId, userId))
+    .orderBy(desc(resultStatuses.pp))
     .limit(TOTAL_PP_TOP_N);
 
-  const totalPP = Math.round(calcTotalPP(ppRows));
+  const totalPp = Math.round(calcTotalPP(ppRows));
 
   await tx
-    .insert(UserStats)
-    .values({ userId, totalPP })
+    .insert(userStats)
+    .values({ userId, totalPp })
     .onConflictDoUpdate({
-      target: [UserStats.userId],
-      set: { totalPP },
+      target: [userStats.userId],
+      set: { totalPp },
     });
 }
 
