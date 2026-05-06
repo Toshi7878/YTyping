@@ -7,23 +7,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
   reactCompiler: true,
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-  },
-  experimental: { scrollRestoration: true },
+  compiler: { removeConsole: process.env.NODE_ENV === "production" },
   images: {
     minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "i.ytimg.com",
-        pathname: "/vi/**",
-      },
-      {
-        protocol: "https",
-        hostname: "i.ytimg.com",
-        pathname: "/vi_webp/**",
-      },
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi_webp/**" },
     ],
   },
 };
