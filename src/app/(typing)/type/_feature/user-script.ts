@@ -51,7 +51,7 @@
 import { calcRawPP } from "@/shared/result/pp/calc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
-import { getAllLineResult, getSelectLineIndex } from "./atoms/line-result";
+import { getLineResults, getSelectLineIndex } from "./atoms/line-results";
 import { getLineSubstatus } from "./atoms/line-substatus";
 import { getReplayRankingResult } from "./atoms/replay";
 import { getTypingStats } from "./atoms/stats";
@@ -212,7 +212,7 @@ const ytypingType = {
     return getPlayingInputMode;
   },
   get getLineResults() {
-    return getAllLineResult;
+    return getLineResults;
   },
   get getSelectLineIndex() {
     return getSelectLineIndex;

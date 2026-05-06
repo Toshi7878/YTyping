@@ -7,7 +7,7 @@ import { getSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
-import { initializeAllLineResult } from "../../atoms/line-result";
+import { setInitialLineResults } from "../../atoms/line-results";
 import { getMapId } from "../../provider";
 import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 import { getScene, setScene } from "../typing-card";
@@ -30,7 +30,7 @@ export const ReadyPracticeButton = () => {
       try {
         if (resultId) {
           const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
-          initializeAllLineResult(resultData);
+          setInitialLineResults(resultData);
         }
       } finally {
         overlay.hide();

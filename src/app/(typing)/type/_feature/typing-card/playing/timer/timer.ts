@@ -9,7 +9,7 @@ import {
 } from "@/app/(typing)/type/_feature/atoms/line-substatus";
 import type { BuiltMapLineWithOption } from "@/shared/map/built-map-helper";
 import { countPerMinute } from "@/utils/math";
-import { getAllLineResult } from "../../../atoms/line-result";
+import { getLineResultByIndex } from "../../../atoms/line-results";
 import { getTypingStats } from "../../../atoms/stats";
 import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../../atoms/typing-word";
 import { getYTPlayer, setYTPlaybackRate } from "../../../atoms/youtube-player";
@@ -82,9 +82,7 @@ const handleTimer = () => {
 
         dispatchTypeEvent("timer:tick", { currentTime, constantLineTime, constantRemainLineTime });
         if (scene === "replay" && count > 0) {
-          const lineResults = getAllLineResult();
-
-          const lineResult = lineResults[count];
+          const lineResult = getLineResultByIndex(count);
           if (!lineResult) return;
           const { types } = lineResult;
           if (types.length === 0) return;
@@ -350,16 +348,10 @@ const firstUpdateSkipGuideVisibility = ({ currentTime, startCount }: { currentTi
 type YouTubeSpeed = 0.25 | 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2;
 
 const syncReplayLineSnapshot = (newCurrentCount: number) => {
-  const lineResults = getAllLineResult();
-  const inputMode = getPlayingInputMode();
-
-  const lineResult = lineResults[newCurrentCount];
-
-  if (!lineResult) {
-    return;
-  }
-
+  const lineResult = getLineResultByIndex(newCurrentCount);
+  if (!lineResult) return;
   const newInputMode = lineResult.status.mode;
+  const inputMode = getPlayingInputMode();
 
   if (inputMode !== newInputMode) {
     if (newInputMode === "roma") {

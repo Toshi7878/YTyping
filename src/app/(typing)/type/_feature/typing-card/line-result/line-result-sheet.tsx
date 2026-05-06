@@ -4,7 +4,7 @@ import { type RefObject, useRef, useState } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
 import type { TypingLineResult } from "@/validator/result/result";
-import { setSelectLineIndex } from "../../atoms/line-result";
+import { setSelectLineIndex } from "../../atoms/line-results";
 import { moveSetLine } from "../playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 

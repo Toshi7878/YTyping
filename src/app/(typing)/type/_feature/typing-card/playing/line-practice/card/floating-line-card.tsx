@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { useState } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { useLineResultState, useSelectLineIndexState } from "@/app/(typing)/type/_feature/atoms/line-result";
+import { useLineResultByIndex, useSelectLineIndexState } from "@/app/(typing)/type/_feature/atoms/line-results";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import { Card, CardFooter } from "@/ui/card";
 import { cn } from "@/utils/cn";
@@ -46,7 +46,7 @@ const DraggableCard = ({ x, y }: { x: number; y: number }) => {
 
   const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0] ?? 0;
 
-  const _lineResult = useLineResultState(index);
+  const _lineResult = useLineResultByIndex(index);
   if (!_lineResult) return null;
   const { lineResult } = _lineResult;
 

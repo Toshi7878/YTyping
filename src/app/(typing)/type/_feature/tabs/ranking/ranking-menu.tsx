@@ -10,7 +10,7 @@ import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
 import { PopoverContent } from "@/ui/popover";
 import { cn } from "@/utils/cn";
-import { initializeAllLineResult } from "../../atoms/line-result";
+import { setInitialLineResults } from "../../atoms/line-results";
 import { setReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../atoms/youtube-player";
@@ -44,7 +44,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     setScene("replay");
     try {
       const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
-      initializeAllLineResult(resultData);
+      setInitialLineResults(resultData);
       const mode = resultData[0]?.status?.mode ?? "roma";
       setPlayingInputMode(mode);
       playYTPlayer();

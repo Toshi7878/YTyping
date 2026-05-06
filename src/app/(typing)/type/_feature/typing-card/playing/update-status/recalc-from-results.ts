@@ -1,5 +1,5 @@
 import { getBuiltMap } from "../../../atoms/built-map";
-import { getAllLineResult } from "../../../atoms/line-result";
+import { getLineResults } from "../../../atoms/line-results";
 import { setTypingSubstatus } from "../../../atoms/substatus";
 import { setTypingStatus } from "../../../tabs/typing-status/status-cell";
 import { getScene } from "../../typing-card";
@@ -27,7 +27,7 @@ export const recalculateStatusFromResults = ({
     line: map.typingLineIndexes.length,
   };
 
-  const lineResults = getAllLineResult();
+  const lineResults = getLineResults();
   let totalTypeTime = 0;
   const scene = getScene();
 

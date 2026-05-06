@@ -1,7 +1,7 @@
 import { atom, type SetStateAction } from "jotai";
 import { mutatePlayCountStats } from "@/shared/map/play-count";
 import { type BuiltMap, getBuiltMap } from "../atoms/built-map";
-import { initializeAllLineResult } from "../atoms/line-result";
+import { setInitialLineResults } from "../atoms/line-results";
 import { resetLineSubstatus } from "../atoms/line-substatus";
 import { resetReplayRankingResult } from "../atoms/replay";
 import { getTypingStats } from "../atoms/stats";
@@ -77,7 +77,7 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
   setScene(newPlayMode);
 
   if (newPlayMode === "play") {
-    initializeAllLineResult(structuredClone(map.initialLineResults));
+    setInitialLineResults(structuredClone(map.initialLineResults));
   }
 
   if (newPlayMode !== "practice") {

@@ -17,7 +17,7 @@ import { getReadyInputMode } from "@/store/ready-input-mode";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
-import { initializeAllLineResult, setSelectLineIndex } from "./atoms/line-result";
+import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
@@ -71,7 +71,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         isCaseSensitive: builtMapLines[0]?.options?.isCaseSensitive ?? false,
       };
       setBuiltMap(builtMap);
-      initializeAllLineResult(builtMap.initialLineResults);
+      setInitialLineResults(builtMap.initialLineResults);
       setSelectLineIndex(builtMap.typingLineIndexes?.[0] ?? 0);
       setTypingStatus((prev) => ({ ...prev, line: builtMapLines.length }));
       resetTypingStatus();

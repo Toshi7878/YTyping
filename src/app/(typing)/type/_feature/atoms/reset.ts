@@ -17,7 +17,7 @@ import { resetLineCount, resetTimeOffset } from "../typing-card/playing/playing-
 import { resetScene } from "../typing-card/typing-card";
 import { resetYoutubeStatus } from "../youtube/youtube-player";
 import { resetBuiltMap } from "./built-map";
-import { clearAllLineResult, resetLineSelectIndex } from "./line-result";
+import { resetLineResults, resetLineSelectIndex } from "./line-results";
 import { resetLineSubstatus } from "./line-substatus";
 import { resetReplayRankingResult } from "./replay";
 import { resetTypingStats } from "./stats";
@@ -52,7 +52,7 @@ export function resetAllTypingFeatureAtoms() {
 
   resetYoutubeStatus();
   resetYTPlayer();
-  clearAllLineResult();
+  resetLineResults();
   resetLineSelectIndex();
   resetBuiltMap();
   resetMapId();

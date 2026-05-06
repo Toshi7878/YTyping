@@ -1,6 +1,6 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { getBuiltMap } from "../../atoms/built-map";
-import { getSelectLineIndex } from "../../atoms/line-result";
+import { getSelectLineIndex } from "../../atoms/line-results";
 import { cycleYTPlaybackRate, pauseYTPlayer, playYTPlayer, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { restartPlay } from "../../lib/play-restart";
 import { getTypingOptions } from "../../tabs/setting/popover";

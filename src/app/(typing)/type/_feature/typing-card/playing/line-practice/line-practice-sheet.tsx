@@ -6,7 +6,7 @@ import { ScrollArea } from "@/ui/scroll-area";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { Table, TableBody } from "@/ui/table/table";
 import type { TypingLineResult } from "@/validator/result/result";
-import { setSelectLineIndex } from "../../../atoms/line-result";
+import { setSelectLineIndex } from "../../../atoms/line-results";
 import { store } from "../../../atoms/store";
 import { useLineFailureCountState } from "../../../atoms/substatus";
 import { moveSetLine } from "../move-line";

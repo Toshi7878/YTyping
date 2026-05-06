@@ -1,7 +1,7 @@
 "use client";
 import type { RefObject } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
+import { useLineResultByIndex } from "@/app/(typing)/type/_feature/atoms/line-results";
 import { CHAR_POINT } from "@/app/(typing)/type/_feature/lib/const";
 import type { BuiltMapLineWithOption } from "@/shared/map/built-map-helper";
 import { Card, CardFooter } from "@/ui/card";
@@ -23,7 +23,7 @@ interface OptimizedResultCardProps {
 }
 
 export const OptimizedResultCard = ({ count, lineIndex, itemsRef, onClick, lineData }: OptimizedResultCardProps) => {
-  const _lineResult = useLineResultState(count);
+  const _lineResult = useLineResultByIndex(count);
 
   const map = useBuiltMapState();
   const scene = useSceneState();

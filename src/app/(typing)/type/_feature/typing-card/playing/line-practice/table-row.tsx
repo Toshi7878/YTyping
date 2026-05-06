@@ -1,7 +1,7 @@
 "use client";
 import type { RefObject } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
-import { useLineResultState } from "@/app/(typing)/type/_feature/atoms/line-result";
+import { useLineResultByIndex } from "@/app/(typing)/type/_feature/atoms/line-results";
 import type { BuiltMapLineWithOption } from "@/shared/map/built-map-helper";
 import { TableCell, TableRow } from "@/ui/table/table";
 import { cn } from "@/utils/cn";
@@ -17,7 +17,7 @@ interface PracticeLineTableRowProps {
 }
 
 export const PracticeLineTableRow = ({ count, lineIndex, itemsRef, onClick, lineData }: PracticeLineTableRowProps) => {
-  const _lineResult = useLineResultState(count);
+  const _lineResult = useLineResultByIndex(count);
 
   const map = useBuiltMapState();
   const scene = useSceneState();

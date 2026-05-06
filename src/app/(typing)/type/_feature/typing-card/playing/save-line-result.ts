@@ -1,7 +1,7 @@
 import { createDisplayWord } from "lyrics-typing-engine";
 import { countPerMinute } from "@/utils/math";
 import { getBuiltMap } from "../../atoms/built-map";
-import { getAllLineResult, setLineResult } from "../../atoms/line-result";
+import { getLineResultByIndex, setLineResultByIndex } from "../../atoms/line-results";
 import { getLineSubstatus } from "../../atoms/line-substatus";
 import { getTypingSubstatus, setTypingSubstatus } from "../../atoms/substatus";
 import { getPlayingInputMode, getTypingWord } from "../../atoms/typing-word";
@@ -13,9 +13,8 @@ import { getLineKpm } from "../header/line-kpm";
 import { getScene } from "../typing-card";
 
 export const hasLineResultImproved = (count: number) => {
-  const lineResults = getAllLineResult();
   const { missCount } = getLineSubstatus();
-  const savedLineResult = lineResults[count];
+  const savedLineResult = getLineResultByIndex(count);
   const typingStatus = getTypingStatus();
 
   const currentLineScore = typingStatus.point + typingStatus.timeBonus + missCount * MISS_PENALTY_POINT;
@@ -58,7 +57,7 @@ export const saveLineResult = (count: number, constantLineTime: number) => {
         .join("")}`
     : "";
 
-  setLineResult({
+  setLineResultByIndex({
     index: count,
     lineResult: isTypingLine
       ? {

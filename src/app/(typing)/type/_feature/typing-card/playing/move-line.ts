@@ -1,5 +1,5 @@
 import { getBuiltMap } from "../../atoms/built-map";
-import { getSelectLineIndex, setSelectLineIndex } from "../../atoms/line-result";
+import { getSelectLineIndex, setSelectLineIndex } from "../../atoms/line-results";
 import { seekYTPlayer } from "../../atoms/youtube-player";
 import { getIsPaused, getMediaSpeed } from "../../youtube/youtube-player";
 import { setLineProgressValue } from "../header/line-time-progress";
