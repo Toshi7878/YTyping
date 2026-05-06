@@ -1,5 +1,6 @@
 import { Ticker } from "@pixi/ticker";
 import { createTypingWord } from "lyrics-typing-engine";
+import YouTube from "react-youtube";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import {
   getLineSubstatus,
@@ -72,7 +73,7 @@ const handleTimer = () => {
       constantLineTime,
       constantRemainLineTime,
       timeLimitState: { lines: map.lines, currentIndex: count },
-      endState: currentTime >= map.duration || YTPlayer.getPlayerState() === YT.PlayerState.ENDED,
+      endState: currentTime >= map.duration || YTPlayer.getPlayerState() === YouTube.PlayerState.ENDED,
     },
     {
       onUpdate: () => {
