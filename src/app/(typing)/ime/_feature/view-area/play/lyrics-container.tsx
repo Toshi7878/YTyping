@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
 import type { BuiltImeLine } from "lyrics-ime-typing-engine";
+import { AnimatePresence, motion } from "motion/react";
 import type { HTMLAttributes } from "react";
 import { Fragment, useEffect, useRef } from "react";
 import { cn } from "@/utils/cn";

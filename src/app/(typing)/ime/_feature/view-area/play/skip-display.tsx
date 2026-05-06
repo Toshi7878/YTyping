@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useSkipRemainTimeState } from "../../../_lib/atoms/state";
 import { handleSkip } from "../../../_lib/core/skip";
 

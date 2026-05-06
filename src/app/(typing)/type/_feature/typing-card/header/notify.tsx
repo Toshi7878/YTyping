@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { cn } from "@/utils/cn";
