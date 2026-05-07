@@ -1,8 +1,10 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
+import type { DBType } from "@/server/drizzle/client";
 import { notificationClaps, notifications, resultClaps, results } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../../trpc";
+import { protectedProcedure, type TRPCContext } from "../../trpc";
 import { generateNotificationId } from "../notification";
 
 export const resultClapRouter = {
@@ -74,3 +76,23 @@ export const resultClapRouter = {
       return payload;
     }),
 } satisfies TRPCRouterRecord;
+
+export const getRankingClapCounts = async (db: DBType, session: TRPCContext["session"], mapId: number) => {
+  if (session) {
+    const myClap = alias(resultClaps, "my_clap");
+
+    return await db
+      .select({
+        resultId: results.id,
+        clapCount: results.clapCount,
+        hasClapped: session ? sql`COALESCE(${myClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      })
+      .from(results)
+      .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)))
+      .where(and(eq(results.mapId, mapId)));
+  }
+  return await db
+    .select({ resultId: results.id, clapCount: results.clapCount, hasClapped: sql`0`.mapWith(Boolean) })
+    .from(results)
+    .where(and(eq(results.mapId, mapId)));
+};

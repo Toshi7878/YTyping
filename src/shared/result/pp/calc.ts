@@ -53,7 +53,7 @@ type RawPPInput = {
  * result_statuses から RawPPInput を生成
  * clearRate は DB上 0~100 を想定
  */
-export function buildRawPPInputFromResultStatus(status: {
+export function resultToRawPPInput(status: {
   romaType: number;
   kanaType: number;
   flickType: number;

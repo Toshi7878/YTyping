@@ -3,17 +3,9 @@ import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
-import z from "zod";
+import type z from "zod";
 import type { DBType } from "@/server/drizzle/client";
-import {
-  mapDifficulties,
-  mapLikes,
-  maps,
-  resultClaps,
-  resultStatuses,
-  results,
-  users as Users,
-} from "@/server/drizzle/schema";
+import { mapDifficulties, mapLikes, maps, resultClaps, resultStatuses, results, users } from "@/server/drizzle/schema";
 import {
   CLEAR_RATE_LIMIT,
   KPM_LIMIT,
@@ -28,8 +20,8 @@ import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { filterByMapVisibility } from "../map/list";
 
-const player = alias(Users, "player");
-const creator = alias(Users, "creator");
+const player = alias(users, "player");
+const creator = alias(users, "creator");
 const myResult = alias(results, "my_result");
 const myLike = alias(mapLikes, "my_like");
 const myClap = alias(resultClaps, "my_clap");
@@ -69,27 +61,6 @@ export const resultListRouter = {
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
-  }),
-
-  getRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
-    const { mapId } = input;
-
-    const { map: _, ...resultSelect } = buildBaseSelect(db, session);
-
-    return db
-      .select(resultSelect)
-      .from(results)
-      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-      .innerJoin(player, eq(player.id, results.userId))
-      .leftJoin(
-        myClap,
-        session
-          ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
-          : eq(myClap.resultId, results.id),
-      )
-      .where(eq(results.mapId, mapId))
-      .orderBy(desc(resultStatuses.score));
   }),
 } satisfies TRPCRouterRecord;
 

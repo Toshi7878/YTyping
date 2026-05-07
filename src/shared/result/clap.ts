@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateInfiniteQueryCache, updateQueryCache } from "@/lib/react-query";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+
+type RankingItem = RouterOutputs["result"]["ranking"]["get"][number];
 
 function calculateClapState(
   current: { count: number; hasClapped: boolean },
@@ -41,10 +44,15 @@ export function useToggleClapMutation() {
     trpc.result.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
         const resultListFilter = trpc.result.list.pathFilter();
+        const resultRankingFilter = trpc.result.ranking.pathFilter();
 
-        await Promise.all([queryClient.cancelQueries(resultListFilter)]);
+        await Promise.all([
+          queryClient.cancelQueries(resultListFilter),
+          queryClient.cancelQueries(resultRankingFilter),
+        ]);
 
         const previous = [...queryClient.getQueriesData(resultListFilter)];
+        const previousRanking = [...queryClient.getQueriesData(resultRankingFilter)];
 
         // --- Optimistic Updates ---
         const updater = createResultUpdater(input.resultId, { optimistic: input.newState });
@@ -52,11 +60,21 @@ export function useToggleClapMutation() {
         updateInfiniteQueryCache(queryClient, resultListFilter, updater.forResult);
         updateQueryCache(queryClient, resultListFilter, updater.forResult);
 
-        return { previous, resultListFilter };
+        updateQueryCache<RankingItem>(queryClient, resultRankingFilter, (item) => {
+          if (item.id !== input.resultId) return item;
+          return { ...item, clap: calculateClapState(item.clap, input.newState) };
+        });
+
+        return { previous, resultListFilter, previousRanking, resultRankingFilter };
       },
       onError: (_err, _vars, ctx) => {
         if (ctx?.previous) {
           for (const [key, data] of ctx.previous) {
+            queryClient.setQueryData(key, data);
+          }
+        }
+        if (ctx?.previousRanking) {
+          for (const [key, data] of ctx.previousRanking) {
             queryClient.setQueryData(key, data);
           }
         }
@@ -69,6 +87,11 @@ export function useToggleClapMutation() {
 
         updateQueryCache(queryClient, ctx.resultListFilter, updater.forResult);
         updateInfiniteQueryCache(queryClient, ctx.resultListFilter, updater.forResult);
+
+        updateQueryCache<RankingItem>(queryClient, ctx.resultRankingFilter, (item) => {
+          if (item.id !== resultId) return item;
+          return { ...item, clap: { count: clapCount, hasClapped } };
+        });
       },
     }),
   );
