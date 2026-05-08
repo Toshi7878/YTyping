@@ -20,14 +20,14 @@ import { useSceneGroupState } from "../../typing-card/typing-card";
 import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
 
-type RankingResult = RouterOutputs["result"]["list"]["getRanking"][number];
+type RankingResult = RouterOutputs["result"]["ranking"]["get"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
   const trpc = useTRPC();
   const { id: mapId } = useParams();
   const { data, isPending } = useQuery(
-    trpc.result.list.getRanking.queryOptions({ mapId: mapId ? Number(mapId) : 0 }, { gcTime: Infinity }),
+    trpc.result.ranking.get.queryOptions({ mapId: mapId ? Number(mapId) : 0 }, { gcTime: Infinity }),
   );
 
   useEffect(() => {

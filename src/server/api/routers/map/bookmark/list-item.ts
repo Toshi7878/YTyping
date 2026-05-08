@@ -1,8 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, exists, type SQLWrapper, sql } from "drizzle-orm";
 import z from "zod";
-import { mapBookmarkListItems, notificationMapBookmarks, notifications } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../../../trpc";
+import type { DBType } from "@/server/drizzle/client";
+import {
+  mapBookmarkListItems,
+  mapBookmarkLists,
+  maps,
+  notificationMapBookmarks,
+  notifications,
+} from "@/server/drizzle/schema";
+import { protectedProcedure, type TRPCContext } from "../../../trpc";
 import { generateNotificationId } from "../../notification";
 
 export const mapBookmarkListItemRouter = {
@@ -76,3 +83,17 @@ export const mapBookmarkListItemRouter = {
       return { action: "removed" as const };
     }),
 } satisfies TRPCRouterRecord;
+
+export const bookmarkedMapExists = (
+  db: DBType,
+  session: NonNullable<TRPCContext["session"]>,
+  mapIdColumn: SQLWrapper = maps.id,
+) => {
+  return exists(
+    db
+      .select({ one: sql`1` })
+      .from(mapBookmarkListItems)
+      .innerJoin(mapBookmarkLists, eq(mapBookmarkLists.id, mapBookmarkListItems.listId))
+      .where(and(eq(mapBookmarkListItems.mapId, mapIdColumn), eq(mapBookmarkLists.userId, session.user.id))),
+  ).mapWith(Boolean);
+};

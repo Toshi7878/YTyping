@@ -2,9 +2,9 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { Separator } from "@/ui/separator";
 
 interface ResultToolTipTextProps {
-  typeCounts: RouterOutputs["result"]["list"]["getRanking"][number]["typeCounts"];
-  otherStatus: RouterOutputs["result"]["list"]["getRanking"][number]["otherStatus"];
-  typeSpeed: RouterOutputs["result"]["list"]["getRanking"][number]["typeSpeed"];
+  typeCounts: RouterOutputs["result"]["ranking"]["get"][number]["typeCounts"];
+  otherStatus: RouterOutputs["result"]["ranking"]["get"][number]["otherStatus"];
+  typeSpeed: RouterOutputs["result"]["ranking"]["get"][number]["typeSpeed"];
   missRate: string;
   isKanaFlickTyped: boolean;
   updatedAt: Date;
@@ -56,7 +56,7 @@ export const ResultToolTipText = ({
 };
 
 interface TypeCountResultProps {
-  typeCounts: RouterOutputs["result"]["list"]["getRanking"][number]["typeCounts"];
+  typeCounts: RouterOutputs["result"]["ranking"]["get"][number]["typeCounts"];
 }
 
 const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {

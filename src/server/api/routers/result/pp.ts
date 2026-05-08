@@ -6,10 +6,10 @@ import type { DBType } from "@/server/drizzle/client";
 import { mapDifficulties, mapLikes, maps, resultClaps, resultStatuses, results, users } from "@/server/drizzle/schema";
 import { SelectResultPpListApiSchema } from "@/validator/result/pp";
 import { TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
-import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
+import { bookmarkedMapExists } from "../map/bookmark/list-item";
 
 const player = alias(users, "player");
 const creator = alias(users, "creator");

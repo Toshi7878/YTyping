@@ -3,7 +3,7 @@ import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
-import z from "zod";
+import type z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import {
   mapDifficulties,
@@ -22,10 +22,10 @@ import {
   type ResultListFilterSchema,
   SelectResultListApiSchema,
 } from "@/validator/result/list";
-import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
+import { bookmarkedMapExists } from "../map/bookmark/list-item";
 import { filterByMapVisibility } from "../map/list";
 
 const player = alias(Users, "player");
@@ -69,27 +69,6 @@ export const resultListRouter = {
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
-  }),
-
-  getRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
-    const { mapId } = input;
-
-    const { map: _, ...resultSelect } = buildBaseSelect(db, session);
-
-    return db
-      .select(resultSelect)
-      .from(results)
-      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-      .innerJoin(player, eq(player.id, results.userId))
-      .leftJoin(
-        myClap,
-        session
-          ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
-          : eq(myClap.resultId, results.id),
-      )
-      .where(eq(results.mapId, mapId))
-      .orderBy(desc(resultStatuses.score));
   }),
 } satisfies TRPCRouterRecord;
 

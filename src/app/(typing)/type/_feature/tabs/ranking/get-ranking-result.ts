@@ -6,7 +6,7 @@ export const getRankingMyResult = ({ mapId, session }: { mapId: number; session:
   const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
-  const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
+  const rankingData = queryClient.getQueryData(trpc.result.ranking.get.queryOptions({ mapId }).queryKey);
   if (!rankingData) return null;
   const myResult = rankingData.find((result) => result.player.id === session.user.id);
   return myResult ?? null;
@@ -16,7 +16,7 @@ export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number;
   const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
-  const rankingData = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId }).queryKey);
+  const rankingData = queryClient.getQueryData(trpc.result.ranking.get.queryOptions({ mapId }).queryKey);
   if (!rankingData) return null;
   const playerResult = rankingData.find((result) => result.id === resultId);
   return playerResult ?? null;
@@ -27,6 +27,6 @@ export const getRankingData = () => {
   if (!mapId) return [];
   const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
-  const ranking = queryClient.getQueryData(trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }).queryKey);
+  const ranking = queryClient.getQueryData(trpc.result.ranking.get.queryOptions({ mapId: mapId ?? 0 }).queryKey);
   return ranking ?? [];
 };

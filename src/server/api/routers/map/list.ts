@@ -21,9 +21,9 @@ import {
   type mapSortSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
-import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
+import { bookmarkedMapExists } from "./bookmark/list-item";
 
 const PAGE_SIZE = 30;
 const creator = alias(users, "creator");

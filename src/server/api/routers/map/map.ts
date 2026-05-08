@@ -9,9 +9,8 @@ import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, users } from "@/server
 import { upsertMapItemSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { calcRating } from "../../../../shared/map/rating/calc";
-import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
-import { mapBookmarkListItemRouter } from "./bookmark/list-item";
+import { bookmarkedMapExists, mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";

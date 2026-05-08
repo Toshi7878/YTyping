@@ -3,10 +3,10 @@ import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
 import { type maps, notifications } from "@/server/drizzle/schema";
-import { bookmarkedMapExists } from "../lib/map";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map";
+import { bookmarkedMapExists } from "./map/bookmark/list-item";
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {

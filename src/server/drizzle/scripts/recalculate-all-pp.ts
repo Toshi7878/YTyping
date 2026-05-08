@@ -7,7 +7,7 @@
 import { desc, eq } from "drizzle-orm";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
-import { buildRawPPInputFromResultStatus, calcRawPP, calcTotalPP, TOTAL_PP_TOP_N } from "@/shared/result/pp/calc";
+import { calcRawPP, calcTotalPP, resultToRawPPInput, TOTAL_PP_TOP_N } from "@/shared/result/pp/calc";
 import { resultStatuses, results, userStats } from "../schema";
 
 const BATCH = 150;
@@ -42,7 +42,7 @@ async function main() {
     const chunk = rows.slice(i, i + BATCH);
     await db.transaction(async (tx) => {
       for (const row of chunk) {
-        const rawInput = buildRawPPInputFromResultStatus(row);
+        const rawInput = resultToRawPPInput(row);
         const pp = calcRawPP(rawInput, row.starRatingSnapshot);
         await tx.update(resultStatuses).set({ pp }).where(eq(resultStatuses.resultId, row.resultId));
       }
