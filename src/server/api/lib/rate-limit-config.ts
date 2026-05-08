@@ -11,4 +11,3 @@ export const TRPC_GLOBAL_RATE_LIMIT: RateLimitDef = {
   max: 60,
   window: "60 s",
 };
-
