@@ -1,6 +1,6 @@
 "use client";
 import type { QueryClient } from "@tanstack/react-query";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { environmentManager, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchStreamLink, loggerLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import type React from "react";
@@ -13,7 +13,7 @@ import { makeQueryClient } from "./query-client";
 
 let browserQueryClient: QueryClient | undefined;
 export const getQueryClient = () => {
-  if (typeof window === "undefined") {
+  if (environmentManager.isServer()) {
     // Server: always make a new query client
     return makeQueryClient();
   }
