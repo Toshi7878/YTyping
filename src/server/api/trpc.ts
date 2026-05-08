@@ -4,7 +4,7 @@ import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
 import { type Auth, getSession } from "@/auth/server";
 import { db } from "../drizzle/client";
-import type { RateLimitDef } from "./lib/rate-limit-config";
+import { type RateLimitDef, TRPC_GLOBAL_RATE_LIMIT } from "./lib/rate-limit-config";
 import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { AppRouter } from "./root";
 
@@ -20,24 +20,7 @@ const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
   transformer: superjson,
 });
 
-t.procedure.use((opts) => opts.next());
-
 export const { router, createCallerFactory } = t;
-
-export const publicProcedure = t.procedure;
-
-export const protectedProcedure = t.procedure.use((opts) => {
-  if (!opts.ctx.session) {
-    throw new Error("認証が必要です");
-  }
-
-  return opts.next({
-    ctx: { ...opts.ctx, session: opts.ctx.session },
-  });
-});
-
-export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 const getRequestIp = async () => {
   try {
@@ -77,3 +60,20 @@ export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitD
     return next();
   });
 };
+
+const globalRateLimitMiddleware = createRateLimitMiddleware(TRPC_GLOBAL_RATE_LIMIT);
+
+export const publicProcedure = t.procedure.use(globalRateLimitMiddleware);
+
+export const protectedProcedure = t.procedure.use(globalRateLimitMiddleware).use((opts) => {
+  if (!opts.ctx.session) {
+    throw new Error("認証が必要です");
+  }
+
+  return opts.next({
+    ctx: { ...opts.ctx, session: opts.ctx.session },
+  });
+});
+
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;

@@ -6,13 +6,11 @@ import { downloadPublicFile } from "@/server/api/lib/storage";
 import { mapDifficulties, maps, users } from "@/server/drizzle/schema";
 import { getByIdOpenApiResponseSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
-import { OPENAPI_RATE_LIMITS } from "../../../lib/rate-limit-config";
-import { createRateLimitMiddleware, publicProcedure } from "../../../trpc";
+import { publicProcedure } from "../../../trpc";
 import { mapListOpenApiRouter } from "./list";
 
 export const mapOpenApiRouter = {
   get: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}"].get))
     .meta({
       openapi: {
         method: "GET",
@@ -80,7 +78,6 @@ export const mapOpenApiRouter = {
     }),
 
   getJson: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps/{mapId}/json"].get))
     .meta({
       openapi: {
         method: "GET",

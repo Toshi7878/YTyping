@@ -17,8 +17,7 @@ import {
   type MapSearchFilterSchema,
   SelectMapListOpenApiSchema,
 } from "@/validator/map/list";
-import { OPENAPI_RATE_LIMITS } from "../../../lib/rate-limit-config";
-import { createRateLimitMiddleware, publicProcedure } from "../../../trpc";
+import { publicProcedure } from "../../../trpc";
 import { createPagination } from "../../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -27,7 +26,6 @@ const liker = alias(mapLikes, "liker");
 
 export const mapListOpenApiRouter = {
   get: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps"].get))
     .meta({
       openapi: {
         method: "GET",
