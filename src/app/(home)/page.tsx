@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   return (
     <HydrateClient>
       <JotaiProvider>
-        <div className="mx-auto max-w-7xl space-y-3 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-3 lg:px-24">
           <MapListControls />
           <HomeMapList />
         </div>
