@@ -33,6 +33,13 @@ export const updateUserResult = (
   );
 };
 
+export const updateUserName = (id: string, name: string) => {
+  const userResult = getUserResult(id);
+  if (!userResult) return;
+
+  store.set(userResultMapAtom, (prev) => new Map(prev).set(id, { ...userResult, name }));
+};
+
 export const resetUserResultMap = () => store.set(userResultMapAtom, new Map());
 
 const resultRankingAtom = atom((get) => {

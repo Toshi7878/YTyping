@@ -1,7 +1,7 @@
 "use client";
 import { getBuiltMap } from "../_lib/atoms/state";
 import { handleImeInput } from "./input-textarea";
-import { getResultRanking, getUserResult, updateUserResult } from "./memu/result-dialog";
+import { getResultRanking, getUserResult, updateUserName, updateUserResult } from "./memu/result-dialog";
 import { addNotifications } from "./notifications";
 
 type ImeEventMap = {
@@ -31,6 +31,9 @@ const ytypingIme = {
   },
   get updateUserResult() {
     return updateUserResult;
+  },
+  get updateUserName() {
+    return updateUserName;
   },
   get handleImeInput() {
     return handleImeInput;
