@@ -11,7 +11,8 @@ import { store } from "../provider";
 const userResultMapAtom = atom<Map<string, UserResult>>(new Map());
 
 export const getUserResult = (id: string) => store.get(userResultMapAtom).get(id);
-
+export const getUserResults = () =>
+  Array.from(store.get(userResultMapAtom).entries()).map(([userId, result]) => ({ ...result, userId }));
 export const updateUserResult = (
   id: string,
   {

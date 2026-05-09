@@ -1,8 +1,10 @@
 "use client";
+import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "../_lib/atoms/state";
 import { handleImeInput } from "./input-textarea";
-import { getResultRanking, getUserResult, updateUserName, updateUserResult } from "./memu/result-dialog";
+import { getUserResult, getUserResults, updateUserName, updateUserResult } from "./memu/result-dialog";
 import { addNotifications } from "./notifications";
+import { getMapId } from "./provider";
 
 type ImeEventMap = {
   start: undefined;
@@ -19,15 +21,27 @@ export const dispatchImeEvent = <T extends ImeEventType>(type: T) => {
   });
 };
 
+const ensureMapInfo = async () => {
+  const mapId = getMapId();
+  if (mapId === null) return null;
+  const trpc = getTRPCOptions();
+  const queryClient = getQueryClient();
+  const map = await queryClient.ensureQueryData(trpc.map.getById.queryOptions({ mapId }));
+  return map;
+};
+
 const ytypingIme = {
+  get ensureMapInfo() {
+    return ensureMapInfo;
+  },
   get getBuiltMap() {
     return getBuiltMap;
   },
+  get getUserResults() {
+    return getUserResults;
+  },
   get getUserResult() {
     return getUserResult;
-  },
-  get getResultRanking() {
-    return getResultRanking;
   },
   get updateUserResult() {
     return updateUserResult;
