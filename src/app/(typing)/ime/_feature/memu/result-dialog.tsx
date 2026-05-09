@@ -52,6 +52,7 @@ const resultRankingAtom = atom((get) => {
       name,
       score: Math.round((1000 / map.totalNotes) * typeCount),
       wordResults,
+      typeCount,
       currentWordIndex,
     }));
   return scored.map((entry, _, arr) => ({
@@ -90,7 +91,7 @@ export const ResultDialog = () => {
           <div className="flex-1 space-y-4 overflow-hidden">
             {displayedResult && (
               <>
-                <ResultStatus score={displayedResult.score} typeCount={displayedResult.wordResults.length} />
+                <ResultStatus score={displayedResult.score} typeCount={displayedResult.typeCount} />
                 <ResultWordsTable
                   wordResults={displayedResult.wordResults}
                   currentWordIndex={displayedResult.currentWordIndex}
