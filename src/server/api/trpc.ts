@@ -1,11 +1,8 @@
-import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } from "@trpc/server";
-import { headers } from "next/headers";
+import { type inferRouterInputs, type inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
 import { type Auth, getSession } from "@/auth/server";
 import { db } from "../drizzle/client";
-import { type RateLimitDef, TRPC_GLOBAL_RATE_LIMIT } from "./lib/rate-limit-config";
-import { createUpstashRateLimiter } from "./lib/upstash-rate-limit";
 import type { AppRouter } from "./root";
 
 export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) => {
@@ -22,50 +19,9 @@ const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
 
 export const { router, createCallerFactory } = t;
 
-const getRequestIp = async () => {
-  try {
-    const requestHeaders = await headers();
-    const forwardedFor =
-      requestHeaders.get("x-forwarded-for") ??
-      requestHeaders.get("x-real-ip") ??
-      requestHeaders.get("cf-connecting-ip");
+export const publicProcedure = t.procedure;
 
-    return forwardedFor?.split(",")[0]?.trim() ?? null;
-  } catch {
-    return null;
-  }
-};
-
-export const createRateLimitMiddleware = ({ keyPrefix, max, window }: RateLimitDef) => {
-  const ratelimit = createUpstashRateLimiter(keyPrefix, max, window);
-
-  return t.middleware(async ({ ctx, path, next }) => {
-    if (!ratelimit) {
-      return next();
-    }
-    const { session } = ctx;
-
-    const actorKey = session ? `user:${session.user.id}` : `ip:${(await getRequestIp()) ?? "unknown"}`;
-    const result = await ratelimit.limit(`${path}:${actorKey}`);
-
-    if (!result.success) {
-      const retryAfterSeconds = Math.max(1, Math.ceil((result.reset - Date.now()) / 1000));
-
-      throw new TRPCError({
-        code: "TOO_MANY_REQUESTS",
-        message: `Rate limit exceeded. Retry after ${retryAfterSeconds} seconds.`,
-      });
-    }
-
-    return next();
-  });
-};
-
-const globalRateLimitMiddleware = createRateLimitMiddleware(TRPC_GLOBAL_RATE_LIMIT);
-
-export const publicProcedure = t.procedure.use(globalRateLimitMiddleware);
-
-export const protectedProcedure = t.procedure.use(globalRateLimitMiddleware).use((opts) => {
+export const protectedProcedure = t.procedure.use((opts) => {
   if (!opts.ctx.session) {
     throw new Error("認証が必要です");
   }

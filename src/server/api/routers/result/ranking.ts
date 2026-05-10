@@ -91,7 +91,7 @@ export const resultRankingRouter = {
     const statusWithPp = { ...status, pp, starRatingSnapshot: map.rating };
 
     const existingResult = await db.query.results.findFirst({ where: { userId, mapId }, columns: { id: true } });
-    return await db.transaction(async (tx) => {
+    const result = await db.transaction(async (tx) => {
       let resultId: number | undefined;
 
       if (existingResult) {
@@ -119,15 +119,6 @@ export const resultRankingRouter = {
 
       await recalculateUserTotalPP(tx, userId);
 
-      const jsonString = JSON.stringify(lineResults, null, 2);
-      const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
-
-      await uploadPublicFile({
-        key: `result-json/${resultId}.json.gz`,
-        body: compressed,
-        contentType: "application/gzip",
-      });
-
       const rankedUsers = await tx
         .select({
           userId: results.userId,
@@ -148,8 +139,19 @@ export const resultRankingRouter = {
       const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
       const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
 
-      return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
+      return { id: resultId, rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
     });
+
+    const jsonString = JSON.stringify(lineResults, null, 2);
+    const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
+
+    await uploadPublicFile({
+      key: `result-json/${result.id}.json.gz`,
+      body: compressed,
+      contentType: "application/gzip",
+    });
+
+    return result;
   }),
 } satisfies TRPCRouterRecord;
 

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { generateOpenApiDocument } from "trpc-to-openapi";
-import { TRPC_GLOBAL_RATE_LIMIT } from "@/server/api/lib/rate-limit-config";
 import { openApiRouter } from "@/server/api/root";
 
 export const dynamic = "force-dynamic";
@@ -24,25 +23,6 @@ export async function GET(request: Request) {
       return !OPENAPI_PATHS_OMITTED_FROM_DOCUMENT.has(openApiPath);
     },
   });
-
-  // trpc-to-openapi はエラーコード単位で response をキャッシュするため
-  // エンドポイントごとの 429 description が反映されない。
-  // ポストプロセスで上書きし、x-rateLimit 拡張も追加する。
-  for (const [, methods] of Object.entries(doc.paths ?? {})) {
-    for (const [, operation] of Object.entries(methods ?? {})) {
-      const op = operation as Record<string, unknown>;
-
-      op["x-rateLimit"] = { max: TRPC_GLOBAL_RATE_LIMIT.max, window: TRPC_GLOBAL_RATE_LIMIT.window };
-
-      const responses = op.responses as Record<string, { description?: string }> | undefined;
-      if (responses?.["429"]) {
-        responses["429"] = {
-          ...responses["429"],
-          description: `Too many requests (${TRPC_GLOBAL_RATE_LIMIT.max} requests / ${TRPC_GLOBAL_RATE_LIMIT.window})`,
-        };
-      }
-    }
-  }
 
   return NextResponse.json(doc);
 }
