@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-5-10",
+    descriptions: ["Upstash Redisの利用上限により、サイトに接続できなくなっていた問題を修正"],
+  },
+  {
     date: "2026-5-5",
     descriptions: ["ライムラインページの詳細フィルターでEnterを押さずに検索できるように改善"],
   },
