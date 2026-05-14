@@ -38,6 +38,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               <Link
                 href={`/user/${result.player.id}`}
                 className="max-w-32 truncate font-bold text-secondary hover:underline sm:max-w-none"
+                prefetch={false}
               >
                 {result.player.name}
               </Link>
@@ -103,7 +104,7 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
   return (
     <div className={cn("flex flex-col justify-center gap-1.5 truncate", className)} {...rest}>
       <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-        <Link href={link} className="block text-secondary hover:underline">
+        <Link href={link} className="block text-secondary hover:underline" prefetch={false}>
           <div className="truncate font-bold text-sm sm:text-base">
             {nolink(`${map.info.title} / ${map.info.artistName}`)}
           </div>
@@ -112,7 +113,7 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
       <RatingBadge rating={map.difficulty.rating} />
       <div className="truncate text-xs">
         制作者:{" "}
-        <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
+        <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline" prefetch={false}>
           {map.creator.name}
         </Link>
         {map.info.visibility === "UNLISTED" ? (

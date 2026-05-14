@@ -103,11 +103,11 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
 
   return (
     <div className="relative h-auto w-full overflow-hidden rounded-md">
-      <Link className="absolute size-full" href={link} />
+      <Link className="absolute size-full" href={link} prefetch={false} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
         <section className="flex flex-col">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={link} className="z-1 truncate font-bold text-secondary">
+            <Link href={link} className="z-1 truncate font-bold text-secondary" prefetch={false}>
               {nolink(map.info.title)}
             </Link>
           </TooltipWrapper>
@@ -157,7 +157,7 @@ interface MapBadgesProps {
 const MapBadges = ({ map, href }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center">
+      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center" prefetch={false}>
         <RatingBadge rating={map.difficulty.rating} />
       </Link>
     </HoverExtractCardTrigger>
