@@ -6,6 +6,7 @@ import { UserNameLinkText } from "@/shared/user/user-name-link";
 import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Card, CardContent, CardHeader } from "@/ui/card";
+import { InfoIconButton } from "@/ui/icon-button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table/table";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { formatDate } from "@/utils/date";
@@ -34,16 +35,16 @@ export const ReportList = () => {
                 <TableHead>ステータス</TableHead>
                 <TableHead>通報者</TableHead>
                 <TableHead>対象ユーザー</TableHead>
+                <TableHead>カテゴリ</TableHead>
                 <TableHead>理由</TableHead>
-                <TableHead>詳細</TableHead>
                 <TableHead>日時</TableHead>
                 <TableHead>操作</TableHead>
+                <TableHead>対応</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {reports.map((report) => {
                 const isReportedUserBanned = report.reportedUser?.banned ?? false;
-
                 return (
                   <TableRow key={report.id}>
                     <TableCell>
@@ -74,6 +75,7 @@ export const ReportList = () => {
                         label={report.reasonDetail}
                         className="whitespace-pre-wrap break-all"
                         align="start"
+                        delayDuration={300}
                       >
                         {report.reasonDetail}
                       </TooltipWrapper>
@@ -88,6 +90,41 @@ export const ReportList = () => {
                         showReviewActions={report.status === "PENDING"}
                         showUnbanAction={report.status === "RESOLVED" && isReportedUserBanned}
                       />
+                    </TableCell>
+                    <TableCell>
+                      {(report.adminNote || report.notificationWarning?.comment || report.reportedUser?.banReason) && (
+                        <TooltipWrapper
+                          label={
+                            <span className="flex flex-col gap-2">
+                              {report.notificationWarning?.comment && (
+                                <span className="flex flex-col gap-0.5">
+                                  <span className="font-medium opacity-60">ユーザーへの通知</span>
+                                  <span className="whitespace-pre-wrap break-all">
+                                    {report.notificationWarning.comment}
+                                  </span>
+                                </span>
+                              )}
+                              {report.reportedUser?.banReason && (
+                                <span className="flex flex-col gap-0.5">
+                                  <span className="font-medium opacity-60">BAN理由</span>
+                                  <span className="whitespace-pre-wrap break-all">{report.reportedUser.banReason}</span>
+                                </span>
+                              )}
+                              {report.adminNote && (
+                                <span className="flex flex-col gap-0.5">
+                                  <span className="font-medium opacity-60">管理者コメント</span>
+                                  <span className="whitespace-pre-wrap break-all">{report.adminNote}</span>
+                                </span>
+                              )}
+                            </span>
+                          }
+                          className="max-w-xs"
+                          align="start"
+                          delayDuration={0}
+                        >
+                          <InfoIconButton />
+                        </TooltipWrapper>
+                      )}
                     </TableCell>
                   </TableRow>
                 );

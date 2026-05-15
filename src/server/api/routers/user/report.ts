@@ -230,8 +230,9 @@ export const userReportRouter = {
       orderBy: (t) => [asc(sql`case when ${t.status} = 'PENDING' then 0 else 1 end`), desc(t.createdAt)],
       with: {
         reporter: { columns: { id: true, name: true } },
-        reportedUser: { columns: { id: true, name: true, banned: true, warningCount: true } },
+        reportedUser: { columns: { id: true, name: true, banned: true, warningCount: true, banReason: true } },
         resolver: { columns: { id: true, name: true } },
+        notificationWarning: { columns: { comment: true } },
       },
     });
   }),

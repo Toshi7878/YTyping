@@ -7,7 +7,7 @@ export default async function Page() {
 
   return (
     <HydrateClient>
-      <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+      <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
         <H1>通報管理</H1>
         <ReportList />
       </div>
