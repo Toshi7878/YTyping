@@ -20,7 +20,7 @@ export const WarningDialog = ({ userId, warningCount }: WarningDialogProps) => {
 
   return (
     <Dialog>
-      <TooltipWrapper label="警告履歴を表示" asChild>
+      <TooltipWrapper label="警告履歴を表示 (この表示は他のユーザーには表示されません)" asChild>
         <DialogTrigger asChild>
           <WarningIconButton />
         </DialogTrigger>
