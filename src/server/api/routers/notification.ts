@@ -117,6 +117,37 @@ export const notificationRouter = {
             },
           },
         },
+        reportResult: {
+          columns: {},
+          with: {
+            report: {
+              columns: {
+                id: true,
+                reason: true,
+                reasonDetail: true,
+                status: true,
+                adminNote: true,
+                resolvedAt: true,
+              },
+              with: {
+                reportedUser: { columns: { id: true, name: true } },
+                resolver: { columns: { id: true, name: true } },
+              },
+            },
+          },
+        },
+        warning: {
+          columns: { comment: true },
+          with: {
+            report: {
+              columns: {
+                id: true,
+                reason: true,
+                reasonDetail: true,
+              },
+            },
+          },
+        },
       },
       where: { recipientId: session.user.id },
       orderBy: { updatedAt: "desc" },
@@ -226,6 +257,28 @@ export const notificationRouter = {
         }
 
         // フォールバック（通常は到達しない）
+        if (notification.type === "REPORT_RESULT" && notification.reportResult) {
+          const { report } = notification.reportResult;
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            updatedAt: notification.updatedAt,
+            report,
+          };
+        }
+
+        if (notification.type === "WARNING" && notification.warning) {
+          const { warning } = notification;
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            updatedAt: notification.updatedAt,
+            warning,
+          };
+        }
+
         throw new Error(`Unknown notification action: ${notification.type}`);
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);

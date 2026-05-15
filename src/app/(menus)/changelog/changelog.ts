@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2026-5-15",
-    descriptions: ["ユーザーページに報告フォームボタンを追加"],
+    descriptions: ["Menuに利用規約リンクを追加", "ユーザーページに報告フォームボタンを追加"],
   },
   {
     date: "2026-5-10",

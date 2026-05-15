@@ -52,6 +52,9 @@ export const auth = betterAuth({
     fields: { email: "emailHash" },
     additionalFields: {
       role: { type: "string", input: false },
+      banned: { type: "boolean", input: false },
+      banReason: { type: "string", input: false, required: false },
+      warningCount: { type: "number", input: false, defaultValue: 0 },
     },
   },
   socialProviders: {

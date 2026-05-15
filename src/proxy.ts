@@ -29,6 +29,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (session.user.banned) {
+    if (!pathname.startsWith("/banned")) return redirect("/banned");
+    return NextResponse.next();
+  }
+
   // ログイン済み: ユーザー名未設定は登録ページへ強制
   const hasName = !!session.user.name;
   if (!hasName) {

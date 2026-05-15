@@ -12,3 +12,9 @@ export const userReportApiSchema = createInsertSchema(userReports).pick({
   reason: true,
   reasonDetail: true,
 });
+
+export const userReportWarningApiSchema = z.object({
+  reportId: z.number(),
+  warningComment: z.string().min(1).max(1000),
+  adminNote: z.string().min(1).max(1000),
+});

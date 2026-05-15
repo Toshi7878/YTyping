@@ -12,7 +12,7 @@
     "start": "next start",
     "check": "biome check --diagnostic-level=warn --reporter=summary",
     "check:fix": "biome check --diagnostic-level=warn --reporter=summary --write",
-    "typecheck": "tsgo",
+    "typecheck": "next typegen && tsgo",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:start": "pnpx supabase start",
     "db:stop": "pnpx supabase stop",

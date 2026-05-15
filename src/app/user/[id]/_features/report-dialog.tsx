@@ -8,6 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod/v4";
 import { REPORT_REASON_TYPES } from "@/server/drizzle/schema";
+import { REPORT_REASON_LABELS } from "@/shared/user/report";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/ui/dialog";
@@ -16,14 +17,6 @@ import { SelectFormField } from "@/ui/select/select-form-field";
 import { TextareaFormField } from "@/ui/textarea";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { userReportFormSchema } from "@/validator/user/report";
-
-const REPORT_REASON_LABELS: Record<(typeof REPORT_REASON_TYPES)[number], string> = {
-  CHEATING: "チート",
-  HARASSMENT: "嫌がらせ",
-  SPAM: "スパム",
-  INAPPROPRIATE: "不適切なコンテンツ",
-  OTHER: "その他",
-};
 
 interface ReportDialogProps {
   reportedUserId: number;

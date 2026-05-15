@@ -11,6 +11,7 @@ import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H2, LinkText } from "@/ui/typography";
 import { ReportDialog } from "./report-dialog";
+import { WarningDialog } from "./warning-dialog";
 
 interface UserProfileCardProps {
   userProfile: RouterOutputs["user"]["profile"]["get"];
@@ -20,6 +21,8 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const isMyProfilePage = session?.user.id === Number(userId);
+  const isAdmin = session?.user.role === "ADMIN";
+  const canSeeWarnings = isMyProfilePage || isAdmin;
 
   const profile = [
     {
@@ -52,9 +55,10 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
             </DataListItem>
           ))}
         </DataList>
-        {session && (
-          <div className="absolute right-0 bottom-0">
-            {isMyProfilePage ? (
+        <div className="absolute right-0 bottom-0 flex items-center gap-1">
+          {canSeeWarnings && <WarningDialog userId={Number(userId)} warningCount={userProfile?.warningCount ?? 0} />}
+          {session &&
+            (isMyProfilePage ? (
               <TooltipWrapper label="プロフィール編集ページに移動" asChild>
                 <Button variant="outline" size="icon" asChild>
                   <Link href="/user/settings">
@@ -65,9 +69,8 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
               </TooltipWrapper>
             ) : (
               <ReportDialog reportedUserId={Number(userId)} userName={userProfile?.name} />
-            )}
-          </div>
-        )}
+            ))}
+        </div>
       </CardContent>
     </Card>
   );

@@ -74,7 +74,7 @@ export const resultRankingRouter = {
           ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
           : eq(myClap.resultId, results.id),
       )
-      .where(eq(results.mapId, mapId))
+      .where(and(eq(results.mapId, mapId), eq(player.banned, false)))
       .orderBy(desc(resultStatuses.score));
   }),
 
@@ -127,7 +127,8 @@ export const resultRankingRouter = {
         })
         .from(results)
         .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-        .where(eq(results.mapId, mapId))
+        .innerJoin(users, eq(users.id, results.userId))
+        .where(and(eq(results.mapId, mapId), eq(users.banned, false)))
         .orderBy(desc(resultStatuses.score));
 
       await removeStaleOvertakeNotifications({ tx, mapId, userId, rankedUsers });

@@ -176,7 +176,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  if (!input) return baseQuery;
+  if (!input) return baseQuery.where(eq(player.banned, false));
 
   const whereConditions = [
     input.playerId ? eq(player.id, input.playerId) : undefined,
@@ -187,7 +187,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     filterByKeyword({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions));
+  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions, eq(player.banned, false)));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

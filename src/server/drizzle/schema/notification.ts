@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, pgEnum, pgTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { mapBookmarkLists, maps } from "./map";
 import { results } from "./result";
-import { users } from "./user/user";
+import { userReports, users } from "./user/user";
 
-export const type = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE", "MAP_BOOKMARK"]);
+export const type = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE", "MAP_BOOKMARK", "REPORT_RESULT", "WARNING"]);
 
 export const notificationClaps = pgTable(
   "notification_claps",
@@ -99,6 +99,33 @@ export const notificationOverTakes = pgTable(
       table.mapId.asc().nullsLast(),
     ),
   ],
+);
+
+export const notificationReportResults = pgTable(
+  "notification_report_results",
+  {
+    notificationId: varchar("notification_id")
+      .primaryKey()
+      .references(() => notifications.id, { onDelete: "cascade" }),
+    reportId: integer("report_id")
+      .notNull()
+      .references(() => userReports.id, { onDelete: "cascade" }),
+  },
+  (table) => [uniqueIndex("uq_notification_report_results_report_id").using("btree", table.reportId.asc().nullsLast())],
+);
+
+export const notificationWarnings = pgTable(
+  "notification_warnings",
+  {
+    notificationId: varchar("notification_id")
+      .primaryKey()
+      .references(() => notifications.id, { onDelete: "cascade" }),
+    reportId: integer("report_id")
+      .notNull()
+      .references(() => userReports.id, { onDelete: "cascade" }),
+    comment: text().notNull(),
+  },
+  (table) => [uniqueIndex("uq_notification_warnings_report_id").using("btree", table.reportId.asc().nullsLast())],
 );
 
 export const notifications = pgTable("notifications", {

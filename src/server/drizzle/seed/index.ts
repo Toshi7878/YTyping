@@ -57,6 +57,7 @@ function parseUserRow(row: Record<string, string>) {
     banned: row.banned === "true",
     banReason: row.ban_reason === "" ? null : (row.ban_reason ?? null),
     banExpires: row.ban_expires ? new Date(row.ban_expires.replace(" ", "T")) : null,
+    warningCount: Number(row.warning_count ?? 0),
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };

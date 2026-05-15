@@ -18,6 +18,7 @@ export const users = pgTable(
     banned: boolean().default(false),
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires"),
+    warningCount: integer("warning_count").default(0).notNull(),
   },
   (table) => [unique("users_email_hash_unique").on(table.emailHash), unique("users_name_unique").on(table.name)],
 );
@@ -30,7 +31,7 @@ export const userProfiles = pgTable("user_profiles", {
   keyboard: varchar({ length: 1024 }).default("").notNull(),
 });
 
-export const REPORT_STATUS_TYPES = ["PENDING", "RESOLVED", "DISMISSED"] as const;
+export const REPORT_STATUS_TYPES = ["PENDING", "RESOLVED", "DISMISSED", "WARNED"] as const;
 export const reportStatus = pgEnum("report_status", REPORT_STATUS_TYPES);
 
 export const REPORT_REASON_TYPES = ["CHEATING", "HARASSMENT", "SPAM", "INAPPROPRIATE", "OTHER"] as const;

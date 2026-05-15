@@ -177,7 +177,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(db: T, session: TRPCCon
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  return baseQuery.where(eq(player.id, playerId));
+  return baseQuery.where(and(eq(player.id, playerId), eq(player.banned, false)));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

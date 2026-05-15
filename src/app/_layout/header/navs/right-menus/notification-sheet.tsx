@@ -7,8 +7,11 @@ import { useRef } from "react";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { NotificationMapCard } from "@/shared/map/list/card/compact";
+import { getReportStatusBadgeVariant, getReportStatusLabel } from "@/shared/user/report";
 import { useTRPC } from "@/trpc/provider";
+import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { RelativeTime } from "@/ui/relative-time";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
 import { ScrollSpinner, Spinner } from "@/ui/spinner";
@@ -83,6 +86,10 @@ const NotificationContent = () => {
                     {notification.type === "MAP_BOOKMARK" && (
                       <BookMarkNotificationMapCard notification={notification} />
                     )}
+                    {notification.type === "REPORT_RESULT" && (
+                      <ReportResultNotificationCard notification={notification} />
+                    )}
+                    {notification.type === "WARNING" && <WarningNotificationCard notification={notification} />}
                     <RelativeTime date={notification.updatedAt} className="flex justify-end text-muted-foreground" />
                   </div>
                 );
@@ -163,5 +170,60 @@ const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkN
         </span>
       }
     />
+  );
+};
+
+type ReportResultNotification = Extract<Notification, { type: "REPORT_RESULT" }>;
+const ReportResultNotificationCard = ({ notification }: { notification: ReportResultNotification }) => {
+  const { report } = notification;
+  const isReportedUserBanned = report.status === "RESOLVED";
+  const resultBadgeVariant = getReportStatusBadgeVariant(report.status, isReportedUserBanned);
+  const resultLabel = getReportStatusLabel(report.status, isReportedUserBanned);
+
+  return (
+    <Card className="gap-3 rounded-md border py-3 shadow-none">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 px-3">
+        <CardTitle className="text-sm">通報結果</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 px-3 text-sm">
+        <div className="space-y-1">
+          <p className="text-muted-foreground text-xs">対象ユーザー</p>
+          <div className="flex items-center gap-2">
+            <Link href={`/user/${report.reportedUser.id}`} className="font-medium text-foreground underline">
+              {report.reportedUser.name ?? `ID: ${report.reportedUser.id}`}
+            </Link>
+            <Badge variant={resultBadgeVariant}>{resultLabel}</Badge>
+          </div>
+        </div>
+        {report.adminNote && (
+          <div className="space-y-1 rounded-sm">
+            <p className="text-muted-foreground text-xs">管理者コメント</p>
+            <p className="whitespace-pre-wrap text-foreground leading-relaxed">{report.adminNote}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+type WarningNotification = Extract<Notification, { type: "WARNING" }>;
+const WarningNotificationCard = ({ notification }: { notification: WarningNotification }) => {
+  const { warning } = notification;
+
+  return (
+    <Card className="gap-3 rounded-md border border-warning/40 py-3 shadow-none">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 px-3">
+        <CardTitle className="text-sm">警告通知</CardTitle>
+        <Badge variant="secondary" className="bg-warning text-warning-foreground">
+          警告
+        </Badge>
+      </CardHeader>
+      <CardContent className="space-y-3 px-3 text-sm">
+        <div className="space-y-1 rounded-sm bg-warning/10 p-2">
+          <p className="text-muted-foreground text-xs">警告コメント</p>
+          <p className="whitespace-pre-wrap text-foreground leading-relaxed">{warning.comment}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

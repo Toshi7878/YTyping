@@ -1,4 +1,4 @@
-import { type inferRouterInputs, type inferRouterOutputs, initTRPC } from "@trpc/server";
+import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
 import { type Auth, getSession } from "@/auth/server";
@@ -24,6 +24,16 @@ export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use((opts) => {
   if (!opts.ctx.session) {
     throw new Error("認証が必要です");
+  }
+
+  return opts.next({
+    ctx: { ...opts.ctx, session: opts.ctx.session },
+  });
+});
+
+export const adminProcedure = t.procedure.use((opts) => {
+  if (opts.ctx.session?.user.role !== "ADMIN") {
+    throw new TRPCError({ code: "FORBIDDEN" });
   }
 
   return opts.next({
