@@ -29,3 +29,26 @@ export const userProfiles = pgTable("user_profiles", {
   fingerChartUrl: varchar("finger_chart_url", { length: 256 }).default("").notNull(),
   keyboard: varchar({ length: 1024 }).default("").notNull(),
 });
+
+export const REPORT_STATUS_TYPES = ["PENDING", "RESOLVED", "DISMISSED"] as const;
+export const reportStatus = pgEnum("report_status", REPORT_STATUS_TYPES);
+
+export const REPORT_REASON_TYPES = ["CHEATING", "HARASSMENT", "SPAM", "INAPPROPRIATE", "OTHER"] as const;
+export const reportReason = pgEnum("report_reason", REPORT_REASON_TYPES);
+
+export const userReports = pgTable("user_reports", {
+  id: serial().primaryKey(),
+  reporterId: integer("reporter_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  reportedUserId: integer("reported_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  reason: reportReason().notNull(),
+  reasonDetail: varchar("reason_detail", { length: 500 }).notNull(),
+  status: reportStatus().default("PENDING").notNull(),
+  adminNote: text("admin_note"),
+  resolvedBy: integer("resolved_by").references(() => users.id, { onDelete: "set null" }),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+});

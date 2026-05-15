@@ -49,6 +49,16 @@ export const relations = defineRelations(schema, (r) => ({
     userProfiles: r.many.userProfiles(),
     userStats: r.many.userStats(),
     userTypingOptions: r.many.userTypingOptions(),
+    userReportsAsReporter: r.many.userReports({
+      from: r.users.id,
+      to: r.userReports.reporterId,
+      alias: "user_reports_reporter_id_users_id",
+    }),
+    userReportsAsReported: r.many.userReports({
+      from: r.users.id,
+      to: r.userReports.reportedUserId,
+      alias: "user_reports_reported_user_id_users_id",
+    }),
   },
   maps: {
     creator: r.one.users({
@@ -333,6 +343,25 @@ export const relations = defineRelations(schema, (r) => ({
     user: r.one.users({
       from: r.userProfiles.userId,
       to: r.users.id,
+    }),
+  },
+  userReports: {
+    reporter: r.one.users({
+      from: r.userReports.reporterId,
+      to: r.users.id,
+      alias: "user_reports_reporter_id_users_id",
+      optional: false,
+    }),
+    reportedUser: r.one.users({
+      from: r.userReports.reportedUserId,
+      to: r.users.id,
+      alias: "user_reports_reported_user_id_users_id",
+      optional: false,
+    }),
+    resolver: r.one.users({
+      from: r.userReports.resolvedBy,
+      to: r.users.id,
+      alias: "user_reports_resolved_by_users_id",
     }),
   },
   userStats: {

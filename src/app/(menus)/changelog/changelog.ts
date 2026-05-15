@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-5-15",
+    descriptions: ["ユーザーページに報告フォームボタンを追加"],
+  },
+  {
     date: "2026-5-10",
     descriptions: ["Upstash Redisの利用上限により、サイトに接続できなくなっていた問題を修正"],
   },

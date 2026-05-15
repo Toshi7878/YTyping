@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H2, LinkText } from "@/ui/typography";
+import { ReportDialog } from "./report-dialog";
 
 interface UserProfileCardProps {
   userProfile: RouterOutputs["user"]["profile"]["get"];
@@ -41,7 +42,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
   return (
     <Card>
-      <CardContent className="flex flex-col gap-4 md:mx-8">
+      <CardContent className="relative flex flex-col gap-4 md:mx-8">
         <H2>{userProfile?.name ?? ""}</H2>
         <DataList orientation="vertical" className="gap-3">
           {profile.map((item) => (
@@ -51,16 +52,20 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
             </DataListItem>
           ))}
         </DataList>
-        {isMyProfilePage && (
-          <div className="flex justify-end">
-            <TooltipWrapper label="プロフィール編集ページに移動" asChild>
-              <Button variant="outline" size="icon" asChild>
-                <Link href="/user/settings">
-                  <MdOutlineEdit className="size-4" />
-                  <span className="sr-only">編集</span>
-                </Link>
-              </Button>
-            </TooltipWrapper>
+        {session && (
+          <div className="absolute right-0 bottom-0">
+            {isMyProfilePage ? (
+              <TooltipWrapper label="プロフィール編集ページに移動" asChild>
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="/user/settings">
+                    <MdOutlineEdit className="size-4" />
+                    <span className="sr-only">編集</span>
+                  </Link>
+                </Button>
+              </TooltipWrapper>
+            ) : (
+              <ReportDialog reportedUserId={Number(userId)} userName={userProfile?.name} />
+            )}
           </div>
         )}
       </CardContent>

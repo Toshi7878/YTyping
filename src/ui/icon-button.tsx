@@ -1,4 +1,4 @@
-import { Bookmark, type LucideProps } from "lucide-react";
+import { Bookmark, Flag, type LucideProps } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import type { ComponentProps } from "react";
@@ -91,6 +91,14 @@ export const FilterIconButton = ({ ...props }: IconButtonProps) => {
   return (
     <Button type="button" size="icon" variant="outline" {...props}>
       <TiFilter className="size-5" />
+    </Button>
+  );
+};
+
+export const ReportIconButton = (props: IconButtonProps) => {
+  return (
+    <Button type="button" variant="outline" size="icon" {...props}>
+      <Flag className="size-4" />
     </Button>
   );
 };

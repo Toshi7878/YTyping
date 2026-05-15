@@ -28,7 +28,7 @@ export const maps = pgTable("maps", {
   artistName: varchar("artist_name", { length: 256 }).notNull(),
   musicSource: varchar("music_source", { length: 256 }).notNull(),
   creatorComment: varchar("creator_comment", { length: 1024 }).notNull(),
-  tags: text().array().default(sql`ARRAY[]`).notNull(),
+  tags: text().array().default(sql`ARRAY[]::text[]`).notNull(),
   creatorId: integer("creator_id")
     .notNull()
     .references(() => users.id),
@@ -37,7 +37,7 @@ export const maps = pgTable("maps", {
   playCount: integer("play_count").default(0).notNull(),
   likeCount: integer("like_count").default(0).notNull(),
   rankingCount: integer("ranking_count").default(0).notNull(),
-  category: category().array().default(sql`ARRAY[]`).notNull(),
+  category: category().array().default(sql`ARRAY[]::category[]`).notNull(),
   thumbnailQuality: thumbnailQuality("thumbnail_quality").default("mqdefault").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
   updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
