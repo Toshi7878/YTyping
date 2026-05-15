@@ -7,6 +7,7 @@ import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Card, CardContent, CardHeader } from "@/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table/table";
+import { TooltipWrapper } from "@/ui/tooltip";
 import { formatDate } from "@/utils/date";
 import { ReportActions } from "./report-actions";
 
@@ -69,7 +70,13 @@ export const ReportList = () => {
                     </TableCell>
                     <TableCell>{report.reason}</TableCell>
                     <TableCell className="max-w-48 truncate text-muted-foreground">
-                      {report.reasonDetail ?? "-"}
+                      <TooltipWrapper
+                        label={report.reasonDetail}
+                        className="whitespace-pre-wrap break-all"
+                        align="start"
+                      >
+                        {report.reasonDetail}
+                      </TooltipWrapper>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-muted-foreground text-xs">
                       {formatDate(report.createdAt)}
