@@ -8,7 +8,6 @@ import {
   primaryKey,
   real,
   serial,
-  text,
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -34,7 +33,6 @@ export const maps = pgTable("maps", {
   artistName: varchar("artist_name", { length: 256 }).notNull(),
   musicSource: varchar("music_source", { length: 256 }).notNull(),
   creatorComment: varchar("creator_comment", { length: 1024 }).notNull(),
-  tags: text().array().default(sql`ARRAY[]::text[]`).notNull(),
   creatorId: integer("creator_id")
     .notNull()
     .references(() => users.id),
