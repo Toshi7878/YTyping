@@ -74,6 +74,7 @@ const CHOICE_TAGS = [
   "MAD",
   "Remix",
   "Nightcore",
+  "OSU",
   "装飾譜面",
   "ギミック譜面",
   "YouTube Premium",
