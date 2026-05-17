@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   char,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -20,34 +21,51 @@ export const thumbnailQuality = pgEnum("thumbnail_quality", ["mqdefault", "maxre
 export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
 export const mapVisibility = pgEnum("map_visibility", ["PUBLIC", "UNLISTED"]);
 
-export const tags = pgTable("tags", {
-  id: serial().primaryKey(),
-  name: varchar({ length: 256 }).notNull().unique(),
-  mapCount: integer("map_count").default(0).notNull(),
-});
+export const tags = pgTable(
+  "tags",
+  {
+    id: serial().primaryKey(),
+    name: varchar({ length: 256 }).notNull().unique(),
+    mapCount: integer("map_count").default(0).notNull(),
+  },
+  (table) => [
+    index("idx_tags_name_pgroonga")
+      .using("pgroonga", table.name)
+      .with({ normalizers: "'NormalizerNFKC100(\"unify_kana\", true)'" }),
+  ],
+);
 
-export const maps = pgTable("maps", {
-  id: integer().primaryKey(),
-  videoId: char("video_id", { length: 11 }).notNull(),
-  title: varchar({ length: 256 }).notNull(),
-  artistName: varchar("artist_name", { length: 256 }).notNull(),
-  musicSource: varchar("music_source", { length: 256 }).notNull(),
-  creatorComment: varchar("creator_comment", { length: 1024 }).notNull(),
-  creatorId: integer("creator_id")
-    .notNull()
-    .references(() => users.id),
-  previewTime: real("preview_time").default(0).notNull(),
-  duration: real().default(0).notNull(),
-  playCount: integer("play_count").default(0).notNull(),
-  likeCount: integer("like_count").default(0).notNull(),
-  rankingCount: integer("ranking_count").default(0).notNull(),
-  category: category().array().default(sql`ARRAY[]::category[]`).notNull(),
-  thumbnailQuality: thumbnailQuality("thumbnail_quality").default("mqdefault").notNull(),
-  createdAt: timestamp("created_at").default(sql`now()`).notNull(),
-  updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
-  publishedAt: timestamp("published_at"),
-  visibility: mapVisibility().notNull(),
-});
+export const maps = pgTable(
+  "maps",
+  {
+    id: integer().primaryKey(),
+    videoId: char("video_id", { length: 11 }).notNull(),
+    title: varchar({ length: 256 }).notNull(),
+    artistName: varchar("artist_name", { length: 256 }).notNull(),
+    musicSource: varchar("music_source", { length: 256 }).notNull(),
+    creatorComment: varchar("creator_comment", { length: 1024 }).notNull(),
+    creatorId: integer("creator_id")
+      .notNull()
+      .references(() => users.id),
+    previewTime: real("preview_time").default(0).notNull(),
+    duration: real().default(0).notNull(),
+    playCount: integer("play_count").default(0).notNull(),
+    likeCount: integer("like_count").default(0).notNull(),
+    rankingCount: integer("ranking_count").default(0).notNull(),
+    category: category().array().default(sql`ARRAY[]::category[]`).notNull(),
+    thumbnailQuality: thumbnailQuality("thumbnail_quality").default("mqdefault").notNull(),
+    createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+    updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
+    publishedAt: timestamp("published_at"),
+    visibility: mapVisibility().notNull(),
+  },
+  (table) => [
+    index("idx_maps_title_pgroonga")
+      .using("pgroonga", table.title)
+      .with({ normalizers: "'NormalizerNFKC100(\"unify_kana\", true)'" })
+      .where(sql`${table.visibility} = 'PUBLIC'`),
+  ],
+);
 
 export const mapDifficulties = pgTable("map_difficulties", {
   mapId: integer("map_id")

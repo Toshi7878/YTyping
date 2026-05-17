@@ -94,19 +94,18 @@ export const mapListRouter = {
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
       const keyword = input.keyword;
-      const pattern = `%${keyword}%`;
 
       const [tagResults, titleResults] = await Promise.all([
         db
           .select({ name: tags.name })
           .from(tags)
-          .where(ilike(tags.name, pattern))
+          .where(sql`${tags.name} &@ ${keyword}`)
           .orderBy(desc(tags.mapCount))
           .limit(5),
         db
           .select({ id: maps.id, title: maps.title, artistName: maps.artistName })
           .from(maps)
-          .where(and(eq(maps.visibility, "PUBLIC"), ilike(maps.title, pattern)))
+          .where(and(eq(maps.visibility, "PUBLIC"), sql`${maps.title} &@ ${keyword}`))
           .orderBy(desc(maps.likeCount))
           .limit(5),
       ]);
