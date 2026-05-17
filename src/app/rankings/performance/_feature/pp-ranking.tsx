@@ -1,6 +1,6 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
@@ -17,10 +17,12 @@ export const PPRanking = () => {
   const trpc = useTRPC();
   const [page, setPage] = usePpRankingPageQueryState();
 
-  const { data } = useSuspenseQuery(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }));
+  const { data, isPlaceholderData } = useQuery(
+    trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }, { placeholderData: keepPreviousData }),
+  );
   const { data: pageCount } = useSuspenseQuery(trpc.ranking.pp.list.getPageCount.queryOptions());
 
-  const rows: PpRow[] = data.items;
+  const rows: PpRow[] = data?.items ?? [];
 
   return (
     <div className="space-y-2">
@@ -31,7 +33,7 @@ export const PPRanking = () => {
         <div className="text-right sm:text-left">合計 PP</div>
       </div>
 
-      <ul className="space-y-2" aria-label="PP ランキング">
+      <ul className={cn("space-y-2", isPlaceholderData && "opacity-50")} aria-label="PP ランキング">
         {rows.map((row) => (
           <li
             key={`${row.userId}`}

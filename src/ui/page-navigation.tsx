@@ -41,7 +41,7 @@ export const PageNavigation = ({
   const linkSize = size === "sm" ? "sm" : "icon";
 
   return (
-    <Pagination>
+    <Pagination className="select-none">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious

@@ -4,17 +4,17 @@ import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { H1 } from "@/ui/typography";
 import { PPRanking } from "./_feature/pp-ranking";
 import { PPRankingInfoTrigger } from "./_feature/pp-ranking-info-trigger";
+import { loadPpRankingSearchParams } from "./_feature/search-params";
 
 export const metadata: Metadata = {
   title: "PP ランキング | YTyping",
   description: "全譜面の合計 Performance Points によるランキング",
 };
 
-export default async function Page() {
-  await Promise.all([
-    prefetchAsync(trpc.ranking.pp.list.get.queryOptions({ cursor: undefined })),
-    prefetchAsync(trpc.ranking.pp.list.getPageCount.queryOptions()),
-  ]);
+export default async function Page({ searchParams }: PageProps<"/">) {
+  const { page } = await loadPpRankingSearchParams(searchParams);
+  await prefetchAsync(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }));
+  await prefetchAsync(trpc.ranking.pp.list.getPageCount.queryOptions());
 
   return (
     <HydrateClient>

@@ -6,7 +6,7 @@ import { HomeMapList } from "./_feature/map-list";
 import { JotaiProvider } from "./_feature/provider";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const { sort, ...mapListFilterParams } = loadMapListSearchParams(await searchParams);
+  const { sort, ...mapListFilterParams } = await loadMapListSearchParams(searchParams);
   const session = await getSession();
 
   await Promise.all([
