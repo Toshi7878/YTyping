@@ -24,7 +24,6 @@ import {
 } from "@/validator/map/list";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
-import { bookmarkedMapExists } from "./bookmark/list-item";
 
 const PAGE_SIZE = 30;
 const creator = alias(users, "creator");
@@ -33,16 +32,31 @@ const myLike = alias(mapLikes, "my_like");
 const myResult = alias(results, "my_result");
 const myResultStatus = alias(resultStatuses, "my_result_status");
 
+const createUserBookmarksSq = (db: DBType, userId: number) =>
+  db
+    .select({ mapId: mapBookmarkListItems.mapId })
+    .from(mapBookmarkListItems)
+    .innerJoin(
+      mapBookmarkLists,
+      and(eq(mapBookmarkLists.id, mapBookmarkListItems.listId), eq(mapBookmarkLists.userId, userId)),
+    )
+    .groupBy(mapBookmarkListItems.mapId)
+    .as("user_bookmarks");
+
+type UserBookmarksSq = ReturnType<typeof createUserBookmarksSq>;
+
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, sort, ...searchInput } = input ?? {};
     const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
+    const bookmarkSq = session ? createUserBookmarksSq(db, session.user.id) : null;
 
     const mapItems = await buildBaseQuery(
-      db.select(buildBaseSelect(db, session)).from(maps).$dynamic(),
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
       session,
+      bookmarkSq,
       searchInput,
     )
       .limit(limit)
@@ -54,7 +68,7 @@ export const mapListRouter = {
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
-    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, input);
+    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, null, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
@@ -63,8 +77,13 @@ export const mapListRouter = {
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { videoId } = input;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    return await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.videoId, videoId))
       .orderBy(desc(maps.id));
   }),
@@ -72,16 +91,26 @@ export const mapListRouter = {
   getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { title } = input;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    return await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.title, title))
       .orderBy(desc(maps.id));
   }),
 
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    const map = await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    const map = await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.id, input.mapId))
       .limit(1)
       .then((rows) => rows[0]);
@@ -117,7 +146,7 @@ export const mapListRouter = {
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
+const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookmarksSq | null) =>
   ({
     id: maps.id,
     updatedAt: maps.updatedAt,
@@ -153,7 +182,9 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       rating: mapDifficulties.rating,
     },
     bookmark: {
-      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: bookmarkSq
+        ? sql<boolean>`(${bookmarkSq.mapId} IS NOT NULL)`.mapWith(Boolean)
+        : sql`false`.mapWith(Boolean),
     },
     like: {
       count: maps.likeCount,
@@ -176,6 +207,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
 const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   db: T,
   session: TRPCContext["session"],
+  bookmarkSq: UserBookmarksSq | null,
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
   let baseQuery = db
@@ -187,6 +219,11 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     baseQuery = baseQuery
       .leftJoin(myLike, and(eq(myLike.mapId, maps.id), eq(myLike.userId, session.user.id)))
       .leftJoin(myResult, and(eq(myResult.mapId, maps.id), eq(myResult.userId, session.user.id)));
+  }
+
+  if (bookmarkSq) {
+    // @ts-expect-error
+    baseQuery = baseQuery.leftJoin(bookmarkSq, eq(bookmarkSq.mapId, maps.id));
   }
 
   if (!input) return baseQuery;
