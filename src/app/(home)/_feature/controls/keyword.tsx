@@ -15,14 +15,14 @@ import { useMapListFilterQueryStates } from "./search-params";
 const DEFAULT_TAG_SUGGESTIONS = [
   "公式動画",
   "J-POP",
-  "ボーカロイド/ボカロ",
+  "ボーカロイド/ボカロ/VOCALOID/初音ミク",
   "アニメ",
   "Cover/歌ってみた",
   "ラップ",
-  "初音ミク",
-  "ゲーム",
-  "VTuber",
-  "ボカロ",
+  "ゲーム/音ゲー",
+  "VTuber/ホロライブ/にじさんじ",
+  "Nightcore/Remix",
+  "東方",
 ] as const;
 
 export const KeywordInput = () => {
