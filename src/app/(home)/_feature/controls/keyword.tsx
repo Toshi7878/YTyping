@@ -18,7 +18,6 @@ const DEFAULT_TAG_SUGGESTIONS = [
   "ボーカロイド/ボカロ/VOCALOID/初音ミク",
   "VTuber/ホロライブ/にじさんじ",
   "Cover/歌ってみた",
-  "ゲーム",
   "映画",
   "TikTok",
   "OSU/音ゲー",
