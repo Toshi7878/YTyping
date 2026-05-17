@@ -349,9 +349,7 @@ export const filterByMapVisibility = (
   return or(eq(maps.visibility, "PUBLIC"), and(eq(maps.visibility, "UNLISTED"), eq(maps.creatorId, session.user.id)));
 };
 
-const filterByChunkCount = (
-  input: Pick<z.output<typeof MapSearchFilterSchema>, "minKanaRatio" | "maxKanaRatio">,
-) => {
+const filterByChunkCount = (input: Pick<z.output<typeof MapSearchFilterSchema>, "minKanaRatio" | "maxKanaRatio">) => {
   const conditions: SQL[] = [];
   const { minKanaRatio, maxKanaRatio } = input ?? {};
 
