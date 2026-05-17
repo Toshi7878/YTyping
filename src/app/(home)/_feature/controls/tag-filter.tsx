@@ -162,6 +162,11 @@ const GENRE_FILTERS = [
 
 const GENRE_FILTER_CLEAR = { englishRatio: null };
 
+const formatLanguageRatioLabel = (englishRatio?: number) => {
+  const ratio = englishRatio ?? 0;
+  return `日本語:${100 - ratio}% | English:${ratio}%`;
+};
+
 const GenreFilterRow = () => {
   const [params, setFilterParams] = useMapListFilterQueryStates();
   const isLanguageFilterActive = params.englishRatio !== null;
@@ -197,18 +202,18 @@ const GenreFilterRow = () => {
                 {filter.label}
               </Button>
               {index === 0 && isLanguageFilterActive && (
-                <div className="flex min-w-40 flex-1 items-center gap-2 px-2">
+                <div className="group relative flex min-w-40 flex-1 items-center px-2">
                   <Slider
                     min={0}
                     max={100}
                     step={5}
                     value={[localSlider]}
+                    thumbLabel={formatLanguageRatioLabel}
                     onValueChange={(v) => setLocalSlider(v[0] ?? 0)}
                     onValueCommit={(v) => {
                       void setFilterParams({ englishRatio: v[0] ?? 0 });
                     }}
                   />
-                  <span className="w-9 text-right text-[10px] tabular-nums">{localSlider}%</span>
                 </div>
               )}
             </React.Fragment>
