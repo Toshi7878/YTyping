@@ -175,8 +175,6 @@ export const notificationRouter = {
         },
         creator: { id: map.creator.id, name: map.creator.name },
         difficulty: {
-          romaKpmMedian: map.difficulty.romaKpmMedian,
-          kanaKpmMedian: map.difficulty.kanaKpmMedian,
           romaKpmMax: map.difficulty.romaKpmMax,
           kanaKpmMax: map.difficulty.kanaKpmMax,
           romaTotalNotes: map.difficulty.romaTotalNotes,

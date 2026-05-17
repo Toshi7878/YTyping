@@ -213,8 +213,6 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
         },
         creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {
-          romaKpmMedian: map.romaKpmMedian,
-          kanaKpmMedian: map.kanaKpmMedian,
           romaKpmMax: map.romaKpmMax,
           kanaKpmMax: map.kanaKpmMax,
           romaTotalNotes: map.romaTotalNotes,

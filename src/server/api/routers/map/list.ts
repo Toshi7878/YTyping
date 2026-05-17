@@ -168,8 +168,6 @@ const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookma
       name: creator.name,
     },
     difficulty: {
-      romaKpmMedian: mapDifficulties.romaKpmMedian,
-      kanaKpmMedian: mapDifficulties.kanaKpmMedian,
       romaKpmMax: mapDifficulties.romaKpmMax,
       kanaKpmMax: mapDifficulties.kanaKpmMax,
       romaTotalNotes: mapDifficulties.romaTotalNotes,
