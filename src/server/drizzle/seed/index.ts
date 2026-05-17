@@ -6,7 +6,14 @@ import { sql as rawSql } from "drizzle-orm";
 import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
-import { mapDifficulties, maps, type mapVisibility, type thumbnailQuality } from "../schema/map";
+import {
+  mapDifficulties,
+  maps,
+  mapTags,
+  type mapVisibility,
+  tags as tagsTable,
+  type thumbnailQuality,
+} from "../schema/map";
 import { users } from "../schema/user/user";
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
@@ -129,10 +136,36 @@ async function main() {
   // 3. Maps テーブルにシードデータを挿入
   console.log("\n🗺️  Seeding maps table...");
   const mapsCSV = await readFile(join(tableDir, "maps_rows.csv"), "utf-8");
-  const mapRows = parseCSV(mapsCSV).map(parseMapRow);
+  const mapRowsWithTags = parseCSV(mapsCSV).map(parseMapRow);
 
-  await db.insert(maps).values(mapRows);
-  console.log(`✅ Inserted ${mapRows.length} maps`);
+  const mapRowsForDb = mapRowsWithTags.map(({ tags: _tags, ...rest }) => rest);
+  await db.insert(maps).values(mapRowsForDb);
+  console.log(`✅ Inserted ${mapRowsForDb.length} maps`);
+
+  // 3b. Tags / map_tags テーブルにシードデータを挿入
+  console.log("\n🏷️  Seeding tags...");
+  const allTagNames = [...new Set(mapRowsWithTags.flatMap((row) => row.tags as string[]))];
+  if (allTagNames.length > 0) {
+    const insertedTags = await db
+      .insert(tagsTable)
+      .values(allTagNames.map((name) => ({ name })))
+      .onConflictDoUpdate({ target: [tagsTable.name], set: { name: rawSql`EXCLUDED.name` } })
+      .returning({ id: tagsTable.id, name: tagsTable.name });
+
+    const tagNameToId = new Map(insertedTags.map((t) => [t.name, t.id]));
+
+    const mapTagValues = mapRowsWithTags.flatMap((mapRow) =>
+      (mapRow.tags as string[]).flatMap((name) => {
+        const tagId = tagNameToId.get(name);
+        return tagId !== undefined ? [{ mapId: mapRow.id, tagId }] : [];
+      }),
+    );
+
+    if (mapTagValues.length > 0) {
+      await db.insert(mapTags).values(mapTagValues);
+    }
+    console.log(`✅ Inserted ${allTagNames.length} tags, ${mapTagValues.length} map_tags`);
+  }
 
   // 4. MapDifficulties テーブルにシードデータを挿入
   console.log("\n📊 Seeding map_difficulties table...");

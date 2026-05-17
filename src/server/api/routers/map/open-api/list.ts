@@ -191,7 +191,7 @@ const buildKeywordCondition = (keyword?: string | null) => {
       ilike(maps.title, pattern),
       ilike(maps.artistName, pattern),
       ilike(maps.musicSource, pattern),
-      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
+      sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
       ilike(creator.name, pattern),
     );
   });

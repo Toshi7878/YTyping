@@ -12,6 +12,7 @@ import {
   maps,
   resultStatuses,
   results,
+  tags,
   users,
 } from "@/server/drizzle/schema";
 import {
@@ -86,6 +87,31 @@ export const mapListRouter = {
       .then((rows) => rows[0]);
 
     return map;
+  }),
+
+  getSearchSuggestions: publicProcedure.input(z.object({ keyword: z.string() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+    const keyword = input.keyword.trim();
+    const pattern = `%${keyword}%`;
+
+    const [tagResults, titleResults] = await Promise.all([
+      db
+        .select({ name: tags.name })
+        .from(tags)
+        .where(keyword ? ilike(tags.name, pattern) : undefined)
+        .orderBy(desc(tags.mapCount))
+        .limit(keyword ? 5 : 10),
+      keyword
+        ? db
+            .select({ id: maps.id, title: maps.title, artistName: maps.artistName })
+            .from(maps)
+            .where(and(eq(maps.visibility, "PUBLIC"), ilike(maps.title, pattern)))
+            .orderBy(desc(maps.likeCount))
+            .limit(5)
+        : [],
+    ]);
+
+    return { tags: tagResults, titles: titleResults };
   }),
 } satisfies TRPCRouterRecord;
 
@@ -300,7 +326,7 @@ const filterByKeyword = (keyword?: string | null) => {
       ilike(maps.title, pattern),
       ilike(maps.artistName, pattern),
       ilike(maps.musicSource, pattern),
-      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
+      sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
       ilike(creator.name, pattern),
     );
   });

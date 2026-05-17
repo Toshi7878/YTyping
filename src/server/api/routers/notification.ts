@@ -33,7 +33,6 @@ export const notificationRouter = {
         createdAt: false,
         creatorId: false,
         playCount: false,
-        tags: false,
       },
       extras: {
         hasBookmarked: (map: typeof maps) => bookmarkedMapExists(db, session, map.id).as("has_bookmarked"),

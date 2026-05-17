@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2026-5-17",
-    descriptions: ["ユーザーページにランクを追加"],
+    descriptions: ["キーワード検索時にタグと譜面のサジェスト表示を追加", "ユーザーページにランクを追加"],
   },
   {
     date: "2026-5-15",

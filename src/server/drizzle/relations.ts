@@ -71,6 +71,10 @@ export const relations = defineRelations(schema, (r) => ({
       to: r.mapDifficulties.mapId,
       optional: false,
     }),
+    mapTags: r.many.mapTags({
+      from: r.maps.id,
+      to: r.mapTags.mapId,
+    }),
     mapLikes: r.many.mapLikes({
       from: r.maps.id,
       to: r.mapLikes.mapId,
@@ -112,6 +116,24 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.maps.id.through(r.results.mapId),
       to: r.users.id.through(r.results.userId),
       alias: "maps_id_users_id_via_results",
+    }),
+  },
+  tags: {
+    mapTags: r.many.mapTags({
+      from: r.tags.id,
+      to: r.mapTags.tagId,
+    }),
+  },
+  mapTags: {
+    map: r.one.maps({
+      from: r.mapTags.mapId,
+      to: r.maps.id,
+      optional: false,
+    }),
+    tag: r.one.tags({
+      from: r.mapTags.tagId,
+      to: r.tags.id,
+      optional: false,
     }),
   },
   mapBookmarkLists: {

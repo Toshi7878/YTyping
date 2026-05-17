@@ -21,6 +21,12 @@ export const thumbnailQuality = pgEnum("thumbnail_quality", ["mqdefault", "maxre
 export const MAP_VISIBILITY_TYPES = ["PUBLIC", "UNLISTED"] as const;
 export const mapVisibility = pgEnum("map_visibility", ["PUBLIC", "UNLISTED"]);
 
+export const tags = pgTable("tags", {
+  id: serial().primaryKey(),
+  name: varchar({ length: 256 }).notNull().unique(),
+  mapCount: integer("map_count").default(0).notNull(),
+});
+
 export const maps = pgTable("maps", {
   id: integer().primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
@@ -76,6 +82,19 @@ export const mapLikes = pgTable(
     createdAt: timestamp("created_at").default(sql`now()`).notNull(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.mapId], name: "map_likes_user_id_map_id_pk" })],
+);
+
+export const mapTags = pgTable(
+  "map_tags",
+  {
+    mapId: integer("map_id")
+      .notNull()
+      .references(() => maps.id, { onDelete: "cascade" }),
+    tagId: integer("tag_id")
+      .notNull()
+      .references(() => tags.id, { onDelete: "cascade" }),
+  },
+  (table) => [primaryKey({ columns: [table.mapId, table.tagId], name: "map_tags_map_id_tag_id_pk" })],
 );
 
 export const mapBookmarkListItems = pgTable(

@@ -23,6 +23,7 @@
     "db:status": "pnpx supabase status",
     "db:seed": "pnpx tsx --env-file=.env src/server/drizzle/seed/index.ts",
     "pp:recalculate": "dotenv -e .env -- pnpx tsx src/server/drizzle/scripts/recalculate-all-pp.ts",
+    "tags:normalize": "dotenv -e .env -- pnpx tsx src/server/drizzle/scripts/normalize-map-tags.ts",
     "prepare": "husky"
   },
   "dependencies": {

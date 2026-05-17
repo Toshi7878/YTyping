@@ -1,5 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { downloadPublicFile } from "@/server/api/lib/storage";
@@ -42,7 +42,12 @@ export const mapOpenApiRouter = {
             videoId: maps.videoId,
           },
           info: {
-            tags: maps.tags,
+            tags: sql<string[]>`(
+              SELECT COALESCE(array_agg(t.name ORDER BY t.name), ARRAY[]::varchar[])
+              FROM map_tags mt
+              JOIN tags t ON t.id = mt.tag_id
+              WHERE mt.map_id = ${maps.id}
+            )`,
             title: maps.title,
             artistName: maps.artistName,
             source: maps.musicSource,
