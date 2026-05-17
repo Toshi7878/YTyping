@@ -179,41 +179,42 @@ const GenreFilterRow = () => {
         language
       </div>
       <div className="flex flex-wrap items-center gap-1">
-        {GENRE_FILTERS.map((filter) => {
+        {GENRE_FILTERS.map((filter, index) => {
           const isActive =
             params.minKanaRatio === filter.params.minKanaRatio && params.maxKanaRatio === filter.params.maxKanaRatio;
 
           return (
-            <Button
-              key={filter.label}
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-                void setFilterParams(isActive ? GENRE_FILTER_CLEAR : { ...filter.params });
-              }}
-              className={cn(
-                "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
-                isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+            <React.Fragment key={filter.label}>
+              <Button
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  void setFilterParams(isActive ? GENRE_FILTER_CLEAR : { ...filter.params });
+                }}
+                className={cn(
+                  "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
+                  isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+                )}
+              >
+                {filter.label}
+              </Button>
+              {index === 0 && isLanguageFilterActive && (
+                <div className="flex min-w-40 flex-1 items-center gap-2 px-2">
+                  <DualRangeSlider
+                    min={0}
+                    max={100}
+                    step={5}
+                    value={localSlider}
+                    onValueChange={(v) => setLocalSlider(v as [number, number])}
+                    onValueCommit={(v) => void setFilterParams({ minKanaRatio: v[0], maxKanaRatio: v[1] })}
+                    label={(v) => <span className="whitespace-nowrap text-[10px]">{v}%</span>}
+                    labelPosition="bottom"
+                  />
+                </div>
               )}
-            >
-              {filter.label}
-            </Button>
+            </React.Fragment>
           );
         })}
-        {isLanguageFilterActive && (
-          <div className="flex min-w-40 flex-1 items-center gap-2 px-2">
-            <DualRangeSlider
-              min={0}
-              max={100}
-              step={5}
-              value={localSlider}
-              onValueChange={(v) => setLocalSlider(v as [number, number])}
-              onValueCommit={(v) => void setFilterParams({ minKanaRatio: v[0], maxKanaRatio: v[1] })}
-              label={(v) => <span className="whitespace-nowrap text-[10px]">{v}%</span>}
-              labelPosition="bottom"
-            />
-          </div>
-        )}
       </div>
     </>
   );
