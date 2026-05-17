@@ -80,7 +80,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   }, [rawMapLines]);
 
   return (
-    <div className="fixed flex h-screen w-screen flex-col items-center max-sm:-mt-1.5">
+    <div className="fixed flex h-screen w-screen flex-col items-center md:pt-2">
       <TypingLayout isLoading={isLoading} videoId={videoId} />
     </div>
   );
