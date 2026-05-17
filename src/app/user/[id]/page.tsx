@@ -64,6 +64,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   await Promise.all([
     prefetchAsync(trpc.map.list.getCount.queryOptions({ creatorId: numericId })),
     prefetchAsync(trpc.map.list.getCount.queryOptions({ likerId: numericId })),
+    prefetchAsync(trpc.ranking.pp.getRankByUserId.queryOptions(numericId)),
     prefetchAsync(trpc.result.list.getCount.queryOptions({ playerId: numericId })),
     prefetchAsync(trpc.map.bookmark.lists.getCount.queryOptions({ userId: numericId })),
     ...tabQueryOptions.map(prefetchAsync),

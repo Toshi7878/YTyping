@@ -1,41 +1,42 @@
 "use client";
 
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useMemo } from "react";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { ScrollSpinner } from "@/ui/spinner";
+import { PageNavigation } from "@/ui/page-navigation";
 import { cn } from "@/utils/cn";
+import { usePpRankingPageQueryState } from "./search-params";
 
-type PpRow = RouterOutputs["user"]["stats"]["getPPRanking"]["items"][number];
+type PpRow = RouterOutputs["ranking"]["pp"]["list"]["get"]["items"][number];
 
-/** 列を揃える共通グリド（見出し行＋各カード行で同一） */
 const rowGrid =
   "grid grid-cols-[minmax(0,3.5rem)_minmax(0,1fr)_minmax(0,5rem)] items-center gap-2 sm:grid-cols-[minmax(0,4.5rem)_minmax(0,1fr)_minmax(0,6rem)] sm:gap-4";
 
-export const PPRankingTable = () => {
+export const PPRanking = () => {
   const trpc = useTRPC();
-  const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    trpc.user.stats.getPPRanking.infiniteQueryOptions({}, { getNextPageParam: (last) => last.nextCursor ?? undefined }),
-  );
+  const [page, setPage] = usePpRankingPageQueryState();
 
-  const rows: PpRow[] = useMemo(() => (data?.pages ? data.pages.flatMap((p) => p.items) : []), [data?.pages]);
+  const { data } = useSuspenseQuery(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }));
+  const { data: pageCount } = useSuspenseQuery(trpc.ranking.pp.list.getPageCount.queryOptions());
+
+  const rows: PpRow[] = data.items;
 
   return (
     <div className="space-y-2">
+      <PageNavigation page={page} pageCount={pageCount} onPageChange={setPage} size="sm" />
       <div className={cn("border-border/30 border-b pb-2 text-muted-foreground text-sm", rowGrid)}>
         <div>順位</div>
         <div>プレイヤー</div>
         <div className="text-right sm:text-left">合計 PP</div>
       </div>
 
-      <ul className="space-y-2.5" aria-label="PP ランキング">
+      <ul className="space-y-2" aria-label="PP ランキング">
         {rows.map((row) => (
           <li
             key={`${row.userId}`}
             className={cn(
-              "rounded-lg bg-muted/30 py-2.5 pr-3 pl-2.5 transition-colors sm:px-4",
+              "rounded-lg bg-muted/30 py-2 pr-3 pl-2.5 transition-colors sm:px-4",
               "hover:border-border hover:bg-muted/50",
             )}
           >
@@ -62,8 +63,7 @@ export const PPRankingTable = () => {
           </li>
         ))}
       </ul>
-
-      <ScrollSpinner rootMarginY="1000px" onEnter={fetchNextPage} hasMore={hasNextPage} />
+      <PageNavigation page={page} pageCount={pageCount} onPageChange={setPage} size="sm" />
     </div>
   );
 };

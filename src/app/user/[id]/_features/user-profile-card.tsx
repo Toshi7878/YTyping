@@ -1,10 +1,13 @@
 "use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import { useSession } from "@/auth/client";
+import { PAGE_SIZE } from "@/server/api/routers/ranking/pp/const";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
@@ -20,6 +23,8 @@ interface UserProfileCardProps {
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
+  const trpc = useTRPC();
+  const { data: ppRank } = useSuspenseQuery(trpc.ranking.pp.getRankByUserId.queryOptions(Number(userId)));
   const isMyProfilePage = session?.user.id === Number(userId);
   const isAdmin = session?.user.role === "ADMIN";
   const canSeeWarnings = isMyProfilePage || isAdmin;
@@ -47,9 +52,21 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
     <Card>
       <CardContent className="relative flex flex-col gap-4 md:mx-8">
         <H2>{userProfile?.name ?? ""}</H2>
-        <DataList orientation="vertical" className="gap-3">
+        <DataList orientation="horizontal" className="gap-3">
+          <DataListItem className="flex items-center gap-2 font-bold text-2xl">
+            <DataListLabel>実力ランク:</DataListLabel>
+            <DataListValue>
+              {ppRank ? (
+                <Link href={`/rankings/performance?page=${Math.ceil(ppRank / PAGE_SIZE)}`} className="hover:underline">
+                  #{ppRank}
+                </Link>
+              ) : (
+                "-"
+              )}
+            </DataListValue>
+          </DataListItem>
           {profile.map((item) => (
-            <DataListItem key={item.label}>
+            <DataListItem key={item.label} className="flex items-center gap-2">
               <DataListLabel>{item.label}:</DataListLabel>
               <DataListValue>{item.value}</DataListValue>
             </DataListItem>

@@ -4,6 +4,7 @@ import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
 import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
+import { rankingPpRouter } from "./routers/ranking/pp/pp";
 import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
 import { userOptionRouter } from "./routers/user/option";
@@ -25,6 +26,9 @@ export const appRouter = router({
     imeTypingOption: userImeTypingOptionRouter,
     stats: userStatsRouter,
     report: userReportRouter,
+  },
+  ranking: {
+    pp: rankingPpRouter,
   },
   notification: notificationRouter,
   morph: morphRouter,

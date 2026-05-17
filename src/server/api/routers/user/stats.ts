@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
-import { and, asc, count, desc, eq, gt, sql } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import z from "zod";
 import {
   maps,
@@ -9,12 +9,10 @@ import {
   userMapCompletionPlayCounts,
   userOptions,
   userStats,
-  users,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
-import { createPagination } from "../../utils/pagination";
 
 export const userStatsRouter = {
   get: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -50,69 +48,6 @@ export const userStatsRouter = {
       .then((rows) => rows?.[0] ?? null);
 
     return stats;
-  }),
-
-  /** total PP 順のユーザーランキング（ページネーション） */
-  getPPRanking: publicProcedure
-    .input(
-      z.object({
-        cursor: z.number().int().optional(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
-
-      const { offset, limit, buildPageResult } = createPagination(input.cursor, 30);
-
-      const rows = await db
-        .select({
-          userId: users.id,
-          name: users.name,
-          totalPP: userStats.totalPp,
-        })
-        .from(userStats)
-        .innerJoin(users, eq(users.id, userStats.userId))
-        .where(eq(users.banned, false))
-        .orderBy(desc(userStats.totalPp), asc(users.id))
-        .limit(limit)
-        .offset(offset);
-
-      const rowsWithRank = rows.map((row, index) => ({
-        ...row,
-        rank: offset + index + 1,
-      }));
-
-      return buildPageResult(rowsWithRank);
-    }),
-
-  /** 指定ユーザーの total PP 順位（同率は最上位を返す）。stats 未作成の場合は総ユーザー数（最下位）を返す。 */
-  getMyPpRank: protectedProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
-
-    const myStats = await db
-      .select({ totalPP: userStats.totalPp })
-      .from(userStats)
-      .where(eq(userStats.userId, session.user.id))
-      .limit(1)
-      .then((rows) => rows[0] ?? null);
-
-    if (!myStats) {
-      return db
-        .select({ count: count() })
-        .from(userStats)
-        .innerJoin(users, eq(users.id, userStats.userId))
-        .where(eq(users.banned, false))
-        .then((rows) => rows[0]?.count ?? 0);
-    }
-
-    const aboveCount = await db
-      .select({ count: count() })
-      .from(userStats)
-      .innerJoin(users, eq(users.id, userStats.userId))
-      .where(and(eq(users.banned, false), gt(userStats.totalPp, myStats.totalPP)))
-      .then((rows) => rows[0]?.count ?? 0);
-
-    return aboveCount + 1;
   }),
 
   getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {

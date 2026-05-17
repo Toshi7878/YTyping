@@ -25,7 +25,7 @@ interface UserMenuProps {
 
 export const UserMenu = ({ session, className }: UserMenuProps) => {
   const trpc = useTRPC();
-  const { data: ppRank } = useSuspenseQuery(trpc.user.stats.getMyPpRank.queryOptions());
+  const { data: ppRank } = useSuspenseQuery(trpc.ranking.pp.getRankByUserId.queryOptions(session.user.id));
   const userMenuLinkItems = buildUserMenuLinkItems(session);
 
   return (
