@@ -225,7 +225,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     session ? filterByRankingStatus(input.rankingStatus) : undefined,
     filterByDifficulty({ minRate: input.minRate, maxRate: input.maxRate }),
     filterByKeyword(input.keyword),
-    input ? filterByChunkCount(input) : undefined,
+    input ? filterByEnglishRatio(input) : undefined,
     input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
     input.bookmarkListId
@@ -349,19 +349,25 @@ export const filterByMapVisibility = (
   return or(eq(maps.visibility, "PUBLIC"), and(eq(maps.visibility, "UNLISTED"), eq(maps.creatorId, session.user.id)));
 };
 
-const filterByChunkCount = (input: Pick<z.output<typeof MapSearchFilterSchema>, "minKanaRatio" | "maxKanaRatio">) => {
+const filterByEnglishRatio = (input: Pick<z.output<typeof MapSearchFilterSchema>, "englishRatio">) => {
   const conditions: SQL[] = [];
-  const { minKanaRatio, maxKanaRatio } = input ?? {};
+  const { englishRatio } = input ?? {};
 
-  if (typeof minKanaRatio === "number" && minKanaRatio > 0) {
-    conditions.push(
-      sql`${mapDifficulties.kanaChunkCount} * 100 >= ${minKanaRatio} * (${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`,
-    );
-  }
+  if (typeof englishRatio === "number") {
+    const languageChunkCount = sql`(${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`;
 
-  if (typeof maxKanaRatio === "number" && maxKanaRatio < 100) {
+    if (englishRatio === 0) {
+      return and(eq(mapDifficulties.alphabetChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    if (englishRatio === 100) {
+      return and(eq(mapDifficulties.kanaChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
     conditions.push(
-      sql`${mapDifficulties.kanaChunkCount} * 100 <= ${maxKanaRatio} * (${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`,
+      sql`${languageChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} * 200 >= ${englishRatio * 2 - 5} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 200 < ${englishRatio * 2 + 5} * ${languageChunkCount}`,
     );
   }
 

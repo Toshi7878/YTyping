@@ -22,8 +22,7 @@ export const MapSearchFilterSchema = z.object({
   keyword: z.string().nullish(),
   minRate: z.number().nullish(),
   maxRate: z.number().nullish(),
-  minKanaRatio: z.number().min(0).max(100).nullish(),
-  maxKanaRatio: z.number().min(0).max(100).nullish(),
+  englishRatio: z.number().min(0).max(100).nullish(),
   creatorId: z.number().nullish(),
   likerId: z.number().nullish(),
 });
@@ -55,6 +54,7 @@ export const SelectMapListOpenApiSchema = z.object({
   keyword: z.string().nullish(),
   minRate: z.number().nullish(),
   maxRate: z.number().nullish(),
+  englishRatio: z.number().min(0).max(100).nullish(),
   creatorId: z.number().nullish(),
   likerId: z.number().nullish(),
 });

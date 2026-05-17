@@ -119,6 +119,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(db: T, input?: z.output<
 
   const searchConditions = [
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+    buildChunkRatioCondition(input.englishRatio),
     buildKeywordCondition(input.keyword),
     input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
@@ -175,6 +176,30 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
 
   if (maxRate) {
     conditions.push(lte(mapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
+  }
+
+  return and(...conditions);
+}
+
+function buildChunkRatioCondition(englishRatio?: number | null) {
+  const conditions: SQL[] = [];
+
+  if (typeof englishRatio === "number") {
+    const languageChunkCount = sql`(${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`;
+
+    if (englishRatio === 0) {
+      return and(eq(mapDifficulties.alphabetChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    if (englishRatio === 100) {
+      return and(eq(mapDifficulties.kanaChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    conditions.push(
+      sql`${languageChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} * 200 >= ${englishRatio * 2 - 5} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 200 < ${englishRatio * 2 + 5} * ${languageChunkCount}`,
+    );
   }
 
   return and(...conditions);

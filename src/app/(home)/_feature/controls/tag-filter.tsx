@@ -6,8 +6,8 @@ import * as React from "react";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
-import { DualRangeSlider } from "@/ui/dual-range-slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select/select";
+import { Slider } from "@/ui/slider";
 import { cn } from "@/utils/cn";
 import type { MAP_RANKING_STATUS_FILTER_OPTIONS, MAP_USER_FILTER_OPTIONS } from "@/validator/map/list";
 import {
@@ -151,27 +151,26 @@ const BookmarkListSelect = () => {
 
 const GENRE_FILTERS = [
   {
-    label: "English",
-    params: { minKanaRatio: 0, maxKanaRatio: 0 },
+    label: "日本語",
+    params: { englishRatio: 0 },
   },
   {
-    label: "日本語",
-    params: { minKanaRatio: 100, maxKanaRatio: 100 },
+    label: "English",
+    params: { englishRatio: 100 },
   },
 ] as const;
 
-const GENRE_FILTER_CLEAR = { minKanaRatio: null, maxKanaRatio: null };
+const GENRE_FILTER_CLEAR = { englishRatio: null };
 
 const GenreFilterRow = () => {
   const [params, setFilterParams] = useMapListFilterQueryStates();
-  const isLanguageFilterActive = params.minKanaRatio !== null || params.maxKanaRatio !== null;
-  const sliderMin = params.minKanaRatio ?? 0;
-  const sliderMax = params.maxKanaRatio ?? 100;
-  const [localSlider, setLocalSlider] = React.useState<[number, number]>([sliderMin, sliderMax]);
+  const isLanguageFilterActive = params.englishRatio !== null;
+  const englishRatio = params.englishRatio ?? 0;
+  const [localSlider, setLocalSlider] = React.useState(englishRatio);
 
   React.useEffect(() => {
-    setLocalSlider([sliderMin, sliderMax]);
-  }, [sliderMin, sliderMax]);
+    setLocalSlider(englishRatio);
+  }, [englishRatio]);
 
   return (
     <>
@@ -180,8 +179,7 @@ const GenreFilterRow = () => {
       </div>
       <div className="flex flex-wrap items-center gap-1">
         {GENRE_FILTERS.map((filter, index) => {
-          const isActive =
-            params.minKanaRatio === filter.params.minKanaRatio && params.maxKanaRatio === filter.params.maxKanaRatio;
+          const isActive = params.englishRatio === filter.params.englishRatio;
 
           return (
             <React.Fragment key={filter.label}>
@@ -189,7 +187,7 @@ const GenreFilterRow = () => {
                 variant="ghost"
                 onClick={(e) => {
                   e.preventDefault();
-                  void setFilterParams(isActive ? GENRE_FILTER_CLEAR : { ...filter.params });
+                  void setFilterParams(isActive ? GENRE_FILTER_CLEAR : filter.params);
                 }}
                 className={cn(
                   "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
@@ -200,16 +198,17 @@ const GenreFilterRow = () => {
               </Button>
               {index === 0 && isLanguageFilterActive && (
                 <div className="flex min-w-40 flex-1 items-center gap-2 px-2">
-                  <DualRangeSlider
+                  <Slider
                     min={0}
                     max={100}
                     step={5}
-                    value={localSlider}
-                    onValueChange={(v) => setLocalSlider(v as [number, number])}
-                    onValueCommit={(v) => void setFilterParams({ minKanaRatio: v[0], maxKanaRatio: v[1] })}
-                    label={(v) => <span className="whitespace-nowrap text-[10px]">{v}%</span>}
-                    labelPosition="bottom"
+                    value={[localSlider]}
+                    onValueChange={(v) => setLocalSlider(v[0] ?? 0)}
+                    onValueCommit={(v) => {
+                      void setFilterParams({ englishRatio: v[0] ?? 0 });
+                    }}
                   />
+                  <span className="w-9 text-right text-[10px] tabular-nums">{localSlider}%</span>
                 </div>
               )}
             </React.Fragment>
