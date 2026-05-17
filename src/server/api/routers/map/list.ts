@@ -350,17 +350,21 @@ export const filterByMapVisibility = (
 };
 
 const filterByChunkCount = (
-  input: Pick<z.output<typeof MapSearchFilterSchema>, "maxKanaChunkCount" | "minAlphabetChunkCount">,
+  input: Pick<z.output<typeof MapSearchFilterSchema>, "minKanaRatio" | "maxKanaRatio">,
 ) => {
   const conditions: SQL[] = [];
-  const { maxKanaChunkCount, minAlphabetChunkCount } = input ?? {};
+  const { minKanaRatio, maxKanaRatio } = input ?? {};
 
-  if (typeof maxKanaChunkCount === "number" && maxKanaChunkCount >= 0) {
-    conditions.push(lte(mapDifficulties.kanaChunkCount, maxKanaChunkCount));
+  if (typeof minKanaRatio === "number" && minKanaRatio > 0) {
+    conditions.push(
+      sql`${mapDifficulties.kanaChunkCount} * 100 >= ${minKanaRatio} * (${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`,
+    );
   }
 
-  if (typeof minAlphabetChunkCount === "number" && minAlphabetChunkCount >= 0) {
-    conditions.push(gte(mapDifficulties.alphabetChunkCount, minAlphabetChunkCount));
+  if (typeof maxKanaRatio === "number" && maxKanaRatio < 100) {
+    conditions.push(
+      sql`${mapDifficulties.kanaChunkCount} * 100 <= ${maxKanaRatio} * (${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`,
+    );
   }
 
   return and(...conditions);
