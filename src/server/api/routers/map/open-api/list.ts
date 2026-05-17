@@ -197,8 +197,8 @@ function buildChunkRatioCondition(englishRatio?: number | null) {
 
     conditions.push(
       sql`${languageChunkCount} > 0`,
-      sql`${mapDifficulties.alphabetChunkCount} * 200 >= ${englishRatio * 2 - 5} * ${languageChunkCount}`,
-      sql`${mapDifficulties.alphabetChunkCount} * 200 < ${englishRatio * 2 + 5} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 >= ${englishRatio - 10} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 < ${englishRatio + 10} * ${languageChunkCount}`,
     );
   }
 

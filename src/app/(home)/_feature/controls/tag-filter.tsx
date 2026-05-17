@@ -206,7 +206,7 @@ const GenreFilterRow = () => {
                   <Slider
                     min={0}
                     max={100}
-                    step={5}
+                    step={10}
                     value={[localSlider]}
                     thumbLabel={formatLanguageRatioLabel}
                     onValueChange={(v) => setLocalSlider(v[0] ?? 0)}
