@@ -13,14 +13,14 @@ import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useMapListFilterQueryStates } from "./search-params";
 
 const DEFAULT_TAG_SUGGESTIONS = [
-  "公式動画",
-  "J-POP",
-  "ボーカロイド/ボカロ/VOCALOID/初音ミク",
   "アニメ",
+  "ボーカロイド/ボカロ/VOCALOID/初音ミク",
+  "VTuber/ホロライブ/にじさんじ",
+  "J-POP",
   "Cover/歌ってみた",
   "ラップ",
   "ゲーム/音ゲー",
-  "VTuber/ホロライブ/にじさんじ",
+  "映画",
   "Nightcore/Remix",
   "東方",
 ] as const;
