@@ -210,18 +210,26 @@ function buildChunkRatioCondition(englishRatio?: number | null) {
 const buildKeywordCondition = (keyword?: string | null) => {
   if (!keyword || keyword.trim() === "") return;
 
-  const keywords = keyword.trim().split(/\s+/);
+  const keywordGroups = keyword
+    .trim()
+    .split(/\s+/)
+    .map((keyword) => keyword.split("/").filter(Boolean))
+    .filter((keywords) => keywords.length > 0);
 
-  const conditions = keywords.map((keyword) => {
-    const pattern = `%${keyword}%`;
-    return or(
-      ilike(maps.title, pattern),
-      ilike(maps.artistName, pattern),
-      ilike(maps.musicSource, pattern),
-      sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
-      ilike(creator.name, pattern),
-    );
-  });
+  const conditions = keywordGroups.map((keywords) =>
+    or(
+      ...keywords.map((keyword) => {
+        const pattern = `%${keyword}%`;
+        return or(
+          ilike(maps.title, pattern),
+          ilike(maps.artistName, pattern),
+          ilike(maps.musicSource, pattern),
+          sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
+          ilike(creator.name, pattern),
+        );
+      }),
+    ),
+  );
 
   return and(...conditions);
 };

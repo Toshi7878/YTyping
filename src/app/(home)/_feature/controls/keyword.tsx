@@ -12,6 +12,19 @@ import { cn } from "@/utils/cn";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useMapListFilterQueryStates } from "./search-params";
 
+const DEFAULT_TAG_SUGGESTIONS = [
+  "公式動画",
+  "J-POP",
+  "ボーカロイド/ボカロ",
+  "アニメ",
+  "Cover/歌ってみた",
+  "ラップ",
+  "初音ミク",
+  "ゲーム",
+  "VTuber",
+  "ボカロ",
+] as const;
+
 export const KeywordInput = () => {
   const [params, setFilterParams] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
@@ -22,21 +35,37 @@ export const KeywordInput = () => {
   const { debounce } = useDebounce(200);
   const trpc = useTRPC();
   const router = useRouter();
+  const hasInputKeyword = keyword.trim() !== "";
+  const hasDebouncedKeyword = debouncedKeyword.trim() !== "";
 
   useEffect(() => {
     setKeyword(params.keyword ?? "");
   }, [params.keyword]);
 
   const { data: suggestions } = useQuery(
-    trpc.map.list.getSearchSuggestions.queryOptions({ keyword: debouncedKeyword }, { staleTime: 1000 * 60 * 5 }),
+    trpc.map.list.getSearchSuggestions.queryOptions(
+      { keyword: debouncedKeyword },
+      { enabled: hasDebouncedKeyword, staleTime: Infinity },
+    ),
+  );
+
+  const displaySuggestions = useMemo(
+    () =>
+      hasInputKeyword
+        ? suggestions
+        : {
+            tags: DEFAULT_TAG_SUGGESTIONS.map((name) => ({ name })),
+            titles: [],
+          },
+    [hasInputKeyword, suggestions],
   );
 
   const flatSuggestions = useMemo(
     () => [
-      ...(suggestions?.tags.map(({ name }) => name) ?? []),
-      ...(suggestions?.titles.map(({ title }) => title) ?? []),
+      ...(displaySuggestions?.tags.map(({ name }) => name) ?? []),
+      ...(displaySuggestions?.titles.map(({ title }) => title) ?? []),
     ],
-    [suggestions],
+    [displaySuggestions],
   );
 
   const hasAnySuggestion = flatSuggestions.length > 0;
@@ -59,7 +88,7 @@ export const KeywordInput = () => {
   };
 
   const handleTitleSelect = (title: string) => {
-    const id = suggestions?.titles.find((t) => t.title === title)?.id;
+    const id = displaySuggestions?.titles.find((t) => t.title === title)?.id;
     if (id !== undefined) {
       router.push(`/type/${id}`);
       setOpen(false);
@@ -89,7 +118,7 @@ export const KeywordInput = () => {
     }
   };
 
-  const tagCount = suggestions?.tags.length ?? 0;
+  const tagCount = displaySuggestions?.tags.length ?? 0;
 
   return (
     <form
@@ -115,7 +144,7 @@ export const KeywordInput = () => {
         </PopoverAnchor>
         <PopoverContent align="start" className="p-1" style={{ width: "var(--radix-popper-anchor-width)" }}>
           <SuggestionSection
-            items={suggestions?.tags.map(({ name }) => ({ value: name })) ?? []}
+            items={displaySuggestions?.tags.map(({ name }) => ({ value: name })) ?? []}
             onSelect={handleSelect}
             startIndex={0}
             selectedIndex={selectedIndex}
@@ -123,7 +152,7 @@ export const KeywordInput = () => {
           <SuggestionSection
             label="譜面"
             items={
-              suggestions?.titles.map(({ id, title, artistName }) => ({
+              displaySuggestions?.titles.map(({ id, title, artistName }) => ({
                 value: title,
                 sub: `#${id}`,
                 description: artistName ?? undefined,

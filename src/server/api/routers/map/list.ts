@@ -89,30 +89,30 @@ export const mapListRouter = {
     return map;
   }),
 
-  getSearchSuggestions: publicProcedure.input(z.object({ keyword: z.string() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
-    const keyword = input.keyword.trim();
-    const pattern = `%${keyword}%`;
+  getSearchSuggestions: publicProcedure
+    .input(z.object({ keyword: z.string().trim().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
+      const keyword = input.keyword;
+      const pattern = `%${keyword}%`;
 
-    const [tagResults, titleResults] = await Promise.all([
-      db
-        .select({ name: tags.name })
-        .from(tags)
-        .where(keyword ? ilike(tags.name, pattern) : undefined)
-        .orderBy(desc(tags.mapCount))
-        .limit(keyword ? 5 : 10),
-      keyword
-        ? db
-            .select({ id: maps.id, title: maps.title, artistName: maps.artistName })
-            .from(maps)
-            .where(and(eq(maps.visibility, "PUBLIC"), ilike(maps.title, pattern)))
-            .orderBy(desc(maps.likeCount))
-            .limit(5)
-        : [],
-    ]);
+      const [tagResults, titleResults] = await Promise.all([
+        db
+          .select({ name: tags.name })
+          .from(tags)
+          .where(ilike(tags.name, pattern))
+          .orderBy(desc(tags.mapCount))
+          .limit(5),
+        db
+          .select({ id: maps.id, title: maps.title, artistName: maps.artistName })
+          .from(maps)
+          .where(and(eq(maps.visibility, "PUBLIC"), ilike(maps.title, pattern)))
+          .orderBy(desc(maps.likeCount))
+          .limit(5),
+      ]);
 
-    return { tags: tagResults, titles: titleResults };
-  }),
+      return { tags: tagResults, titles: titleResults };
+    }),
 } satisfies TRPCRouterRecord;
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
@@ -318,18 +318,26 @@ const filterByRankingStatus = (
 const filterByKeyword = (keyword?: string | null) => {
   if (!keyword || keyword.trim() === "") return;
 
-  const keywords = keyword.trim().split(/\s+/);
+  const keywordGroups = keyword
+    .trim()
+    .split(/\s+/)
+    .map((keyword) => keyword.split("/").filter(Boolean))
+    .filter((keywords) => keywords.length > 0);
 
-  const conditions = keywords.map((keyword) => {
-    const pattern = `%${keyword}%`;
-    return or(
-      ilike(maps.title, pattern),
-      ilike(maps.artistName, pattern),
-      ilike(maps.musicSource, pattern),
-      sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
-      ilike(creator.name, pattern),
-    );
-  });
+  const conditions = keywordGroups.map((keywords) =>
+    or(
+      ...keywords.map((keyword) => {
+        const pattern = `%${keyword}%`;
+        return or(
+          ilike(maps.title, pattern),
+          ilike(maps.artistName, pattern),
+          ilike(maps.musicSource, pattern),
+          sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
+          ilike(creator.name, pattern),
+        );
+      }),
+    ),
+  );
 
   return and(...conditions);
 };
