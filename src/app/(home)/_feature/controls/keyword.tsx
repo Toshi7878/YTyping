@@ -20,6 +20,7 @@ const DEFAULT_TAG_SUGGESTIONS = [
   "Cover/歌ってみた",
   "映画",
   "TikTok",
+  "ゲーム",
   "OSU/音ゲー",
   "Nightcore/Remix",
   "東方",
