@@ -18,11 +18,13 @@ const DEFAULT_TAG_SUGGESTIONS = [
   "ボーカロイド/ボカロ/VOCALOID/初音ミク",
   "VTuber/ホロライブ/にじさんじ",
   "Cover/歌ってみた",
-  "ラップ",
-  "ゲーム/音ゲー",
+  "ゲーム",
   "映画",
+  "TikTok",
+  "OSU/音ゲー",
   "Nightcore/Remix",
   "東方",
+  "ラップ",
 ] as const;
 
 export const KeywordInput = () => {
