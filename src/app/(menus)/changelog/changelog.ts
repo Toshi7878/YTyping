@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-5-18",
+    descriptions: ["譜面一覧の譜面時間表示を間奏スキップを加味した推定プレイ時間に再計算"],
+  },
+  {
     date: "2026-5-17",
     descriptions: [
       "日本語譜面フィルターと英語・日本語比率フィルターを追加",
