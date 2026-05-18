@@ -159,6 +159,17 @@ export const calcChunkCounts = (
   return counts;
 };
 
+export const calculateTypingDuration = (builtMapLines: BuiltMapLineWithOption[]): number =>
+  builtMapLines
+    .filter((line) => line.notes.roma > 0)
+    .reduce((acc, line) => {
+      if (line.duration >= 10 && line.kpm.roma < 300) {
+        return acc + (line.notes.roma / 300) * 60;
+      }
+
+      return acc + line.duration;
+    }, 0);
+
 export const calcChunkRatios = ({
   kanaChunkCount,
   alphabetChunkCount,

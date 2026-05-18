@@ -27,9 +27,9 @@ import { useSession } from "@/auth/client";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import {
   calcChunkCounts,
-  calculateDuration,
   calculateSpeedDifficulty,
   calculateTotalNotes,
+  calculateTypingDuration,
   getStartLine,
 } from "@/shared/map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
@@ -485,7 +485,7 @@ const useOnSubmit = (form: FormType) => {
     const rawMapLines = readRawMap();
     const { title, artistName, musicSource, creatorComment, tags, previewTime, visibility } = data;
     const builtMap = buildTypingMap({ rawMapLines, charPoint: 0 });
-    const duration = calculateDuration(builtMap);
+    const duration = calculateTypingDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
     const startLine = getStartLine(builtMap);
     const speedDifficulty = calculateSpeedDifficulty(builtMap);
