@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { queryOptions, useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { atom, useAtomValue } from "jotai";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -8,21 +9,19 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
+import { idb } from "@/app/edit/_feature/indexed-db";
+import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
 import {
-  readMapId,
-  readVideoId,
+  getMapId,
+  getVideoId,
   setCreatorId,
   setMapId,
-  setVideoId,
-  useCreatorIdState,
-  useMapIdState,
-  useVideoIdState,
-} from "@/app/edit/_lib/atoms/hydrate";
-import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
-import { getYTDuration, getYTVideoId, playYTPlayer, seekYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
-import { editDb } from "@/app/edit/_lib/indexed-db";
-import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
-import { useIsBuckupQueryState } from "@/app/edit/_lib/search-params";
+  store,
+  useCreatorId,
+  useMapId,
+  useVideoId,
+} from "@/app/edit/_feature/provider";
+import { useIsBuckupQueryState } from "@/app/edit/_feature/search-params";
 import { useSession } from "@/auth/client";
 import type { MAP_VISIBILITY_TYPES } from "@/server/drizzle/schema/map";
 import {
@@ -45,22 +44,30 @@ import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { extractYouTubeId } from "@/utils/youtube";
 import { MapInfoFormSchema } from "@/validator/map/map";
-import { readRawMap } from "../../../_lib/atoms/map-reducer";
-import { readUtilityParams, setCanUpload, setYTChangingVideo, useCanUploadState } from "../../../_lib/atoms/state";
-import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
+import { getRawMap } from "../../map-table/map-reducer";
+import { getThumbnailQuality } from "../../utils/get-thumbail-quality";
+import { preventEditorTabAutoFocus, YTPlayer } from "../../youtube-player";
 import { SuggestionTags } from "./suggestion-tags";
 
 export const TAG_MAX_LENGTH = 10;
 
+const canUploadAtom = atom(false);
+export const useCanUpload = () => useAtomValue(canUploadAtom);
+export const setCanUpload = (value: boolean) => store.set(canUploadAtom, value);
+
+const isMapEditedAtom = atom(false);
+export const getIsMapEdited = () => store.get(isMapEditedAtom);
+export const setIsMapEdited = (value: boolean) => store.set(isMapEditedAtom, value);
+
 export const EditMapInfoFormCard = () => {
-  const mapId = useMapIdState();
+  const mapId = useMapId();
   const trpc = useTRPC();
 
   const { data: mapInfo } = useSuspenseQuery(
     trpc.map.getById.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
-  const videoId = useVideoIdState();
+  const videoId = useVideoId();
 
   const form = useForm({
     resolver: zodResolver(MapInfoFormSchema),
@@ -127,18 +134,18 @@ export const AddMapInfoFormCard = () => {
 
   const [isBackup] = useIsBuckupQueryState();
   const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
+  const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   const { data: backupMap } = useQuery(
     queryOptions({
       queryKey: ["backup"],
-      queryFn: editDb.backup.fetch,
+      queryFn: idb.backup.fetch,
       enabled: isBackup,
     }),
   );
 
-  const videoId = useVideoIdState();
+  const videoId = useVideoId();
   const { debounce } = useDebounce(500);
 
   const form = useForm({
@@ -198,7 +205,7 @@ export const AddMapInfoFormCard = () => {
       if (!value) return;
 
       debounce(() => {
-        void editDb.backup.upsertMapInfo({
+        void idb.backup.upsertMapInfo({
           videoId,
           title: value.title || "",
           artistName: value.artistName || "",
@@ -267,9 +274,9 @@ export const AddMapInfoFormCard = () => {
 const UpsertButton = () => {
   const { formState } = useFormContext();
   const { isDirty, isSubmitting } = formState;
-  const canUpload = useCanUploadState();
+  const canUpload = useCanUpload();
   const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
+  const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
   useNavigationGuard((isDirty || canUpload) && hasUploadPermission);
 
@@ -307,16 +314,14 @@ const VideoIdInput = ({ readOnly = false }: { readOnly?: boolean }) => {
 
             if (videoId) {
               setValue("videoId", videoId, { shouldDirty: true });
-              setVideoId(videoId);
-              setYTChangingVideo(true);
+              YTPlayer.cueVideo(videoId);
               setCanUpload(true);
               return;
             }
 
             if (clipboardText.length === 11) {
               setValue("videoId", clipboardText, { shouldDirty: true });
-              setVideoId(clipboardText);
-              setYTChangingVideo(true);
+              YTPlayer.cueVideo(clipboardText);
               setCanUpload(true);
             }
           }}
@@ -331,8 +336,7 @@ const VideoIdInput = ({ readOnly = false }: { readOnly?: boolean }) => {
           e.preventDefault();
           if (formVideoId.length !== 11) return;
 
-          setVideoId(getValues("videoId"));
-          setYTChangingVideo(true);
+          YTPlayer.cueVideo(getValues("videoId"));
           setCanUpload(true);
         }}
       >
@@ -355,9 +359,9 @@ const PreviewTimeInput = () => {
   const { setValue, getValues } = useFormContext();
 
   const handlePreviewClick = () => {
-    playYTPlayer();
-    seekYTPlayer(Number(getValues("previewTime")));
-    setPreventEditorTabAutoFocus(true);
+    YTPlayer.play();
+    YTPlayer.seek(Number(getValues("previewTime")));
+    preventEditorTabAutoFocus();
   };
 
   return (
@@ -436,10 +440,10 @@ const useOnSubmit = (form: FormType) => {
         );
         await context.client.invalidateQueries(trpc.map.getById.queryOptions({ mapId: id }));
 
-        const mapId = readMapId();
+        const mapId = getMapId();
         if (!mapId) {
           window.history.replaceState(null, "", `/edit/${id}`);
-          void editDb.backup.delete();
+          void idb.backup.delete();
           setMapId(id);
           setCreatorId(creatorId);
           toast.success("アップロード完了");
@@ -459,10 +463,10 @@ const useOnSubmit = (form: FormType) => {
             toast.error("保存に失敗しました", { description: error.message });
         }
 
-        const mapId = readMapId();
+        const mapId = getMapId();
         if (!mapId) {
-          const videoId = readVideoId();
-          await editDb.backup.upsertMapInfo({
+          const videoId = getVideoId();
+          await idb.backup.upsertMapInfo({
             videoId,
             title: form.getValues("title"),
             artistName: form.getValues("artistName"),
@@ -472,17 +476,16 @@ const useOnSubmit = (form: FormType) => {
             previewTime: Number(form.getValues("previewTime") ?? 0),
           });
 
-          void editDb.backup.upsertMapJson({ videoId, map: readRawMap() });
+          void idb.backup.upsertMapJson({ videoId, map: getRawMap() });
         }
       },
     }),
   );
 
   return async (data: z.output<typeof MapInfoFormSchema>) => {
-    const videoId = getYTVideoId();
-    if (!videoId) return;
+    const videoId = YTPlayer.getVideoId();
 
-    const rawMapLines = readRawMap();
+    const rawMapLines = getRawMap();
     const { title, artistName, musicSource, creatorComment, tags, previewTime, visibility } = data;
     const builtMap = buildTypingMap({ rawMapLines, charPoint: 0 });
     const duration = calculateTypingDuration(builtMap);
@@ -493,7 +496,7 @@ const useOnSubmit = (form: FormType) => {
 
     const minPreviewTime = Math.max(0, startLine.time + 0.2);
 
-    const videoDuration = getYTDuration() ?? 0;
+    const videoDuration = YTPlayer.getDuration();
     const newPreviewTime =
       previewTime > videoDuration || minPreviewTime >= previewTime ? Number(minPreviewTime.toFixed(3)) : previewTime;
 
@@ -521,13 +524,13 @@ const useOnSubmit = (form: FormType) => {
       kanaTotalNotes: Math.floor(totalNotes.kana),
       ...chunkCounts,
     };
-    const { isUpdateUpdatedAt } = readUtilityParams();
-    const mapId = readMapId();
+    const isMapEdited = getIsMapEdited();
+    const mapId = getMapId();
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,
       rawMapJson: rawMapLines,
-      isMapDataEdited: isUpdateUpdatedAt,
+      isMapDataEdited: isMapEdited,
       mapId,
     });
   };

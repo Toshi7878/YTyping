@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { importMapFromTextAutoDetect } from "@/app/edit/_lib/editor/import-map";
+import { importMapFromTextAutoDetect } from "@/app/edit/_feature/tabs/settings/import-map";
 import { Button } from "@/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
 import { FileImportButton } from "@/ui/file-import-button";

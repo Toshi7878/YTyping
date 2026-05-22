@@ -1,11 +1,11 @@
+import type { ExtractAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import type React from "react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
-import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_lib/atoms/state";
-import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
-import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
-import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
+import { filterWordSymbol } from "@/app/edit/_feature/tabs/editor/filter-word-symbol";
+import { sanitizeToAllowedSymbols } from "@/app/edit/_feature/utils/filter-word";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { FilterIconButton } from "@/ui/icon-button";
 import { Textarea } from "@/ui/textarea";
@@ -13,9 +13,22 @@ import { TooltipWrapper } from "@/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string";
+import { dispatchEditHistory, getMapEditHistory } from "../../map-table/history";
+import { setRawMapAction } from "../../map-table/map-reducer";
+import { getDirectEditingIndex } from "../../map-table/map-table";
+import { store } from "../../provider";
+import { YTPlayer } from "../../youtube-player";
+import { wordConvertAction } from "./button/word-convert";
+import { dispatchLine, getSelectLine, setWord } from "./select-line-input";
+
+const manyPhraseTextAtom = atom("");
+
+export const getManyPhraseText = () => store.get(manyPhraseTextAtom);
+export const setManyPhraseText = (value: ExtractAtomValue<typeof manyPhraseTextAtom>) =>
+  store.set(manyPhraseTextAtom, value);
 
 export const ManyPhraseTextarea = () => {
-  const manyPhrase = useManyPhraseState();
+  const manyPhrase = useAtomValue(manyPhraseTextAtom, { store });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
     "tab",
@@ -51,14 +64,14 @@ export const ManyPhraseTextarea = () => {
   const { debounce } = useDebounce(500);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { lyrics } = readSelectLine();
+    const { lyrics } = getSelectLine();
 
     const topPhrase = e.target.value.split("\n")[0] ?? "";
     if (topPhrase !== lyrics) {
       debounce(() => void pickupTopPhrase(topPhrase.trim()));
     }
 
-    setManyPhrase(e.target.value);
+    setManyPhraseText(e.target.value);
   };
 
   const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -123,7 +136,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       .map((line) => line.trim())
       .join("\n");
 
-    setManyPhrase(cleanedText);
+    setManyPhraseText(cleanedText);
 
     const topPhrase = cleanedText.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
@@ -145,4 +158,54 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       <FilterIconButton disabled={!manyPhrase} onClick={handleConfirm} className="absolute right-5 bottom-2 size-8" />
     </TooltipWrapper>
   );
+};
+
+export const pickupTopPhrase = async (topPhrase: string) => {
+  const directEditingIndex = getDirectEditingIndex();
+  if (directEditingIndex !== null) return null;
+
+  dispatchLine({
+    type: "set",
+    line: { lyrics: topPhrase.trim(), word: "", selectIndex: null, time: YTPlayer.getCurrentTime() ?? 0 },
+  });
+
+  const word = await wordConvertAction(topPhrase);
+
+  const { lyrics } = getSelectLine();
+
+  if (lyrics === topPhrase) {
+    setWord(word);
+    return;
+  }
+
+  const { present } = getMapEditHistory();
+  if (present) {
+    const { actionType, data } = present;
+    if (actionType === "add") {
+      if (data.lyrics === topPhrase) {
+        const { lineIndex, ...line } = present.data;
+        const newLine = { ...line, word };
+        setRawMapAction({ type: "update", payload: newLine, index: lineIndex });
+        dispatchEditHistory({ type: "overwrite", payload: { ...present, data: { ...present.data, word } } });
+        return;
+      }
+    }
+  }
+};
+
+export const deleteTopPhrase = (lyrics: string) => {
+  const manyPhraseText = getManyPhraseText();
+  const lines = manyPhraseText.split("\n") || [];
+
+  if (lyrics === lines[0]?.trim()) {
+    const newManyPhrase = lines.slice(1).join("\n");
+
+    setManyPhraseText(newManyPhrase);
+    setTimeout(() => {
+      const textarea = document.getElementById("many_phrase_textarea");
+      if (textarea) {
+        textarea.scrollTop = 0;
+      }
+    });
+  }
 };

@@ -1,14 +1,18 @@
 "use client";
+import { atom, useAtomValue } from "jotai";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
-import { useMapIdState } from "../../_lib/atoms/hydrate";
-import { setTabName, TAB_NAMES, useTabNameState } from "../../_lib/atoms/state";
+import { store, useMapId } from "../provider";
 import { EditorCard } from "./editor/card";
 import { AddMapInfoFormCard, EditMapInfoFormCard } from "./info-form/card";
 import { SettingsCard } from "./settings/card";
 
+export const TAB_NAMES = ["情報&保存", "エディター", "ショートカットキー&設定"] as const;
+const tabNameAtom = atom<(typeof TAB_NAMES)[number]>("情報&保存");
+export const setTabName = (value: (typeof TAB_NAMES)[number]) => store.set(tabNameAtom, value);
+
 export const EditTabs = () => {
-  const mapId = useMapIdState();
-  const tabName = useTabNameState();
+  const mapId = useMapId();
+  const tabName = useAtomValue(tabNameAtom);
 
   return (
     <Tabs value={tabName} onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])} className="w-full">

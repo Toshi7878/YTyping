@@ -1,10 +1,24 @@
 "use client";
-import type { ConvertOption } from "@/app/edit/_lib/atoms/storage";
-import { setWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage";
-import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
+import { type ExtractAtomValue, useAtomValue } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import { store } from "@/app/edit/_feature/provider";
+import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_feature/utils/const";
 import { Label } from "@/ui/label";
 import { RadioButton, RadioGroup } from "@/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/ui/tooltip";
+
+const wordConvertOptionAtom = atomWithStorage<"non_symbol" | "add_symbol" | "add_symbol_all">(
+  "edit-word-convert-option",
+  "non_symbol",
+  undefined,
+  { getOnInit: true },
+);
+export type WordConvertOption = ExtractAtomValue<typeof wordConvertOptionAtom>;
+
+export const useWordConvertOption = () => useAtomValue(wordConvertOptionAtom, { store });
+export const setWordConvertOption = (value: ExtractAtomValue<typeof wordConvertOptionAtom>) =>
+  store.set(wordConvertOptionAtom, value);
+export const getWordConvertOption = () => store.get(wordConvertOptionAtom);
 
 const CONVERT_OPTIONS = [
   {
@@ -34,14 +48,14 @@ const CONVERT_OPTIONS = [
 ] as const;
 
 export const ConvertOptionButtons = () => {
-  const wordConvertOption = useWordConvertOptionState();
+  const wordConvertOption = useWordConvertOption();
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
       <Label className="whitespace-nowrap text-sm">読み変換</Label>
       <RadioGroup
         value={wordConvertOption}
-        onValueChange={(value) => setWordConvertOption(value as ConvertOption)}
+        onValueChange={(value) => setWordConvertOption(value as WordConvertOption)}
         className="flex flex-col gap-2 sm:flex-row"
       >
         {CONVERT_OPTIONS.map((option) => (

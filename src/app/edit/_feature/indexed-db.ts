@@ -24,7 +24,7 @@ const db = new Dexie("edit") as Dexie & {
 
 db.version(1).stores({ backupRawMap: "id", backupMapMeta: "id" });
 
-export const editDb = {
+export const idb = {
   backup: {
     fetch: async () => {
       const map = await db.backupRawMap.get("current");

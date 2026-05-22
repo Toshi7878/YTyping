@@ -2,12 +2,15 @@
 
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import parse from "html-react-parser";
+import type { ExtractAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
+import { selectAtom } from "jotai/utils";
 import { Play } from "lucide-react";
 import { useParams } from "next/navigation";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
-import { editDb } from "@/app/edit/_lib/indexed-db";
+import { idb } from "@/app/edit/_feature/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
@@ -17,32 +20,62 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
-import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
-import { readRawMap, setRawMapAction, useRawMapState } from "../../_lib/atoms/map-reducer";
-import { setTimeInputValue } from "../../_lib/atoms/ref";
+import { store } from "../provider";
+import { useIsBuckupQueryState } from "../search-params";
+import { updateLineAction } from "../tabs/editor/button/update";
+import { WordConvertButton } from "../tabs/editor/button/word-convert";
+import { handleEnterAddRuby } from "../tabs/editor/enter-add-ruby";
 import {
   dispatchLine,
-  readDirectEditIndex,
-  setCanUpload,
-  setDirectEditIndex,
+  getSelectLine,
   setLyrics,
-  setTabName,
+  setTimeValue,
   setWord,
-  useIsDirectEditLine,
-  useIsPlayingLineState,
   useIsSelectedLine,
   useLyricsState,
   useWordState,
-} from "../../_lib/atoms/state";
-import { seekYTPlayer } from "../../_lib/atoms/youtube-player";
-import { updateLineAction } from "../../_lib/editor/editor-actions";
-import { handleEnterAddRuby } from "../../_lib/editor/enter-add-ruby";
-import { redo, undo } from "../../_lib/map-table/history";
-import { moveLine } from "../../_lib/map-table/move-line";
-import { wordSearchReplace } from "../../_lib/map-table/word-search-replace";
-import { useIsBuckupQueryState } from "../../_lib/search-params";
-import { WordConvertButton } from "../tabs/editor/button";
+} from "../tabs/editor/select-line-input";
+import { setCanUpload } from "../tabs/info-form/card";
+import { setTabName } from "../tabs/tabs";
+import { YTPlayer } from "../youtube-player";
+import { redo, undo } from "./history";
 import { LineOptionDialog } from "./line-option-dialog";
+import { getRawMap, mapAtom, setRawMapAction, useRawMap } from "./map-reducer";
+import { scrollMapTableToRow } from "./scroll";
+import { wordSearchReplace } from "./word-search-replace";
+
+const playingLineIndexAtom = atom(0);
+// const cssTextLengthAtom = atom(0);
+
+export const useIsPlayingLine = (index: number) => {
+  return useAtomValue(
+    selectAtom(playingLineIndexAtom, (s) => s === index),
+    { store },
+  );
+};
+
+export const getPlayingLineIndex = () => store.get(playingLineIndexAtom);
+export const setPlayingLineIndex = (value: ExtractAtomValue<typeof playingLineIndexAtom>) =>
+  store.set(playingLineIndexAtom, value);
+
+const directEditingIndexAtom = atom<number | null>(null);
+const useIsDirectEditingLine = (index: number) => {
+  return useAtomValue(
+    selectAtom(directEditingIndexAtom, (s) => s === index),
+    { store },
+  );
+};
+export const getDirectEditingIndex = () => store.get(directEditingIndexAtom);
+export const setDirectEditingIndex = (value: ExtractAtomValue<typeof directEditingIndexAtom>) =>
+  store.set(directEditingIndexAtom, value);
+
+export const endLineIndexAtom = atom((get) => {
+  const map = get(mapAtom);
+  return map.findLastIndex((line) => line.lyrics === "end");
+});
+
+const useEndLineIndex = () => useAtomValue(endLineIndexAtom);
+const getEndLineIndex = () => store.get(endLineIndexAtom);
 
 export const NewMapTable = () => {
   const { id: mapId } = useParams();
@@ -51,7 +84,7 @@ export const NewMapTable = () => {
   const { data: backupMap } = useQuery(
     queryOptions({
       queryKey: ["backup"],
-      queryFn: editDb.backup.fetch,
+      queryFn: idb.backup.fetch,
       enabled: isBackup && !mapId,
     }),
   );
@@ -90,7 +123,7 @@ export const EditMapTable = () => {
 };
 
 const MapTable = () => {
-  const map = useRawMapState();
+  const map = useRawMap();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
   const hotKeyOptions: Options = {
@@ -108,7 +141,7 @@ const MapTable = () => {
     "d",
     () => {
       dispatchLine({ type: "reset" });
-      setDirectEditIndex(null);
+      setDirectEditingIndex(null);
     },
     hotKeyOptions,
   );
@@ -173,8 +206,8 @@ const MapTableRow = ({
   onOpenChange: Dispatch<SetStateAction<number | null>>;
 }) => {
   const isSelectedLine = useIsSelectedLine(index);
-  const isPlayingLine = useIsPlayingLineState(index);
-  const isDirectEditLine = useIsDirectEditLine(index);
+  const isPlayingLine = useIsPlayingLine(index);
+  const isDirectEditLine = useIsDirectEditingLine(index);
 
   return (
     <TableRow
@@ -192,9 +225,9 @@ const MapTableRow = ({
       <TableCell
         className="group whitespace-nowrap text-center tabular-nums"
         onClick={() => {
-          const directEditIndex = readDirectEditIndex();
+          const directEditIndex = getDirectEditingIndex();
           if (directEditIndex !== index) {
-            seekYTPlayer(Number(row.time));
+            YTPlayer.seek(Number(row.time));
           }
         }}
       >
@@ -225,7 +258,7 @@ const OptionCell = ({
   index: number;
   onOpenChange: Dispatch<SetStateAction<number | null>>;
 }) => {
-  const endLineIndex = useEndLineIndexState();
+  const endLineIndex = useEndLineIndex();
 
   const isOptionEdited = Boolean(
     options?.isChangeCSS || options?.eternalCSS || options?.changeVideoSpeed || options?.isCaseSensitive,
@@ -261,7 +294,7 @@ const DirectTimeInput = ({ time }: { time: string }) => {
         onChange={(e) => {
           const newValue = e.target.value;
           setEditTime(newValue);
-          setTimeInputValue(newValue);
+          setTimeValue(newValue);
         }}
         onKeyDown={(e) => {
           const { value } = e.currentTarget;
@@ -269,15 +302,15 @@ const DirectTimeInput = ({ time }: { time: string }) => {
           if (e.code === "ArrowUp") {
             const newValue = (Number(value) - 0.05).toFixed(3);
             setEditTime(newValue);
-            setTimeInputValue(newValue);
+            setTimeValue(newValue);
             e.preventDefault();
           } else if (e.code === "ArrowDown") {
             const newValue = (Number(value) + 0.05).toFixed(3);
             setEditTime(newValue);
-            setTimeInputValue(newValue);
+            setTimeValue(newValue);
             e.preventDefault();
           } else if (e.code === "Enter") {
-            seekYTPlayer(Number(value));
+            YTPlayer.seek(Number(value));
           }
         }}
       />
@@ -321,8 +354,8 @@ const DirectWordInput = () => {
 };
 
 const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
-  const map = readRawMap();
-  const directEditIndex = readDirectEditIndex();
+  const map = getRawMap();
+  const directEditIndex = getDirectEditingIndex();
 
   const line = map[selectingIndex];
   if (!line) return;
@@ -336,16 +369,39 @@ const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex
     updateLineAction();
   }
 
-  const endLineIndex = readEndLineIndex();
+  const endLineIndex = getEndLineIndex();
   const isDirectEditMode = event.ctrlKey && selectingIndex !== 0 && selectingIndex !== endLineIndex;
 
   if (isDirectEditMode) {
-    setDirectEditIndex(selectingIndex);
+    setDirectEditingIndex(selectingIndex);
   } else if (directEditIndex !== selectingIndex) {
-    setDirectEditIndex(null);
+    setDirectEditingIndex(null);
   }
 
   setTimeout(() => {
     dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
   });
+};
+
+const moveLine = (type: "next" | "prev") => {
+  const directEditingIndex = getDirectEditingIndex();
+
+  const { selectIndex } = getSelectLine();
+  if (selectIndex !== null && !directEditingIndex) {
+    const seekCount = selectIndex + (type === "next" ? 1 : -1);
+    const seekLine = getRawMap()[seekCount];
+    if (seekLine) {
+      YTPlayer.seek(Number(seekLine.time));
+      dispatchLine({
+        type: "set",
+        line: {
+          time: seekLine.time,
+          lyrics: seekLine.lyrics,
+          word: seekLine.word,
+          selectIndex: seekCount,
+        },
+      });
+      scrollMapTableToRow({ rowIndex: seekCount });
+    }
+  }
 };

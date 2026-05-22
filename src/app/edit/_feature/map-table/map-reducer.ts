@@ -2,9 +2,7 @@ import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { normalizeSymbols } from "@/utils/string";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
-import { getEditAtomStore } from "./store";
-
-const store = getEditAtomStore();
+import { store } from "../provider";
 
 export interface MapReplaceAllAction {
   type: "replaceAll";
@@ -31,7 +29,7 @@ type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAl
 const init: RawMapLine[] = [{ time: "0", lyrics: "", word: "" }];
 export const mapAtom = atomWithReset<RawMapLine[]>(init);
 
-export const useRawMapState = () => useAtomValue(mapAtom, { store });
+export const useRawMap = () => useAtomValue(mapAtom, { store });
 export const setRawMapAction = (action: MapAction) => {
   store.set(mapAtom, (prev) => {
     switch (action.type) {
@@ -58,5 +56,5 @@ export const setRawMapAction = (action: MapAction) => {
     }
   });
 };
+export const getRawMap = () => store.get(mapAtom);
 export const resetRawMap = () => store.set(mapAtom, RESET);
-export const readRawMap = () => store.get(mapAtom);

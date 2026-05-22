@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { uncontrolled } from "jotai-uncontrolled";
 import type * as React from "react";
 import { cn } from "@/utils/cn";
 
@@ -38,5 +39,21 @@ interface InputProps extends Omit<React.ComponentProps<"input">, "size">, Varian
 function Input({ className, type, variant, size, ...props }: InputProps) {
   return <input type={type} data-slot="input" className={cn(inputVariants({ variant, size }), className)} {...props} />;
 }
+
+interface UncontrolledInputProps
+  extends Omit<React.ComponentProps<typeof uncontrolled.input>, "size" | "key">,
+    VariantProps<typeof inputVariants> {}
+
+export const UncontrolledInput = ({ className, type, variant, size, value, ...props }: UncontrolledInputProps) => {
+  return (
+    <uncontrolled.input
+      type={type}
+      data-slot="input"
+      className={cn(inputVariants({ variant, size }), className)}
+      value={value}
+      {...props}
+    />
+  );
+};
 
 export { Input, inputVariants };

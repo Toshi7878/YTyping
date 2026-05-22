@@ -1,8 +1,11 @@
 import { CardWithContent } from "@/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
-import { AddLineButton, DeleteLineButton, UpdateLineButton, WordConvertButton } from "./button";
-import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./input";
+import { AddLineButton } from "./button/add";
+import { DeleteLineButton } from "./button/delete";
+import { UpdateLineButton } from "./button/update";
+import { WordConvertButton } from "./button/word-convert";
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
+import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./select-line-input";
 
 export const EditorCard = () => {
   return (

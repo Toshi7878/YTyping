@@ -1,6 +1,6 @@
-import { dispatchEditHistory } from "../atoms/history-reducer";
-import { readRawMap, setRawMapAction } from "../atoms/map-reducer";
-import { setCanUpload, setIsUpdateUpdatedAt } from "../atoms/state";
+import { setCanUpload, setIsMapEdited } from "../tabs/info-form/card";
+import { dispatchEditHistory } from "./history";
+import { getRawMap, setRawMapAction } from "./map-reducer";
 
 export const wordSearchReplace = async () => {
   const searchText = escapeRegExp(prompt("置き換えしたい読みを入力してください。") ?? "");
@@ -16,7 +16,7 @@ export const wordSearchReplace = async () => {
     alert("sorry...置き換えする文字に検索する文字が含まれないようにしてください。");
     return;
   }
-  const map = readRawMap();
+  const map = getRawMap();
 
   for (const [i, line] of map.entries()) {
     const match = line.word.match(searchReg);
@@ -84,7 +84,7 @@ const replaceFoundFocus = ({ i, searchText }: { i: number; searchText: string })
 };
 
 const getKanaSearchLength = (searchReg: RegExp) => {
-  const map = readRawMap();
+  const map = getRawMap();
   let lyricsKana = "";
 
   for (const line of map) {
@@ -99,7 +99,7 @@ const getKanaSearchLength = (searchReg: RegExp) => {
 const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLength: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const map = readRawMap();
+      const map = getRawMap();
       const line = map[i];
       if (!line) return resolve(0);
       const { time, lyrics, word } = line;
@@ -137,7 +137,7 @@ const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLengt
 
       resolve(1);
       setCanUpload(true);
-      setIsUpdateUpdatedAt(true);
+      setIsMapEdited(true);
     }, 50);
   });
 };

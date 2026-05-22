@@ -1,11 +1,11 @@
-import { getYTDuration } from "../atoms/youtube-player";
+import { YTPlayer } from "../../youtube-player";
 
 export const timeValidate = (time: number) => {
   if (time <= 0) {
     return 0.001;
   }
 
-  const duration = getYTDuration() ?? 0;
+  const duration = YTPlayer.getDuration() ?? 0;
   if (time >= duration) {
     return duration - 0.001;
   }

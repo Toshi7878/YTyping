@@ -1,9 +1,9 @@
-import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
+import { getRawMap, setRawMapAction } from "@/app/edit/_feature/map-table/map-reducer";
 import { normalizeSymbols } from "@/utils/string";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
-import { dispatchEditHistory } from "../atoms/history-reducer";
-import { getYTDuration } from "../atoms/youtube-player";
-import { wordConvert } from "./typable-word-convert";
+import { dispatchEditHistory } from "../../map-table/history";
+import { YTPlayer } from "../../youtube-player";
+import { wordConvertAction } from "../editor/button/word-convert";
 
 /** time / lyrics / word を持つオブジェクト行 */
 type TimelineObjectRow = { time: unknown; lyrics?: unknown; word?: unknown };
@@ -40,7 +40,7 @@ const timelineObjectArrayConverter = async (rows: TimelineObjectRow[]) => {
     result.push({ time, lyrics, word });
   }
 
-  result.push({ time: getYTDuration()?.toFixed(3) ?? "0", lyrics: "end", word: "" });
+  result.push({ time: YTPlayer.getDuration().toFixed(3), lyrics: "end", word: "" });
 
   return result;
 };
@@ -76,7 +76,7 @@ const importMapFromJsonText = async (text: string) => {
 
   dispatchEditHistory({
     type: "add",
-    payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
+    payload: { actionType: "replaceAll", data: { old: getRawMap(), new: convertedData } },
   });
   setRawMapAction({ type: "replaceAll", payload: convertedData });
 };
@@ -113,7 +113,7 @@ const importMapFromLrcText = async (text: string) => {
   const convertedData = await lrcConverter(lrc);
   dispatchEditHistory({
     type: "add",
-    payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
+    payload: { actionType: "replaceAll", data: { old: getRawMap(), new: convertedData } },
   });
   setRawMapAction({ type: "replaceAll", payload: convertedData });
 };
@@ -136,7 +136,7 @@ const jsonConverter = (jsonMap: JsonMap) => {
     result.push({ time, lyrics, word });
   }
 
-  result.push({ time: getYTDuration()?.toFixed(3) ?? "0", lyrics: "end", word: "" });
+  result.push({ time: YTPlayer.getDuration().toFixed(3), lyrics: "end", word: "" });
 
   return result;
 };
@@ -155,13 +155,13 @@ const lrcConverter = async (lrc: string[]) => {
 
       const time = (minute * 60 + second + minSec * 0.01).toString();
       const lyrics = normalizeSymbols(line.replace(/\[\d\d.\d\d.\d\d\]/g, ""));
-      const word = (await wordConvert(lyrics)) ?? "";
+      const word = (await wordConvertAction(lyrics)) ?? "";
 
       result.push({ time, lyrics, word });
     }
   }
 
-  result.push({ time: getYTDuration()?.toFixed(3) ?? "0", lyrics: "end", word: "" });
+  result.push({ time: YTPlayer.getDuration().toFixed(3), lyrics: "end", word: "" });
 
   return result;
 };

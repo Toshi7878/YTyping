@@ -1,5 +1,5 @@
 import type React from "react";
-import { setLyrics } from "../atoms/state";
+import { setLyrics } from "./select-line-input";
 
 export const handleEnterAddRuby = (event: React.KeyboardEvent<HTMLInputElement>) => {
   if (event.key === "Enter") {

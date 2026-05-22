@@ -1,6 +1,7 @@
 import { EditMapTable, NewMapTable } from "./map-table/map-table";
-import { EditTabs } from "./tabs/edit-tabs";
-import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change";
+import { SpeedCounter } from "./playback/speed-counter";
+import { TimeRange } from "./playback/time-range";
+import { EditTabs } from "./tabs/tabs";
 import { YouTubePlayer } from "./youtube-player";
 
 export const Content = ({ type }: { type: "new" | "edit" }) => {
@@ -10,7 +11,10 @@ export const Content = ({ type }: { type: "new" | "edit" }) => {
         <YouTubePlayer className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
         <EditTabs />
       </section>
-      <TimeRangeAndSpeedChange className="my-1 grid grid-cols-[1fr_auto]" />
+      <section className="my-1 grid grid-cols-[1fr_auto]">
+        <TimeRange />
+        <SpeedCounter />
+      </section>
 
       {type === "new" ? <NewMapTable /> : <EditMapTable />}
     </div>

@@ -1,16 +1,16 @@
-import { useYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
 import { VolumeRange } from "@/shared/volume-range";
 import { CardWithContent } from "@/ui/card";
+import { YTPlayer } from "../../youtube-player";
 import { AllTimeAdjust } from "./all-time-adjust-input-field";
 import { ConvertOptionButtons } from "./convert-option-buttons";
 import { LrcImportButton } from "./lrc-import-button";
 
 export const SettingsCard = () => {
-  const YTPlayer = useYTPlayer();
+  const player = YTPlayer.usePlayer();
   return (
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <VolumeRange YTPlayer={YTPlayer} />
+        <VolumeRange YTPlayer={player} />
         <div className="flex flex-col gap-2 sm:flex-row">
           <LrcImportButton />
         </div>

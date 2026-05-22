@@ -1,4 +1,4 @@
-export const scrollMapTable = ({ rowIndex }: { rowIndex: number }) => {
+export const scrollMapTableToRow = ({ rowIndex }: { rowIndex: number }) => {
   const tbody = document.getElementById("map-table-tbody");
   if (!tbody) return;
   const rows = tbody.children;

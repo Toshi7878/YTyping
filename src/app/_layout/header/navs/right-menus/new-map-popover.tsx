@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { editDb } from "@/app/edit/_lib/indexed-db";
+import { idb } from "@/app/edit/_feature/indexed-db";
 import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";
@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 export const NewMapPopover = () => {
   const [open, setOpen] = useState(false);
-  const backupMapInfo = editDb.backup.useLiveQuery();
+  const backupMapInfo = idb.backup.useLiveQuery();
   const router = useRouter();
 
   const form = useForm({

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
-import { setRawMapAction, useRawMapState } from "@/app/edit/_lib/atoms/map-reducer";
+import { setRawMapAction, useRawMap } from "@/app/edit/_feature/map-table/map-reducer";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
@@ -15,8 +15,8 @@ import { TextareaFormField } from "@/ui/textarea";
 import { cn } from "@/utils/cn";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { LineOptionSchema } from "@/validator/map/raw-map-json";
-import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";
-import { setCanUpload } from "../../_lib/atoms/state";
+import { setCanUpload } from "../tabs/info-form/card";
+import { dispatchEditHistory } from "./history";
 
 const calculateCurrentSpeed = (map: RawMapLine[], index: number) => {
   const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
@@ -30,7 +30,7 @@ interface LineOptionDialogProps {
 }
 
 export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
-  const map = useRawMapState();
+  const map = useRawMap();
 
   const currentSpeed = calculateCurrentSpeed(map, index);
 

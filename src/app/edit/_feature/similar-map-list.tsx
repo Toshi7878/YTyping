@@ -1,11 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/auth/client";
-import type { MapListItem } from "@/server/api/routers/map";
 import { MapCard } from "@/shared/map/list/card/base";
 import { useTRPC } from "@/trpc/provider";
-import { useCreatorIdState } from "../_lib/atoms/hydrate";
-import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";
+import { hasMapUploadPermission } from "./permission/has-permission";
+import { useCreatorId } from "./provider";
 
 interface SimilarMapListByVideoIdProps {
   videoId: string;
@@ -14,7 +13,7 @@ interface SimilarMapListByVideoIdProps {
 export const SimilarMapListByVideoId = ({ videoId }: SimilarMapListByVideoIdProps) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
+  const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   const { data: generatedMapInfo } = useQuery(
@@ -45,10 +44,6 @@ export const SimilarMapListByVideoId = ({ videoId }: SimilarMapListByVideoIdProp
   if (isPending) return null;
   if (!maps?.length) return null;
 
-  return <SimilarMapList maps={maps} />;
-};
-
-const SimilarMapList = ({ maps }: { maps: MapListItem[] }) => {
   return (
     <div className="space-y-3">
       <div className="font-bold text-lg">類似タイトルの譜面が{maps.length}件見つかりました</div>

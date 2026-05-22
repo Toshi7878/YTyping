@@ -1,18 +1,57 @@
+import { atom, useAtomValue } from "jotai";
 import { toast } from "sonner";
-import { setIsWordConverting } from "@/app/edit/_lib/atoms/state";
-import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
+import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
+import { store, useCreatorId } from "@/app/edit/_feature/provider";
+import { useSession } from "@/auth/client";
 import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
+import { Button } from "@/ui/button";
 import {
   katakanaToHiragana,
   normalizeExclamationQuestionMarks,
   normalizeFullWidthAlnum,
   normalizeSymbols,
 } from "@/utils/string";
-import { type ConvertOption, readWordConvertOption } from "../atoms/storage";
-import { filterToTypableWordChars } from "../utils/filter-word";
+import { filterToTypableWordChars } from "../../../utils/filter-word";
+import { filterWordSymbol } from "../filter-word-symbol";
+import { getSelectLine, setWord } from "../select-line-input";
 
-export const wordConvert = async (lyrics: string) => {
+const isWordConvertingAtom = atom(false);
+export const setIsWordConverting = (value: boolean) => store.set(isWordConvertingAtom, value);
+
+export const WordConvertButton = ({
+  className,
+  label,
+  variant,
+}: {
+  className: string;
+  label: string;
+  variant: React.ComponentProps<typeof Button>["variant"];
+}) => {
+  const { data: session } = useSession();
+  const creatorId = useCreatorId();
+  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
+  const isWordConverting = useAtomValue(isWordConvertingAtom);
+
+  const handleClick = async () => {
+    if (!hasUploadPermission) {
+      toast.warning("読み変換機能は編集保存権限が有効な場合に使用できます");
+      return;
+    }
+
+    const { lyrics } = getSelectLine();
+    const word = await wordConvertAction(lyrics);
+    setWord(word);
+  };
+
+  return (
+    <Button loading={isWordConverting} variant={variant} size="sm" className={className} onClick={handleClick}>
+      {label}
+    </Button>
+  );
+};
+
+export const wordConvertAction = async (lyrics: string) => {
   const formatedLyrics = normalizeSymbols(normalizeFullWidthAlnum(katakanaToHiragana(rubyToKana(lyrics))));
   const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatedLyrics);
 
@@ -74,50 +113,4 @@ const rubyToKana = (text: string): string => {
   }
 
   return convertedText;
-};
-
-export const filterWordSymbol = ({
-  sentence,
-  filterType = "wordConvert",
-  replaceChar = "",
-}: {
-  sentence: string;
-  filterType?: "wordConvert" | "lyricsWithFilterSymbol";
-  replaceChar?: string;
-}) => {
-  const convertOption = readWordConvertOption();
-  const filterSymbolRegExp = buildFilterSymbolRegExp(convertOption);
-  if (convertOption === "add_symbol_all") {
-    return sentence;
-  }
-
-  //全角文字の前後のスペースをフィルター
-  const zenkakuAfterSpaceReg = /([^\u0020-\u007E]) /g;
-  const zenkakuBeforeSpaceReg = / ([^\u0020-\u007E])/g;
-
-  let result = sentence.replace(filterSymbolRegExp, replaceChar);
-
-  if (filterType === "wordConvert") {
-    result = result.replaceAll(zenkakuAfterSpaceReg, "$1").replaceAll(zenkakuBeforeSpaceReg, "$1");
-  }
-
-  return result;
-};
-
-const buildFilterSymbolRegExp = (convertOption: ConvertOption) => {
-  if (convertOption === "non_symbol") {
-    const filterChars = [...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST]
-      .map((s) => s.replaceAll(/./g, String.raw`\$&`))
-      .join("");
-
-    return new RegExp(`[${filterChars}]`, "g");
-  }
-
-  if (convertOption === "add_symbol") {
-    const filterChars = STRICT_SYMBOL_LIST.map((s) => s.replaceAll(/./g, String.raw`\$&`)).join("");
-
-    return new RegExp(`[${filterChars}]`, "g");
-  }
-
-  return /(?:)/;
 };

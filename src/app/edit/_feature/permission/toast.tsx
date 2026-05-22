@@ -2,14 +2,14 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useSession } from "@/auth/client";
-import { useCreatorIdState } from "../_lib/atoms/hydrate";
-import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";
+import { useCreatorId } from "../provider";
+import { hasMapUploadPermission } from "./has-permission";
 
 const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
 
 export const PermissionToast = () => {
   const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
+  const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   useEffect(() => {

@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { dispatchEditHistory } from "@/app/edit/_lib/atoms/history-reducer";
-import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
-import { setCanUpload } from "@/app/edit/_lib/atoms/state";
-import { timeValidate } from "@/app/edit/_lib/editor/time-validate";
+import { getRawMap, setRawMapAction } from "@/app/edit/_feature/map-table/map-reducer";
+import { timeValidate } from "@/app/edit/_feature/tabs/editor/time-validate";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { Label } from "@/ui/label";
 import { TooltipWrapper } from "@/ui/tooltip";
+import { dispatchEditHistory } from "../../map-table/history";
+import { setCanUpload } from "../info-form/card";
 
 export const AllTimeAdjust = () => {
   const [totalAdjustValue, setTotalAdjustValue] = useState("0");
@@ -19,7 +19,7 @@ export const AllTimeAdjust = () => {
     }
 
     if (Number(totalAdjustValue) !== 0) {
-      const map = readRawMap();
+      const map = getRawMap();
       const newMap = map.map((item, index) => {
         if (index === 0) {
           return {
@@ -39,7 +39,7 @@ export const AllTimeAdjust = () => {
       setRawMapAction({ type: "replaceAll", payload: [...newMap] });
       dispatchEditHistory({
         type: "add",
-        payload: { actionType: "replaceAll", data: { old: readRawMap(), new: newMap } },
+        payload: { actionType: "replaceAll", data: { old: getRawMap(), new: newMap } },
       });
     }
 
