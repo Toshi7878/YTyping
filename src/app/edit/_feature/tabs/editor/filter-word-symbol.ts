@@ -1,5 +1,5 @@
 import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_feature/utils/const";
-import { getWordConvertOption, type WordConvertOption } from "../settings/convert-option-buttons";
+import { getWordConvertOption, type WordConvertOption } from "../settings/convert-options";
 
 export const filterWordSymbol = ({
   sentence,

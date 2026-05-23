@@ -15,7 +15,6 @@ import { getMapId, setVideoId, store, useVideoId } from "./provider";
 import { setTabName } from "./tabs/tabs";
 
 const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
-const isReadiedAtom = atomWithReset(false);
 const isStartedAtom = atomWithReset(false);
 const ytDurationAtom = atomWithReset(0);
 const mediaSpeedAtom = atomWithReset(1);
@@ -31,19 +30,16 @@ export const YTPlayer = {
   getSpeed: () => store.get(mediaSpeedAtom),
   setSpeed: (speed: number) => store.get(YTPlayerAtom)?.setPlaybackRate(speed),
   isMount: () => store.get(YTPlayerAtom) !== null,
-  isReadied: () => store.get(isReadiedAtom),
-  isStarted: () => store.get(isStartedAtom),
   isPlaying: () => store.get(YTPlayerAtom)?.getPlayerState() === YouTube.PlayerState.PLAYING,
 
   play: () => store.get(YTPlayerAtom)?.playVideo(),
-  pause: () => store.get(YTPlayerAtom)?.pauseVideo(),
   seek: (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true),
   cueVideo: (videoId: string) => {
     setVideoId(videoId);
     isChangingVideo = true;
   },
+
   reset: () => {
-    store.set(isReadiedAtom, RESET);
     store.set(isStartedAtom, RESET);
     store.set(ytDurationAtom, RESET);
     store.set(mediaSpeedAtom, RESET);
@@ -59,7 +55,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
     () => {
       if (isDialogOpen()) return;
       if (YTPlayer.isPlaying()) {
-        YTPlayer.pause();
+        store.get(YTPlayerAtom)?.pauseVideo();
       } else {
         YTPlayer.play();
       }
@@ -101,7 +97,6 @@ const handleReady = ({ target: player }: { target: YT.Player }) => {
 
   isChangingVideo = false;
   store.set(YTPlayerAtom, player);
-  store.set(isReadiedAtom, true);
   store.set(isStartedAtom, false);
   store.set(ytDurationAtom, player.getDuration());
   player.setVolume(getVolume());
@@ -117,7 +112,7 @@ export const preventEditorTabAutoFocus = () => {
 };
 
 const handlePlay = ({ target: player }: { target: YT.Player }) => {
-  if (!YTPlayer.isStarted()) {
+  if (!store.get(isStartedAtom)) {
     handleStart(player);
   }
 

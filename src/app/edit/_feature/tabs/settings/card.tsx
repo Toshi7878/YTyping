@@ -1,9 +1,9 @@
 import { VolumeRange } from "@/shared/volume-range";
 import { CardWithContent } from "@/ui/card";
 import { useYTPlayer } from "../../youtube-player";
-import { AllTimeAdjust } from "./all-time-adjust-input-field";
-import { ConvertOptionButtons } from "./convert-option-buttons";
-import { LrcImportButton } from "./lrc-import-button";
+import { AllTimeAdjust } from "./all-time-adjust";
+import { ConvertOptionButtons } from "./convert-options";
+import { MapImportButton } from "./map-import";
 
 export const SettingsCard = () => {
   const player = useYTPlayer();
@@ -12,7 +12,7 @@ export const SettingsCard = () => {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <VolumeRange YTPlayer={player} />
         <div className="flex flex-col gap-2 sm:flex-row">
-          <LrcImportButton />
+          <MapImportButton />
         </div>
       </div>
       <ConvertOptionButtons />

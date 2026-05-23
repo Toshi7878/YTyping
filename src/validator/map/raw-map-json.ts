@@ -8,12 +8,14 @@ export const LineOptionSchema = z.object({
   isCaseSensitive: z.boolean().optional(),
 });
 
-export const RawMapLineSchema = z.object({
-  time: z.string().max(20),
-  lyrics: z.string(),
-  word: z.string(),
-  options: LineOptionSchema.optional(),
-});
+export const RawMapLineSchema = z
+  .object({
+    time: z.string().max(20),
+    lyrics: z.string(),
+    word: z.string(),
+    options: LineOptionSchema.optional(),
+  })
+  .strict();
 
 export type RawMapLine = z.infer<typeof RawMapLineSchema>;
 

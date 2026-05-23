@@ -59,12 +59,11 @@ export const updateLineAction = () => {
   const map = getRawMap();
   const { selectIndex: selectLineIndex, lyrics, word } = getSelectLine();
   if (selectLineIndex === null) return;
-  const isPlaying = YTPlayer.isPlaying();
   const directEditingIndex = getDirectEditingIndex();
   const timeOffset = lyrics !== "" ? getTimeOffset() : 0;
 
   const time = timeValidate(
-    isPlaying && !directEditingIndex ? YTPlayer.getCurrentTime() + timeOffset : Number(getTimeValue()),
+    YTPlayer.isPlaying() && !directEditingIndex ? YTPlayer.getCurrentTime() + timeOffset : Number(getTimeValue()),
   ).toFixed(3);
   const oldLine = map[selectLineIndex];
   if (!oldLine) return;

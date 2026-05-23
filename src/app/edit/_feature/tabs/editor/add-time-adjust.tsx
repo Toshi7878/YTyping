@@ -46,16 +46,19 @@ export const AddTimeAdjust = () => {
         </div>
       }
     >
-      <CounterInput
-        value={timeOffset}
-        onChange={(value) => setTimeOffset(value)}
-        step={TIME_OFFSET_STEP}
-        max={MAX_TIME_OFFSET}
-        min={MIN_TIME_OFFSET}
-        valueDigits={2}
-        label="追加タイム補正"
-        size="sm"
-      />
+      {/* tooltipを使用しているためdivでラップしている */}
+      <div>
+        <CounterInput
+          value={timeOffset}
+          onChange={(value) => setTimeOffset(value)}
+          step={TIME_OFFSET_STEP}
+          max={MAX_TIME_OFFSET}
+          min={MIN_TIME_OFFSET}
+          valueDigits={2}
+          label="追加タイム補正"
+          size="sm"
+        />
+      </div>
     </TooltipWrapper>
   );
 };
