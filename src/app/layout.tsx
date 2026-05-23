@@ -34,9 +34,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";
-  const session = await getSession();
-  const userOptions = await caller.user.option.getForSession();
-
+  const [session, userOptions] = await Promise.all([getSession(), caller.user.option.getForSession()]);
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
       <head>
