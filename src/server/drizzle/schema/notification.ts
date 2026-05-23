@@ -6,7 +6,7 @@ import { userReports, users } from "./user/user";
 
 export const type = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE", "MAP_BOOKMARK", "REPORT_RESULT", "WARNING"]);
 
-export const notificationClaps = pgTable(
+export const notificationClaps = pgTable.withRLS(
   "notification_claps",
   {
     notificationId: varchar("notification_id")
@@ -28,7 +28,7 @@ export const notificationClaps = pgTable(
   ],
 );
 
-export const notificationLikes = pgTable(
+export const notificationLikes = pgTable.withRLS(
   "notification_likes",
   {
     notificationId: varchar("notification_id")
@@ -50,7 +50,7 @@ export const notificationLikes = pgTable(
   ],
 );
 
-export const notificationMapBookmarks = pgTable(
+export const notificationMapBookmarks = pgTable.withRLS(
   "notification_map_bookmarks",
   {
     notificationId: varchar("notification_id")
@@ -76,7 +76,7 @@ export const notificationMapBookmarks = pgTable(
   ],
 );
 
-export const notificationOverTakes = pgTable(
+export const notificationOverTakes = pgTable.withRLS(
   "notification_over_takes",
   {
     notificationId: varchar("notification_id")
@@ -101,7 +101,7 @@ export const notificationOverTakes = pgTable(
   ],
 );
 
-export const notificationReportResults = pgTable(
+export const notificationReportResults = pgTable.withRLS(
   "notification_report_results",
   {
     notificationId: varchar("notification_id")
@@ -114,7 +114,7 @@ export const notificationReportResults = pgTable(
   (table) => [uniqueIndex("uq_notification_report_results_report_id").using("btree", table.reportId.asc().nullsLast())],
 );
 
-export const notificationWarnings = pgTable(
+export const notificationWarnings = pgTable.withRLS(
   "notification_warnings",
   {
     notificationId: varchar("notification_id")
@@ -128,7 +128,7 @@ export const notificationWarnings = pgTable(
   (table) => [uniqueIndex("uq_notification_warnings_report_id").using("btree", table.reportId.asc().nullsLast())],
 );
 
-export const notifications = pgTable("notifications", {
+export const notifications = pgTable.withRLS("notifications", {
   id: varchar().primaryKey(),
   recipientId: integer("recipient_id")
     .notNull()

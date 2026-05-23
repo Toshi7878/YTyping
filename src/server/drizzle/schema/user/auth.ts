@@ -3,7 +3,7 @@ import { index, integer, pgTable, text, timestamp, unique, varchar } from "drizz
 import { nanoid } from "nanoid";
 import { users } from "./user";
 
-export const accounts = pgTable(
+export const accounts = pgTable.withRLS(
   "accounts",
   {
     id: varchar()
@@ -29,7 +29,7 @@ export const accounts = pgTable(
   (table) => [index("accounts_userId_idx").using("btree", table.userId.asc().nullsLast())],
 );
 
-export const sessions = pgTable(
+export const sessions = pgTable.withRLS(
   "sessions",
   {
     id: varchar()
@@ -54,7 +54,7 @@ export const sessions = pgTable(
   ],
 );
 
-export const verifications = pgTable("verifications", {
+export const verifications = pgTable.withRLS("verifications", {
   id: varchar()
     .primaryKey()
     .$defaultFn(() => nanoid()),

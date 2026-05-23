@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { date, index, integer, pgTable, primaryKey, real, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./user";
 
-export const userDailyTypeCounts = pgTable(
+export const userDailyTypeCounts = pgTable.withRLS(
   "user_daily_type_counts",
   {
     userId: integer("user_id")
@@ -19,7 +19,7 @@ export const userDailyTypeCounts = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.date], name: "user_daily_type_counts_user_id_date_pk" })],
 );
 
-export const userMapCompletionPlayCounts = pgTable(
+export const userMapCompletionPlayCounts = pgTable.withRLS(
   "user_map_completion_play_counts",
   {
     userId: integer("user_id")
@@ -33,7 +33,7 @@ export const userMapCompletionPlayCounts = pgTable(
   ],
 );
 
-export const userStats = pgTable(
+export const userStats = pgTable.withRLS(
   "user_stats",
   {
     userId: integer("user_id")

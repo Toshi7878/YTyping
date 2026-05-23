@@ -4,7 +4,7 @@ import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, unique, var
 export const USER_ROLE_TYPES = ["USER", "ADMIN"] as const;
 export const role = pgEnum("role", USER_ROLE_TYPES);
 
-export const users = pgTable(
+export const users = pgTable.withRLS(
   "users",
   {
     id: serial().primaryKey(),
@@ -23,7 +23,7 @@ export const users = pgTable(
   (table) => [unique("users_email_hash_unique").on(table.emailHash), unique("users_name_unique").on(table.name)],
 );
 
-export const userProfiles = pgTable("user_profiles", {
+export const userProfiles = pgTable.withRLS("user_profiles", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -37,7 +37,7 @@ export const reportStatus = pgEnum("report_status", REPORT_STATUS_TYPES);
 export const REPORT_REASON_TYPES = ["CHEATING", "HARASSMENT", "SPAM", "INAPPROPRIATE", "OTHER"] as const;
 export const reportReason = pgEnum("report_reason", REPORT_REASON_TYPES);
 
-export const userReports = pgTable("user_reports", {
+export const userReports = pgTable.withRLS("user_reports", {
   id: serial().primaryKey(),
   reporterId: integer("reporter_id")
     .notNull()

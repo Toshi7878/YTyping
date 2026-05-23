@@ -12,7 +12,7 @@ export const DEFAULT_USER_OPTIONS = {
   mapListLayout: "TWO_COLUMNS" as (typeof mapListLayout.enumValues)[number],
 };
 
-export const userOptions = pgTable("user_options", {
+export const userOptions = pgTable.withRLS("user_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -63,7 +63,7 @@ export const DEFAULT_TYPING_OPTIONS = {
   windowScaleWidth: 1160,
 };
 
-export const userTypingOptions = pgTable("user_typing_options", {
+export const userTypingOptions = pgTable.withRLS("user_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -104,7 +104,7 @@ export const DEFAULT_IME_OPTIONS = {
   enableLargeVideoDisplay: false,
 };
 
-export const userImeTypingOptions = pgTable("user_ime_typing_options", {
+export const userImeTypingOptions = pgTable.withRLS("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
