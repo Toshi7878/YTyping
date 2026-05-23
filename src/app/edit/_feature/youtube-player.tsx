@@ -2,7 +2,6 @@
 
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import { focusAtom } from "jotai-optics";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { getVolume } from "@/store/volume";
@@ -16,25 +15,19 @@ import { getMapId, setVideoId, store, useVideoId } from "./provider";
 import { setTabName } from "./tabs/tabs";
 
 const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
-const YTAtom = atomWithReset({
-  isReadied: false,
-  isStarted: false,
-  mediaSpeed: 1,
-  duration: 0,
-});
+const isReadiedAtom = atomWithReset(false);
+const isStartedAtom = atomWithReset(false);
+const ytDurationAtom = atomWithReset(0);
+const mediaSpeedAtom = atomWithReset(1);
 
-const isReadiedAtom = focusAtom(YTAtom, (optic) => optic.prop("isReadied"));
-const isStartedAtom = focusAtom(YTAtom, (optic) => optic.prop("isStarted"));
-const ytDurationAtom = focusAtom(YTAtom, (optic) => optic.prop("duration"));
-const mediaSpeedAtom = focusAtom(YTAtom, (optic) => optic.prop("mediaSpeed"));
+export const useYTPlayer = () => useAtomValue(YTPlayerAtom);
+export const useYTDuration = () => useAtomValue(ytDurationAtom);
+export const useYTSpeed = () => useAtomValue(mediaSpeedAtom);
 
 export const YTPlayer = {
-  usePlayer: () => useAtomValue(YTPlayerAtom),
   getVideoId: () => store.get(YTPlayerAtom)?.getVideoData().video_id ?? "",
-  useDuration: () => useAtomValue(ytDurationAtom),
   getDuration: () => store.get(ytDurationAtom),
   getCurrentTime: () => store.get(YTPlayerAtom)?.getCurrentTime() ?? 0,
-  useSpeed: () => useAtomValue(mediaSpeedAtom),
   getSpeed: () => store.get(mediaSpeedAtom),
   setSpeed: (speed: number) => store.get(YTPlayerAtom)?.setPlaybackRate(speed),
   isMount: () => store.get(YTPlayerAtom) !== null,
@@ -43,15 +36,17 @@ export const YTPlayer = {
   isPlaying: () => store.get(YTPlayerAtom)?.getPlayerState() === YouTube.PlayerState.PLAYING,
 
   play: () => store.get(YTPlayerAtom)?.playVideo(),
-  pause: () => store.get(YTPlayerAtom)?.playVideo(),
+  pause: () => store.get(YTPlayerAtom)?.pauseVideo(),
   seek: (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true),
   cueVideo: (videoId: string) => {
-    // TODO: player.cueVideoを使うように変更
     setVideoId(videoId);
     isChangingVideo = true;
   },
   reset: () => {
-    store.set(YTAtom, RESET);
+    store.set(isReadiedAtom, RESET);
+    store.set(isStartedAtom, RESET);
+    store.set(ytDurationAtom, RESET);
+    store.set(mediaSpeedAtom, RESET);
     store.set(YTPlayerAtom, RESET);
   },
 };
@@ -63,11 +58,10 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
     "Escape",
     () => {
       if (isDialogOpen()) return;
-      const isPlaying = YTPlayer.isPlaying();
-      if (!isPlaying) {
-        YTPlayer.play();
-      } else {
+      if (YTPlayer.isPlaying()) {
         YTPlayer.pause();
+      } else {
+        YTPlayer.play();
       }
     },
     { enableOnFormTags: ["slider"], preventDefault: true },
@@ -100,7 +94,6 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
 let isChangingVideo = false;
 
 const handleReady = ({ target: player }: { target: YT.Player }) => {
-  console.log("Ready");
   const mapId = getMapId();
   if (!mapId || isChangingVideo) {
     setMapEndTime(player);
@@ -110,8 +103,7 @@ const handleReady = ({ target: player }: { target: YT.Player }) => {
   store.set(YTPlayerAtom, player);
   store.set(isReadiedAtom, true);
   store.set(isStartedAtom, false);
-  const duration = player.getDuration();
-  store.set(ytDurationAtom, duration);
+  store.set(ytDurationAtom, player.getDuration());
   player.setVolume(getVolume());
 };
 
@@ -125,10 +117,7 @@ export const preventEditorTabAutoFocus = () => {
 };
 
 const handlePlay = ({ target: player }: { target: YT.Player }) => {
-  console.log("再生 1");
-  const isStarted = YTPlayer.isStarted();
-
-  if (!isStarted) {
+  if (!YTPlayer.isStarted()) {
     handleStart(player);
   }
 
@@ -143,19 +132,15 @@ const handlePlay = ({ target: player }: { target: YT.Player }) => {
 };
 
 const handlePause = () => {
-  console.log("一時停止");
   stopTimer();
 };
 
 const handleEnd = () => {
-  console.log("プレイ終了 動画完全停止");
   stopTimer();
 };
 
 const onSeeked = ({ target: player }: { target: YT.Player }) => {
-  const time = player.getCurrentTime();
-  console.log(`シークtime: ${time}`);
-  setPlayingLineIndex(getLineCountByTime(time));
+  setPlayingLineIndex(getLineCountByTime(player.getCurrentTime()));
 };
 
 const handleStateChange = (event: YouTubeEvent) => {
@@ -164,20 +149,17 @@ const handleStateChange = (event: YouTubeEvent) => {
   }
 
   if (event.data === YouTube.PlayerState.BUFFERING) {
-    // seek時の処理
     onSeeked(event);
   }
 };
 
 const handlePlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
-  const nextSpeed = player.getPlaybackRate();
-  store.set(mediaSpeedAtom, nextSpeed);
+  store.set(mediaSpeedAtom, player.getPlaybackRate());
 };
 
 const getLineCountByTime = (time: number): number => {
   const map = getRawMap();
-
-  const nextIndex = map.findIndex((line) => Number(line.time) >= time) ?? 0;
+  const nextIndex = map.findIndex((line) => Number(line.time) >= time);
   return Math.max(0, nextIndex - 1);
 };
 

@@ -1,12 +1,12 @@
 import { VolumeRange } from "@/shared/volume-range";
 import { CardWithContent } from "@/ui/card";
-import { YTPlayer } from "../../youtube-player";
+import { useYTPlayer } from "../../youtube-player";
 import { AllTimeAdjust } from "./all-time-adjust-input-field";
 import { ConvertOptionButtons } from "./convert-option-buttons";
 import { LrcImportButton } from "./lrc-import-button";
 
 export const SettingsCard = () => {
-  const player = YTPlayer.usePlayer();
+  const player = useYTPlayer();
   return (
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

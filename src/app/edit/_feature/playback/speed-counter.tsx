@@ -1,10 +1,10 @@
 "use client";
 
 import { CounterInput } from "@/ui/counter";
-import { YTPlayer } from "../youtube-player";
+import { useYTSpeed, YTPlayer } from "../youtube-player";
 
 export const SpeedCounter = () => {
-  const speed = YTPlayer.useSpeed();
+  const speed = useYTSpeed();
 
   return (
     <CounterInput

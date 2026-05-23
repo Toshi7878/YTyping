@@ -5,14 +5,14 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Slider } from "@/ui/slider";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { store } from "../provider";
-import { YTPlayer } from "../youtube-player";
+import { useYTDuration, YTPlayer } from "../youtube-player";
 
 const timeRangeAtom = atom(0);
 export const setTimeRangeValue = (value: number) => store.set(timeRangeAtom, value);
 
 export const TimeRange = () => {
-  const timeRangeValue = useAtomValue(timeRangeAtom, { store });
-  const duration = YTPlayer.useDuration();
+  const timeRangeValue = useAtomValue(timeRangeAtom);
+  const duration = useYTDuration();
 
   const handleRangeChange = (value: number) => {
     setTimeRangeValue(value);
