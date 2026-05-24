@@ -37,13 +37,23 @@ export const MapImportButton = () => {
     overlay.loading("lrcインポート中...");
 
     try {
-      const rawResult = RawMapSchema.safeParse(JSON.parse(text));
-      if (rawResult.success) {
-        importMapFromRawMap(rawResult.data);
-        setText("");
-        toast.success("インポート完了");
-        return;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        parsed = null;
       }
+
+      if (parsed !== null) {
+        const rawResult = RawMapSchema.safeParse(parsed);
+        if (rawResult.success) {
+          importMapFromRawMap(rawResult.data);
+          setText("");
+          toast.success("インポート完了");
+          return;
+        }
+      }
+
       const lrcResult = LrcSchema.safeParse(text);
       if (lrcResult.success) {
         await importMapFromLrcText(text);
@@ -134,7 +144,8 @@ const lrcConverter = async (lrc: string[]) => {
       const second = Number(matchedTimeTag[1]);
       const minSec = Number(matchedTimeTag[2]);
 
-      const time = (minute * 60 + second + minSec * 0.01).toString();
+      const rawTime = minute * 60 + second + minSec * 0.01;
+      const time = (rawTime === 0 ? 0.001 : rawTime).toString();
       const lyrics = normalizeSymbols(line.replace(/\[\d\d.\d\d.\d\d\]/g, ""));
       const word = (await wordConvertAction(lyrics)) ?? "";
 
