@@ -22,8 +22,8 @@ interface JotaiProviderProps {
 }
 
 export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
-  // biome-ignore lint/correctness/useExhaustiveDependencies:  pathname変更時のみ発火させたいため
   useEffect(() => {
+    store.set(mapIdAtom, mapId);
     return () => {
       const scene = getScene();
       if (scene === "play" || scene === "practice") {
