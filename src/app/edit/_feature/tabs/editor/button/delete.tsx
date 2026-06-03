@@ -8,7 +8,7 @@ import { getRawMap, setRawMapAction } from "../../../map-table/map-reducer";
 import { setDirectEditingIndex } from "../../../map-table/map-table";
 import { getMapId, getVideoId } from "../../../provider";
 import { setCanUpload, setIsMapEdited } from "../../info-form/card";
-import { dispatchLine, getSelectLine, isSelectEndLineAtom, isUnselectLineAtom } from "../select-line-input";
+import { dispatchLine, getSelectLine, isSelectEndLineAtom, isUnselectLineAtom } from "../line-input";
 
 const isDeleteButtonDisabledAtom = atom((get) => {
   const isNotSelectLine = get(isUnselectLineAtom);

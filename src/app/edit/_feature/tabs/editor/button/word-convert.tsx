@@ -14,7 +14,7 @@ import {
 } from "@/utils/string";
 import { filterToTypableWordChars } from "../../../utils/filter-word";
 import { filterWordSymbol } from "../filter-word-symbol";
-import { getSelectLine, setWord } from "../select-line-input";
+import { getSelectLine, setWord } from "../line-input";
 
 const isWordConvertingAtom = atom(false);
 export const setIsWordConverting = (value: boolean) => store.set(isWordConvertingAtom, value);

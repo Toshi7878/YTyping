@@ -13,8 +13,8 @@ import { getMapId, getVideoId } from "../../../provider";
 import { YTPlayer } from "../../../youtube-player";
 import { setCanUpload, setIsMapEdited } from "../../info-form/card";
 import { getTimeOffset } from "../add-time-adjust";
+import { dispatchLine, getSelectLine, getTimeValue, isEmptyTimeAtom } from "../line-input";
 import { deleteTopPhrase, getManyPhraseText, pickupTopPhrase } from "../many-phrase-textarea";
-import { dispatchLine, getSelectLine, getTimeValue, isEmptyTimeAtom } from "../select-line-input";
 import { timeValidate } from "../time-validate";
 
 const isAddButtonDisabledAtom = atom((get) => {

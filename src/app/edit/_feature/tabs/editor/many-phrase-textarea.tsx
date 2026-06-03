@@ -19,7 +19,7 @@ import { getDirectEditingIndex } from "../../map-table/map-table";
 import { store } from "../../provider";
 import { YTPlayer } from "../../youtube-player";
 import { wordConvertAction } from "./button/word-convert";
-import { dispatchLine, getSelectLine, setWord } from "./select-line-input";
+import { dispatchLine, getSelectLine, setWord } from "./line-input";
 
 const manyPhraseTextAtom = atom("");
 

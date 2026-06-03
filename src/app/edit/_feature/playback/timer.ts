@@ -1,7 +1,7 @@
 import { Ticker } from "@pixi/ticker";
 import { getRawMap } from "../map-table/map-reducer";
 import { getDirectEditingIndex, getPlayingLineIndex, setPlayingLineIndex } from "../map-table/map-table";
-import { setTimeValue } from "../tabs/editor/select-line-input";
+import { setTimeValue } from "../tabs/editor/line-input";
 import { YTPlayer } from "../youtube-player";
 import { setTimeRangeValue } from "./time-range";
 

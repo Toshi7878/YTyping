@@ -4,8 +4,8 @@ import { AddLineButton } from "./button/add";
 import { DeleteLineButton } from "./button/delete";
 import { UpdateLineButton } from "./button/update";
 import { WordConvertButton } from "./button/word-convert";
+import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./line-input";
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
-import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./select-line-input";
 
 export const EditorCard = () => {
   return (

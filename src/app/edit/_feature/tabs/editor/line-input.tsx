@@ -134,6 +134,7 @@ export const TimeInput = () => {
     <UncontrolledInput
       className="h-8 w-[90px]"
       type="number"
+      atomStore={store}
       value={timeAtom}
       onChange={(e) => setTimeValue(e.currentTarget.value)}
       onKeyDown={(e) => {

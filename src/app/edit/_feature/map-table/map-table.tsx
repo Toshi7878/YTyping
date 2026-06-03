@@ -34,7 +34,7 @@ import {
   useIsSelectedLine,
   useLyricsState,
   useWordState,
-} from "../tabs/editor/select-line-input";
+} from "../tabs/editor/line-input";
 import { setCanUpload } from "../tabs/info-form/card";
 import { setTabName } from "../tabs/tabs";
 import { YTPlayer } from "../youtube-player";

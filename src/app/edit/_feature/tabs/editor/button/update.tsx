@@ -18,7 +18,7 @@ import {
   isSelectEndLineAtom,
   isSelectFirstLineAtom,
   isUnselectLineAtom,
-} from "../select-line-input";
+} from "../line-input";
 import { timeValidate } from "../time-validate";
 
 const isUpdateButtonDisabledAtom = atom((get) => {

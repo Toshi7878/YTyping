@@ -2,13 +2,13 @@ import { atomWithReducer } from "jotai/utils";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { store } from "../provider";
 import { wordConvertAction } from "../tabs/editor/button/word-convert";
+import { dispatchLine, setWord } from "../tabs/editor/line-input";
 import {
   deleteTopPhrase,
   getManyPhraseText,
   pickupTopPhrase,
   setManyPhraseText,
 } from "../tabs/editor/many-phrase-textarea";
-import { dispatchLine, setWord } from "../tabs/editor/select-line-input";
 import { YTPlayer } from "../youtube-player";
 import {
   type MapAddAction,
