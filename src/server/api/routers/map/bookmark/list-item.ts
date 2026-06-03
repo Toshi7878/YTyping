@@ -9,7 +9,7 @@ import {
   notificationMapBookmarks,
   notifications,
 } from "@/server/drizzle/schema";
-import { protectedProcedure, type TRPCContext } from "../../../trpc";
+import { type ProtectedCtx, protectedProcedure } from "../../../trpc";
 import { generateNotificationId } from "../../notification";
 
 export const mapBookmarkListItemRouter = {
@@ -86,7 +86,7 @@ export const mapBookmarkListItemRouter = {
 
 export const bookmarkedMapExists = (
   db: DBType,
-  session: NonNullable<TRPCContext["session"]>,
+  session: ProtectedCtx["session"],
   mapIdColumn: SQLWrapper = maps.id,
 ) => {
   return exists(

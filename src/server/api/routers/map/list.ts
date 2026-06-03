@@ -22,7 +22,7 @@ import {
   type mapSortSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
-import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { type ProtectedCtx, protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -273,7 +273,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
 
 function filterByFilterType(
   filterType: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
-  session: NonNullable<TRPCContext["session"]>,
+  session: ProtectedCtx["session"],
 ) {
   switch (filterType) {
     case "liked": {

@@ -1,4 +1,10 @@
-import { type inferRouterInputs, type inferRouterOutputs, initTRPC, TRPCError } from "@trpc/server";
+import {
+  type inferProcedureBuilderResolverOptions,
+  type inferRouterInputs,
+  type inferRouterOutputs,
+  initTRPC,
+  TRPCError,
+} from "@trpc/server";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-to-openapi";
 import { type Auth, getSession } from "@/auth/server";
@@ -13,6 +19,7 @@ export const createTRPCContext = async (opts: { headers: Headers; auth: Auth }) 
 };
 
 export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+
 const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
   transformer: superjson,
 });
@@ -30,6 +37,8 @@ export const protectedProcedure = t.procedure.use((opts) => {
     ctx: { ...opts.ctx, session: opts.ctx.session },
   });
 });
+
+export type ProtectedCtx = inferProcedureBuilderResolverOptions<typeof protectedProcedure>["ctx"];
 
 export const adminProcedure = t.procedure.use((opts) => {
   if (opts.ctx.session?.user.role !== "ADMIN") {
