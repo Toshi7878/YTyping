@@ -1,10 +1,14 @@
 "use client";
 
 import { atom, type SetStateAction } from "jotai";
-import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engine";
+import { createTypingWord, executeTypingInput, handleTyping, isTypingKey } from "lyrics-typing-engine";
+import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
+import { THEME_LIST } from "@/theme/const";
+import type { FlickEvent } from "@/ui/flick-keyboard";
+import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -12,7 +16,7 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
-import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import { getPlayingInputMode, getTypingWord, setTypingWord, usePlayingInputModeState } from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
@@ -48,6 +52,9 @@ interface PlayingProps {
 export const PlayingScene = ({ className }: PlayingProps) => {
   const scene = useSceneState();
   const activeElement = useActiveElement();
+  const playingInputMode = usePlayingInputModeState();
+  const { resolvedTheme } = useTheme();
+  const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -102,20 +109,27 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   }, [activeElement]);
 
   return (
-    <div
-      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
-      id="typing_scene"
-      onTouchStart={() => {
-        if (getActiveSkipKey()) {
-          const count = getLineCount();
-          skipLine(count);
-        }
-      }}
-    >
-      <TypingWords />
-      <Lyrics />
-      <NextLyrics />
-    </div>
+    <>
+      <div
+        className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
+        id="typing_scene"
+        onTouchStart={() => {
+          if (getActiveSkipKey()) {
+            const count = getLineCount();
+            skipLine(count);
+          }
+        }}
+      >
+        <TypingWords />
+        <Lyrics />
+        <NextLyrics />
+      </div>
+      {(scene === "play" || scene === "practice") && playingInputMode === "flick" && (
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
+          <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} />
+        </div>
+      )}
+    </>
   );
 };
 
@@ -126,14 +140,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
   const typingWord = getTypingWord();
-  if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
+  const inputMode = getPlayingInputMode();
+  if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event) && inputMode !== "flick") {
     const map = getBuiltMap();
     if (!map) return;
 
     const typingOptions = getTypingOptions();
     const { otherStatus } = getReplayRankingResult() ?? {};
     const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
-    const inputMode = getPlayingInputMode();
 
     handleTyping(
       { event, inputMode, isCaseSensitive, typingWord },
@@ -196,6 +210,93 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   if (!isHotKeyIgnored(event)) {
     playHotkey(event);
+  }
+};
+
+const handleFlickInput = (e: FlickEvent) => {
+  const isPaused = getIsPaused();
+  const scene = getScene();
+  const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
+  if (!shouldAcceptTyping) return;
+
+  const typingWord = getTypingWord();
+  if (!typingWord.nextChunk.kana) return;
+
+  const map = getBuiltMap();
+  if (!map) return;
+
+  let inputChar: string | null = null;
+
+  if (e.type === "tap") {
+    if (e.key.type === "mod") {
+      const nextKana = typingWord.nextChunk.kana[0];
+      if (nextKana === "゛" || nextKana === "゜") inputChar = nextKana;
+    } else if (e.key.type !== "caps") {
+      inputChar = e.key.c;
+    }
+  } else if (e.type === "flick") {
+    inputChar = e.char;
+  } else if (e.type === "mod") {
+    const nextKana = typingWord.nextChunk.kana[0];
+    if (nextKana === "゛" || nextKana === "゜") inputChar = nextKana;
+  }
+
+  if (!inputChar) return;
+
+  const typingOptions = getTypingOptions();
+  const { otherStatus } = getReplayRankingResult() ?? {};
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
+
+  const { nextTypingWord, successKey, failKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
+    inputChar,
+    inputMode: "kana",
+    typingWord,
+    isCaseSensitive,
+  });
+
+  if (successKey) {
+    const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
+    if (isCompleted) {
+      triggerTypeCompletedSound();
+    } else {
+      triggerTypeSound();
+    }
+    setTypingWord(nextTypingWord);
+    updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
+    updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
+    dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
+
+    if (isCompleted) {
+      triggerTypeCompletedSound();
+
+      if (!isPaused) {
+        updateTypingTime({ constantLineTime });
+      }
+
+      const count = getLineCount();
+      if (hasLineResultImproved(count)) {
+        saveLineResult(count, constantLineTime);
+      }
+
+      dispatchTypeEvent("type:lineCompleted", { constantLineTime });
+
+      if (scene === "practice") {
+        recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
+
+        if (isPaused) {
+          const newCurrentLine = map.lines[count];
+          if (!newCurrentLine) return;
+          setTypingWord(createTypingWord(newCurrentLine));
+        }
+      }
+    }
+  } else if (failKey) {
+    if (!typingWord.correct.roma) return;
+    const { constantLineTime } = getRemainLineTime();
+    triggerMissSound();
+    updateMissStatus();
+    updateMissSubstatus({ constantLineTime, failKey });
+    dispatchTypeEvent("type:miss", { failKey });
   }
 };
 
