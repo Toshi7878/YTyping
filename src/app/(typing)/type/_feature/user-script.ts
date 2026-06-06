@@ -150,7 +150,6 @@ interface Timer1sUpdateDetail {
 }
 
 interface ChangeInputModeDetail {
-  /** 動画の現在時刻（定数・補間なし）(s) */
   newInputMode: InputMode;
 }
 
