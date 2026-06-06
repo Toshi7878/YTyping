@@ -141,6 +141,7 @@ const handleStart = (player: YT.Player) => {
 
   const readyInputMode = getReadyInputMode();
   setPlayingInputMode(readyInputMode);
+  dispatchTypeEvent("change-input-mode", { newInputMode: readyInputMode });
   dispatchTypeEvent("yt:start", { scene: getScene() });
 };
 
