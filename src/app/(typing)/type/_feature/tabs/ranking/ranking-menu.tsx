@@ -18,6 +18,7 @@ import { restartPlay } from "../../lib/play-restart";
 import { iosActiveSound } from "../../lib/sound-effect";
 import { getMapId } from "../../provider";
 import { setScene, useSceneGroupState } from "../../typing-card/typing-card";
+import { dispatchTypeEvent } from "../../user-script";
 import { getRankingResultByResultId } from "./get-ranking-result";
 
 interface RankingMenuProps {
@@ -47,6 +48,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
       setInitialLineResults(resultData);
       const mode = resultData[0]?.status?.mode ?? "roma";
       setPlayingInputMode(mode);
+      dispatchTypeEvent("change-input-mode", { newInputMode: mode });
       playYTPlayer();
     } catch {
       toast.error("リザルトデータの読み込みに失敗しました");
