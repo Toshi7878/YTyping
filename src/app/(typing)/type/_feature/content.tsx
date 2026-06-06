@@ -1,6 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { buildTypingMap } from "lyrics-typing-engine";
+import { useTheme } from "next-themes";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -14,17 +15,21 @@ import {
   hasAlphabetChunk,
 } from "@/shared/map/built-map-helper";
 import { getReadyInputMode } from "@/store/ready-input-mode";
+import { THEME_LIST } from "@/theme/const";
 import { useTRPC } from "@/trpc/provider";
+import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
+import { usePlayingInputModeState } from "./atoms/typing-word";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
-import { TypingCard, useSceneGroupState } from "./typing-card/typing-card";
+import { handleFlickInput } from "./typing-card/playing/playing-scene";
+import { TypingCard, useSceneGroupState, useSceneState } from "./typing-card/typing-card";
 import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
 
@@ -80,9 +85,12 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   }, [rawMapLines]);
 
   return (
-    <div className="fixed flex h-screen w-screen flex-col items-center md:pt-2">
-      <TypingLayout isLoading={isLoading} videoId={videoId} />
-    </div>
+    <>
+      <div className="fixed flex h-screen w-screen flex-col items-center md:pt-2">
+        <TypingLayout isLoading={isLoading} videoId={videoId} />
+      </div>
+      <FlickKeyboardContainer />
+    </>
   );
 };
 
@@ -119,6 +127,22 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
           <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
         </section>
       )}
+    </div>
+  );
+};
+
+const FlickKeyboardContainer = () => {
+  const scene = useSceneState();
+  const playingInputMode = usePlayingInputModeState();
+  const { resolvedTheme } = useTheme();
+  const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
+
+  if (scene !== "play" && scene !== "practice") return null;
+  if (playingInputMode !== "flick") return null;
+
+  return (
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
+      <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} />
     </div>
   );
 };

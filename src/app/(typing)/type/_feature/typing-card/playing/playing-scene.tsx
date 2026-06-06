@@ -2,13 +2,10 @@
 
 import { atom, type SetStateAction } from "jotai";
 import { createTypingWord, executeTypingInput, handleTyping, isTypingKey } from "lyrics-typing-engine";
-import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
-import { THEME_LIST } from "@/theme/const";
 import type { FlickEvent } from "@/ui/flick-keyboard";
-import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -16,7 +13,7 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
-import { getPlayingInputMode, getTypingWord, setTypingWord, usePlayingInputModeState } from "../../atoms/typing-word";
+import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
@@ -52,10 +49,6 @@ interface PlayingProps {
 export const PlayingScene = ({ className }: PlayingProps) => {
   const scene = useSceneState();
   const activeElement = useActiveElement();
-  const playingInputMode = usePlayingInputModeState();
-  const { resolvedTheme } = useTheme();
-  const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
-
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
@@ -109,27 +102,20 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   }, [activeElement]);
 
   return (
-    <>
-      <div
-        className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
-        id="typing_scene"
-        onTouchStart={() => {
-          if (getActiveSkipKey()) {
-            const count = getLineCount();
-            skipLine(count);
-          }
-        }}
-      >
-        <TypingWords />
-        <Lyrics />
-        <NextLyrics />
-      </div>
-      {(scene === "play" || scene === "practice") && playingInputMode === "flick" && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
-          <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} />
-        </div>
-      )}
-    </>
+    <div
+      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
+      id="typing_scene"
+      onTouchStart={() => {
+        if (getActiveSkipKey()) {
+          const count = getLineCount();
+          skipLine(count);
+        }
+      }}
+    >
+      <TypingWords />
+      <Lyrics />
+      <NextLyrics />
+    </div>
   );
 };
 
@@ -213,7 +199,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   }
 };
 
-const handleFlickInput = (e: FlickEvent) => {
+export const handleFlickInput = (e: FlickEvent) => {
   const isPaused = getIsPaused();
   const scene = getScene();
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
