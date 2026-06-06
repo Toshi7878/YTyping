@@ -506,10 +506,10 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       }}
     >
       {/* top candidate strip */}
-      <div style={{ height: 40 }} />
+      <div className="h-10" />
 
       {/* key grid */}
-      <div ref={gridRef} style={{ position: "relative" }}>
+      <div ref={gridRef} className="relative pb-3.5">
         <div
           style={{
             display: "grid",
