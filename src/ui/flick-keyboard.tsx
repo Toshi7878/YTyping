@@ -592,33 +592,6 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
         </div>
         {renderPopup()}
       </div>
-
-      {/* bottom bar: globe · home-indicator · mic */}
-      <div
-        style={{
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 14px",
-          position: "relative",
-        }}
-      >
-        <IconGlobe c={p.icon} />
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            bottom: 8,
-            transform: "translateX(-50%)",
-            width: 133,
-            height: 5,
-            borderRadius: 3,
-            background: p.home,
-          }}
-        />
-        <IconMic c={p.icon} />
-      </div>
     </div>
   );
 }
