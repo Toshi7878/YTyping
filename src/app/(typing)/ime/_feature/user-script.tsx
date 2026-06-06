@@ -74,6 +74,8 @@ declare global {
 // SSR 時は window が存在しないため、クライアント側でのみ登録する
 if (typeof window !== "undefined") window.__ytyping_ime = ytypingIme;
 
+export type YTypingImeAPI = typeof ytypingIme;
+
 export function UserScriptInit() {
   return null;
 }

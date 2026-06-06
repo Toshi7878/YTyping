@@ -31,7 +31,9 @@
     "src/**/*.tsx",
     ".next/types/**/*.ts",
     "drizzle.config.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "scripts/**/*.ts",
+    "dts-bundle-generator.config.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -4,7 +4,7 @@ import { getSession } from "@/auth/client";
 import { setTypingLinkMode } from "@/store/typing-link-mode";
 
 const ytypingGlobal = {
-  get toast() {
+  get toast(): typeof toast {
     return toast;
   },
   get getSessionUser() {
@@ -22,6 +22,8 @@ declare global {
 }
 
 if (typeof window !== "undefined") window.__ytyping = ytypingGlobal;
+
+export type YTypingGlobal = typeof ytypingGlobal;
 
 export function UserScriptInit() {
   return null;
