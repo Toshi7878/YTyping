@@ -3,17 +3,23 @@
 import { useTheme } from "next-themes";
 import { useCallback, useState } from "react";
 import { THEME_LIST } from "@/theme/const";
-import type { FlickEvent } from "@/ui/flick-keyboard";
+import type { FlickEvent, FlickMode } from "@/ui/flick-keyboard";
 import { applyMod, FlickKeyboard } from "@/ui/flick-keyboard";
 
 export default function Page() {
   const [text, setText] = useState("");
+  const [mode, setMode] = useState<FlickMode>("kana");
   const { resolvedTheme } = useTheme();
 
   const isDark = THEME_LIST.dark.some((t) => t.class === resolvedTheme);
   const flickTheme = isDark ? "dark" : "light";
 
   const handleEvent = useCallback((e: FlickEvent) => {
+    if (e.type === "modeSwitch") {
+      setMode(e.to);
+      return;
+    }
+
     if (e.type === "flick") {
       setText((t) => t + e.char);
       return;
@@ -118,7 +124,7 @@ export default function Page() {
 
       {/* keyboard pinned to bottom */}
       <div style={{ width: "100%", maxWidth: 390, marginTop: "auto" }}>
-        <FlickKeyboard onEvent={handleEvent} theme={flickTheme} />
+        <FlickKeyboard onEvent={handleEvent} theme={flickTheme} mode={mode} />
       </div>
     </div>
   );
