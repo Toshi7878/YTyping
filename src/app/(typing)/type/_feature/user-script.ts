@@ -48,6 +48,7 @@
  * const topPps = await window.__ytyping_type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
+import type { InputMode } from "lyrics-typing-engine";
 import { calcRawPP } from "@/shared/result/pp/calc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
@@ -148,6 +149,11 @@ interface Timer1sUpdateDetail {
   constantTime: number;
 }
 
+interface ChangeInputModeDetail {
+  /** 動画の現在時刻（定数・補間なし）(s) */
+  newInputMode: InputMode;
+}
+
 // ─── イベントマップ & リスナー ─────────────────────────────────
 
 type TypeEventMap = {
@@ -170,6 +176,7 @@ type TypeEventMap = {
   "yt:rateChange": RateChangeDetail;
   "yt:stateChange": StateChangeDetail;
   "yt:seeked": SeekedDetail;
+  "change-input-mode": ChangeInputModeDetail;
 };
 type TypeEventType = keyof TypeEventMap;
 type TypeEventCallback<T extends TypeEventType> = (detail: TypeEventMap[T]) => void;
