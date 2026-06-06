@@ -249,31 +249,6 @@ function IconDelete({ c }: { c: string }) {
   );
 }
 
-function IconGlobe({ c }: { c: string }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9.2" stroke={c} strokeWidth="1.5" />
-      <ellipse cx="12" cy="12" rx="4" ry="9.2" stroke={c} strokeWidth="1.5" />
-      <path d="M3 12H21M4.5 7H19.5M4.5 17H19.5" stroke={c} strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function IconMic({ c }: { c: string }) {
-  return (
-    <svg width="20" height="22" viewBox="0 0 20 24" fill="none" aria-hidden="true">
-      <rect x="6.5" y="2" width="7" height="12" rx="3.5" stroke={c} strokeWidth="1.6" />
-      <path
-        d="M3.5 11C3.5 14.6 6.4 17.5 10 17.5C13.6 17.5 16.5 14.6 16.5 11"
-        stroke={c}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      <path d="M10 17.5V21.5M6.5 21.5H13.5" stroke={c} strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 // ── FlickKeyboard ──────────────────────────────────────────────────────────
 
 interface PressState {
