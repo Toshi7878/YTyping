@@ -3,6 +3,7 @@
 // @ds-adherence-ignore -- ported from Figma standalone (raw elements/hex/px by design)
 
 import { useCallback, useRef, useState } from "react";
+import { cn } from "@/utils/cn";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -50,7 +51,7 @@ const FLICK_KEYS: FlickKey[] = [
   { id: "ma", c: "ま", l: "み", u: "む", r: "め", d: "も", toggle: ["ま", "み", "む", "め", "も"] },
   { id: "ya", c: "や", l: "「", u: "ゆ", r: "」", d: "よ", toggle: ["や", "ゆ", "よ"] },
   { id: "ra", c: "ら", l: "り", u: "る", r: "れ", d: "ろ", toggle: ["ら", "り", "る", "れ", "ろ"] },
-  { id: "mod", type: "mod", face: "小゛゜", c: "小", l: "ゃ", u: "ゅ", r: "ょ", d: "っ" },
+  { id: "mod", type: "mod", face: "小゛゜", c: "小" },
   { id: "wa", c: "わ", l: "を", u: "ん", r: "ー", d: "〜", toggle: ["わ", "を", "ん", "ー", "〜"] },
   { id: "kut", c: "、", l: "。", u: "？", r: "！", d: "…", face: "、。?!", toggle: ["、", "。", "？", "！", "…"] },
 ];
@@ -186,55 +187,7 @@ const NUMBER_POS: Record<string, [number, number]> = {
   npu: [4, 4],
 };
 
-// ── Theme ──────────────────────────────────────────────────────────────────
-
-const FIGMA_THEME = {
-  light: {
-    tray: "#CBCED3",
-    kana: "#FFFFFF",
-    fn: "#B4B8C0",
-    text: "#1A1A1A",
-    fnText: "#1A1A1A",
-    icon: "#1A1A1A",
-    home: "#4A4A4A",
-    popBg: "#FFFFFF",
-    popText: "#1A1A1A",
-    keyShadow: "0 1px 0 rgba(0,0,0,0.30)",
-    popShadow: "0 6px 16px rgba(0,0,0,0.28)",
-  },
-  dark: {
-    tray: "#4A4A4A",
-    kana: "#898989",
-    fn: "#6E6E6E",
-    text: "#FFFFFF",
-    fnText: "#FFFFFF",
-    icon: "#F2F2F2",
-    home: "#FFFFFF",
-    popBg: "#898989",
-    popText: "#FFFFFF",
-    keyShadow: "0 1px 2px rgba(0,0,0,0.45)",
-    popShadow: "0 6px 16px rgba(0,0,0,0.5)",
-  },
-};
-
-const FLICK_ACTIVE = "#3478F6";
-
 // ── Icons ──────────────────────────────────────────────────────────────────
-
-function IconUndo({ c }: { c: string }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M9 7H15.5C18 7 20 9 20 11.5C20 14 18 16 15.5 16H7"
-        stroke={c}
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M9 4L6 7L9 10" stroke={c} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function IconDelete({ c }: { c: string }) {
   return (
@@ -249,6 +202,23 @@ function IconDelete({ c }: { c: string }) {
   );
 }
 
+// ── Grid position helpers ──────────────────────────────────────────────────
+
+const COL_START: Record<number, string> = {
+  1: "col-start-1",
+  2: "col-start-2",
+  3: "col-start-3",
+  4: "col-start-4",
+  5: "col-start-5",
+};
+
+const ROW_START: Record<number, string> = {
+  1: "row-start-1",
+  2: "row-start-2",
+  3: "row-start-3",
+  4: "row-start-4",
+};
+
 // ── FlickKeyboard ──────────────────────────────────────────────────────────
 
 interface PressState {
@@ -261,7 +231,7 @@ interface PressState {
 }
 
 function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold = 26, mode }: FlickKeyboardProps) {
-  const p = FIGMA_THEME[theme];
+  const isDark = theme === "dark";
   const gridRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ key: FlickKey | null; sx: number; sy: number; dir: "c" | "l" | "r" | "u" | "d" }>({
     key: null,
@@ -338,6 +308,10 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     onEvent(ev);
   };
 
+  const iconColor = isDark ? "#F2F2F2" : "#1A1A1A";
+
+  const keyShadow = isDark ? "shadow-[0_1px_2px_rgba(0,0,0,0.45)]" : "shadow-[0_1px_0_rgba(0,0,0,0.30)]";
+
   // ── popup ──────────────────────────────────────────────────────
   const renderPopup = () => {
     if (!press || !gridRef.current) return null;
@@ -357,30 +331,28 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       { d: "d", ch: k.d ? applyCase(k.d) : undefined, x: cx, y: cy + off },
     ].filter((s) => s.ch != null) as { d: "c" | "l" | "r" | "u" | "d"; ch: string; x: number; y: number }[];
     return (
-      <div style={{ position: "absolute", inset: 0, zIndex: 40, pointerEvents: "none" }}>
+      <div className="pointer-events-none absolute inset-0 z-[40]">
         {slots.map((s) => {
           const on = s.d === press.dir;
           return (
             <div
               key={s.d}
+              className={cn(
+                "absolute flex items-center justify-center rounded-[9px] font-medium leading-none",
+                "[transition:transform_60ms,background_60ms,color_60ms]",
+                on
+                  ? "bg-[#3478F6] text-white shadow-[0_4px_14px_rgba(52,120,246,0.4)]"
+                  : isDark
+                    ? "bg-[#898989] text-white shadow-[0_6px_16px_rgba(0,0,0,0.5)]"
+                    : "bg-white text-[#1A1A1A] shadow-[0_6px_16px_rgba(0,0,0,0.28)]",
+              )}
               style={{
-                position: "absolute",
                 left: s.x,
                 top: s.y,
                 transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`,
                 width: t,
                 height: t,
-                borderRadius: 9,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
                 fontSize: t * 0.5,
-                fontWeight: 500,
-                lineHeight: 1,
-                transition: "transform 60ms, background 60ms, color 60ms",
-                background: on ? FLICK_ACTIVE : p.popBg,
-                color: on ? "#fff" : p.popText,
-                boxShadow: on ? "0 4px 14px rgba(52,120,246,0.4)" : p.popShadow,
               }}
             >
               {s.ch}
@@ -392,19 +364,11 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
   };
 
   // ── cell factories ─────────────────────────────────────────────
-  const cellBase = (extra: React.CSSProperties): React.CSSProperties => ({
-    borderRadius: 7,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    userSelect: "none",
-    WebkitUserSelect: "none",
-    touchAction: "none",
-    cursor: "pointer",
-    boxShadow: p.keyShadow,
-    transition: "filter 90ms, transform 60ms",
-    ...extra,
-  });
+  const cellBase = cn(
+    "rounded-[7px] flex items-center justify-center select-none touch-none cursor-pointer",
+    "[transition:filter_90ms,transform_60ms]",
+    keyShadow,
+  );
 
   const getDisplayFace = (k: FlickKey): string => {
     if (activeMode === "kana") return k.id === "mod" ? "小゛゜" : (k.face ?? k.c);
@@ -416,10 +380,10 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     return k.face ?? k.c;
   };
 
-  const getCellFontSize = (k: FlickKey): number => {
-    if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? 17 : 26;
-    if (activeMode === "english") return LETTER_KEY_IDS.has(k.id) ? 17 : 14;
-    return k.id === "nbr" || k.id === "npu" ? 15 : 22;
+  const getCellTextClass = (k: FlickKey): string => {
+    if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? "text-[17px]" : "text-[26px]";
+    if (activeMode === "english") return LETTER_KEY_IDS.has(k.id) ? "text-[17px]" : "text-sm";
+    return k.id === "nbr" || k.id === "npu" ? "text-[15px]" : "text-[22px]";
   };
 
   const contentCell = (k: FlickKey) => {
@@ -431,22 +395,21 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       <div
         key={k.id}
         onPointerDown={(e) => onDown(e, k)}
-        style={cellBase({
-          gridColumn: col,
-          gridRow: row,
-          background: p.kana,
-          color: p.text,
-          fontSize: getCellFontSize(k),
-          fontWeight: 500,
-          letterSpacing: 0.5,
-          transform: down ? "scale(0.96)" : "none",
-          filter: down ? "brightness(0.92)" : "none",
-          flexDirection: "column",
-          gap: 1,
-        })}
+        className={cn(
+          cellBase,
+          "flex-col gap-px font-medium tracking-[0.5px]",
+          COL_START[col],
+          ROW_START[row],
+          getCellTextClass(k),
+          isDark ? "bg-[#898989] text-white" : "bg-white text-[#1A1A1A]",
+        )}
+        style={{
+          transform: down ? "scale(0.96)" : undefined,
+          filter: down ? "brightness(0.92)" : undefined,
+        }}
       >
         <span>{getDisplayFace(k)}</span>
-        {k.sub && <span style={{ fontSize: 9, opacity: 0.55, letterSpacing: 0, fontWeight: 400 }}>{k.sub}</span>}
+        {k.sub && <span className="font-normal text-[9px] tracking-normal opacity-[0.55]">{k.sub}</span>}
       </div>
     );
   };
@@ -476,17 +439,16 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       <div
         key={id}
         onClick={action ? () => fnTap(id, action) : undefined}
-        style={cellBase({
-          gridColumn: col,
-          gridRow: rowSpan ? `${row} / span ${rowSpan}` : row,
-          background: accent ? FLICK_ACTIVE : p.fn,
-          color: accent ? "#fff" : p.fnText,
-          fontSize: 14,
-          fontWeight: 500,
-          letterSpacing: 0.3,
-          cursor: action ? "pointer" : "default",
-          filter: down ? "brightness(0.9)" : "none",
-        })}
+        className={cn(
+          cellBase,
+          "font-medium text-sm tracking-[0.3px]",
+          COL_START[col],
+          ROW_START[row],
+          rowSpan === 2 && "row-span-2",
+          accent ? "bg-[#3478F6] text-white" : isDark ? "bg-[#6E6E6E] text-white" : "bg-[#B4B8C0] text-[#1A1A1A]",
+          action ? "cursor-pointer" : "cursor-default",
+        )}
+        style={{ filter: down ? "brightness(0.9)" : undefined }}
       >
         {icon ?? label}
       </div>
@@ -495,34 +457,22 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
 
   return (
     <div
-      style={{
-        position: "relative",
-        background: p.tray,
-        width: "100%",
-        boxSizing: "border-box",
-        padding: "5px 5px 0",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      className={cn(
+        "relative box-border flex w-full flex-col px-[5px] pt-[5px]",
+        isDark ? "bg-[#4A4A4A]" : "bg-[#CBCED3]",
+      )}
     >
       {/* top candidate strip */}
       <div className="h-10" />
 
       {/* key grid */}
       <div ref={gridRef} className="relative pb-3.5">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
-            gridTemplateRows: "repeat(4, 47px)",
-            gap: 6,
-          }}
-        >
+        <div className="grid grid-cols-5 grid-rows-[repeat(4,47px)] gap-1.5">
           {/* left column row 1 */}
-          {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "小゛゜", action: { type: "mod" } })}
-          {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <IconUndo c={p.icon} /> })}
+          {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "" })}
+          {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <></> })}
           {/* left column row 2 */}
-          {fnCell({ id: "undo", col: 1, row: 2, icon: <IconUndo c={p.icon} /> })}
+          {fnCell({ id: "undo", col: 1, row: 2, icon: <></> })}
           {/* left column rows 3-4: mode switch */}
           {activeMode === "kana" &&
             fnCell({
@@ -554,14 +504,14 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
           {/* content keys */}
           {activeKeys.filter((k) => activePosMap[k.id]).map(contentCell)}
           {/* right column */}
-          {fnCell({ id: "del", col: 5, row: 1, icon: <IconDelete c={p.icon} />, action: { type: "backspace" } })}
+          {fnCell({ id: "del", col: 5, row: 1, icon: <IconDelete c={iconColor} />, action: { type: "backspace" } })}
           {fnCell({ id: "space", col: 5, row: 2, label: "空白", action: { type: "space" } })}
           {fnCell({
             id: "next",
             col: 5,
             row: 3,
             rowSpan: 2,
-            label: activeMode === "kana" ? "次へ" : "→",
+            label: activeMode === "kana" ? "" : "",
             accent: activeMode !== "kana",
           })}
         </div>
