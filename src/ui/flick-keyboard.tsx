@@ -29,7 +29,7 @@ interface FlickKeyboardProps {
   keys?: FlickKey[];
   onEvent: (event: FlickEvent) => void;
   theme?: "light" | "dark";
-  flickStyle?: "cross" | "flower";
+  flickStyle?: "cross";
   threshold?: number;
 }
 
@@ -213,13 +213,7 @@ interface PressState {
   h: number;
 }
 
-function FlickKeyboard({
-  keys = FLICK_KEYS,
-  onEvent,
-  theme = "light",
-  flickStyle = "cross",
-  threshold = 26,
-}: FlickKeyboardProps) {
+function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold = 26 }: FlickKeyboardProps) {
   const p = FIGMA_THEME[theme];
   const gridRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ key: FlickKey | null; sx: number; sy: number; dir: "c" | "l" | "r" | "u" | "d" }>({
@@ -305,23 +299,8 @@ function FlickKeyboard({
       { d: "r", ch: k.r, x: cx + off, y: cy },
       { d: "d", ch: k.d, x: cx, y: cy + off },
     ].filter((s) => s.ch != null) as { d: "c" | "l" | "r" | "u" | "d"; ch: string; x: number; y: number }[];
-    const fan = flickStyle === "flower";
-    const barLen = off * 2 + t;
-    const blob: React.CSSProperties = {
-      position: "absolute",
-      transform: "translate(-50%,-50%)",
-      borderRadius: 12,
-      background: p.popBg,
-      boxShadow: p.popShadow,
-    };
     return (
       <div style={{ position: "absolute", inset: 0, zIndex: 40, pointerEvents: "none" }}>
-        {fan && (
-          <>
-            <div style={{ ...blob, left: cx, top: cy, width: barLen, height: t }} />
-            <div style={{ ...blob, left: cx, top: cy, width: t, height: barLen }} />
-          </>
-        )}
         {slots.map((s) => {
           const on = s.d === press.dir;
           return (
@@ -334,7 +313,7 @@ function FlickKeyboard({
                 transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`,
                 width: t,
                 height: t,
-                borderRadius: fan ? t / 2 : 9,
+                borderRadius: 9,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -342,9 +321,9 @@ function FlickKeyboard({
                 fontWeight: 500,
                 lineHeight: 1,
                 transition: "transform 60ms, background 60ms, color 60ms",
-                background: on ? FLICK_ACTIVE : fan ? "transparent" : p.popBg,
+                background: on ? FLICK_ACTIVE : p.popBg,
                 color: on ? "#fff" : p.popText,
-                boxShadow: fan || on ? (on ? "0 4px 14px rgba(52,120,246,0.4)" : "none") : p.popShadow,
+                boxShadow: on ? "0 4px 14px rgba(52,120,246,0.4)" : p.popShadow,
               }}
             >
               {s.ch}
