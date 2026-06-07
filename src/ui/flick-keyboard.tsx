@@ -104,6 +104,28 @@ function dirOf(dx: number, dy: number, threshold: number): "c" | "l" | "r" | "u"
   return dy < 0 ? "u" : "d";
 }
 
+// フリックプレビューを十字に連結した1枚のパネルに見せるため、各セルは中心セルと接する辺を直角のままにし、
+// 外周にあたる角だけを丸める（中心セルは隣接する方向キーが無い側の角を丸める）。
+function popupCellCorners(slot: "c" | "l" | "r" | "u" | "d", has: { u: boolean; d: boolean; l: boolean; r: boolean }) {
+  switch (slot) {
+    case "u":
+      return "rounded-t-[7px]";
+    case "d":
+      return "rounded-b-[7px]";
+    case "l":
+      return "rounded-l-[7px]";
+    case "r":
+      return "rounded-r-[7px]";
+    case "c":
+      return cn(
+        !has.u && !has.l && "rounded-tl-[7px]",
+        !has.u && !has.r && "rounded-tr-[7px]",
+        !has.d && !has.l && "rounded-bl-[7px]",
+        !has.d && !has.r && "rounded-br-[7px]",
+      );
+  }
+}
+
 const KANA_POS: Record<string, [number, number]> = {
   a: [2, 1],
   ka: [3, 1],
@@ -219,10 +241,6 @@ const ROW_START: Record<number, string> = {
   4: "row-start-4",
 };
 
-// グリッドのgapを廃止し、各セルにこの幅のpaddingを持たせて見た目上の隙間を再現する
-// （隣接セル同士のpaddingが合わさり gap-1.5 相当の隙間になる）。当たり判定は隙間にも広がる。
-const CELL_PAD = 3;
-
 // ── FlickKeyboard ──────────────────────────────────────────────────────────
 
 interface PressState {
@@ -230,8 +248,6 @@ interface PressState {
   dir: "c" | "l" | "r" | "u" | "d";
   cx: number;
   cy: number;
-  w: number;
-  h: number;
 }
 
 function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold = 26, mode }: FlickKeyboardProps) {
@@ -287,11 +303,6 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     if (!gridRef.current) return;
     const g = gridRef.current.getBoundingClientRect();
     const r = e.currentTarget.getBoundingClientRect();
-    // currentTargetは当たり判定込みの外枠なので、paddingを除いた見た目セルの矩形に変換する
-    const innerLeft = r.left + CELL_PAD;
-    const innerTop = r.top + CELL_PAD;
-    const innerWidth = r.width - CELL_PAD * 2;
-    const innerHeight = r.height - CELL_PAD * 2;
     const s = stateRef.current;
     s.key = key;
     s.sx = e.clientX;
@@ -301,10 +312,8 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       setPress({
         key,
         dir: "c",
-        cx: innerLeft - g.left + innerWidth / 2,
-        cy: innerTop - g.top + innerHeight / 2,
-        w: innerWidth,
-        h: innerHeight,
+        cx: r.left - g.left + r.width / 2,
+        cy: r.top - g.top + r.height / 2,
       });
     }
     window.addEventListener("pointermove", onMove);
@@ -322,52 +331,54 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
   const keyShadow = isDark ? "shadow-[0_1px_2px_rgba(0,0,0,0.45)]" : "shadow-[0_1px_0_rgba(0,0,0,0.30)]";
 
   // ── popup ──────────────────────────────────────────────────────
+  // iOSのフリック入力候補のように、十字に並んだ方向プレビューを隙間なく1枚のパネルとして表示する。
   const renderPopup = () => {
     if (!press || !gridRef.current) return null;
     const k = press.key;
     const applyCase = (ch: string) => (activeMode === "english" ? (caps ? ch.toUpperCase() : ch.toLowerCase()) : ch);
-    const t = Math.min(press.w * 0.92, 60);
-    const off = t * 0.96;
-    const gw = gridRef.current.offsetWidth;
-    const half = off + t / 2 + 2;
-    const cx = Math.max(half, Math.min(press.cx, gw - half));
-    const cy = press.cy - t * 0.1;
-    const slots: { d: "c" | "l" | "r" | "u" | "d"; ch: string | undefined; x: number; y: number }[] = [
-      { d: "u", ch: k.u ? applyCase(k.u) : undefined, x: cx, y: cy - off },
-      { d: "l", ch: k.l ? applyCase(k.l) : undefined, x: cx - off, y: cy },
-      { d: "c", ch: applyCase(k.c), x: cx, y: cy },
-      { d: "r", ch: k.r ? applyCase(k.r) : undefined, x: cx + off, y: cy },
-      { d: "d", ch: k.d ? applyCase(k.d) : undefined, x: cx, y: cy + off },
-    ].filter((s) => s.ch != null) as { d: "c" | "l" | "r" | "u" | "d"; ch: string; x: number; y: number }[];
+    const g = gridRef.current.getBoundingClientRect();
+    // 1セル分の平均サイズをグリッド全体の実測サイズから逆算し、パネル(3x3セル)が背景のセルと重なる比率を保ったまま少し縮小する
+    const scale = 0.98;
+    const panelW = (g.width / 5) * 3 * scale;
+    const panelH = (g.height / 4) * 3 * scale;
+    const halfW = panelW / 2;
+    const cx = Math.max(halfW, Math.min(press.cx, g.width - halfW));
+    const left = cx - halfW;
+    const top = press.cy - panelH / 2;
+
+    const has = { u: !!k.u, d: !!k.d, l: !!k.l, r: !!k.r };
+    const slots: { slot: "c" | "l" | "r" | "u" | "d"; row: number; col: number; ch: string | undefined }[] = [
+      { slot: "u", row: 1, col: 2, ch: k.u },
+      { slot: "l", row: 2, col: 1, ch: k.l },
+      { slot: "c", row: 2, col: 2, ch: k.c },
+      { slot: "r", row: 2, col: 3, ch: k.r },
+      { slot: "d", row: 3, col: 2, ch: k.d },
+    ];
+
     return (
-      <div className="pointer-events-none absolute inset-0 z-[40]">
-        {slots.map((s) => {
-          const on = s.d === press.dir;
-          return (
-            <div
-              key={s.d}
-              className={cn(
-                "absolute flex items-center justify-center rounded-[9px] font-medium leading-none",
-                "[transition:transform_60ms,background_60ms,color_60ms]",
-                on
-                  ? "bg-[#3478F6] text-white shadow-[0_4px_14px_rgba(52,120,246,0.4)]"
-                  : isDark
-                    ? "bg-[#898989] text-white shadow-[0_6px_16px_rgba(0,0,0,0.5)]"
-                    : "bg-white text-[#1A1A1A] shadow-[0_6px_16px_rgba(0,0,0,0.28)]",
-              )}
-              style={{
-                left: s.x,
-                top: s.y,
-                transform: `translate(-50%,-50%) scale(${on ? 1.06 : 1})`,
-                width: t,
-                height: t,
-                fontSize: t * 0.5,
-              }}
-            >
-              {s.ch}
-            </div>
-          );
-        })}
+      <div
+        className="pointer-events-none absolute z-40 grid grid-cols-3 grid-rows-3"
+        style={{ left, top, width: panelW, height: panelH }}
+      >
+        {slots
+          .filter((s): s is typeof s & { ch: string } => s.ch != null)
+          .map(({ slot, row, col, ch }) => {
+            const on = slot === press.dir;
+            return (
+              <div
+                key={slot}
+                className={cn(
+                  "flex items-center justify-center text-xl leading-none",
+                  "[transition:background-color_80ms,color_80ms]",
+                  popupCellCorners(slot, has),
+                  on ? "bg-[#2E92FA] text-white" : "bg-[#5B5B5E] text-white",
+                )}
+                style={{ gridRow: row, gridColumn: col }}
+              >
+                {applyCase(ch)}
+              </div>
+            );
+          })}
       </div>
     );
   };
@@ -466,7 +477,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
           className={cn(
             cellBase,
             "font-medium text-sm tracking-[0.3px]",
-            accent ? "bg-[#3478F6] text-white" : isDark ? "bg-[#6E6E6E] text-white" : "bg-[#B4B8C0] text-[#1A1A1A]",
+            accent ? "bg-[#2E92FA] text-white" : isDark ? "bg-[#6E6E6E] text-white" : "bg-[#B4B8C0] text-[#1A1A1A]",
           )}
           style={{ filter: down ? "brightness(0.9)" : undefined }}
         >
@@ -487,8 +498,8 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       <div className="h-10" />
 
       {/* key grid */}
-      <div ref={gridRef} className="relative pb-3.5">
-        <div className="-m-[3px] grid grid-cols-5 grid-rows-[repeat(4,47px)]">
+      <div className="pb-3.5">
+        <div ref={gridRef} className="relative -m-[3px] grid grid-cols-5 grid-rows-[repeat(4,47px)]">
           {/* left column row 1 */}
           {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "" })}
           {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <></> })}
@@ -535,8 +546,8 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
             label: activeMode === "kana" ? "" : "",
             accent: activeMode !== "kana",
           })}
+          {renderPopup()}
         </div>
-        {renderPopup()}
       </div>
     </div>
   );
