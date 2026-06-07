@@ -528,12 +528,12 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark
   const g = gridRef.current.getBoundingClientRect();
   const cellW = g.width / 5;
   const cellH = g.height / 4;
-  const w = isTopRowUpFlick ? cellW * 0.6 : cellW * (quickFlick.dir === "l" || quickFlick.dir === "r" ? 1.28 : 0.98);
-  const h = isTopRowUpFlick ? cellH * 0.7 : cellH * (quickFlick.dir === "u" || quickFlick.dir === "d" ? 1.42 : 0.98);
+  const w = isTopRowUpFlick ? cellW * 0.75 : cellW * (quickFlick.dir === "l" || quickFlick.dir === "r" ? 1.28 : 0.98);
+  const h = isTopRowUpFlick ? cellH * 0.85 : cellH * (quickFlick.dir === "u" || quickFlick.dir === "d" ? 1.42 : 0.98);
   const offsetX = cellW * 0.86;
   const offsetY = cellH * 1.02;
   // 最上段の上フリックは候補バーにちょっとだけ被る位置に表示する
-  const topRowUpOffsetY = cellH * 0.3;
+  const topRowUpOffsetY = cellH * 0.6;
   const positions = {
     u: {
       left: quickFlick.cx - w / 2,
@@ -564,7 +564,7 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark
     <div
       className={cn(
         "pointer-events-none absolute z-30 flex items-center justify-center font-medium leading-none",
-        isTopRowUpFlick ? "text-[17px]" : "text-[28px]",
+        isTopRowUpFlick ? "text-[21px]" : "text-[28px]",
         isDark ? "text-white" : "text-[#1A1A1A]",
       )}
       data-testid="quick-flick-popup"
