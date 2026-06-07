@@ -29,6 +29,7 @@ import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
 import { handleFlickInput } from "./typing-card/playing/playing-scene";
+import { FlickTypingWord } from "./typing-card/playing/typing-words";
 import { TypingCard, useSceneGroupState, useSceneState } from "./typing-card/typing-card";
 import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
@@ -143,7 +144,13 @@ const FlickKeyboardContainer = () => {
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
-      <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} isLineStart={isLineStart} />
+      <FlickKeyboard
+        mode="kana"
+        onEvent={handleFlickInput}
+        theme={flickTheme}
+        isLineStart={isLineStart}
+        candidateBar={<FlickTypingWord />}
+      />
     </div>
   );
 };

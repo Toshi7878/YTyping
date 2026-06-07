@@ -125,6 +125,79 @@ export const TypingWords = () => {
   );
 };
 
+export const FlickTypingWord = () => {
+  const builtMap = useBuiltMapState();
+  const {
+    wordDisplay,
+    mainWordFontSize,
+    mainWordTopPosition,
+    kanaWordSpacing,
+    lineCompletedDisplay,
+    isCaseSensitive: isCaseSensitiveTypingOptions,
+  } = useTypingOptionsState();
+  const replayRankingResult = useReplayRankingResultState();
+  const { otherStatus } = replayRankingResult ?? {};
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
+
+  const wordContainerRef = useRef<HTMLDivElement | null>(null);
+  const mainRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+    nextWordRef: { current: null as HTMLSpanElement | null },
+  }).current;
+
+  const style = {
+    kanaLetterSpacing: `${kanaWordSpacing.toFixed(2)}em`,
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: マウント時のみ要素をatomにセットしたいため
+  useEffect(() => {
+    if (
+      mainRefs.viewportRef.current &&
+      mainRefs.trackRef.current &&
+      mainRefs.caretRef.current &&
+      mainRefs.nextWordRef.current
+    ) {
+      setMainWordElements({
+        viewportRef: mainRefs.viewportRef.current,
+        trackRef: mainRefs.trackRef.current,
+        caretRef: mainRefs.caretRef.current,
+        nextWordRef: mainRefs.nextWordRef.current,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (wordContainerRef.current) {
+      setWordContainerElement(wordContainerRef.current);
+    }
+  }, []);
+
+  return (
+    <div
+      ref={wordContainerRef}
+      className="word-font word-outline-text w-full text-xl leading-24 md:text-[2.8rem] md:leading-15"
+    >
+      <Word
+        id="main_word"
+        className={cn(
+          "word-kana",
+          getWordCaseClass("kana", isCaseSensitive, wordDisplay),
+          getWordVisibilityClass("kana", wordDisplay, "flick"),
+        )}
+        style={{
+          fontSize: `${mainWordFontSize}%`,
+          bottom: mainWordTopPosition,
+          letterSpacing: style.kanaLetterSpacing,
+        }}
+        refs={mainRefs}
+        isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
+      />
+    </div>
+  );
+};
+
 const getWordCaseClass = (targetType: "kana" | "roma", isCaseSensitive: boolean, wordDisplay: string) => {
   if (isCaseSensitive) return undefined;
 
