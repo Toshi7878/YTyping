@@ -447,13 +447,16 @@ interface PopupProps {
   press: PressState;
   gridRef: React.RefObject<HTMLDivElement | null>;
   activeMode: FlickMode;
+  posMap: Record<string, [number, number]>;
   caps: boolean;
   isDark: boolean;
 }
 
-function Popup({ press, gridRef, activeMode, caps, isDark }: PopupProps) {
+function Popup({ press, gridRef, activeMode, posMap, caps, isDark }: PopupProps) {
   if (!gridRef.current) return null;
   const k = press.key;
+  // 最上段キーは上方向(う・く・す等)のセルだけ小さくする
+  const isTopRow = posMap[k.id]?.[1] === 1;
   const applyCase = (ch: string) => (activeMode === "english" ? (caps ? ch.toUpperCase() : ch.toLowerCase()) : ch);
   const g = gridRef.current.getBoundingClientRect();
   const scale = 0.98;
@@ -482,12 +485,14 @@ function Popup({ press, gridRef, activeMode, caps, isDark }: PopupProps) {
         .filter((s): s is typeof s & { ch: string } => s.ch != null)
         .map(({ slot, row, col, ch }) => {
           const on = slot === press.dir;
+          const shrinkUp = isTopRow && slot === "u";
           return (
             <div
               key={slot}
               className={cn(
-                "flex items-center justify-center text-xl leading-none",
+                "flex items-center justify-center leading-none",
                 "[transition:background-color_80ms,color_80ms]",
+                shrinkUp ? "h-3/5 self-end text-base" : "text-xl",
                 popupCellCorners(slot, has),
                 on ? "bg-[#2E92FA] text-white" : isDark ? "bg-[#434345] text-white" : "bg-white text-[#1A1A1A]",
               )}
@@ -523,12 +528,17 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark
   const g = gridRef.current.getBoundingClientRect();
   const cellW = g.width / 5;
   const cellH = g.height / 4;
-  const w = cellW * (quickFlick.dir === "l" || quickFlick.dir === "r" ? 1.28 : 0.98);
-  const h = cellH * (quickFlick.dir === "u" || quickFlick.dir === "d" ? 1.42 : 0.98);
+  const w = isTopRowUpFlick ? cellW * 0.6 : cellW * (quickFlick.dir === "l" || quickFlick.dir === "r" ? 1.28 : 0.98);
+  const h = isTopRowUpFlick ? cellH * 0.7 : cellH * (quickFlick.dir === "u" || quickFlick.dir === "d" ? 1.42 : 0.98);
   const offsetX = cellW * 0.86;
   const offsetY = cellH * 1.02;
+  // 最上段の上フリックは候補バーにちょっとだけ被る位置に表示する
+  const topRowUpOffsetY = cellH * 0.3;
   const positions = {
-    u: { left: quickFlick.cx - w / 2, top: quickFlick.cy - offsetY - h / 2 },
+    u: {
+      left: quickFlick.cx - w / 2,
+      top: quickFlick.cy - (isTopRowUpFlick ? topRowUpOffsetY : offsetY) - h / 2,
+    },
     d: { left: quickFlick.cx - w / 2, top: quickFlick.cy + offsetY - h / 2 },
     l: { left: quickFlick.cx - offsetX - w / 2, top: quickFlick.cy - h / 2 },
     r: { left: quickFlick.cx + offsetX - w / 2, top: quickFlick.cy - h / 2 },
@@ -553,9 +563,9 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark
   return (
     <div
       className={cn(
-        "pointer-events-none absolute z-30 flex items-center justify-center font-medium text-[28px] leading-none",
+        "pointer-events-none absolute z-30 flex items-center justify-center font-medium leading-none",
+        isTopRowUpFlick ? "text-[17px]" : "text-[28px]",
         isDark ? "text-white" : "text-[#1A1A1A]",
-        isTopRowUpFlick && "opacity-70",
       )}
       data-testid="quick-flick-popup"
       style={{ left, top, width: w, height: h }}
@@ -830,7 +840,15 @@ function FlickKeyboard({
               />
             ))}
           {presses.map((p) => (
-            <Popup key={p.pointerId} press={p} gridRef={gridRef} activeMode={activeMode} caps={caps} isDark={isDark} />
+            <Popup
+              key={p.pointerId}
+              press={p}
+              gridRef={gridRef}
+              activeMode={activeMode}
+              posMap={activePosMap}
+              caps={caps}
+              isDark={isDark}
+            />
           ))}
         </div>
       </div>
