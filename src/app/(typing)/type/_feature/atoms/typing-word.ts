@@ -63,7 +63,7 @@ store.sub(typingWordAtom, () => {
   const main = store.get(mainWordElementsAtom);
   const sub = store.get(subWordElementsAtom);
 
-  if (!main || !sub) return;
+  if (!main) return;
 
   const options = getTypingOptions();
 
@@ -72,7 +72,7 @@ store.sub(typingWordAtom, () => {
   const isLineStart = correct.kana.length === 0 && correct.roma.length === 0;
 
   if (isLineStart) {
-    resetScrollImmediately(main.trackRef, sub.trackRef);
+    resetScrollImmediately(main.trackRef, sub?.trackRef ?? null);
     return;
   }
 
@@ -87,7 +87,7 @@ store.sub(playingInputModeAtom, () => {
   const main = store.get(mainWordElementsAtom);
   const sub = store.get(subWordElementsAtom);
 
-  if (main && sub) {
+  if (main) {
     updateWordDisplay(typingWord, main, sub);
   }
 });
@@ -129,7 +129,7 @@ const updateWordDisplay = (
     trackRef: HTMLDivElement;
     caretRef: HTMLSpanElement;
     nextWordRef: HTMLSpanElement;
-  },
+  } | null,
   options = getTypingOptions(),
 ) => {
   const { wordDisplay, lineCompletedDisplay } = options;
@@ -168,9 +168,9 @@ const updateWordDisplay = (
     prevMainRemain = mainRemainText;
   }
 
-  const subCorrectEl = sub.trackRef.children[0];
-  const subNextCharEl = sub.trackRef.children[1];
-  const subRemainWordEl = sub.trackRef.children[2];
+  const subCorrectEl = sub?.trackRef.children[0];
+  const subNextCharEl = sub?.trackRef.children[1];
+  const subRemainWordEl = sub?.trackRef.children[2];
 
   if (subCorrectEl && prevSubCorrect !== subCorrectText) {
     subCorrectEl.textContent = subCorrectText;
@@ -227,27 +227,31 @@ const updateWordDisplay = (
           }
 
           if (prevSubNextWordText !== subNextWordText) {
-            sub.nextWordRef.textContent = subNextWordText;
+            if (sub) {
+              sub.nextWordRef.textContent = subNextWordText;
+            }
             prevSubNextWordText = subNextWordText;
           }
         }
 
         main.nextWordRef.classList.toggle("!block", true);
-        sub.nextWordRef.classList.toggle("!block", true);
+        sub?.nextWordRef.classList.toggle("!block", true);
         main.viewportRef.classList.toggle("hidden", true);
-        sub.viewportRef.classList.toggle("hidden", true);
+        sub?.viewportRef.classList.toggle("hidden", true);
       } else if (isUpdateLine) {
         prevNextLineCount = -1;
         prevMainNextWordText = "";
         prevSubNextWordText = "";
 
         main.nextWordRef.textContent = "";
-        sub.nextWordRef.textContent = "";
+        if (sub) {
+          sub.nextWordRef.textContent = "";
+        }
 
         main.nextWordRef.classList.toggle("!block", false);
-        sub.nextWordRef.classList.toggle("!block", false);
+        sub?.nextWordRef.classList.toggle("!block", false);
         main.viewportRef.classList.toggle("hidden", false);
-        sub.viewportRef.classList.toggle("hidden", false);
+        sub?.viewportRef.classList.toggle("hidden", false);
       }
 
       mainCorrectEl?.classList.toggle("!text-word-completed", isCompleted && lineCompletedDisplay !== "NEXT_WORD");
@@ -264,13 +268,15 @@ let prevSubShift = -1;
 let prevMainCorrectTextForScroll = "";
 let prevSubCorrectTextForScroll = "";
 
-const resetScrollImmediately = (mainTrack: HTMLDivElement, subTrack: HTMLDivElement) => {
+const resetScrollImmediately = (mainTrack: HTMLDivElement, subTrack: HTMLDivElement | null) => {
   mainTrack.style.transition = "";
   mainTrack.style.transform = "translate3d(0px, 0px, 0px)";
   prevMainShift = 0;
 
-  subTrack.style.transition = "";
-  subTrack.style.transform = "translate3d(0px, 0px, 0px)";
+  if (subTrack) {
+    subTrack.style.transition = "";
+    subTrack.style.transform = "translate3d(0px, 0px, 0px)";
+  }
   prevSubShift = 0;
 
   prevMainCorrectTextForScroll = "";
@@ -287,7 +293,7 @@ const scheduleScroll = (
     viewportRef: HTMLDivElement;
     trackRef: HTMLDivElement;
     caretRef: HTMLSpanElement;
-  },
+  } | null,
   mainCorrect: string,
   subCorrect: string,
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
@@ -309,7 +315,7 @@ const applyScroll = (
     viewportRef: HTMLDivElement;
     trackRef: HTMLDivElement;
     caretRef: HTMLSpanElement;
-  },
+  } | null,
   mainCorrect: string,
   subCorrect: string,
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
@@ -340,7 +346,7 @@ const applyScroll = (
     }
   }
 
-  if (subCorrect.length > 0 && (isSubTextChanged || prevSubShift === -1)) {
+  if (subRefs && subCorrect.length > 0 && (isSubTextChanged || prevSubShift === -1)) {
     const currentShift = prevSubShift > 0 ? prevSubShift : 0;
     const caretX = subRefs.caretRef.offsetLeft;
     const rightBound = Math.floor(subRefs.viewportRef.clientWidth * subRightBoundRatio);
@@ -357,7 +363,7 @@ const applyScroll = (
     prevMainShift = mainShift;
   }
 
-  if (subShift !== null && subShift !== prevSubShift) {
+  if (subRefs && subShift !== null && subShift !== prevSubShift) {
     subRefs.trackRef.style.transition = scrollTransition;
     subRefs.trackRef.style.transform = `translate3d(${-subShift}px, 0px, 0px)`;
     prevSubShift = subShift;
