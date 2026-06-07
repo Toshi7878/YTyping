@@ -507,14 +507,17 @@ interface QuickFlickPopupProps {
   quickFlick: QuickFlickState;
   gridRef: React.RefObject<HTMLDivElement | null>;
   activeMode: FlickMode;
+  posMap: Record<string, [number, number]>;
   caps: boolean;
   isDark: boolean;
 }
 
-function QuickFlickPopup({ quickFlick, gridRef, activeMode, caps, isDark }: QuickFlickPopupProps) {
+function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark }: QuickFlickPopupProps) {
   if (!gridRef.current) return null;
   const ch = quickFlick.key[quickFlick.dir];
   if (!ch) return null;
+  // 最上段キーの上フリックポップアップは候補バーと重なるため半透明にする
+  const isTopRowUpFlick = quickFlick.dir === "u" && posMap[quickFlick.key.id]?.[1] === 1;
   const applyCase = (value: string) =>
     activeMode === "english" ? (caps ? value.toUpperCase() : value.toLowerCase()) : value;
   const g = gridRef.current.getBoundingClientRect();
@@ -552,6 +555,7 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, caps, isDark }: Quic
       className={cn(
         "pointer-events-none absolute z-30 flex items-center justify-center font-medium text-[28px] leading-none",
         isDark ? "text-white" : "text-[#1A1A1A]",
+        isTopRowUpFlick && "opacity-70",
       )}
       data-testid="quick-flick-popup"
       style={{ left, top, width: w, height: h }}
@@ -820,6 +824,7 @@ function FlickKeyboard({
                 quickFlick={q}
                 gridRef={gridRef}
                 activeMode={activeMode}
+                posMap={activePosMap}
                 caps={caps}
                 isDark={isDark}
               />

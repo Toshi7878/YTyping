@@ -151,7 +151,7 @@ const FlickKeyboardContainer = () => {
         isLineStart={isLineStart}
         candidateBar={
           <div
-            className="relative h-16"
+            className="relative h-24"
             onTouchStart={() => {
               if (getActiveSkipKey()) {
                 const count = getLineCount();
