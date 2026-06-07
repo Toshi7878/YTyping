@@ -98,6 +98,9 @@ function applyMod(ch: string): string | null {
   return null;
 }
 
+// 押下から方向プレビューが出るまでの遅延（タップ時にチラつかないよう少し長押しを要求する）
+const POPUP_DELAY_MS = 120;
+
 function dirOf(dx: number, dy: number, threshold: number): "c" | "l" | "r" | "u" | "d" {
   if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return "c";
   if (Math.abs(dx) > Math.abs(dy)) return dx < 0 ? "l" : "r";
@@ -260,6 +263,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     dir: "c",
   });
   const [press, setPress] = useState<PressState | null>(null);
+  const popupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [tapId, setTapId] = useState<string | null>(null);
   const [caps, setCaps] = useState(true);
 
@@ -285,6 +289,10 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     const key = s.key;
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerup", onUp);
+    if (popupTimerRef.current) {
+      clearTimeout(popupTimerRef.current);
+      popupTimerRef.current = null;
+    }
     if (!key) return;
     const dir = s.dir;
     s.key = null;
@@ -309,12 +317,12 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     s.sy = e.clientY;
     s.dir = "c";
     if (key.type !== "caps") {
-      setPress({
-        key,
-        dir: "c",
-        cx: r.left - g.left + r.width / 2,
-        cy: r.top - g.top + r.height / 2,
-      });
+      const cx = r.left - g.left + r.width / 2;
+      const cy = r.top - g.top + r.height / 2;
+      popupTimerRef.current = setTimeout(() => {
+        popupTimerRef.current = null;
+        if (stateRef.current.key === key) setPress({ key, dir: stateRef.current.dir, cx, cy });
+      }, POPUP_DELAY_MS);
     }
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
@@ -424,7 +432,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
         <div
           className={cn(
             cellBase,
-            "flex-col gap-px tracking-[0.5px]",
+            "flex-col gap-px tracking-[0.5px] [font-variant-ligatures:none]",
             getCellTextClass(k),
             isDark ? "bg-[#898989] text-white" : "bg-white text-[#1A1A1A]",
           )}
@@ -434,7 +442,13 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
           }}
         >
           <span>{getDisplayFace(k)}</span>
-          {k.sub && <span className="font-normal text-[9px] tracking-normal opacity-[0.55]">{k.sub}</span>}
+          {k.sub && (
+            <span className="relative bottom-1.5 flex gap-[3px] font-normal text-[9px] tracking-normal opacity-[0.55]">
+              {[...k.sub].map((ch) => (
+                <span key={ch}>{ch}</span>
+              ))}
+            </span>
+          )}
         </div>
       </div>
     );
