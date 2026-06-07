@@ -7,6 +7,7 @@ import {
   setMainWordElements,
   setSubWordElements,
   setWordContainerElement,
+  useFlickPendingModConversion,
   usePlayingInputModeState,
 } from "../../atoms/typing-word";
 import { useTypingOptionsState } from "../../tabs/setting/popover";
@@ -126,6 +127,7 @@ export const TypingWords = () => {
 };
 
 export const FlickTypingWord = () => {
+  const pendingModConversion = useFlickPendingModConversion();
   const builtMap = useBuiltMapState();
   const {
     wordDisplay,
@@ -175,7 +177,7 @@ export const FlickTypingWord = () => {
   }, []);
 
   return (
-    <div ref={wordContainerRef} className="word-font word-outline-text w-full whitespace-nowrap text-2xl">
+    <div ref={wordContainerRef} className="word-font word-outline-text relative w-full whitespace-nowrap text-2xl">
       <Word
         id="main_word"
         className={cn("word-kana", getWordCaseClass("kana", isCaseSensitive, wordDisplay))}
@@ -187,6 +189,9 @@ export const FlickTypingWord = () => {
         refs={mainRefs}
         isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
       />
+      {pendingModConversion && (
+        <span className="absolute -top-5 right-0 text-sm text-word-nextChar opacity-80">→{pendingModConversion}</span>
+      )}
     </div>
   );
 };

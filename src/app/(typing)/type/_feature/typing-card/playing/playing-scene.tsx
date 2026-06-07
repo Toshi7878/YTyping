@@ -13,7 +13,12 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
-import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import {
+  getPlayingInputMode,
+  getTypingWord,
+  setFlickPendingModConversion,
+  setTypingWord,
+} from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
@@ -209,6 +214,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
 const isModInputtableKana = (kana: string) =>
   kana === "゛" || kana === "゜" || Object.values(MOD_CYCLE).some((variants) => variants.indexOf(kana) > 0);
 
+// 濁音/半濁音は清音(例: か)を入力した時点でエンジン側がミスにせず変換待ち状態へ進めてくれるが、
+// 小文字かな(例: ゃ)には清音側(例: や)からの変換待ち状態が無いため、
+// その清音入力をmod変換前の準備動作とみなしてミス判定をスキップする
+const isModBaseInput = (inputChar: string, nextKana: string) => {
+  const variants = MOD_CYCLE[inputChar];
+  return !!variants && variants.indexOf(nextKana) > 0;
+};
+
 export const handleFlickInput = (e: FlickEvent) => {
   const isPaused = getIsPaused();
   const scene = getScene();
@@ -222,20 +235,31 @@ export const handleFlickInput = (e: FlickEvent) => {
   if (!map) return;
 
   let inputChar: string | null = null;
+  let isPendingModBase = false;
+
+  const nextKana = typingWord.nextChunk.kana[0];
 
   if (e.type === "tap") {
     if (e.key.type === "mod") {
-      const nextKana = typingWord.nextChunk.kana[0];
       if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
     } else if (e.key.type !== "caps") {
-      inputChar = e.key.c;
+      if (nextKana && isModBaseInput(e.key.c, nextKana)) {
+        isPendingModBase = true;
+      } else {
+        inputChar = e.key.c;
+      }
     }
   } else if (e.type === "flick") {
-    inputChar = e.char;
+    if (nextKana && isModBaseInput(e.char, nextKana)) {
+      isPendingModBase = true;
+    } else {
+      inputChar = e.char;
+    }
   } else if (e.type === "mod") {
-    const nextKana = typingWord.nextChunk.kana[0];
     if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
   }
+
+  setFlickPendingModConversion(isPendingModBase && nextKana ? nextKana : null);
 
   if (!inputChar) return;
 

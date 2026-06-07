@@ -31,6 +31,12 @@ export const setTypingWord = (value: TypingWord) => store.set(typingWordAtom, va
 export const getTypingWord = () => store.get(typingWordAtom);
 export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
+// フリック入力で清音(例: や)を入力し、modキーでの小文字変換待ちになっているときに
+// 変換先の小文字かな(例: ゃ)を保持する。変換待ちでなければnull
+const flickPendingModConversionAtom = atom<string | null>(null);
+export const useFlickPendingModConversion = () => useAtomValue(flickPendingModConversionAtom);
+export const setFlickPendingModConversion = (value: string | null) => store.set(flickPendingModConversionAtom, value);
+
 const isLineStartAtom = atom((get) => {
   const { correct } = get(typingWordAtom);
   return correct.kana.length === 0 && correct.roma.length === 0;
@@ -59,6 +65,10 @@ export const setWordContainerElement = (element: ExtractAtomValue<typeof wordCon
 };
 
 store.sub(typingWordAtom, () => {
+  // 行の進行・リスタート・スキップなど、入力以外の経路でtypingWordが変わった場合も
+  // mod変換待ち表示が次の文字に対して残らないようにリセットする
+  setFlickPendingModConversion(null);
+
   const typingWord = store.get(typingWordAtom);
   const main = store.get(mainWordElementsAtom);
   const sub = store.get(subWordElementsAtom);
