@@ -5,7 +5,7 @@ import { createTypingWord, executeTypingInput, handleTyping, isTypingKey } from 
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
-import type { FlickEvent } from "@/ui/flick-keyboard";
+import { type FlickEvent, MOD_CYCLE } from "@/ui/flick-keyboard";
 import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -204,6 +204,11 @@ const handleKeyDown = (event: KeyboardEvent) => {
   }
 };
 
+// modキーは濁点/半濁点記号(゛゜)に加え、小文字かな(っ/ゃ等)や濁音/半濁音への変換も担うため、
+// 期待される次のかながMOD_CYCLEの変換先(ベース文字以外)に含まれる場合も入力対象とみなす
+const isModInputtableKana = (kana: string) =>
+  kana === "゛" || kana === "゜" || Object.values(MOD_CYCLE).some((variants) => variants.indexOf(kana) > 0);
+
 export const handleFlickInput = (e: FlickEvent) => {
   const isPaused = getIsPaused();
   const scene = getScene();
@@ -221,7 +226,7 @@ export const handleFlickInput = (e: FlickEvent) => {
   if (e.type === "tap") {
     if (e.key.type === "mod") {
       const nextKana = typingWord.nextChunk.kana[0];
-      if (nextKana === "゛" || nextKana === "゜") inputChar = nextKana;
+      if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
     } else if (e.key.type !== "caps") {
       inputChar = e.key.c;
     }
@@ -229,7 +234,7 @@ export const handleFlickInput = (e: FlickEvent) => {
     inputChar = e.char;
   } else if (e.type === "mod") {
     const nextKana = typingWord.nextChunk.kana[0];
-    if (nextKana === "゛" || nextKana === "゜") inputChar = nextKana;
+    if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
   }
 
   if (!inputChar) return;
