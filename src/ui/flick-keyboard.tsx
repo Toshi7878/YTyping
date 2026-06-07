@@ -103,27 +103,6 @@ function applyMod(ch: string): string | null {
 const POPUP_DELAY_MS = 300;
 const QUICK_FLICK_HIDE_DELAY_MS = 50;
 
-function DeleteIcon({ pressed, isDark }: { pressed: boolean; isDark: boolean }) {
-  return (
-    <svg aria-label="delete" className="h-6 w-6" role="img" viewBox="0 0 28 24">
-      <path
-        className={cn(
-          pressed ? (isDark ? "fill-white stroke-white" : "fill-black stroke-black") : "fill-none stroke-current",
-        )}
-        d="M10.4 4.5h12.3a2.8 2.8 0 0 1 2.8 2.8v9.4a2.8 2.8 0 0 1-2.8 2.8H10.4a2.3 2.3 0 0 1-1.7-.8L2.8 12l5.9-6.7a2.3 2.3 0 0 1 1.7-.8Z"
-        strokeLinejoin="round"
-        strokeWidth="1.6"
-      />
-      <path
-        className={cn(pressed ? (isDark ? "stroke-black" : "stroke-white") : "stroke-current")}
-        d="m14.1 9.1 5.8 5.8m0-5.8-5.8 5.8"
-        strokeLinecap="round"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
-
 function ModLineStartFace() {
   return (
     <span className="-mt-1 flex flex-col items-center">
@@ -382,57 +361,6 @@ function ContentCell({
 
 // ── FnCell ─────────────────────────────────────────────────────────────────
 
-// 削除キー長押しでの連続削除機能。
-// 不要になった場合は ENABLE_DELETE_REPEAT 以下この区切りまでのブロックと、
-// FnCell 内の deleteRepeat 利用箇所（onPress/onRelease/consumeFired の3箇所）を削除すればよい。
-const ENABLE_DELETE_REPEAT = true;
-const DELETE_REPEAT_DELAY_MS = 400;
-const DELETE_REPEAT_INTERVAL_MS = 60;
-
-function useDeleteRepeat(active: boolean, action: FlickEvent | undefined, onEvent: (event: FlickEvent) => void) {
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const firedRef = useRef(false);
-
-  const stop = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-
-  useEffect(
-    () => () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    },
-    [],
-  );
-
-  const onPress = () => {
-    if (!active || !action) return;
-    firedRef.current = false;
-    timerRef.current = setTimeout(() => {
-      timerRef.current = null;
-      firedRef.current = true;
-      onEvent(action);
-      intervalRef.current = setInterval(() => onEvent(action), DELETE_REPEAT_INTERVAL_MS);
-    }, DELETE_REPEAT_DELAY_MS);
-  };
-
-  const consumeFired = () => {
-    const fired = firedRef.current;
-    firedRef.current = false;
-    return fired;
-  };
-
-  return { onPress, onRelease: stop, consumeFired };
-}
-
 interface FnCellProps {
   id: string;
   col: number;
@@ -448,22 +376,18 @@ interface FnCellProps {
 
 function FnCell({ id, col, row, rowSpan, label, icon, theme, dimmed, action, onEvent }: FnCellProps) {
   const [isPressed, setIsPressed] = useState(false);
-  const deleteRepeat = useDeleteRepeat(ENABLE_DELETE_REPEAT && id === "del", action, onEvent);
 
   const onPointerDown = () => {
     setIsPressed(true);
-    deleteRepeat.onPress();
   };
 
   const onPointerLeave = () => {
     setIsPressed(false);
-    deleteRepeat.onRelease();
   };
 
   const onPointerUp = () => {
     setIsPressed(false);
-    deleteRepeat.onRelease();
-    if (action && !deleteRepeat.consumeFired()) onEvent(action);
+    if (action) onEvent(action);
   };
 
   return (
@@ -490,7 +414,7 @@ function FnCell({ id, col, row, rowSpan, label, icon, theme, dimmed, action, onE
         )}
         style={{ filter: isPressed ? "brightness(0.9)" : undefined }}
       >
-        {id === "del" ? <DeleteIcon pressed={isPressed} isDark={theme === "dark"} /> : (icon ?? label)}
+        {icon ?? label}
       </div>
     </div>
   );
@@ -499,6 +423,7 @@ function FnCell({ id, col, row, rowSpan, label, icon, theme, dimmed, action, onE
 // ── FlickKeyboard ──────────────────────────────────────────────────────────
 
 interface PressState {
+  pointerId: number;
   key: FlickKey;
   dir: "c" | "l" | "r" | "u" | "d";
   cx: number;
@@ -506,6 +431,15 @@ interface PressState {
 }
 
 type QuickFlickState = PressState;
+
+interface PointerTrack {
+  key: FlickKey;
+  sx: number;
+  sy: number;
+  dir: "c" | "l" | "r" | "u" | "d";
+  cx: number;
+  cy: number;
+}
 
 // ── Popup ──────────────────────────────────────────────────────────────────
 
@@ -670,26 +604,13 @@ function FlickKeyboard({
   const isDark = theme === "dark";
   const isStandalone = useIsStandalone();
   const gridRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef<{
-    key: FlickKey | null;
-    sx: number;
-    sy: number;
-    dir: "c" | "l" | "r" | "u" | "d";
-    cx: number;
-    cy: number;
-  }>({
-    key: null,
-    sx: 0,
-    sy: 0,
-    dir: "c",
-    cx: 0,
-    cy: 0,
-  });
-  const [press, setPress] = useState<PressState | null>(null);
-  const [quickFlick, setQuickFlick] = useState<QuickFlickState | null>(null);
-  const popupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const quickFlickHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [pressedKeyId, setPressedKeyId] = useState<string | null>(null);
+  // 指(pointerId)ごとに押下状態を管理し、複数キーの同時押しを独立して扱う。
+  const pointersRef = useRef<Map<number, PointerTrack>>(new Map());
+  const popupTimersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+  const quickFlickHideTimersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+  const [presses, setPresses] = useState<PressState[]>([]);
+  const [quickFlicks, setQuickFlicks] = useState<QuickFlickState[]>([]);
+  const [pressedKeyIds, setPressedKeyIds] = useState<Map<number, string>>(new Map());
   const [caps, setCaps] = useState(true);
 
   const activeMode = mode ?? "kana";
@@ -698,84 +619,124 @@ function FlickKeyboard({
 
   const onMove = useCallback(
     (e: PointerEvent) => {
-      const s = stateRef.current;
-      if (!s.key) return;
+      const s = pointersRef.current.get(e.pointerId);
+      if (!s) return;
       const dir = dirOf(e.clientX - s.sx, e.clientY - s.sy, threshold);
       if (dir !== s.dir) {
         s.dir = dir;
-        setQuickFlick(dir !== "c" && s.key[dir] ? { key: s.key, dir, cx: s.cx, cy: s.cy } : null);
-        setPress((q) => (q ? { ...q, dir } : q));
+        const pointerId = e.pointerId;
+        setQuickFlicks((prev) => {
+          const without = prev.filter((q) => q.pointerId !== pointerId);
+          return dir !== "c" && s.key[dir] ? [...without, { pointerId, key: s.key, dir, cx: s.cx, cy: s.cy }] : without;
+        });
+        setPresses((prev) => prev.map((p) => (p.pointerId === pointerId ? { ...p, dir } : p)));
       }
     },
     [threshold],
   );
 
-  const onUp = useCallback(() => {
-    const s = stateRef.current;
-    const key = s.key;
-    window.removeEventListener("pointermove", onMove);
-    window.removeEventListener("pointerup", onUp);
-    if (popupTimerRef.current) {
-      clearTimeout(popupTimerRef.current);
-      popupTimerRef.current = null;
-    }
-    setPressedKeyId(null);
-    if (quickFlickHideTimerRef.current) clearTimeout(quickFlickHideTimerRef.current);
-    quickFlickHideTimerRef.current = setTimeout(() => {
-      quickFlickHideTimerRef.current = null;
-      setQuickFlick(null);
-    }, QUICK_FLICK_HIDE_DELAY_MS);
-    if (!key) return;
-    const dir = s.dir;
-    s.key = null;
-    setPress(null);
-    if (key.type === "caps") {
-      setCaps((c) => !c);
-      return;
-    }
-    const applyCase = (ch: string) => (activeMode === "english" ? (caps ? ch.toUpperCase() : ch.toLowerCase()) : ch);
-    if (dir === "c" || !key[dir]) onEvent({ type: "tap", key: { ...key, c: applyCase(key.c) } });
-    else onEvent({ type: "flick", char: applyCase(key[dir] as string) });
-  }, [onEvent, onMove, activeMode, caps]);
+  const onUp = useCallback(
+    (e: PointerEvent) => {
+      const pointerId = e.pointerId;
+      const pointers = pointersRef.current;
+      const s = pointers.get(pointerId);
+      if (!s) return;
+      pointers.delete(pointerId);
+      if (pointers.size === 0) {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+      }
+
+      const popupTimer = popupTimersRef.current.get(pointerId);
+      if (popupTimer) {
+        clearTimeout(popupTimer);
+        popupTimersRef.current.delete(pointerId);
+      }
+
+      setPressedKeyIds((prev) => {
+        if (!prev.has(pointerId)) return prev;
+        const next = new Map(prev);
+        next.delete(pointerId);
+        return next;
+      });
+
+      const existingHideTimer = quickFlickHideTimersRef.current.get(pointerId);
+      if (existingHideTimer) clearTimeout(existingHideTimer);
+      quickFlickHideTimersRef.current.set(
+        pointerId,
+        setTimeout(() => {
+          quickFlickHideTimersRef.current.delete(pointerId);
+          setQuickFlicks((prev) => prev.filter((q) => q.pointerId !== pointerId));
+        }, QUICK_FLICK_HIDE_DELAY_MS),
+      );
+
+      setPresses((prev) => prev.filter((p) => p.pointerId !== pointerId));
+
+      const { key, dir } = s;
+      if (key.type === "caps") {
+        setCaps((c) => !c);
+        return;
+      }
+      const applyCase = (ch: string) => (activeMode === "english" ? (caps ? ch.toUpperCase() : ch.toLowerCase()) : ch);
+      if (dir === "c" || !key[dir]) onEvent({ type: "tap", key: { ...key, c: applyCase(key.c) } });
+      else onEvent({ type: "flick", char: applyCase(key[dir] as string) });
+    },
+    [onEvent, onMove, activeMode, caps],
+  );
 
   const onDown = (e: React.PointerEvent, key: FlickKey) => {
     e.preventDefault();
-    if (quickFlickHideTimerRef.current) {
-      clearTimeout(quickFlickHideTimerRef.current);
-      quickFlickHideTimerRef.current = null;
+    const pointerId = e.pointerId;
+    const hideTimer = quickFlickHideTimersRef.current.get(pointerId);
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      quickFlickHideTimersRef.current.delete(pointerId);
     }
     if (!gridRef.current) return;
     const g = gridRef.current.getBoundingClientRect();
     const r = e.currentTarget.getBoundingClientRect();
-    const s = stateRef.current;
-    s.key = key;
-    s.sx = e.clientX;
-    s.sy = e.clientY;
-    s.dir = "c";
-    setPressedKeyId(key.id);
+    const pointers = pointersRef.current;
+    const s: PointerTrack = { key, sx: e.clientX, sy: e.clientY, dir: "c", cx: 0, cy: 0 };
+    pointers.set(pointerId, s);
+    setPressedKeyIds((prev) => {
+      const next = new Map(prev);
+      next.set(pointerId, key.id);
+      return next;
+    });
     const hasFlickDirections = !!(key.l || key.u || key.r || key.d);
     if (key.type !== "caps" && hasFlickDirections) {
       const cx = r.left - g.left + r.width / 2;
       const cy = r.top - g.top + r.height / 2;
       s.cx = cx;
       s.cy = cy;
-      popupTimerRef.current = setTimeout(() => {
-        popupTimerRef.current = null;
-        if (stateRef.current.key === key) {
-          if (stateRef.current.dir !== "c") return;
-          setQuickFlick(null);
-          setPress({ key, dir: stateRef.current.dir, cx, cy });
-        }
-      }, POPUP_DELAY_MS);
+      popupTimersRef.current.set(
+        pointerId,
+        setTimeout(() => {
+          popupTimersRef.current.delete(pointerId);
+          const current = pointersRef.current.get(pointerId);
+          if (current && current.key === key) {
+            if (current.dir !== "c") return;
+            setQuickFlicks((prev) => prev.filter((q) => q.pointerId !== pointerId));
+            setPresses((prev) => [
+              ...prev.filter((p) => p.pointerId !== pointerId),
+              { pointerId, key, dir: current.dir, cx, cy },
+            ]);
+          }
+        }, POPUP_DELAY_MS),
+      );
     }
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
+    if (pointers.size === 1) {
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    }
   };
 
   // ── cell factories ─────────────────────────────────────────────
   const fnCell = (props: Omit<FnCellProps, "theme" | "onEvent" | "dimmed">) => (
-    <FnCell key={props.id} {...props} theme={theme} onEvent={onEvent} dimmed={!!press} />
+    <FnCell key={props.id} {...props} theme={theme} onEvent={onEvent} dimmed={presses.length > 0} />
   );
+
+  const pressedKeyIdSet = new Set(pressedKeyIds.values());
 
   return (
     <div
@@ -836,8 +797,8 @@ function FlickKeyboard({
                 isLineStart={isLineStart}
                 caps={caps}
                 theme={theme}
-                isPressed={pressedKeyId === k.id || press?.key.id === k.id}
-                dimmed={!!press && press.key.id !== k.id}
+                isPressed={pressedKeyIdSet.has(k.id) || presses.some((p) => p.key.id === k.id)}
+                dimmed={presses.length > 0 && !pressedKeyIdSet.has(k.id)}
                 onPointerDown={(e) => onDown(e, k)}
               />
             ))}
@@ -851,16 +812,21 @@ function FlickKeyboard({
             rowSpan: 2,
             label: activeMode === "kana" ? "" : "",
           })}
-          {quickFlick && !press && (
-            <QuickFlickPopup
-              quickFlick={quickFlick}
-              gridRef={gridRef}
-              activeMode={activeMode}
-              caps={caps}
-              isDark={isDark}
-            />
-          )}
-          {press && <Popup press={press} gridRef={gridRef} activeMode={activeMode} caps={caps} isDark={isDark} />}
+          {quickFlicks
+            .filter((q) => !presses.some((p) => p.pointerId === q.pointerId))
+            .map((q) => (
+              <QuickFlickPopup
+                key={q.pointerId}
+                quickFlick={q}
+                gridRef={gridRef}
+                activeMode={activeMode}
+                caps={caps}
+                isDark={isDark}
+              />
+            ))}
+          {presses.map((p) => (
+            <Popup key={p.pointerId} press={p} gridRef={gridRef} activeMode={activeMode} caps={caps} isDark={isDark} />
+          ))}
         </div>
       </div>
     </div>
