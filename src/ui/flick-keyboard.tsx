@@ -219,6 +219,10 @@ const ROW_START: Record<number, string> = {
   4: "row-start-4",
 };
 
+// グリッドのgapを廃止し、各セルにこの幅のpaddingを持たせて見た目上の隙間を再現する
+// （隣接セル同士のpaddingが合わさり gap-1.5 相当の隙間になる）。当たり判定は隙間にも広がる。
+const CELL_PAD = 3;
+
 // ── FlickKeyboard ──────────────────────────────────────────────────────────
 
 interface PressState {
@@ -283,6 +287,11 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     if (!gridRef.current) return;
     const g = gridRef.current.getBoundingClientRect();
     const r = e.currentTarget.getBoundingClientRect();
+    // currentTargetは当たり判定込みの外枠なので、paddingを除いた見た目セルの矩形に変換する
+    const innerLeft = r.left + CELL_PAD;
+    const innerTop = r.top + CELL_PAD;
+    const innerWidth = r.width - CELL_PAD * 2;
+    const innerHeight = r.height - CELL_PAD * 2;
     const s = stateRef.current;
     s.key = key;
     s.sx = e.clientX;
@@ -292,10 +301,10 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
       setPress({
         key,
         dir: "c",
-        cx: r.left - g.left + r.width / 2,
-        cy: r.top - g.top + r.height / 2,
-        w: r.width,
-        h: r.height,
+        cx: innerLeft - g.left + innerWidth / 2,
+        cy: innerTop - g.top + innerHeight / 2,
+        w: innerWidth,
+        h: innerHeight,
       });
     }
     window.addEventListener("pointermove", onMove);
@@ -365,7 +374,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
 
   // ── cell factories ─────────────────────────────────────────────
   const cellBase = cn(
-    "rounded-[7px] flex items-center justify-center select-none touch-none cursor-pointer",
+    "h-full w-full rounded-[7px] flex items-center justify-center select-none",
     "[transition:filter_90ms,transform_60ms]",
     keyShadow,
   );
@@ -381,7 +390,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
   };
 
   const getCellTextClass = (k: FlickKey): string => {
-    if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? "text-[17px]" : "text-[26px]";
+    if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? "text-[17px]" : "text-xl";
     if (activeMode === "english") return LETTER_KEY_IDS.has(k.id) ? "text-[17px]" : "text-sm";
     return k.id === "nbr" || k.id === "npu" ? "text-[15px]" : "text-[22px]";
   };
@@ -396,20 +405,26 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
         key={k.id}
         onPointerDown={(e) => onDown(e, k)}
         className={cn(
-          cellBase,
-          "flex-col gap-px font-medium tracking-[0.5px]",
+          "flex cursor-pointer touch-none items-center justify-center p-[3px]",
           COL_START[col],
           ROW_START[row],
-          getCellTextClass(k),
-          isDark ? "bg-[#898989] text-white" : "bg-white text-[#1A1A1A]",
         )}
-        style={{
-          transform: down ? "scale(0.96)" : undefined,
-          filter: down ? "brightness(0.92)" : undefined,
-        }}
       >
-        <span>{getDisplayFace(k)}</span>
-        {k.sub && <span className="font-normal text-[9px] tracking-normal opacity-[0.55]">{k.sub}</span>}
+        <div
+          className={cn(
+            cellBase,
+            "flex-col gap-px tracking-[0.5px]",
+            getCellTextClass(k),
+            isDark ? "bg-[#898989] text-white" : "bg-white text-[#1A1A1A]",
+          )}
+          style={{
+            transform: down ? "scale(0.96)" : undefined,
+            filter: down ? "brightness(0.92)" : undefined,
+          }}
+        >
+          <span>{getDisplayFace(k)}</span>
+          {k.sub && <span className="font-normal text-[9px] tracking-normal opacity-[0.55]">{k.sub}</span>}
+        </div>
       </div>
     );
   };
@@ -440,17 +455,23 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
         key={id}
         onClick={action ? () => fnTap(id, action) : undefined}
         className={cn(
-          cellBase,
-          "font-medium text-sm tracking-[0.3px]",
+          "flex touch-none items-center justify-center p-[3px]",
           COL_START[col],
           ROW_START[row],
           rowSpan === 2 && "row-span-2",
-          accent ? "bg-[#3478F6] text-white" : isDark ? "bg-[#6E6E6E] text-white" : "bg-[#B4B8C0] text-[#1A1A1A]",
           action ? "cursor-pointer" : "cursor-default",
         )}
-        style={{ filter: down ? "brightness(0.9)" : undefined }}
       >
-        {icon ?? label}
+        <div
+          className={cn(
+            cellBase,
+            "font-medium text-sm tracking-[0.3px]",
+            accent ? "bg-[#3478F6] text-white" : isDark ? "bg-[#6E6E6E] text-white" : "bg-[#B4B8C0] text-[#1A1A1A]",
+          )}
+          style={{ filter: down ? "brightness(0.9)" : undefined }}
+        >
+          {icon ?? label}
+        </div>
       </div>
     );
   };
@@ -467,7 +488,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
 
       {/* key grid */}
       <div ref={gridRef} className="relative pb-3.5">
-        <div className="grid grid-cols-5 grid-rows-[repeat(4,47px)] gap-1.5">
+        <div className="-m-[3px] grid grid-cols-5 grid-rows-[repeat(4,47px)]">
           {/* left column row 1 */}
           {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "" })}
           {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <></> })}
