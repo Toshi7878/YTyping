@@ -149,7 +149,11 @@ const FlickKeyboardContainer = () => {
         onEvent={handleFlickInput}
         theme={flickTheme}
         isLineStart={isLineStart}
-        candidateBar={<FlickTypingWord />}
+        candidateBar={
+          <div className="h-10">
+            <FlickTypingWord />
+          </div>
+        }
       />
     </div>
   );
