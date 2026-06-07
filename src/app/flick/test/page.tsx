@@ -40,11 +40,6 @@ export default function Page() {
       return;
     }
 
-    if (e.type === "backspace") {
-      setText((t) => t.slice(0, -1));
-      return;
-    }
-
     if (e.type === "space") {
       setText((t) => t + "　");
       return;
@@ -124,7 +119,7 @@ export default function Page() {
 
       {/* keyboard pinned to bottom */}
       <div style={{ width: "100%", maxWidth: 390, marginTop: "auto" }}>
-        <FlickKeyboard onEvent={handleEvent} theme={flickTheme} mode={mode} />
+        <FlickKeyboard onEvent={handleEvent} theme={flickTheme} mode={mode} isLineStart={text.length === 0} />
       </div>
     </div>
   );

@@ -31,6 +31,13 @@ export const setTypingWord = (value: TypingWord) => store.set(typingWordAtom, va
 export const getTypingWord = () => store.get(typingWordAtom);
 export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
+const isLineStartAtom = atom((get) => {
+  const { correct } = get(typingWordAtom);
+  return correct.kana.length === 0 && correct.roma.length === 0;
+});
+
+export const useIsLineStartState = () => useAtomValue(isLineStartAtom);
+
 const mainWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;
   trackRef: HTMLDivElement;

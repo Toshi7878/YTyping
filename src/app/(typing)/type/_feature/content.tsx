@@ -21,7 +21,7 @@ import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
-import { usePlayingInputModeState } from "./atoms/typing-word";
+import { useIsLineStartState, usePlayingInputModeState } from "./atoms/typing-word";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
@@ -134,6 +134,7 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
 const FlickKeyboardContainer = () => {
   const scene = useSceneState();
   const playingInputMode = usePlayingInputModeState();
+  const isLineStart = useIsLineStartState();
   const { resolvedTheme } = useTheme();
   const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
 
@@ -142,7 +143,7 @@ const FlickKeyboardContainer = () => {
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
-      <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} />
+      <FlickKeyboard mode="kana" onEvent={handleFlickInput} theme={flickTheme} isLineStart={isLineStart} />
     </div>
   );
 };

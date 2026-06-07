@@ -36,6 +36,7 @@ interface FlickKeyboardProps {
   flickStyle?: "cross";
   threshold?: number;
   mode?: FlickMode;
+  isLineStart?: boolean;
 }
 
 // ── Kana key data ──────────────────────────────────────────────────────────
@@ -237,7 +238,14 @@ interface PressState {
   cy: number;
 }
 
-function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold = 26, mode }: FlickKeyboardProps) {
+function FlickKeyboard({
+  keys = FLICK_KEYS,
+  onEvent,
+  theme = "light",
+  threshold = 26,
+  mode,
+  isLineStart = false,
+}: FlickKeyboardProps) {
   const isDark = theme === "dark";
   const gridRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ key: FlickKey | null; sx: number; sy: number; dir: "c" | "l" | "r" | "u" | "d" }>({
@@ -423,7 +431,15 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
             filter: down ? "brightness(0.92)" : undefined,
           }}
         >
-          <span>{getDisplayFace(k)}</span>
+          {activeMode === "kana" && k.id === "mod" && isLineStart ? (
+            <span className="-mt-1 flex flex-col items-center">
+              <span className="text-lg leading-none">^^</span>
+              <span className="-mt-[19px] leading-none">_</span>
+            </span>
+          ) : (
+            <span>{getDisplayFace(k)}</span>
+          )}
+
           {k.sub && (
             <span className="relative bottom-1.5 flex gap-[3px] font-normal text-[9px] tracking-normal opacity-[0.55]">
               {[...k.sub].map((ch) => (
