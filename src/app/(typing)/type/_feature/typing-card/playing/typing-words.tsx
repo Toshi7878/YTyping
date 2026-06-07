@@ -175,17 +175,10 @@ export const FlickTypingWord = () => {
   }, []);
 
   return (
-    <div
-      ref={wordContainerRef}
-      className="word-font word-outline-text w-full text-xl leading-24 md:text-[2.8rem] md:leading-15"
-    >
+    <div ref={wordContainerRef} className="word-font word-outline-text w-full text-xl leading-24 md:leading-15">
       <Word
         id="main_word"
-        className={cn(
-          "word-kana",
-          getWordCaseClass("kana", isCaseSensitive, wordDisplay),
-          getWordVisibilityClass("kana", wordDisplay, "flick"),
-        )}
+        className={cn("word-kana", getWordCaseClass("kana", isCaseSensitive, wordDisplay))}
         style={{
           fontSize: `${mainWordFontSize}%`,
           bottom: mainWordTopPosition,
