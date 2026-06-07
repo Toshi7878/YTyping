@@ -25,7 +25,6 @@ interface FlickKey {
 type FlickEvent =
   | { type: "tap"; key: FlickKey }
   | { type: "flick"; char: string }
-  | { type: "backspace" }
   | { type: "space" }
   | { type: "mod" }
   | { type: "modeSwitch"; to: FlickMode };
@@ -212,21 +211,6 @@ const NUMBER_POS: Record<string, [number, number]> = {
   npu: [4, 4],
 };
 
-// ── Icons ──────────────────────────────────────────────────────────────────
-
-function IconDelete({ c }: { c: string }) {
-  return (
-    <svg width="26" height="20" viewBox="0 0 28 22" fill="none" aria-hidden="true">
-      <path
-        d="M9 2H25C26.1 2 27 2.9 27 4V18C27 19.1 26.1 20 25 20H9C8.4 20 7.8 19.7 7.4 19.2L1 11L7.4 2.8C7.8 2.3 8.4 2 9 2Z"
-        stroke={c}
-        strokeWidth="1.6"
-      />
-      <path d="M13 7.5L20 14.5M20 7.5L13 14.5" stroke={c} strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 // ── Grid position helpers ──────────────────────────────────────────────────
 
 const COL_START: Record<number, string> = {
@@ -333,8 +317,6 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
     setTimeout(() => setTapId(null), 110);
     onEvent(ev);
   };
-
-  const iconColor = isDark ? "#F2F2F2" : "#1A1A1A";
 
   const keyShadow = isDark ? "shadow-[0_1px_2px_rgba(0,0,0,0.45)]" : "shadow-[0_1px_0_rgba(0,0,0,0.30)]";
 
@@ -550,7 +532,7 @@ function FlickKeyboard({ keys = FLICK_KEYS, onEvent, theme = "light", threshold 
           {/* content keys */}
           {activeKeys.filter((k) => activePosMap[k.id]).map(contentCell)}
           {/* right column */}
-          {fnCell({ id: "del", col: 5, row: 1, icon: <IconDelete c={iconColor} />, action: { type: "backspace" } })}
+          {fnCell({ id: "del", col: 5, row: 1, icon: <></> })}
           {fnCell({ id: "space", col: 5, row: 2, label: "空白", action: { type: "space" } })}
           {fnCell({
             id: "next",
