@@ -54,12 +54,13 @@ export const NextLyrics = () => {
 
 export const FlickNextLyrics = () => {
   const nextLyrics = useAtomValue(nextLyricsAtom);
+
   return (
     <div
       id="flick_next_lyrics_kpm"
       className={cn("flex flex-1 items-center font-[system-ui] text-card-foreground text-xs opacity-60")}
     >
-      NEXT: {parse(nextLyrics)}
+      {nextLyrics ? `NEXT: ${parse(nextLyrics)}` : null}
       <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
