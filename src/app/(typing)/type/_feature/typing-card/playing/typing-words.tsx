@@ -175,7 +175,7 @@ export const FlickTypingWord = () => {
   }, []);
 
   return (
-    <div ref={wordContainerRef} className="word-font word-outline-text w-full text-xl leading-24 md:leading-15">
+    <div ref={wordContainerRef} className="word-font word-outline-text w-full text-2xl">
       <Word
         id="main_word"
         className={cn("word-kana", getWordCaseClass("kana", isCaseSensitive, wordDisplay))}

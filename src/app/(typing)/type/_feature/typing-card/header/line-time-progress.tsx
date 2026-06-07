@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { uncontrolled } from "jotai-uncontrolled";
+import { cn } from "@/utils/cn";
 import { store } from "../../atoms/store";
 
 const lineProgressValueAtom = atom(0);
@@ -26,6 +27,26 @@ export const LineTimeProgress = (props: LineTimeProgressProps) => {
       className={
         "h-[16px] w-full max-sm:my-2 md:h-[10px] [&::-moz-progress-bar]:rounded-lg [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-value]:bg-primary"
       }
+    />
+  );
+};
+
+interface FlickLineTimeProgressProps {
+  id: string;
+  className?: string;
+}
+
+export const FlickLineTimeProgress = (props: FlickLineTimeProgressProps) => {
+  return (
+    <uncontrolled.progress
+      id={props.id}
+      value={lineProgressValueAtom}
+      max={lineProgressMaxAtom}
+      atomStore={store}
+      className={cn(
+        "h-[6px] w-full [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-value]:bg-primary",
+        props.className,
+      )}
     />
   );
 };

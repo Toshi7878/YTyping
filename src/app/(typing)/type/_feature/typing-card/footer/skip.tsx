@@ -15,6 +15,10 @@ const skipGuideMessageAtom = atom<string>((get) => {
   const activeSkipGuideKey = get(skipKeyAtom);
   return activeSkipGuideKey ? `Type ${activeSkipGuideKey} key to Skip. ⏩` : "";
 });
+const flickSkipGuideMessageAtom = atom<string>((get) => {
+  const activeSkipGuideKey = get(skipKeyAtom);
+  return activeSkipGuideKey ? "Skip. ⏩" : "";
+});
 
 export const getActiveSkipKey = () => store.get(skipKeyAtom);
 export const setActiveSkipKey = (value: SkipKey) => store.set(skipKeyAtom, value);
@@ -24,6 +28,14 @@ export const SkipGuideMessage = () => {
   return (
     <uncontrolled.div className="opacity-60" id="skip_guide" atomStore={store}>
       {skipGuideMessageAtom}
+    </uncontrolled.div>
+  );
+};
+
+export const FlickSkipGuideMessage = () => {
+  return (
+    <uncontrolled.div className="text-xs opacity-60" id="skip_guide" atomStore={store}>
+      {flickSkipGuideMessageAtom}
     </uncontrolled.div>
   );
 };

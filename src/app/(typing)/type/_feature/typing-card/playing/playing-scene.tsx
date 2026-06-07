@@ -13,7 +13,7 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
-import { getPlayingInputMode, getTypingWord, setTypingWord, usePlayingInputModeState } from "../../atoms/typing-word";
+import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
@@ -47,9 +47,43 @@ interface PlayingProps {
 }
 
 export const PlayingScene = ({ className }: PlayingProps) => {
-  const scene = useSceneState();
-  const playingInputMode = usePlayingInputModeState();
   const activeElement = useActiveElement();
+  usePlayingSetup();
+
+  // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
+  useEffect(() => {
+    const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
+
+    if (!isTextInput) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeElement]);
+
+  return (
+    <div
+      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
+      id="typing_scene"
+      onTouchStart={() => {
+        if (getActiveSkipKey()) {
+          const count = getLineCount();
+          skipLine(count);
+        }
+      }}
+    >
+      <TypingWords />
+      <Lyrics />
+      <NextLyrics />
+    </div>
+  );
+};
+
+export const usePlayingSetup = () => {
+  const scene = useSceneState();
+
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
@@ -88,36 +122,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       resetCurrentLine(map);
     }
   }, [scene, map]);
-
-  // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
-  useEffect(() => {
-    const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
-
-    if (!isTextInput) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [activeElement]);
-
-  return (
-    <div
-      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
-      id="typing_scene"
-      onTouchStart={() => {
-        if (getActiveSkipKey()) {
-          const count = getLineCount();
-          skipLine(count);
-        }
-      }}
-    >
-      {playingInputMode !== "flick" && <TypingWords />}
-      <Lyrics />
-      <NextLyrics />
-    </div>
-  );
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {

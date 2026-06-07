@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
 import { cn } from "@/utils/cn";
 import { useBuiltMapState } from "../atoms/built-map";
 import { store } from "../atoms/store";
+import { playingInputModeAtom } from "../atoms/typing-word";
 import { useYTStartedState } from "../youtube/youtube-player";
 import { EternalCustomStyle, LineCustomStyle } from "./custom-style";
 import { EndScene } from "./end/end-scene";
@@ -46,10 +47,16 @@ const sceneGroupAtom = atom((get) => {
   }
 });
 
+const isFlickPlayingAtom = atom((get) => {
+  const scene = get(sceneAtom);
+  return (scene === "play" || scene === "practice") && get(playingInputModeAtom) === "flick";
+});
+
 export const useSceneState = () => useAtomValue(sceneAtom);
 export const getScene = () => store.get(sceneAtom);
 export const useSceneGroupState = () => useAtomValue(sceneGroupAtom);
 export const getSceneGroup = () => store.get(sceneGroupAtom);
+export const useIsFlickPlaying = () => useAtomValue(isFlickPlayingAtom);
 
 export const setScene = (value: Extract<SceneType, "play" | "practice" | "replay">) => store.set(sceneAtom, value);
 export const transitionToEndScene = (currentScene: SceneType) => {
@@ -70,6 +77,9 @@ export const transitionToEndScene = (currentScene: SceneType) => {
 
 export const TypingCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
+  const isFlickPlaying = useIsFlickPlaying();
+  if (isFlickPlaying) return null;
+
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />

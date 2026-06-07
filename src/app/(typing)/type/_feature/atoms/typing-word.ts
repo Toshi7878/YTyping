@@ -13,7 +13,7 @@ import { getLineCount } from "../typing-card/playing/playing-scene";
 import { getBuiltMap } from "./built-map";
 import { store } from "./store";
 
-const playingInputModeAtom = atom<InputMode>("roma");
+export const playingInputModeAtom = atom<InputMode>("roma");
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom);
 export const getPlayingInputMode = () => store.get(playingInputModeAtom);

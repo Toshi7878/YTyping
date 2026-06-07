@@ -51,3 +51,18 @@ export const NextLyrics = () => {
     </div>
   );
 };
+
+export const FlickNextLyrics = () => {
+  const nextLyrics = useAtomValue(nextLyricsAtom);
+  return (
+    <div
+      id="flick_next_lyrics_kpm"
+      className={cn("flex flex-1 items-center font-[system-ui] text-card-foreground text-xs opacity-60")}
+    >
+      NEXT: {parse(nextLyrics)}
+      <ruby className="invisible">
+        あ<rt>あ</rt>
+      </ruby>
+    </div>
+  );
+};
