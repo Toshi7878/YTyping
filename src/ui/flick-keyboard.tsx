@@ -198,7 +198,7 @@ function getDisplayFace(k: FlickKey, activeMode: FlickMode, caps: boolean): stri
 }
 
 function getCellTextClass(k: FlickKey, activeMode: FlickMode): string {
-  if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? "text-[17px]" : "text-xl";
+  if (activeMode === "kana") return k.id === "mod" || k.id === "kut" ? "text-[19px]" : "text-[24px]";
   if (activeMode === "english") return LETTER_KEY_IDS.has(k.id) ? "text-[17px]" : "text-sm";
   return k.id === "nbr" || k.id === "npu" ? "text-[15px]" : "text-[22px]";
 }
@@ -348,7 +348,7 @@ function ContentCell({
         )}
 
         {k.sub && (
-          <span className="relative bottom-1.5 flex gap-[3px] font-normal text-[9px] tracking-normal opacity-[0.55]">
+          <span className="relative bottom-1.5 flex gap-[3px] font-normal text-[9px] tracking-normal">
             {[...k.sub].map((ch) => (
               <span key={ch}>{ch}</span>
             ))}
@@ -765,7 +765,7 @@ function FlickKeyboard({
 
       {/* key grid */}
       <div className="pb-3.5">
-        <div ref={gridRef} className="relative m-[-3px] grid grid-cols-5 grid-rows-[repeat(4,47px)]">
+        <div ref={gridRef} className="relative m-[-3px] grid grid-cols-5 grid-rows-[repeat(4,53px)]">
           {/* left column row 1 */}
           {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "" })}
           {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <></> })}
