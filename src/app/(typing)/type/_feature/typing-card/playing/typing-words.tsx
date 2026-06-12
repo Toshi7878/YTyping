@@ -190,7 +190,9 @@ export const FlickTypingWord = () => {
         isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
       />
       {pendingModConversion && (
-        <span className="absolute -top-5 right-0 text-sm text-word-nextChar opacity-80">→{pendingModConversion}</span>
+        <span className="absolute -top-5 right-0 text-sm text-word-nextChar opacity-80">
+          →{pendingModConversion.candidates[pendingModConversion.candidateIndex]}
+        </span>
       )}
     </div>
   );

@@ -117,8 +117,8 @@ importers:
         specifier: ^1.2.14
         version: 1.2.14
       lyrics-typing-engine:
-        specifier: ^2.0.5
-        version: 2.0.5
+        specifier: ^2.1.0
+        version: 2.1.0
       motion:
         specifier: ^12.38.0
         version: 12.38.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -3947,8 +3947,8 @@ packages:
   lyrics-ime-typing-engine@1.2.14:
     resolution: {integrity: sha512-BO7p8nygBgoP6mcb2WKQoToL7RAklcKZfX40KcKqh6kF5w8sHjvBbMr31ijnrM1GwXPMGUwWF3nPeZxLFa4xqw==}
 
-  lyrics-typing-engine@2.0.5:
-    resolution: {integrity: sha512-F2mlwU7lEOc6goGjwpPle0z3NskxylljD0M6qsEdLzm+lRy2D0oFi/gcjl8SmvbFimlhorMe5zeWUtxGKxF2qg==}
+  lyrics-typing-engine@2.1.0:
+    resolution: {integrity: sha512-CoxjOE1qhrJn1t/OEMdTN/mSFbMp8+ebZRz4Ut27ZJqPt6bk3BLQkD/I90rbP9bhqqbGbR6UteG9htCi2WT0Yg==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -8574,7 +8574,7 @@ snapshots:
 
   lyrics-ime-typing-engine@1.2.14: {}
 
-  lyrics-typing-engine@2.0.5: {}
+  lyrics-typing-engine@2.1.0: {}
 
   magic-string@0.30.21:
     dependencies:

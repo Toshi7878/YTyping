@@ -1,7 +1,7 @@
 "use client";
 
 import { atom, type SetStateAction } from "jotai";
-import { createTypingWord, executeTypingInput, handleTyping, isTypingKey } from "lyrics-typing-engine";
+import { createTypingWord, executeTypingInput, handleTyping, isTypingKey, type TypingWord } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
@@ -14,6 +14,7 @@ import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
 import {
+  getFlickPendingModConversion,
   getPlayingInputMode,
   getTypingWord,
   setFlickPendingModConversion,
@@ -209,19 +210,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
   }
 };
 
-// modキーは濁点/半濁点記号(゛゜)に加え、小文字かな(っ/ゃ等)や濁音/半濁音への変換も担うため、
-// 期待される次のかながMOD_CYCLEの変換先(ベース文字以外)に含まれる場合も入力対象とみなす
-const isModInputtableKana = (kana: string) =>
-  kana === "゛" || kana === "゜" || Object.values(MOD_CYCLE).some((variants) => variants.indexOf(kana) > 0);
-
-// 濁音/半濁音は清音(例: か)を入力した時点でエンジン側がミスにせず変換待ち状態へ進めてくれるが、
-// 小文字かな(例: ゃ)には清音側(例: や)からの変換待ち状態が無いため、
-// その清音入力をmod変換前の準備動作とみなしてミス判定をスキップする
-const isModBaseInput = (inputChar: string, nextKana: string) => {
-  const variants = MOD_CYCLE[inputChar];
-  return !!variants && variants.indexOf(nextKana) > 0;
-};
-
 export const handleFlickInput = (e: FlickEvent) => {
   const isPaused = getIsPaused();
   const scene = getScene();
@@ -229,95 +217,122 @@ export const handleFlickInput = (e: FlickEvent) => {
   if (!shouldAcceptTyping) return;
 
   const typingWord = getTypingWord();
-  if (!typingWord.nextChunk.kana) return;
+  const nextKana = typingWord.nextChunk.kana[0];
+  if (!nextKana) return;
 
   const map = getBuiltMap();
   if (!map) return;
-
-  let inputChar: string | null = null;
-  let isPendingModBase = false;
-
-  const nextKana = typingWord.nextChunk.kana[0];
-
-  if (e.type === "tap") {
-    if (e.key.type === "mod") {
-      if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
-    } else if (e.key.type !== "caps") {
-      if (nextKana && isModBaseInput(e.key.c, nextKana)) {
-        isPendingModBase = true;
-      } else {
-        inputChar = e.key.c;
-      }
-    }
-  } else if (e.type === "flick") {
-    if (nextKana && isModBaseInput(e.char, nextKana)) {
-      isPendingModBase = true;
-    } else {
-      inputChar = e.char;
-    }
-  } else if (e.type === "mod") {
-    if (nextKana && isModInputtableKana(nextKana)) inputChar = nextKana;
-  }
-
-  setFlickPendingModConversion(isPendingModBase && nextKana ? nextKana : null);
-
-  if (!inputChar) return;
 
   const typingOptions = getTypingOptions();
   const { otherStatus } = getReplayRankingResult() ?? {};
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
 
-  const { nextTypingWord, successKey, failKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
-    inputChar,
-    inputMode: "kana",
-    typingWord,
-    isCaseSensitive,
-  });
+  const applyTypingInput = (inputChar: string, currentWord: TypingWord): TypingWord => {
+    const { nextTypingWord, successKey, failKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
+      inputChar,
+      inputMode: "kana",
+      typingWord: currentWord,
+      isCaseSensitive,
+    });
 
-  if (successKey) {
-    const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
-    if (isCompleted) {
-      triggerTypeCompletedSound();
-    } else {
-      triggerTypeSound();
-    }
-    setTypingWord(nextTypingWord);
-    updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
-    updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
-    dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
-
-    if (isCompleted) {
-      triggerTypeCompletedSound();
-
-      if (!isPaused) {
-        updateTypingTime({ constantLineTime });
+    if (successKey) {
+      const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
+      if (isCompleted) {
+        triggerTypeCompletedSound();
+      } else {
+        triggerTypeSound();
       }
+      setTypingWord(nextTypingWord);
+      updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
+      updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
+      dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
 
-      const count = getLineCount();
-      if (hasLineResultImproved(count)) {
-        saveLineResult(count, constantLineTime);
-      }
+      if (isCompleted) {
+        triggerTypeCompletedSound();
 
-      dispatchTypeEvent("type:lineCompleted", { constantLineTime });
+        if (!isPaused) {
+          updateTypingTime({ constantLineTime });
+        }
 
-      if (scene === "practice") {
-        recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
+        const count = getLineCount();
+        if (hasLineResultImproved(count)) {
+          saveLineResult(count, constantLineTime);
+        }
 
-        if (isPaused) {
-          const newCurrentLine = map.lines[count];
-          if (!newCurrentLine) return;
-          setTypingWord(createTypingWord(newCurrentLine));
+        dispatchTypeEvent("type:lineCompleted", { constantLineTime });
+
+        if (scene === "practice") {
+          recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
+
+          if (isPaused) {
+            const newCurrentLine = map.lines[count];
+            if (newCurrentLine) {
+              setTypingWord(createTypingWord(newCurrentLine));
+            }
+          }
         }
       }
+    } else if (failKey && currentWord.correct.roma) {
+      const { constantLineTime } = getRemainLineTime();
+      triggerMissSound();
+      updateMissStatus();
+      updateMissSubstatus({ constantLineTime, failKey });
+      dispatchTypeEvent("type:miss", { failKey });
     }
-  } else if (failKey) {
-    if (!typingWord.correct.roma) return;
-    const { constantLineTime } = getRemainLineTime();
-    triggerMissSound();
-    updateMissStatus();
-    updateMissSubstatus({ constantLineTime, failKey });
-    dispatchTypeEvent("type:miss", { failKey });
+
+    return nextTypingWord;
+  };
+
+  const pending = getFlickPendingModConversion();
+
+  // modキーのタップ: 変換候補(MOD_CYCLEの並び)を1つずつ巡回表示する。エンジンへはまだ送信しない
+  if (e.type === "tap" && e.key.type === "mod") {
+    if (pending) {
+      setFlickPendingModConversion({
+        ...pending,
+        candidateIndex: (pending.candidateIndex + 1) % pending.candidates.length,
+      });
+    }
+    return;
   }
+
+  // modキーのフリック: 巡回中の候補を確定する
+  if (e.type === "modConfirm") {
+    if (pending) {
+      const selected = pending.candidates[pending.candidateIndex];
+      // 候補が実際の正解と一致する場合のみエンジンへ入力する。
+      // 一致しない場合はミスにせず、巡回をやり直せるようそのまま待機する
+      if (selected === nextKana) {
+        applyTypingInput(selected, typingWord);
+        setFlickPendingModConversion(null);
+      }
+    }
+    return;
+  }
+
+  let baseChar: string | null = null;
+  if (e.type === "tap") {
+    if (e.key.type !== "caps") baseChar = e.key.c;
+  } else if (e.type === "flick") {
+    baseChar = e.char;
+  }
+
+  if (baseChar === null) {
+    if (pending) setFlickPendingModConversion(null);
+    return;
+  }
+
+  // 入力した文字がmod変換のベースであり、期待される次のかなが変換候補に含まれる場合は、
+  // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)
+  const candidates = MOD_CYCLE[baseChar];
+  if (candidates && nextKana !== baseChar && candidates.includes(nextKana)) {
+    setFlickPendingModConversion({ candidates, candidateIndex: 0 });
+    return;
+  }
+
+  if (pending) setFlickPendingModConversion(null);
+
+  applyTypingInput(baseChar, typingWord);
 };
 
 const sendTypingStats = (stats: TypingStats) => {

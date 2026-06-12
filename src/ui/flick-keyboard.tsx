@@ -29,6 +29,7 @@ type FlickEvent =
   | { type: "space" }
   | { type: "delete" }
   | { type: "mod" }
+  | { type: "modConfirm" }
   | { type: "modeSwitch"; to: FlickMode };
 
 interface FlickKeyboardProps {
@@ -689,6 +690,10 @@ function FlickKeyboard({
       const { key, dir } = s;
       if (key.type === "caps") {
         setCaps((c) => !c);
+        return;
+      }
+      if (key.type === "mod" && dir !== "c") {
+        onEvent({ type: "modConfirm" });
         return;
       }
       const applyCase = (ch: string) => (activeMode === "english" ? (caps ? ch.toUpperCase() : ch.toLowerCase()) : ch);

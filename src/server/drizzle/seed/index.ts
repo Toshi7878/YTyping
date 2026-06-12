@@ -1,9 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
 import { sql as rawSql } from "drizzle-orm";
-import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
 import {
@@ -15,34 +13,8 @@ import {
   type thumbnailQuality,
 } from "../schema/map";
 import { users } from "../schema/user/user";
-
-const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
-
-const isLocalSupabase = supabaseUrl.includes("localhost") || supabaseUrl.includes("127.0.0.1");
-
-if (!isLocalSupabase) {
-  throw new Error(
-    "This seed script can only be run in local development environment with local Supabase. " +
-      "Current Supabase URL: " +
-      env.NEXT_PUBLIC_SUPABASE_URL +
-      ". " +
-      "Expected: localhost or 127.0.0.1. " +
-      "Do not run this on production or remote Supabase environments.",
-  );
-}
-
-const serviceRoleKey = env.SUPABASE_SECRET_KEY;
-if (!serviceRoleKey) {
-  throw new Error(
-    "SUPABASE_SECRET_KEY is required for seeding. " +
-      "Please set it in your .env file. " +
-      "You can find the service_role key in 'pnpm db:status' output.",
-  );
-}
-
-console.log("🔧 Running seed script with local Supabase:", supabaseUrl);
-
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+import { seedBucketPolicy } from "./apply-bucket-policy";
+import { supabaseAdmin } from "./supabase-admin";
 
 // CSV パーサー
 function parseCSV(csvText: string): Record<string, string>[] {
@@ -115,15 +87,7 @@ async function main() {
   const mapJsonDir = join(__dirname, "map-json");
   const sqlDir = join(__dirname, "sql");
 
-  console.log("\n📦 Creating Supabase Storage bucket...");
-  await supabaseAdmin.storage.createBucket(SUPABASE_PUBLIC_BUCKET, {
-    public: true,
-  });
-
-  const policyFilePath = join(sqlDir, "apply-bucket-policy.sql");
-  const policySql = await readFile(policyFilePath, "utf-8");
-  const cleanedSql = policySql.replace(/public-bucket-name/g, SUPABASE_PUBLIC_BUCKET);
-  await db.execute(rawSql.raw(cleanedSql));
+  await seedBucketPolicy(sqlDir);
 
   // 2. Users テーブルにシードデータを挿入
   console.log("\n👥 Seeding users table...");
