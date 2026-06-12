@@ -32,11 +32,9 @@ export const getTypingWord = () => store.get(typingWordAtom);
 export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
 // フリック入力でmod変換待ちになっている間の状態。
-// candidates: MOD_CYCLEによる変換候補一覧(例: [は, ば, ぱ])
-// candidateIndex: modキーのタップで巡回中の候補位置
+// target: modキーの操作で確定すべき変換先のかな(例: が)
 export interface FlickPendingModConversion {
-  candidates: string[];
-  candidateIndex: number;
+  target: string;
 }
 
 const flickPendingModConversionAtom = atom<FlickPendingModConversion | null>(null);

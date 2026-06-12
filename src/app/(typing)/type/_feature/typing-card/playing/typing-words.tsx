@@ -191,7 +191,7 @@ export const FlickTypingWord = () => {
       />
       {pendingModConversion && (
         <span className="absolute -top-5 right-0 text-sm text-word-nextChar opacity-80">
-          →{pendingModConversion.candidates[pendingModConversion.candidateIndex]}
+          →{pendingModConversion.target}
         </span>
       )}
     </div>

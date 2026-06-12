@@ -285,27 +285,11 @@ export const handleFlickInput = (e: FlickEvent) => {
 
   const pending = getFlickPendingModConversion();
 
-  // modキーのタップ: 変換候補(MOD_CYCLEの並び)を1つずつ巡回表示する。エンジンへはまだ送信しない
-  if (e.type === "tap" && e.key.type === "mod") {
+  // modキーの操作(タップ/フリックいずれも): 変換待ち中の文字を確定してエンジンへ送信する
+  if ((e.type === "tap" && e.key.type === "mod") || e.type === "modConfirm") {
     if (pending) {
-      setFlickPendingModConversion({
-        ...pending,
-        candidateIndex: (pending.candidateIndex + 1) % pending.candidates.length,
-      });
-    }
-    return;
-  }
-
-  // modキーのフリック: 巡回中の候補を確定する
-  if (e.type === "modConfirm") {
-    if (pending) {
-      const selected = pending.candidates[pending.candidateIndex];
-      // 候補が実際の正解と一致する場合のみエンジンへ入力する。
-      // 一致しない場合はミスにせず、巡回をやり直せるようそのまま待機する
-      if (selected === nextKana) {
-        applyTypingInput(selected, typingWord);
-        setFlickPendingModConversion(null);
-      }
+      applyTypingInput(pending.target, typingWord);
+      setFlickPendingModConversion(null);
     }
     return;
   }
@@ -326,7 +310,7 @@ export const handleFlickInput = (e: FlickEvent) => {
   // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)
   const candidates = MOD_CYCLE[baseChar];
   if (candidates && nextKana !== baseChar && candidates.includes(nextKana)) {
-    setFlickPendingModConversion({ candidates, candidateIndex: 0 });
+    setFlickPendingModConversion({ target: nextKana });
     return;
   }
 
