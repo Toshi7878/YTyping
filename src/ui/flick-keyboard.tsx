@@ -804,7 +804,7 @@ function FlickKeyboard({
 
       {/* key grid */}
       <div className="pb-3.5">
-        <div ref={gridRef} className="relative m-[-3px] grid grid-cols-5 grid-rows-[repeat(4,50px)]">
+        <div ref={gridRef} className="relative m-[-3px] grid grid-cols-5 grid-rows-[repeat(4,52px)]">
           {/* left column row 1 */}
           {activeMode === "kana" && fnCell({ id: "mod2", col: 1, row: 1, label: "" })}
           {activeMode !== "kana" && fnCell({ id: "fn1", col: 1, row: 1, icon: <></> })}
