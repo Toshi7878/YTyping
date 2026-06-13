@@ -40,6 +40,7 @@ interface FlickKeyboardProps {
   threshold?: number;
   mode?: FlickMode;
   isLineStart?: boolean;
+  isModPending?: boolean;
   candidateBar?: React.ReactNode;
 }
 
@@ -305,6 +306,7 @@ interface ContentCellProps {
   theme: CellTheme;
   isPressed: boolean;
   dimmed: boolean;
+  highlighted: boolean;
   onPointerDown: (e: React.PointerEvent) => void;
 }
 
@@ -317,6 +319,7 @@ function ContentCell({
   theme,
   isPressed,
   dimmed,
+  highlighted,
   onPointerDown,
 }: ContentCellProps) {
   const [col, row] = pos;
@@ -334,7 +337,7 @@ function ContentCell({
           cellShellVariants({ theme }),
           "flex-col gap-px tracking-[0.5px] [font-variant-ligatures:none]",
           getCellTextClass(k, activeMode),
-          contentCellSurfaceVariants({ theme, pressed: isPressed }),
+          highlighted ? "bg-[#2E92FA] text-white" : contentCellSurfaceVariants({ theme, pressed: isPressed }),
           dimmed && "opacity-50",
         )}
         style={{
@@ -614,6 +617,7 @@ function FlickKeyboard({
   threshold = 26,
   mode,
   isLineStart = false,
+  isModPending = false,
   candidateBar,
 }: FlickKeyboardProps) {
   const isDark = theme === "dark";
@@ -818,6 +822,7 @@ function FlickKeyboard({
                 theme={theme}
                 isPressed={pressedKeyIdSet.has(k.id) || presses.some((p) => p.key.id === k.id)}
                 dimmed={presses.length > 0 && !pressedKeyIdSet.has(k.id)}
+                highlighted={k.id === "mod" && isModPending}
                 onPointerDown={(e) => onDown(e, k)}
               />
             ))}

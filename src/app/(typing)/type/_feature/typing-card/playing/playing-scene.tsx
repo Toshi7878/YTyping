@@ -310,6 +310,7 @@ export const handleFlickInput = (e: FlickEvent) => {
   // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)
   const candidates = MOD_CYCLE[baseChar];
   if (candidates && nextKana !== baseChar && candidates.includes(nextKana)) {
+    triggerTypeSound();
     setFlickPendingModConversion({ target: nextKana });
     return;
   }
