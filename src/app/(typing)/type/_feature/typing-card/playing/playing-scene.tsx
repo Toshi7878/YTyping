@@ -303,6 +303,8 @@ export const handleFlickInput = (e: FlickEvent) => {
     if (e.key.type !== "caps") baseChar = e.key.c;
   } else if (e.type === "flick") {
     baseChar = e.char;
+  } else if (e.type === "space") {
+    baseChar = " ";
   }
 
   if (baseChar === null) {
