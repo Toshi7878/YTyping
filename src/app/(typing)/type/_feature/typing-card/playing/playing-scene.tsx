@@ -228,8 +228,12 @@ export const handleFlickInput = (e: FlickEvent) => {
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
 
   const applyTypingInput = (inputChar: string, currentWord: TypingWord): TypingWord => {
+    // kanaInputは大文字小文字を区別しない場合、期待文字を小文字化して比較するため、
+    // フリック入力側(英語配列はデフォルトで大文字)も合わせて小文字化する
+    const normalizedChar = isCaseSensitive ? inputChar : inputChar.toLowerCase();
+
     const { nextTypingWord, successKey, failKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
-      inputChar,
+      inputChar: normalizedChar,
       inputMode: "kana",
       typingWord: currentWord,
       isCaseSensitive,
