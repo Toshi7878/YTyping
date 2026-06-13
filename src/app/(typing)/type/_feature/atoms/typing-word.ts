@@ -43,13 +43,6 @@ export const getFlickPendingModConversion = () => store.get(flickPendingModConve
 export const setFlickPendingModConversion = (value: FlickPendingModConversion | null) =>
   store.set(flickPendingModConversionAtom, value);
 
-const isLineStartAtom = atom((get) => {
-  const { correct } = get(typingWordAtom);
-  return correct.kana.length === 0 && correct.roma.length === 0;
-});
-
-export const useIsLineStartState = () => useAtomValue(isLineStartAtom);
-
 const mainWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;
   trackRef: HTMLDivElement;
