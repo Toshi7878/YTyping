@@ -238,6 +238,36 @@ const NUMBER_POS: Record<string, [number, number]> = {
   npu: [4, 4],
 };
 
+// ── Character → mode lookup ───────────────────────────────────────────────
+
+function collectChars(keys: FlickKey[]): Set<string> {
+  const chars = new Set<string>();
+  for (const k of keys) {
+    for (const ch of [k.c, k.l, k.u, k.r, k.d]) {
+      if (ch) chars.add(ch);
+    }
+    k.toggle?.forEach((ch) => {
+      chars.add(ch);
+    });
+  }
+  return chars;
+}
+
+const KANA_CHARS = new Set<string>([...collectChars(FLICK_KEYS), ...Object.values(MOD_CYCLE).flat()]);
+const NUMBER_CHARS = collectChars(NUMBER_KEYS);
+const ENGLISH_CHARS = new Set<string>(
+  [...collectChars(ENGLISH_KEYS)].flatMap((ch) => [ch.toLowerCase(), ch.toUpperCase()]),
+);
+
+// 次に入力すべき文字を含む配列(かな/数字記号/英語)を判定する。いずれにも該当しない場合は英語配列を既定とする
+function getFlickModeForChar(char: string | undefined): FlickMode {
+  if (!char) return "english";
+  if (KANA_CHARS.has(char)) return "kana";
+  if (NUMBER_CHARS.has(char)) return "number";
+  if (ENGLISH_CHARS.has(char)) return "english";
+  return "english";
+}
+
 // ── Grid position helpers ──────────────────────────────────────────────────
 
 const COL_START: Record<number, string> = {
@@ -867,4 +897,4 @@ function FlickKeyboard({
 }
 
 export type { FlickEvent, FlickKey, FlickKeyboardProps, FlickMode };
-export { applyMod, dirOf, FLICK_KEYS, FlickKeyboard, MOD_CYCLE };
+export { applyMod, dirOf, FLICK_KEYS, FlickKeyboard, getFlickModeForChar, MOD_CYCLE };

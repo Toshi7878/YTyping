@@ -21,7 +21,7 @@ import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
-import { useFlickPendingModConversion } from "./atoms/typing-word";
+import { useFlickModeState, useFlickPendingModConversion } from "./atoms/typing-word";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
@@ -139,13 +139,14 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
 const FlickKeyboardContainer = () => {
   usePlayingSetup();
   const pendingModConversion = useFlickPendingModConversion();
+  const flickMode = useFlickModeState();
   const { resolvedTheme } = useTheme();
   const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
       <FlickKeyboard
-        mode="kana"
+        mode={flickMode}
         onEvent={handleFlickInput}
         theme={flickTheme}
         isLineStart={!!pendingModConversion}

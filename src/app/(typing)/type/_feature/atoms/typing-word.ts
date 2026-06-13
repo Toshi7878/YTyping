@@ -7,6 +7,7 @@ import {
   replaceAllSpaceWithThreePerEmSpace,
   type TypingWord,
 } from "lyrics-typing-engine";
+import { type FlickMode, getFlickModeForChar } from "@/ui/flick-keyboard";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { getTypingOptions } from "../tabs/setting/popover";
 import { getLineCount } from "../typing-card/playing/playing-scene";
@@ -42,6 +43,10 @@ export const useFlickPendingModConversion = () => useAtomValue(flickPendingModCo
 export const getFlickPendingModConversion = () => store.get(flickPendingModConversionAtom);
 export const setFlickPendingModConversion = (value: FlickPendingModConversion | null) =>
   store.set(flickPendingModConversionAtom, value);
+
+// 次に入力すべき文字を含む配列(かな/数字記号/英語)に応じて表示するフリックキーボードを切り替える
+const flickModeAtom = atom<FlickMode>((get) => getFlickModeForChar(get(typingWordAtom).nextChunk.kana[0]));
+export const useFlickModeState = () => useAtomValue(flickModeAtom);
 
 const mainWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;
