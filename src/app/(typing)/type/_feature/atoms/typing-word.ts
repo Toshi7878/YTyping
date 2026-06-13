@@ -45,13 +45,22 @@ export const setFlickPendingModConversion = (value: FlickPendingModConversion | 
   store.set(flickPendingModConversionAtom, value);
 
 // 次に入力すべき文字を含む配列(かな/数字記号/英語)に応じて表示するフリックキーボードを切り替える。
-// 行が完了して次に入力すべき文字が存在しない場合は、次の行の最初の文字を基準に切り替える
+// 行が完了して次に入力すべき文字が存在しない場合は、次の行の最初の文字を基準に切り替える。
+// 次の行も空行の場合は現在の配列を維持する
+let prevFlickMode: FlickMode = "english";
+
 const flickModeAtom = atom<FlickMode>((get) => {
   const nextChar = get(typingWordAtom).nextChunk.kana[0];
-  if (nextChar) return getFlickModeForChar(nextChar);
+  if (nextChar) {
+    prevFlickMode = getFlickModeForChar(nextChar);
+    return prevFlickMode;
+  }
 
   const nextLineFirstChar = getBuiltMap()?.lines[getLineCount() + 1]?.wordChunks[0]?.kana[0];
-  return getFlickModeForChar(nextLineFirstChar);
+  if (nextLineFirstChar) {
+    prevFlickMode = getFlickModeForChar(nextLineFirstChar);
+  }
+  return prevFlickMode;
 });
 export const useFlickModeState = () => useAtomValue(flickModeAtom);
 
