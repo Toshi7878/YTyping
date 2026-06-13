@@ -44,8 +44,15 @@ export const getFlickPendingModConversion = () => store.get(flickPendingModConve
 export const setFlickPendingModConversion = (value: FlickPendingModConversion | null) =>
   store.set(flickPendingModConversionAtom, value);
 
-// 次に入力すべき文字を含む配列(かな/数字記号/英語)に応じて表示するフリックキーボードを切り替える
-const flickModeAtom = atom<FlickMode>((get) => getFlickModeForChar(get(typingWordAtom).nextChunk.kana[0]));
+// 次に入力すべき文字を含む配列(かな/数字記号/英語)に応じて表示するフリックキーボードを切り替える。
+// 行が完了して次に入力すべき文字が存在しない場合は、次の行の最初の文字を基準に切り替える
+const flickModeAtom = atom<FlickMode>((get) => {
+  const nextChar = get(typingWordAtom).nextChunk.kana[0];
+  if (nextChar) return getFlickModeForChar(nextChar);
+
+  const nextLineFirstChar = getBuiltMap()?.lines[getLineCount() + 1]?.wordChunks[0]?.kana[0];
+  return getFlickModeForChar(nextLineFirstChar);
+});
 export const useFlickModeState = () => useAtomValue(flickModeAtom);
 
 const mainWordElementsAtom = atomWithReset<{
