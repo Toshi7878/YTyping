@@ -149,7 +149,7 @@ const FlickKeyboardContainer = () => {
         mode={flickMode}
         onEvent={handleFlickInput}
         theme={flickTheme}
-        isLineStart={!!pendingModConversion}
+        isLineStart={!pendingModConversion}
         isModPending={!!pendingModConversion}
         candidateBar={
           <div
