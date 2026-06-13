@@ -811,33 +811,14 @@ function FlickKeyboard({
           {/* left column row 2 */}
           {fnCell({ id: "undo", col: 1, row: 2, icon: <></> })}
           {/* left column rows 3-4: mode switch */}
-          {activeMode === "kana" &&
-            fnCell({
-              id: "sw-eng",
-              col: 1,
-              row: 3,
-              rowSpan: 2,
-              label: "ABC",
-              action: { type: "modeSwitch", to: "english" },
-            })}
-          {activeMode === "english" &&
-            fnCell({
-              id: "sw-num",
-              col: 1,
-              row: 3,
-              rowSpan: 2,
-              label: "☆123",
-              action: { type: "modeSwitch", to: "number" },
-            })}
-          {activeMode === "number" &&
-            fnCell({
-              id: "sw-kana",
-              col: 1,
-              row: 3,
-              rowSpan: 2,
-              label: "あいう",
-              action: { type: "modeSwitch", to: "kana" },
-            })}
+          {fnCell({
+            id: "sw-eng",
+            col: 1,
+            row: 3,
+            rowSpan: 2,
+            label: "",
+            action: { type: "modeSwitch", to: "english" },
+          })}
           {/* content keys */}
           {activeKeys
             .filter((k) => activePosMap[k.id])
