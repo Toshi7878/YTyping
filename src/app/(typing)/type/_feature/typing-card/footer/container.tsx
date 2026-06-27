@@ -7,6 +7,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useSession } from "@/auth/client";
 import { useReadyInputMode } from "@/store/ready-input-mode";
 import { useTRPC } from "@/trpc/provider";
+import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "@/ui/button-with-kbd";
 import { LabeledCheckbox } from "@/ui/labeled-items";
@@ -182,5 +183,9 @@ const DifficultyInfo = () => {
   const isRoma = inputMode === "roma";
   const maxKpm = Math.round((isRoma ? difficulty.romaKpmMax : difficulty.kanaKpmMax) * minMediaSpeed);
 
-  return <div className="opacity-70">最大kpm: {maxKpm}</div>;
+  return (
+    <Badge variant="accent-light" size="md">
+      最大kpm: {maxKpm}
+    </Badge>
+  );
 };
