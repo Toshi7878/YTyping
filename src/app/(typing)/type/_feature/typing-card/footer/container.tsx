@@ -184,7 +184,7 @@ const DifficultyInfo = () => {
   const maxKpm = Math.round((isRoma ? difficulty.romaKpmMax : difficulty.kanaKpmMax) * minMediaSpeed);
 
   return (
-    <Badge variant="accent-light" size="md">
+    <Badge variant="accent-light" size="md" className="text-lg">
       最大kpm: {maxKpm}
     </Badge>
   );
