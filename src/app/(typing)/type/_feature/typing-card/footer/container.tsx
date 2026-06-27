@@ -22,8 +22,9 @@ import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";
 import { getScene, useSceneGroupState, useSceneState } from "../typing-card";
+import { DifficultyInfo } from "./difficulty-info";
 
-export const FooterButtons = () => {
+export const TypingCardFooter = () => {
   const isYTStarted = useYTStartedState();
   const scene = useSceneState();
   const sceneGroup = useSceneGroupState();
@@ -39,6 +40,7 @@ export const FooterButtons = () => {
     >
       {isReady && (
         <div className="flex w-full items-center justify-between">
+          <DifficultyInfo />
           <LabeledCheckbox
             containerClassName={!isStyledMap ? "invisible" : ""}
             label="譜面の装飾を無効化"

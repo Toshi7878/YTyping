@@ -9,7 +9,7 @@ import { playingInputModeAtom } from "../atoms/typing-word";
 import { useYTStartedState } from "../youtube/youtube-player";
 import { EternalCustomStyle, LineCustomStyle } from "./custom-style";
 import { EndScene } from "./end/end-scene";
-import { FooterButtons } from "./footer/buttons";
+import { TypingCardFooter } from "./footer/container";
 import { PlaybackTimeDisplay } from "./footer/playback-time";
 import { SkipGuideMessage } from "./footer/skip";
 import { TotalTimeProgress } from "./footer/total-time-progress";
@@ -167,7 +167,7 @@ const GameCardFooter = ({ className }: { className?: string }) => {
         <PlaybackTimeDisplay />
       </section>
       <TotalTimeProgress id="total_progress" />
-      <FooterButtons />
+      <TypingCardFooter />
     </CardFooter>
   );
 };

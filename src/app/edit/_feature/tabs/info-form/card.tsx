@@ -518,8 +518,8 @@ const useOnSubmit = (form: FormType) => {
     const mapDifficulty = {
       romaKpmMedian: Math.floor(speedDifficulty.median.r),
       romaKpmMax: Math.floor(speedDifficulty.max.r),
-      kanaKpmMedian: Math.floor(speedDifficulty.median.r),
-      kanaKpmMax: Math.floor(speedDifficulty.max.r),
+      kanaKpmMedian: Math.floor(speedDifficulty.median.k),
+      kanaKpmMax: Math.floor(speedDifficulty.max.k),
       romaTotalNotes: Math.floor(totalNotes.roma),
       kanaTotalNotes: Math.floor(totalNotes.kana),
       ...chunkCounts,
