@@ -40,7 +40,7 @@ importers:
         version: 4.2.2
       '@tanstack/react-query':
         specifier: ^5.100.9
-        version: 5.100.9(react@19.2.5)
+        version: 5.101.2(react@19.2.5)
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -52,7 +52,7 @@ importers:
         version: 11.17.0(typescript@6.0.3)
       '@trpc/tanstack-react-query':
         specifier: ^11.17.0
-        version: 11.17.0(@tanstack/react-query@5.100.9(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)
+        version: 11.17.0(@tanstack/react-query@5.101.2(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)
       '@upstash/ratelimit':
         specifier: ^2.0.8
         version: 2.0.8(@upstash/redis@1.37.0)
@@ -2355,11 +2355,11 @@ packages:
   '@tailwindcss/postcss@4.2.2':
     resolution: {integrity: sha512-n4goKQbW8RVXIbNKRB/45LzyUqN451deQK0nzIeauVEqjlI49slUlgKYJM2QyUzap/PcpnS7kzSUmPb1sCRvYQ==}
 
-  '@tanstack/query-core@5.100.9':
-    resolution: {integrity: sha512-SJSFw1S8+kQ0+knv/XGfrbocWoAlT7vDKsSImtLx3ZPQmEcR46hkDjLSvynSy25N8Ms4tIEini1FuBd5k7IscQ==}
+  '@tanstack/query-core@5.101.2':
+    resolution: {integrity: sha512-hH5MLoJhF7KaIGd7q3xTXGXvslI+GYlM1Z/35aSHHWaCJWB7XvTSHYuV3eM7tw+aE0mT/xMro4M4Q9rCGHT0lw==}
 
-  '@tanstack/react-query@5.100.9':
-    resolution: {integrity: sha512-Oa44XkaI3kCNN6ME0KByU3xT3SEUNOMfZpHxL6+wFoTm+OeUFYHKdeYVe0aOXlRDm/f15sgLwEt2HDorIdW8+A==}
+  '@tanstack/react-query@5.101.2':
+    resolution: {integrity: sha512-seDkr6kzGzX1okaaTtZPtgA688CDPlXUz1C6xSg0ESqn04Vuc8tlrYms1s3de+znBqhPVxFRfpAfUf+6XvfPWg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2472,13 +2472,12 @@ packages:
     resolution: {integrity: sha512-PzsZq7VMeUQfH684GBjNQQFSDjg0uuAOu79We6yxOPMd4pIkS64HD+eoufyAhkk82nQ3qZ5I4wjWL41cLWczng==}
     hasBin: true
 
-  '@webgpu/types@0.1.69':
-    resolution: {integrity: sha512-RPmm6kgRbI8e98zSD3RVACvnuktIja5+yLgDAkTmxLr90BEwdTXRQWNLF3ETTTyH/8mKhznZuN5AveXYFEsMGQ==}
+  '@webgpu/types@0.1.71':
+    resolution: {integrity: sha512-mMy8/ODcKhab808co15eW+yN+HgXoQxRQHTiBV9Mrvl1r0ufnid7YOcI+gi4eUWSWl9ezD6TW2KXccrL8HCh2A==}
 
-  '@xmldom/xmldom@0.8.12':
-    resolution: {integrity: sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==}
+  '@xmldom/xmldom@0.8.13':
+    resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
-    deprecated: this version has critical issues, please update to the latest version
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -7106,11 +7105,11 @@ snapshots:
       postcss: 8.5.9
       tailwindcss: 4.2.2
 
-  '@tanstack/query-core@5.100.9': {}
+  '@tanstack/query-core@5.101.2': {}
 
-  '@tanstack/react-query@5.100.9(react@19.2.5)':
+  '@tanstack/react-query@5.101.2(react@19.2.5)':
     dependencies:
-      '@tanstack/query-core': 5.100.9
+      '@tanstack/query-core': 5.101.2
       react: 19.2.5
 
   '@tanstack/react-table@8.21.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
@@ -7130,9 +7129,9 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  '@trpc/tanstack-react-query@11.17.0(@tanstack/react-query@5.100.9(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)':
+  '@trpc/tanstack-react-query@11.17.0(@tanstack/react-query@5.101.2(react@19.2.5))(@trpc/client@11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3))(@trpc/server@11.17.0(typescript@6.0.3))(react@19.2.5)(typescript@6.0.3)':
     dependencies:
-      '@tanstack/react-query': 5.100.9(react@19.2.5)
+      '@tanstack/react-query': 5.101.2(react@19.2.5)
       '@trpc/client': 11.17.0(@trpc/server@11.17.0(typescript@6.0.3))(typescript@6.0.3)
       '@trpc/server': 11.17.0(typescript@6.0.3)
       react: 19.2.5
@@ -7196,9 +7195,9 @@ snapshots:
       - '@cfworker/json-schema'
       - supports-color
 
-  '@webgpu/types@0.1.69': {}
+  '@webgpu/types@0.1.71': {}
 
-  '@xmldom/xmldom@0.8.12': {}
+  '@xmldom/xmldom@0.8.13': {}
 
   accepts@2.0.0:
     dependencies:
@@ -8397,8 +8396,8 @@ snapshots:
     dependencies:
       '@pixi/colord': 2.9.6
       '@types/earcut': 3.0.0
-      '@webgpu/types': 0.1.69
-      '@xmldom/xmldom': 0.8.12
+      '@webgpu/types': 0.1.71
+      '@xmldom/xmldom': 0.8.13
       earcut: 3.0.2
       eventemitter3: 5.0.4
       gifuct-js: 2.1.2
