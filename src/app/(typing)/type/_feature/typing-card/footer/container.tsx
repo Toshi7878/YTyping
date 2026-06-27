@@ -1,9 +1,12 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useSession } from "@/auth/client";
+import { useReadyInputMode } from "@/store/ready-input-mode";
+import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "@/ui/button-with-kbd";
 import { LabeledCheckbox } from "@/ui/labeled-items";
@@ -15,6 +18,7 @@ import {
   getMinMediaSpeed,
   useIsPausedState,
   useMediaSpeedState,
+  useMinMediaSpeedState,
   useYTStartedState,
 } from "../../youtube/youtube-player";
 import { setIsDisabledMapStyled, useIsDisabledMapStyled, useIsStyledMap } from "../custom-style";
@@ -22,7 +26,6 @@ import { ReplayResultLineSheet } from "../line-result/line-result-sheet";
 import { FloatingPracticeLineCard } from "../playing/line-practice/card/floating-line-card";
 import { moveNextLine, movePrevLine } from "../playing/move-line";
 import { getScene, useSceneGroupState, useSceneState } from "../typing-card";
-import { DifficultyInfo } from "./difficulty-info";
 
 export const TypingCardFooter = () => {
   const isYTStarted = useYTStartedState();
@@ -164,4 +167,20 @@ const ResultListButton = () => {
       <ReplayResultLineSheet open={open} setOpen={setOpen} />
     </>
   );
+};
+
+const DifficultyInfo = () => {
+  const trpc = useTRPC();
+  const { id: mapId } = useParams();
+  const { data: mapInfo } = useQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
+  const inputMode = useReadyInputMode();
+  const minMediaSpeed = useMinMediaSpeedState();
+
+  const difficulty = mapInfo?.difficulty;
+  if (!difficulty) return null;
+
+  const isRoma = inputMode === "roma";
+  const maxKpm = Math.round((isRoma ? difficulty.romaKpmMax : difficulty.kanaKpmMax) * minMediaSpeed);
+
+  return <div className="opacity-70">最大kpm: {maxKpm}</div>;
 };
