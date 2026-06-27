@@ -1,14 +1,26 @@
 "use client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { atom } from "jotai";
 import { type RefObject, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
+import { getSession, useSession } from "@/auth/client";
+import { useTRPC } from "@/trpc/provider";
+import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { Table, TableBody } from "@/ui/table/table";
 import type { TypingLineResult } from "@/validator/result/result";
-import { setSelectLineIndex } from "../../../atoms/line-results";
+import {
+  setInitialLineResults,
+  setRankingResultLoaded,
+  setSelectLineIndex,
+  useIsRankingResultLoaded,
+} from "../../../atoms/line-results";
 import { store } from "../../../atoms/store";
 import { useLineFailureCountState } from "../../../atoms/substatus";
+import { getMapId } from "../../../provider";
+import { getRankingMyResult } from "../../../tabs/ranking/get-ranking-result";
 import { moveSetLine } from "../move-line";
 import { PracticeLineTableRow } from "./table-row";
 
@@ -20,8 +32,47 @@ const HOVER_EXTRA_WIDTH = 200;
 
 const LAYOUT_CALCULATE_DELAY_MS = 100;
 
+const LoadResultButton = ({ userId }: { userId: number }) => {
+  const queryClient = useQueryClient();
+  const trpc = useTRPC();
+  const [isLoading, setIsLoading] = useState(false);
+  const isRankingResultLoaded = useIsRankingResultLoaded();
+  const mapId = getMapId();
+  const { data: rankingData } = useQuery(
+    trpc.result.ranking.get.queryOptions({ mapId: mapId ?? 0 }, { enabled: !!mapId, gcTime: Infinity }),
+  );
+  const hasMyResult = rankingData?.some((result) => result.player.id === userId) ?? false;
+
+  if (!hasMyResult || isRankingResultLoaded) return null;
+
+  const handleClick = async () => {
+    const mapId = getMapId();
+    const session = getSession();
+    const resultId = mapId && session ? getRankingMyResult({ mapId, session })?.id : null;
+    if (!resultId) return;
+
+    setIsLoading(true);
+    try {
+      const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+      setInitialLineResults(resultData);
+      setRankingResultLoaded(true);
+    } catch {
+      toast.error("リザルトデータの読み込みに失敗しました");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Button variant="outline" size="xs" className="text-xs" loading={isLoading} onClick={handleClick}>
+      登録記録を読込
+    </Button>
+  );
+};
+
 export const PracticeLineSheet = () => {
   const { width, top, sheetHeightPx } = useSheetLayout();
+  const { data: session } = useSession();
   const [isHovered, setIsHovered] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +96,7 @@ export const PracticeLineSheet = () => {
   if (!width) return null;
 
   const sheetStyle = {
-    width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 30}px`,
+    width: `${(isHovered ? width + HOVER_EXTRA_WIDTH : width) + 20}px`,
     top: top || undefined,
     height: sheetHeightPx > 0 ? `${sheetHeightPx}px` : undefined,
     transition: "width 400ms ease-in-out",
@@ -65,7 +116,10 @@ export const PracticeLineSheet = () => {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div ref={containerRef} className="flex min-h-0 flex-1 flex-col">
-          {lineFailureCount > 0 && <div className="shrink-0 text-failure">Failure Line: {lineFailureCount}</div>}
+          <div className="flex shrink-0 items-center gap-2">
+            {lineFailureCount > 0 && <span className="text-failure">Failure Line: {lineFailureCount}</span>}
+            {session && <LoadResultButton userId={session.user.id} />}
+          </div>
           <ScrollArea type="always" className="min-h-0 flex-1 overflow-hidden">
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
