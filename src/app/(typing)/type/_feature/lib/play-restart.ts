@@ -12,6 +12,7 @@ import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
 import { getMapId } from "../provider";
 import { setTabName } from "../tabs/tabs";
 import { getTypingStatus, resetTypingStatus } from "../tabs/typing-status/status-cell";
+import { setLineCustomStyleIndex } from "../typing-card/custom-style";
 import { setCombo } from "../typing-card/header/combo";
 import { setLineProgressMax, setLineProgressValue } from "../typing-card/header/line-time-progress";
 import { setNotify } from "../typing-card/header/notify";
@@ -37,6 +38,7 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
   setNextLyricsAndKpm(nextLine);
   setLineCount(0);
   resetLineSubstatus();
+  setLineCustomStyleIndex(0);
 
   const scene = getScene();
   const { type: totalTypeCount } = getTypingStatus();
