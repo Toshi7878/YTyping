@@ -38,8 +38,13 @@ export const setIsDisabledMapStyled = (value: boolean) => store.set(isDisabledMa
 
 export const LineCustomStyle = () => {
   const isDisabledMapStyled = useIsDisabledMapStyled();
+  const styleIndex = useAtomValue(lineStyleIndexAtom);
   if (isDisabledMapStyled) return null;
-  return <uncontrolled.style atomStore={store}>{lineStyleAtom}</uncontrolled.style>;
+  return (
+    <uncontrolled.style key={styleIndex} atomStore={store}>
+      {lineStyleAtom}
+    </uncontrolled.style>
+  );
 };
 
 export const EternalCustomStyle = () => {
