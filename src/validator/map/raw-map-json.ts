@@ -74,7 +74,7 @@ const validateCSSLength = (lines: RawMapLine[]) => {
     return total + eternalCSSLength + changeCSSLength;
   }, 0);
 
-  return totalCSSLength < 10000;
+  return totalCSSLength < 100000;
 };
 
 export const RawMapSchema = z
@@ -104,5 +104,5 @@ export const RawMapSchema = z
     error: "同じタイムのラインが2つ以上存在しています。",
   })
   .refine(validateCSSLength, {
-    error: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
+    error: "カスタムCSSの合計文字数は100000文字以下になるようにしてください",
   });
