@@ -88,5 +88,5 @@ All env vars are validated via `@t3-oss/env-nextjs` in `src/env.ts`. **Never use
 - **`useFilenamingConvention`** enforces `kebab-case` for all filenames
 - **`noProcessEnv`** — use `@/env` instead
 - **`noCommonJs`** — ESM only
-- Line ending: **CRLF** (enforced by formatter)
+- Line ending: **LF** (enforced by formatter)
 - `biome.json` references schema `2.2.4` but installed version is `2.4.11` — this is intentional
