@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ searchParams }: PageProps<"/">) {
-  const { page } = await loadPpRankingSearchParams(searchParams);
-  await prefetchAsync(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }));
-  await prefetchAsync(trpc.ranking.pp.list.getPageCount.queryOptions());
+  const { page, mode } = await loadPpRankingSearchParams(searchParams);
+  await prefetchAsync(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1, mode }));
+  await prefetchAsync(trpc.ranking.pp.list.getPageCount.queryOptions({ mode }));
 
   return (
     <HydrateClient>

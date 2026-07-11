@@ -7,6 +7,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { useSession } from "@/auth/client";
 import { PAGE_SIZE } from "@/server/api/routers/ranking/pp/const";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { INPUT_PP_MODES, PP_MODE_LABELS } from "@/shared/result/pp/mode";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
@@ -24,7 +25,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const trpc = useTRPC();
-  const { data: ppRank } = useSuspenseQuery(trpc.ranking.pp.getRankByUserId.queryOptions(Number(userId)));
+  const { data: ppRanks } = useSuspenseQuery(trpc.ranking.pp.getRanksByUserId.queryOptions(Number(userId)));
   const isMyProfilePage = session?.user.id === Number(userId);
   const isAdmin = session?.user.role === "ADMIN";
   const canSeeWarnings = isMyProfilePage || isAdmin;
@@ -56,15 +57,31 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
           <DataListItem className="flex items-center gap-2 font-bold text-2xl">
             <DataListLabel>実力ランク:</DataListLabel>
             <DataListValue>
-              {ppRank ? (
-                <Link href={`/rankings/performance?page=${Math.ceil(ppRank / PAGE_SIZE)}`} className="hover:underline">
-                  #{ppRank}
+              {ppRanks.total ? (
+                <Link
+                  href={`/rankings/performance?page=${Math.ceil(ppRanks.total / PAGE_SIZE)}`}
+                  className="hover:underline"
+                >
+                  #{ppRanks.total}
                 </Link>
               ) : (
                 "-"
               )}
             </DataListValue>
           </DataListItem>
+          {INPUT_PP_MODES.filter((m) => ppRanks[m]).map((m) => (
+            <DataListItem key={m} className="flex items-center gap-2">
+              <DataListLabel>{PP_MODE_LABELS[m]}ランク:</DataListLabel>
+              <DataListValue>
+                <Link
+                  href={`/rankings/performance?mode=${m}&page=${Math.ceil((ppRanks[m] as number) / PAGE_SIZE)}`}
+                  className="hover:underline"
+                >
+                  #{ppRanks[m]}
+                </Link>
+              </DataListValue>
+            </DataListItem>
+          ))}
           {profile.map((item) => (
             <DataListItem key={item.label} className="flex items-center gap-2">
               <DataListLabel>{item.label}:</DataListLabel>

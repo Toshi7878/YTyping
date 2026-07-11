@@ -53,6 +53,16 @@ export const userStats = pgTable.withRLS(
     maxCombo: integer("max_combo").default(0).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`).notNull(),
     totalPp: integer("total_pp").default(0).notNull(),
+    romaPp: integer("roma_pp").default(0).notNull(),
+    kanaPp: integer("kana_pp").default(0).notNull(),
+    flickPp: integer("flick_pp").default(0).notNull(),
+    englishPp: integer("english_pp").default(0).notNull(),
   },
-  (table) => [index("user_stats_total_pp_idx").using("btree", table.totalPp.asc().nullsLast())],
+  (table) => [
+    index("user_stats_total_pp_idx").using("btree", table.totalPp.asc().nullsLast()),
+    index("user_stats_roma_pp_idx").using("btree", table.romaPp.asc().nullsLast()),
+    index("user_stats_kana_pp_idx").using("btree", table.kanaPp.asc().nullsLast()),
+    index("user_stats_flick_pp_idx").using("btree", table.flickPp.asc().nullsLast()),
+    index("user_stats_english_pp_idx").using("btree", table.englishPp.asc().nullsLast()),
+  ],
 );

@@ -3,10 +3,12 @@
 import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { PP_MODE_LABELS, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
 import { useTRPC } from "@/trpc/provider";
 import { PageNavigation } from "@/ui/page-navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { cn } from "@/utils/cn";
-import { usePpRankingPageQueryState } from "./search-params";
+import { usePpRankingQueryStates } from "./search-params";
 
 type PpRow = RouterOutputs["ranking"]["pp"]["list"]["get"]["items"][number];
 
@@ -15,18 +17,28 @@ const rowGrid =
 
 export const PPRanking = () => {
   const trpc = useTRPC();
-  const [page, setPage] = usePpRankingPageQueryState();
+  const [{ page, mode }, setQuery] = usePpRankingQueryStates();
 
   const { data, isPlaceholderData } = useQuery(
-    trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1 }, { placeholderData: keepPreviousData }),
+    trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1, mode }, { placeholderData: keepPreviousData }),
   );
-  const { data: pageCount } = useSuspenseQuery(trpc.ranking.pp.list.getPageCount.queryOptions());
+  const { data: pageCount } = useSuspenseQuery(trpc.ranking.pp.list.getPageCount.queryOptions({ mode }));
 
   const rows: PpRow[] = data?.items ?? [];
 
   return (
     <div className="space-y-2">
-      <PageNavigation page={page} pageCount={pageCount} onPageChange={setPage} size="sm" />
+      <Tabs value={mode} onValueChange={(value) => setQuery({ mode: value as PpMode, page: 1 })}>
+        <TabsList variant="underline" className="flex h-fit w-full flex-wrap">
+          {PP_MODES.map((m) => (
+            <TabsTrigger key={m} value={m} variant="underline">
+              {PP_MODE_LABELS[m]}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+
+      <PageNavigation page={page} pageCount={pageCount} onPageChange={(p) => setQuery({ page: p })} size="sm" />
       <div className={cn("border-border/30 border-b pb-2 text-muted-foreground text-sm", rowGrid)}>
         <div>順位</div>
         <div>プレイヤー</div>
@@ -57,15 +69,13 @@ export const PPRanking = () => {
                 </div>
               </div>
               <div>
-                <span className="font-semibold text-foreground tabular-nums">
-                  {row.totalPP.toLocaleString("ja-JP")}
-                </span>
+                <span className="font-semibold text-foreground tabular-nums">{row.pp.toLocaleString("ja-JP")}</span>
               </div>
             </div>
           </li>
         ))}
       </ul>
-      <PageNavigation page={page} pageCount={pageCount} onPageChange={setPage} size="sm" />
+      <PageNavigation page={page} pageCount={pageCount} onPageChange={(p) => setQuery({ page: p })} size="sm" />
     </div>
   );
 };
