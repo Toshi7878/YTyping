@@ -12,13 +12,13 @@ import {
   resultClaps,
   resultStatuses,
   results,
-  userStats,
   users,
 } from "@/server/drizzle/schema";
+import { calcRawPP, resultToRawPPInput } from "@/shared/result/pp/calc";
 import { CreateResultSchema } from "@/validator/result/result";
-import { calcRawPP, calcTotalPP, resultToRawPPInput, TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress } from "../../utils/gzip";
+import { recalculateUserPP } from "../../utils/recalculate-user-pp";
 import { generateNotificationId } from "../notification";
 
 const player = alias(users, "player");
@@ -117,7 +117,7 @@ export const resultRankingRouter = {
         .values({ resultId, ...statusWithPp })
         .onConflictDoUpdate({ target: [resultStatuses.resultId], set: statusWithPp });
 
-      await recalculateUserTotalPP(tx, userId);
+      await recalculateUserPP(tx, userId);
 
       const rankedUsers = await tx
         .select({
@@ -285,20 +285,3 @@ const upsertOvertakeNotification = async (
     });
   }
 };
-
-async function recalculateUserTotalPP(tx: TXType, userId: number) {
-  const rows = await tx
-    .select({ pp: resultStatuses.pp })
-    .from(resultStatuses)
-    .innerJoin(results, eq(results.id, resultStatuses.resultId))
-    .where(eq(results.userId, userId))
-    .orderBy(desc(resultStatuses.pp))
-    .limit(TOTAL_PP_TOP_N);
-
-  const totalPP = Math.round(calcTotalPP(rows));
-
-  await tx
-    .insert(userStats)
-    .values({ userId, totalPp: totalPP })
-    .onConflictDoUpdate({ target: [userStats.userId], set: { totalPp: totalPP } });
-}
