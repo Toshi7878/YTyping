@@ -53,7 +53,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
     <Card>
       <CardContent className="relative flex flex-col gap-4 md:mx-8">
         <H2>{userProfile?.name ?? ""}</H2>
-        <DataList orientation="horizontal" className="gap-3">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <DataListItem className="flex items-center gap-2 font-bold text-2xl">
             <DataListLabel>実力ランク:</DataListLabel>
             <DataListValue>
@@ -71,7 +71,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
           </DataListItem>
           {INPUT_PP_MODES.filter((m) => ppRanks[m]).map((m) => (
             <DataListItem key={m} className="flex items-center gap-2">
-              <DataListLabel>{PP_MODE_LABELS[m]}ランク:</DataListLabel>
+              <DataListLabel>{PP_MODE_LABELS[m]}:</DataListLabel>
               <DataListValue>
                 <Link
                   href={`/rankings/performance?mode=${m}&page=${Math.ceil((ppRanks[m] as number) / PAGE_SIZE)}`}
@@ -82,6 +82,8 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
               </DataListValue>
             </DataListItem>
           ))}
+        </div>
+        <DataList orientation="horizontal" className="gap-3">
           {profile.map((item) => (
             <DataListItem key={item.label} className="flex items-center gap-2">
               <DataListLabel>{item.label}:</DataListLabel>
