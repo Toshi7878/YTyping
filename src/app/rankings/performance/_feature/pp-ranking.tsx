@@ -15,6 +15,13 @@ type PpRow = RouterOutputs["ranking"]["pp"]["list"]["get"]["items"][number];
 const rowGrid =
   "grid grid-cols-[minmax(0,3.5rem)_minmax(0,1fr)_minmax(0,5rem)] items-center gap-2 sm:grid-cols-[minmax(0,4.5rem)_minmax(0,1fr)_minmax(0,6rem)] sm:gap-4";
 
+const MODE_TAB_COLORS: Partial<Record<PpMode, string>> = {
+  roma: "data-[state=active]:bg-roma hover:data-[state=inactive]:bg-roma/30",
+  kana: "data-[state=active]:bg-kana hover:data-[state=inactive]:bg-kana/30",
+  flick: "data-[state=active]:bg-flick hover:data-[state=inactive]:bg-flick/30",
+  english: "data-[state=active]:bg-english hover:data-[state=inactive]:bg-english/30",
+};
+
 export const PPRanking = () => {
   const trpc = useTRPC();
   const [{ page, mode }, setQuery] = usePpRankingQueryStates();
@@ -29,9 +36,9 @@ export const PPRanking = () => {
   return (
     <div className="space-y-2">
       <Tabs value={mode} onValueChange={(value) => setQuery({ mode: value as PpMode, page: 1 })}>
-        <TabsList variant="underline" className="flex h-fit w-full flex-wrap">
+        <TabsList className="flex h-fit w-full flex-wrap gap-1">
           {PP_MODES.map((m) => (
-            <TabsTrigger key={m} value={m} variant="underline">
+            <TabsTrigger key={m} value={m} className={cn("data-[state=active]:text-foreground", MODE_TAB_COLORS[m])}>
               {PP_MODE_LABELS[m]}
             </TabsTrigger>
           ))}
