@@ -53,11 +53,11 @@ export const rankingPpRouter = {
 
     const aboveCounts = await db
       .select({
-        total: sql<number>`count(*) filter (where ${userStats.totalPp} > ${me.totalPp})`,
-        roma: sql<number>`count(*) filter (where ${userStats.romaPp} > ${me.romaPp})`,
-        kana: sql<number>`count(*) filter (where ${userStats.kanaPp} > ${me.kanaPp})`,
-        flick: sql<number>`count(*) filter (where ${userStats.flickPp} > ${me.flickPp})`,
-        english: sql<number>`count(*) filter (where ${userStats.englishPp} > ${me.englishPp})`,
+        total: sql<number>`count(*) filter (where ${userStats.totalPp} > ${me.totalPp})`.mapWith(Number),
+        roma: sql<number>`count(*) filter (where ${userStats.romaPp} > ${me.romaPp})`.mapWith(Number),
+        kana: sql<number>`count(*) filter (where ${userStats.kanaPp} > ${me.kanaPp})`.mapWith(Number),
+        flick: sql<number>`count(*) filter (where ${userStats.flickPp} > ${me.flickPp})`.mapWith(Number),
+        english: sql<number>`count(*) filter (where ${userStats.englishPp} > ${me.englishPp})`.mapWith(Number),
       })
       .from(userStats)
       .innerJoin(users, eq(users.id, userStats.userId))
