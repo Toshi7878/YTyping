@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { PP_MODE_LABELS, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
+import { PP_MODE_DESCRIPTIONS, PP_MODE_LABELS, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
 import { useTRPC } from "@/trpc/provider";
 import { PageNavigation } from "@/ui/page-navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
@@ -44,6 +44,7 @@ export const PPRanking = () => {
           ))}
         </TabsList>
       </Tabs>
+      {PP_MODE_DESCRIPTIONS[mode] && <p className="text-muted-foreground text-sm">{PP_MODE_DESCRIPTIONS[mode]}</p>}
 
       <PageNavigation page={page} pageCount={pageCount} onPageChange={(p) => setQuery({ page: p })} size="sm" />
       <div className={cn("border-border/30 border-b pb-2 text-muted-foreground text-sm", rowGrid)}>
