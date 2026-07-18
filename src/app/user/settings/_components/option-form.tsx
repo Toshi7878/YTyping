@@ -6,9 +6,8 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_USER_OPTIONS, type PRESENCE_STATE_TYPES } from "@/server/drizzle/schema";
 import { setUserOptions } from "@/store/user-options";
 import { useTRPC } from "@/trpc/provider";
-import { CheckboxFormField } from "@/ui/checkbox/checkbox-form-field";
 import { Form } from "@/ui/form";
-import { SelectFormField } from "@/ui/select/select-form-field";
+import { CheckboxFormField, SelectFormField } from "@/ui/form-field-item";
 
 interface UserOptionsFormProps {
   userOptions: RouterOutputs["user"]["option"]["getForSession"];

@@ -11,7 +11,7 @@ import { idb } from "@/app/edit/_feature/indexed-db";
 import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";
-import { InputFormField } from "@/ui/input/input-form-field";
+import { InputFormField } from "@/ui/form-field-item";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H3 } from "@/ui/typography";

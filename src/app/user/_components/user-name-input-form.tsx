@@ -10,7 +10,7 @@ import { useSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Form } from "@/ui/form";
-import { MutationInputFormField } from "@/ui/input/input-form-field";
+import { MutationInputFormField } from "@/ui/form-field-item";
 import { UserNameSchema } from "@/validator/user/profile";
 
 interface UserNameInputFormProps {

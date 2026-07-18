@@ -11,7 +11,7 @@ import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { Form } from "@/ui/form";
-import { TextareaFormField } from "@/ui/textarea";
+import { TextareaFormField } from "@/ui/form-field-item";
 
 interface ReportActionsProps {
   reportId: number;

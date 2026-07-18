@@ -12,9 +12,8 @@ import { REPORT_REASON_LABELS } from "@/shared/user/report";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/ui/dialog";
+import { SelectFormField, TextareaFormField } from "@/ui/form-field-item";
 import { ReportIconButton } from "@/ui/icon-button";
-import { SelectFormField } from "@/ui/select/select-form-field";
-import { TextareaFormField } from "@/ui/textarea";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { userReportFormSchema } from "@/validator/user/report";
 
