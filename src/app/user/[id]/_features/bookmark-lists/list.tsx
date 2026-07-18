@@ -5,7 +5,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
-import { Form } from "@/ui/form";
 import { ThumbnailImage } from "@/ui/image";
 import { Small } from "@/ui/typography";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";

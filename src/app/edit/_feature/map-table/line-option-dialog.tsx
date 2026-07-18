@@ -2,14 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, FormProvider as Form, useForm } from "react-hook-form";
 import type z from "zod";
 import { setRawMapAction, useRawMap } from "@/app/edit/_feature/map-table/map-reducer";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
-import { Form, FormField, FormItem } from "@/ui/form";
+import { Field } from "@/ui/field";
 import { SwitchFormField, TextareaFormField } from "@/ui/form-field-item";
 import { cn } from "@/utils/cn";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
@@ -134,11 +134,11 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
             )}
 
             {/* TODO:現在の速度を表示する 現在の速度から加減上限を制御する */}
-            <FormField
+            <Controller
               control={form.control}
               name="changeVideoSpeed"
               render={({ field }) => (
-                <FormItem className="flex items-center">
+                <Field className="flex items-center">
                   <CounterInput
                     label="速度変更"
                     unit={Number(field.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
@@ -155,7 +155,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
                   <div className="text-muted-foreground text-sm">
                     速度: <Badge variant="outline">{speed}x</Badge>
                   </div>
-                </FormItem>
+                </Field>
               )}
             />
 

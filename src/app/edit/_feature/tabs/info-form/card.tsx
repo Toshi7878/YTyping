@@ -5,7 +5,7 @@ import { atom, useAtomValue } from "jotai";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useEffect } from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { FormProvider as Form, useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
@@ -34,7 +34,6 @@ import {
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { CardWithContent } from "@/ui/card";
-import { Form } from "@/ui/form";
 import { FloatingLabelInputFormField, FloatingLabelSelectFormField, TagInputFormField } from "@/ui/form-field-item";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
