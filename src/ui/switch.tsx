@@ -2,9 +2,7 @@
 
 import { Switch as SwitchPrimitive } from "radix-ui";
 import type * as React from "react";
-import { useFormContext } from "react-hook-form";
 import { cn } from "@/utils/cn";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "./form";
 
 function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
   return (
@@ -26,39 +24,4 @@ function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimi
   );
 }
 
-interface SwitchFormFieldProps {
-  name: string;
-  label?: string;
-  description?: string;
-  required?: boolean;
-}
-
-const SwitchFormField = ({
-  name,
-  label,
-  description,
-  required,
-  ...props
-}: SwitchFormFieldProps & Omit<React.ComponentProps<typeof Switch>, "name">) => {
-  const { control } = useFormContext();
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-          <FormControl>
-            <Switch checked={field.value} onCheckedChange={field.onChange} />
-          </FormControl>
-          <FormLabel>{label}</FormLabel>
-          <FormDescription>{description}</FormDescription>
-        </FormItem>
-      )}
-      rules={{ required }}
-      {...props}
-    />
-  );
-};
-
-export { Switch, SwitchFormField };
+export { Switch };

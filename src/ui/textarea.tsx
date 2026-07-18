@@ -1,8 +1,6 @@
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type * as React from "react";
-import { useFormContext } from "react-hook-form";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/ui/form";
 import { cn } from "@/utils/cn";
 
 const textareaVariants = cva(
@@ -32,51 +30,4 @@ function Textarea({
   return <textarea data-slot="textarea" className={cn(textareaVariants({ size }), className)} {...props} />;
 }
 
-interface TextareaFormFieldProps {
-  name: string;
-  label?: string;
-  description?: string;
-  required?: boolean;
-  className?: string;
-  disabledFormMessage?: boolean;
-}
-
-const TextareaFormField = ({
-  name,
-  label,
-  description,
-  required = false,
-  className,
-  disabledFormMessage = false,
-  ...textareaProps
-}: TextareaFormFieldProps & Omit<React.ComponentProps<"textarea">, "name" | "className">) => {
-  const { control } = useFormContext();
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <FormItem>
-          {label && (
-            <FormLabel>
-              {label}
-              {required && <span className="ml-1 text-destructive">*</span>}
-            </FormLabel>
-          )}
-          <FormControl className={cn(className)}>
-            <Textarea
-              {...field}
-              {...textareaProps}
-              className={cn(fieldState.error && "border-destructive focus-visible:border-destructive")}
-            />
-          </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          {!disabledFormMessage && <FormMessage />}
-        </FormItem>
-      )}
-    />
-  );
-};
-
-export { Textarea, TextareaFormField };
+export { Textarea };
