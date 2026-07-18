@@ -1,21 +1,28 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useStore } from "@tanstack/react-form";
 import { type Dispatch, useEffect, useState } from "react";
-import { Controller, FormProvider as Form, useForm } from "react-hook-form";
-import type z from "zod";
+import z from "zod";
 import { setRawMapAction, useRawMap } from "@/app/edit/_feature/map-table/map-reducer";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { CounterInput } from "@/ui/counter";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
 import { Field } from "@/ui/field";
-import { SwitchFormField, TextareaFormField } from "@/ui/form-field-item";
+import { useAppForm } from "@/ui/form-field-item";
 import { cn } from "@/utils/cn";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
-import { LineOptionSchema } from "@/validator/map/raw-map-json";
 import { setCanUpload } from "../tabs/info-form/card";
 import { dispatchEditHistory } from "./history";
+
+// LineOptionSchema はマップJSON保存用に全フィールドoptionalだが、フォームでは常に値を埋めるためrequired版を使う
+const lineOptionFormSchema = z.object({
+  changeCSS: z.string(),
+  eternalCSS: z.string(),
+  isChangeCSS: z.boolean(),
+  changeVideoSpeed: z.number().min(-1.75).max(2),
+  isCaseSensitive: z.boolean(),
+});
 
 const calculateCurrentSpeed = (map: RawMapLine[], index: number) => {
   const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
@@ -41,8 +48,8 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
     setSpeed(clampedSpeed.toFixed(2));
   }, [currentSpeed, map, index]);
 
-  const form = useForm({
-    resolver: zodResolver(LineOptionSchema),
+  const form = useAppForm({
+    validators: { onChange: lineOptionFormSchema },
     defaultValues: {
       changeCSS: map[index]?.options?.changeCSS || "",
       eternalCSS: map[index]?.options?.eternalCSS || "",
@@ -50,7 +57,44 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
       isCaseSensitive: map[index]?.options?.isCaseSensitive || false,
     },
+    onSubmit: ({ value: data }) => {
+      const line = map[index];
+      if (!line) return;
+      const { time, lyrics, word } = line;
+
+      const newLine = {
+        time,
+        lyrics,
+        word,
+        options: {
+          ...(data.changeCSS && { changeCSS: data.changeCSS }),
+          ...(data.eternalCSS && { eternalCSS: data.eternalCSS }),
+          ...(data.isChangeCSS && { isChangeCSS: data.isChangeCSS }),
+          ...(data.changeVideoSpeed && {
+            changeVideoSpeed: Math.max(0.25 - currentSpeed, Math.min(2.0 - currentSpeed, data.changeVideoSpeed)),
+          }),
+          ...(data.isCaseSensitive && { isCaseSensitive: data.isCaseSensitive }),
+        },
+      };
+      setRawMapAction({ type: "update", payload: newLine, index });
+
+      dispatchEditHistory({
+        type: "add",
+        payload: {
+          actionType: "update",
+          data: {
+            old: line,
+            new: newLine,
+            lineIndex: index,
+          },
+        },
+      });
+      setCanUpload(true);
+      setOptionDialogIndex(null);
+    },
   });
+
+  const isDirty = useStore(form.store, (state) => state.isDirty);
 
   const handleModalClose = async () => {
     if (!isDirty) {
@@ -68,48 +112,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
     }
   };
 
-  const onSubmit = (data: z.output<typeof LineOptionSchema>) => {
-    const line = map[index];
-    if (!line) return;
-    const { time, lyrics, word } = line;
-
-    const newLine = {
-      time,
-      lyrics,
-      word,
-      options: {
-        ...(data.changeCSS && { changeCSS: data.changeCSS }),
-        ...(data.eternalCSS && { eternalCSS: data.eternalCSS }),
-        ...(data.isChangeCSS && { isChangeCSS: data.isChangeCSS }),
-        ...(data.changeVideoSpeed && {
-          changeVideoSpeed: Math.max(0.25 - currentSpeed, Math.min(2.0 - currentSpeed, data.changeVideoSpeed)),
-        }),
-        ...(data.isCaseSensitive && { isCaseSensitive: data.isCaseSensitive }),
-      },
-    };
-    setRawMapAction({ type: "update", payload: newLine, index });
-
-    dispatchEditHistory({
-      type: "add",
-      payload: {
-        actionType: "update",
-        data: {
-          old: line,
-          new: newLine,
-          lineIndex: index,
-        },
-      },
-    });
-    setCanUpload(true);
-    setOptionDialogIndex(null);
-  };
-
-  const {
-    watch,
-    setValue,
-    formState: { isDirty },
-  } = form;
-  const isChangeCSSValue = watch("isChangeCSS");
+  const isChangeCSSValue = useStore(form.store, (state) => state.values.isChangeCSS);
 
   return (
     <DialogWithContent
@@ -122,75 +125,85 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         <DialogTitle>ラインオプション</DialogTitle>
       </DialogHeader>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <Badge variant="secondary" className="text-base">
-            選択ライン: {index}
-          </Badge>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-4"
+      >
+        <Badge variant="secondary" className="text-base">
+          選択ライン: {index}
+        </Badge>
 
-          <div className="space-y-4">
-            {index === 0 && (
-              <SwitchFormField name="isCaseSensitive" label="この譜面のアルファベット大文字の入力を有効化" />
+        <div className="space-y-4">
+          {index === 0 && (
+            <form.AppField name="isCaseSensitive">
+              {(field) => <field.SwitchFormField label="この譜面のアルファベット大文字の入力を有効化" />}
+            </form.AppField>
+          )}
+
+          {/* TODO:現在の速度を表示する 現在の速度から加減上限を制御する */}
+          <form.AppField name="changeVideoSpeed">
+            {(field) => (
+              <Field className="flex items-center">
+                <CounterInput
+                  label="速度変更"
+                  unit={Number(field.state.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
+                  value={field.state.value ?? 0}
+                  onChange={(value) => {
+                    field.handleChange(value);
+                    setSpeed((currentSpeed + value).toFixed(2));
+                  }}
+                  min={0.25 - currentSpeed}
+                  max={2.0 - currentSpeed}
+                  step={0.25}
+                  valueDigits={2}
+                />
+                <div className="text-muted-foreground text-sm">
+                  速度: <Badge variant="outline">{speed}x</Badge>
+                </div>
+              </Field>
             )}
+          </form.AppField>
 
-            {/* TODO:現在の速度を表示する 現在の速度から加減上限を制御する */}
-            <Controller
-              control={form.control}
-              name="changeVideoSpeed"
-              render={({ field }) => (
-                <Field className="flex items-center">
-                  <CounterInput
-                    label="速度変更"
-                    unit={Number(field.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
-                    value={field.value ?? 0}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      setSpeed((currentSpeed + value).toFixed(2));
-                    }}
-                    min={0.25 - currentSpeed}
-                    max={2.0 - currentSpeed}
-                    step={0.25}
-                    valueDigits={2}
-                  />
-                  <div className="text-muted-foreground text-sm">
-                    速度: <Badge variant="outline">{speed}x</Badge>
-                  </div>
-                </Field>
+          {index === 0 && (
+            <form.AppField name="eternalCSS">
+              {(field) => (
+                <field.TextareaFormField label="永続的に適用するCSSを入力" className="min-h-[200px] resize-y" />
               )}
-            />
+            </form.AppField>
+          )}
 
-            {index === 0 && (
-              <TextareaFormField
-                name="eternalCSS"
-                label="永続的に適用するCSSを入力"
-                className="min-h-[200px] resize-y"
+          <form.AppField name="isChangeCSS">
+            {(field) => <field.SwitchFormField label="ライン切り替えを有効化" />}
+          </form.AppField>
+
+          <form.AppField name="changeCSS">
+            {(field) => (
+              <field.TextareaFormField
+                label="選択ラインから適用するCSSを入力"
+                className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "cursor-pointer opacity-50")}
+                readOnly={!isChangeCSSValue}
+                onClick={() => {
+                  if (!isChangeCSSValue) {
+                    form.setFieldValue("isChangeCSS", true);
+                  }
+                }}
               />
             )}
+          </form.AppField>
 
-            <SwitchFormField name="isChangeCSS" label="ライン切り替えを有効化" />
+          {/* <CSSTextLength
+                eternalCSSText={form.state.values.eternalCSS || ""}
+                changeCSSText={field.value || ""}
+                lineOptions={form.state.values}
+              /> */}
 
-            <TextareaFormField
-              name="changeCSS"
-              label="選択ラインから適用するCSSを入力"
-              className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "cursor-pointer opacity-50")}
-              readOnly={!isChangeCSSValue}
-              onClick={() => {
-                if (!isChangeCSSValue) {
-                  setValue("isChangeCSS", true);
-                }
-              }}
-            />
-
-            {/* <CSSTextLength
-                  eternalCSSText={form.watch("eternalCSS") || ""}
-                  changeCSSText={field.value || ""}
-                  lineOptions={form.getValues()}
-                /> */}
-
-            <Button type="submit">ラインオプションを保存</Button>
-          </div>
-        </form>
-      </Form>
+          <Button type="submit">ラインオプションを保存</Button>
+        </div>
+      </form>
 
       <DialogFooter />
     </DialogWithContent>

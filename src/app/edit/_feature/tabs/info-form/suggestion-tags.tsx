@@ -1,5 +1,4 @@
 import type { VariantProps } from "class-variance-authority";
-import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import type { badgeVariants } from "@/ui/badge";
 import { Badge } from "@/ui/badge";
@@ -8,28 +7,37 @@ import { cn } from "@/utils/cn";
 import { TAG_MAX_LENGTH } from "./card";
 
 interface SuggestionTagsProps {
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
   isAIFetching?: boolean;
   aiTags?: string[];
 }
 
-export const SuggestionTags = ({ isAIFetching, aiTags }: SuggestionTagsProps) => {
+export const SuggestionTags = ({ tags, onTagsChange, isAIFetching, aiTags }: SuggestionTagsProps) => {
   return (
     <div className="flex flex-col gap-5">
-      <TemplateTags />
-      <AISuggestionTags isAIFetching={isAIFetching ?? false} aiTags={aiTags ?? []} />
+      <TemplateTags tags={tags} onTagsChange={onTagsChange} />
+      <AISuggestionTags
+        tags={tags}
+        onTagsChange={onTagsChange}
+        isAIFetching={isAIFetching ?? false}
+        aiTags={aiTags ?? []}
+      />
     </div>
   );
 };
 
-interface AITagSuggestionsProps {
+interface TagListProps {
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
+}
+
+interface AITagSuggestionsProps extends TagListProps {
   isAIFetching: boolean;
   aiTags: string[];
 }
 
-const AISuggestionTags = ({ isAIFetching, aiTags }: AITagSuggestionsProps) => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
-
+const AISuggestionTags = ({ tags, onTagsChange, isAIFetching, aiTags }: AITagSuggestionsProps) => {
   if (isAIFetching) {
     return (
       <div className="flex flex-col flex-wrap">
@@ -43,10 +51,18 @@ const AISuggestionTags = ({ isAIFetching, aiTags }: AITagSuggestionsProps) => {
   return (
     <div className="flex flex-row flex-wrap gap-3">
       {aiTags.map((label) => {
-        const isSelected = tags.some((tag: string) => tag === label);
+        const isSelected = tags.some((tag) => tag === label);
         if (isSelected) return null;
 
-        return <SuggestionTagBadge key={label} label={label} variant="primary-light" />;
+        return (
+          <SuggestionTagBadge
+            key={label}
+            label={label}
+            tags={tags}
+            onTagsChange={onTagsChange}
+            variant="primary-light"
+          />
+        );
       })}
     </div>
   );
@@ -80,31 +96,33 @@ const CHOICE_TAGS = [
   "YouTube Premium",
 ];
 
-const TemplateTags = () => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
-
+const TemplateTags = ({ tags, onTagsChange }: TagListProps) => {
   return (
     <div className="flex flex-row flex-wrap gap-3">
       {CHOICE_TAGS.map((label) => {
-        const isSelected = tags.some((tag: string) => tag === label);
+        const isSelected = tags.some((tag) => tag === label);
         if (isSelected) return null;
 
-        return <SuggestionTagBadge key={label} label={label} variant="secondary-light" />;
+        return (
+          <SuggestionTagBadge
+            key={label}
+            label={label}
+            tags={tags}
+            onTagsChange={onTagsChange}
+            variant="secondary-light"
+          />
+        );
       })}
     </div>
   );
 };
 
-interface TagBadgeProps {
+interface TagBadgeProps extends TagListProps {
   label: string;
   variant?: VariantProps<typeof badgeVariants>["variant"];
 }
 
-const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
-  const control = useFormContext<{ tags: string[] }>();
-  const tags = control.watch("tags") ?? [];
-
+const SuggestionTagBadge = ({ label, tags, onTagsChange, variant }: TagBadgeProps) => {
   return (
     <Badge
       className={cn(
@@ -113,12 +131,8 @@ const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
       )}
       variant={variant}
       onClick={() => {
-        const currentTags = tags;
-        if (currentTags.length < TAG_MAX_LENGTH) {
-          control.setValue("tags", [...currentTags, label], {
-            shouldDirty: true,
-            shouldTouch: true,
-          });
+        if (tags.length < TAG_MAX_LENGTH) {
+          onTagsChange([...tags, label]);
         } else {
           toast.warning("タグは最大10個まで追加できます");
         }

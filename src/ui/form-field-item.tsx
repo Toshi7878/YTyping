@@ -1,13 +1,12 @@
 "use client";
 
+import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import type React from "react";
 import type { ComponentProps, ComponentPropsWithRef, ReactNode } from "react";
 import { useId } from "react";
-import type { ControllerRenderProps, FieldErrorsImpl, Merge, FieldError as RHFFieldError } from "react-hook-form";
-import { Controller, useFormContext } from "react-hook-form";
 import type { badgeVariants } from "@/ui/badge";
 import { Checkbox } from "@/ui/checkbox/checkbox";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/field";
@@ -21,8 +20,11 @@ import { Textarea } from "@/ui/textarea";
 import { cn } from "@/utils/cn";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 
+export const { fieldContext, useFieldContext, formContext, useFormContext } = createFormHookContexts();
+
+type FieldErrors = Array<{ message?: string } | undefined>;
+
 interface InputFormFieldProps {
-  name: string;
   label?: ReactNode;
   description?: ReactNode;
   required?: boolean;
@@ -30,53 +32,68 @@ interface InputFormFieldProps {
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
   disabledFormMessage?: boolean;
-  ref?: ComponentPropsWithRef<typeof Input>["ref"];
-  onChange?: ControllerRenderProps["onChange"];
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputFormField = ({
-  name,
+type InputPassthroughProps = Omit<
+  ComponentPropsWithRef<typeof Input>,
+  "size" | "value" | "name" | "onChange" | "onBlur"
+>;
+
+const InputField = ({
+  id,
   label,
   description,
   required = false,
   className,
   size = "default",
   disabledFormMessage = false,
+  errors,
   onChange,
   ...inputProps
-}: InputFormFieldProps & Omit<ComponentPropsWithRef<typeof Input>, "size" | keyof ControllerRenderProps>) => {
-  const { control } = useFormContext();
+}: InputFormFieldProps &
+  InputPassthroughProps & {
+    id: string;
+    value: string;
+    errors: FieldErrors;
+    onBlur: () => void;
+  }) => (
+  <Field data-invalid={errors.length > 0}>
+    {label && (
+      <FieldLabel htmlFor={id}>
+        {label}
+        {required && <span className="ml-1 text-destructive">*</span>}
+      </FieldLabel>
+    )}
+    <Input
+      {...inputProps}
+      id={id}
+      aria-invalid={errors.length > 0}
+      variant={errors.length > 0 ? "error" : "default"}
+      size={size}
+      className={className}
+      onChange={onChange}
+    />
+    {description && <FieldDescription>{description}</FieldDescription>}
+    {!disabledFormMessage && <FieldError errors={errors} />}
+  </Field>
+);
+
+const InputFormField = ({ onChange, ...props }: InputFormFieldProps & Omit<InputPassthroughProps, "id">) => {
+  const field = useFieldContext<string>();
   const id = useId();
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={!!fieldState.error}>
-          {label && (
-            <FieldLabel htmlFor={id}>
-              {label}
-              {required && <span className="ml-1 text-destructive">*</span>}
-            </FieldLabel>
-          )}
-          <Input
-            {...inputProps}
-            {...field}
-            id={id}
-            aria-invalid={!!fieldState.error}
-            variant={fieldState.error ? "error" : "default"}
-            size={size}
-            className={className}
-            onChange={(e) => {
-              field.onChange(e);
-              onChange?.(e);
-            }}
-          />
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!disabledFormMessage && <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />}
-        </Field>
-      )}
+    <InputField
+      {...props}
+      id={id}
+      value={field.state.value}
+      errors={field.state.meta.errors}
+      onBlur={field.handleBlur}
+      onChange={(e) => {
+        field.handleChange(e.target.value);
+        onChange?.(e);
+      }}
     />
   );
 };
@@ -97,14 +114,18 @@ const MutationInputFormField = ({
   onSuccess,
   ...props
 }: MutationInputFormFieldProps & Omit<ComponentProps<typeof InputFormField>, "label" | "disabledFormMessage">) => {
+  const field = useFieldContext<string>();
+  const id = useId();
   const { debounce, isPending, cancel } = useDebounce(debounceDelay);
-  const {
-    formState: { errors },
-    clearErrors,
-  } = useFormContext();
+  const errors = field.state.meta.errors;
 
   return (
-    <InputFormField
+    <InputField
+      {...props}
+      id={id}
+      value={field.state.value}
+      errors={errors}
+      onBlur={field.handleBlur}
       label={
         <div className="flex items-center gap-2">
           <span className="text-xs">{label}</span>
@@ -112,21 +133,20 @@ const MutationInputFormField = ({
             isPending={isPending}
             isSuccess={mutation.isSuccess}
             successMessage={successMessage}
-            errorMessage={errors[props.name]}
+            error={errors[0]}
           />
         </div>
       }
       disabledFormMessage={true}
-      {...props}
       onChange={(e) => {
         props.onChange?.(e);
         mutation.reset();
-        clearErrors(props.name);
+        field.setErrorMap({ ...field.state.meta.errorMap, onSubmit: undefined });
         cancel();
         const { value } = e.currentTarget;
 
         debounce(async () => {
-          if (!errors[props.name]) {
+          if (!field.state.meta.errors.length) {
             await mutation.mutateAsync(value);
             onSuccess?.(value);
           }
@@ -140,18 +160,15 @@ interface MutateMessageProps {
   isPending: boolean;
   isSuccess: boolean;
   successMessage: string;
-  errorMessage: RHFFieldError | Merge<RHFFieldError, FieldErrorsImpl> | undefined;
+  error: { message?: string } | undefined;
 }
 
-const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: MutateMessageProps) => {
-  if (errorMessage?.message) {
-    const messageText =
-      typeof errorMessage.message === "string" ? errorMessage.message : JSON.stringify(errorMessage.message);
-
+const MutateMessage = ({ isPending, isSuccess, error, successMessage }: MutateMessageProps) => {
+  if (error?.message) {
     return (
       <div className="flex items-center gap-1">
         <XCircle className="h-4 w-4 text-destructive" />
-        <span className="text-destructive text-xs">{messageText}</span>
+        <span className="text-destructive text-xs">{error.message}</span>
       </div>
     );
   }
@@ -172,19 +189,17 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
 };
 
 interface FloatingLabelInputFormFieldProps {
-  name: string;
   label?: string;
   description?: ReactNode;
   className?: string;
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
   disabled?: boolean;
-  onChange?: ControllerRenderProps["onChange"];
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabledFormMessage?: boolean;
 }
 
 const FloatingLabelInputFormField = ({
-  name,
   label,
   description,
   className,
@@ -193,40 +208,36 @@ const FloatingLabelInputFormField = ({
   onChange,
   disabled = false,
   ...inputProps
-}: FloatingLabelInputFormFieldProps & Omit<ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
-  const { control } = useFormContext();
+}: FloatingLabelInputFormFieldProps &
+  Omit<ComponentProps<typeof Input>, "size" | "value" | "name" | "onChange" | "onBlur">) => {
+  const field = useFieldContext<string>();
   const id = useId();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      disabled={disabled}
-      render={({ field, fieldState }) => (
-        <Field className={cn("w-full", className)} data-invalid={!!fieldState.error}>
-          <FloatingLabelInput
-            {...field}
-            {...inputProps}
-            id={id}
-            aria-invalid={!!fieldState.error}
-            label={label}
-            variant={fieldState.error ? "error" : "default"}
-            size={size}
-            onChange={(e) => {
-              field.onChange(e);
-              onChange?.(e);
-            }}
-          />
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!disabledFormMessage && <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />}
-        </Field>
-      )}
-    />
+    <Field className={cn("w-full", className)} data-invalid={errors.length > 0}>
+      <FloatingLabelInput
+        {...inputProps}
+        value={field.state.value}
+        disabled={disabled}
+        id={id}
+        aria-invalid={errors.length > 0}
+        label={label}
+        variant={errors.length > 0 ? "error" : "default"}
+        size={size}
+        onBlur={field.handleBlur}
+        onChange={(e) => {
+          field.handleChange(e.target.value);
+          onChange?.(e);
+        }}
+      />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {!disabledFormMessage && <FieldError errors={errors} />}
+    </Field>
   );
 };
 
 interface TextareaFormFieldProps {
-  name: string;
   label?: string;
   description?: string;
   required?: boolean;
@@ -235,80 +246,77 @@ interface TextareaFormFieldProps {
 }
 
 const TextareaFormField = ({
-  name,
   label,
   description,
   required = false,
   className,
   disabledFormMessage = false,
   ...textareaProps
-}: TextareaFormFieldProps & Omit<React.ComponentProps<"textarea">, "name" | "className">) => {
-  const { control } = useFormContext();
+}: TextareaFormFieldProps &
+  Omit<React.ComponentProps<"textarea">, "name" | "className" | "value" | "onChange" | "onBlur">) => {
+  const field = useFieldContext<string>();
   const id = useId();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={!!fieldState.error}>
-          {label && (
-            <FieldLabel htmlFor={id}>
-              {label}
-              {required && <span className="ml-1 text-destructive">*</span>}
-            </FieldLabel>
-          )}
-          <Textarea {...field} {...textareaProps} id={id} aria-invalid={!!fieldState.error} className={className} />
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!disabledFormMessage && <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />}
-        </Field>
+    <Field data-invalid={errors.length > 0}>
+      {label && (
+        <FieldLabel htmlFor={id}>
+          {label}
+          {required && <span className="ml-1 text-destructive">*</span>}
+        </FieldLabel>
       )}
-    />
+      <Textarea
+        {...textareaProps}
+        id={id}
+        value={field.state.value}
+        aria-invalid={errors.length > 0}
+        className={className}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {!disabledFormMessage && <FieldError errors={errors} />}
+    </Field>
   );
 };
 
 interface CheckboxFormFieldProps {
-  name: string;
   label: string;
   description?: string;
   onCheckedChange?: (checked: boolean) => void;
 }
 
 const CheckboxFormField = ({
-  name,
   label,
   description,
   onCheckedChange,
   ...props
-}: CheckboxFormFieldProps & ComponentProps<typeof Checkbox>) => {
-  const form = useFormContext();
+}: CheckboxFormFieldProps & Omit<ComponentProps<typeof Checkbox>, "checked" | "onCheckedChange">) => {
+  const field = useFieldContext<boolean>();
   const id = useId();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={form.control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field orientation="horizontal" data-invalid={!!fieldState.error}>
-          <Checkbox
-            id={id}
-            aria-invalid={!!fieldState.error}
-            checked={field.value}
-            onCheckedChange={(checked) => {
-              field.onChange(checked);
-              onCheckedChange?.(checked);
-            }}
-            {...props}
-          />
+    <Field orientation="horizontal" data-invalid={errors.length > 0}>
+      <Checkbox
+        id={id}
+        aria-invalid={errors.length > 0}
+        checked={field.state.value}
+        onCheckedChange={(checked) => {
+          field.handleChange(checked === true);
+          onCheckedChange?.(checked === true);
+        }}
+        onBlur={field.handleBlur}
+        {...props}
+      />
 
-          <FieldLabel htmlFor={id} className="font-normal">
-            {label}
-          </FieldLabel>
-          {description && <FieldDescription className="text-xs">{description}</FieldDescription>}
-          <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />
-        </Field>
-      )}
-    />
+      <FieldLabel htmlFor={id} className="font-normal">
+        {label}
+      </FieldLabel>
+      {description && <FieldDescription className="text-xs">{description}</FieldDescription>}
+      <FieldError errors={errors} />
+    </Field>
   );
 };
 
@@ -318,53 +326,54 @@ interface SelectOption {
 }
 
 interface SelectFormFieldProps {
-  name: string;
   label: string;
   placeholder?: string;
   description?: string;
   options: SelectOption[];
+  onValueChange?(value: string): void;
 }
 
 const SelectFormField = ({
-  name,
   label,
   placeholder = "選択してください",
   description,
   options,
+  onValueChange,
   ...props
-}: SelectFormFieldProps & ComponentProps<typeof Select>) => {
-  const form = useFormContext();
+}: SelectFormFieldProps & Omit<ComponentProps<typeof Select>, "value" | "defaultValue" | "onValueChange">) => {
+  const field = useFieldContext<string>();
   const id = useId();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={form.control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={!!fieldState.error}>
-          <FieldLabel htmlFor={id}>{label}</FieldLabel>
-          <Select onValueChange={field.onChange} {...props} defaultValue={field.value}>
-            <SelectTrigger id={id} aria-invalid={!!fieldState.error}>
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {description && <FieldDescription>{description}</FieldDescription>}
-          <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />
-        </Field>
-      )}
-    />
+    <Field data-invalid={errors.length > 0}>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <Select
+        {...props}
+        value={field.state.value}
+        onValueChange={(value) => {
+          field.handleChange(value);
+          onValueChange?.(value);
+        }}
+      >
+        <SelectTrigger id={id} aria-invalid={errors.length > 0} onBlur={field.handleBlur}>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {description && <FieldDescription>{description}</FieldDescription>}
+      <FieldError errors={errors} />
+    </Field>
   );
 };
 
 interface FloatingLabelSelectFormFieldProps {
-  name: string;
   label: string;
   placeholder?: string;
   description?: string;
@@ -373,74 +382,55 @@ interface FloatingLabelSelectFormFieldProps {
 }
 
 const FloatingLabelSelectFormField = ({
-  name,
   label,
   placeholder = "選択してください",
   description,
   options,
   className,
   ...props
-}: FloatingLabelSelectFormFieldProps & ComponentProps<typeof FloatingLabelSelect>) => {
-  const form = useFormContext();
+}: FloatingLabelSelectFormFieldProps &
+  Omit<
+    ComponentProps<typeof FloatingLabelSelect>,
+    "value" | "defaultValue" | "onValueChange" | "label" | "options"
+  >) => {
+  const field = useFieldContext<string>();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={form.control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field className={className} data-invalid={!!fieldState.error}>
-          <FloatingLabelSelect
-            onValueChange={field.onChange}
-            defaultValue={field.value}
-            label={label}
-            options={options}
-            placeholder={placeholder}
-            {...props}
-          />
-          {description && <FieldDescription>{description}</FieldDescription>}
-          <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />
-        </Field>
-      )}
-    />
+    <Field className={className} data-invalid={errors.length > 0}>
+      <FloatingLabelSelect
+        onValueChange={field.handleChange}
+        value={field.state.value}
+        label={label}
+        options={options}
+        placeholder={placeholder}
+        {...props}
+      />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      <FieldError errors={errors} />
+    </Field>
   );
 };
 
 interface SwitchFormFieldProps {
-  name: string;
   label?: string;
   description?: string;
-  required?: boolean;
 }
 
-const SwitchFormField = ({
-  name,
-  label,
-  description,
-  required,
-  ...props
-}: SwitchFormFieldProps & Omit<React.ComponentProps<typeof Switch>, "name">) => {
-  const { control } = useFormContext();
+const SwitchFormField = ({ label, description }: SwitchFormFieldProps) => {
+  const field = useFieldContext<boolean>();
   const id = useId();
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      rules={{ required }}
-      render={({ field }) => (
-        <Field orientation="horizontal" className="items-start gap-3">
-          <Switch id={id} checked={field.value} onCheckedChange={field.onChange} />
-          <FieldLabel htmlFor={id}>{label}</FieldLabel>
-          <FieldDescription>{description}</FieldDescription>
-        </Field>
-      )}
-      {...props}
-    />
+    <Field orientation="horizontal" className="items-start gap-3">
+      <Switch id={id} checked={field.state.value} onCheckedChange={field.handleChange} onBlur={field.handleBlur} />
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <FieldDescription>{description}</FieldDescription>
+    </Field>
   );
 };
 
 interface TagInputFormFieldProps {
-  name: string;
   label?: string;
   description?: ReactNode;
   className?: string;
@@ -452,7 +442,6 @@ interface TagInputFormFieldProps {
 }
 
 const TagInputFormField = ({
-  name,
   label,
   description,
   className,
@@ -462,49 +451,47 @@ const TagInputFormField = ({
   disabledFormMessage = false,
   maxLength,
 }: TagInputFormFieldProps) => {
-  const { control, setValue, trigger } = useFormContext();
+  const field = useFieldContext<string[]>();
+  const errors = field.state.meta.errors;
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <Field className="w-full" data-invalid={!!fieldState.error}>
-          <TagInput
-            tags={field.value || []}
-            onTagAdd={(tag) => {
-              const newTags = [...field.value, tag];
-              setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-              void trigger(name);
-            }}
-            onTagRemove={(index) => {
-              const newTags = field.value.filter((_: string, i: number) => i !== index);
-              setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-              void trigger(name);
-            }}
-            label={label}
-            maxTags={maxTags}
-            enableDragDrop={enableDragDrop}
-            tagVariant={tagVariant}
-            className={className}
-            maxLength={maxLength}
-          />
-          {description && <FieldDescription>{description}</FieldDescription>}
-          {!disabledFormMessage && <FieldError errors={fieldState.error ? [fieldState.error] : undefined} />}
-        </Field>
-      )}
-    />
+    <Field className="w-full" data-invalid={errors.length > 0}>
+      <TagInput
+        tags={field.state.value || []}
+        onTagAdd={(tag) => {
+          field.handleChange([...field.state.value, tag]);
+        }}
+        onTagRemove={(index) => {
+          field.handleChange(field.state.value.filter((_, i) => i !== index));
+        }}
+        label={label}
+        maxTags={maxTags}
+        enableDragDrop={enableDragDrop}
+        tagVariant={tagVariant}
+        className={className}
+        maxLength={maxLength}
+      />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {!disabledFormMessage && <FieldError errors={errors} />}
+    </Field>
   );
 };
 
-export {
-  CheckboxFormField,
-  FloatingLabelInputFormField,
-  FloatingLabelSelectFormField,
-  InputFormField,
-  MutationInputFormField,
-  SelectFormField,
-  SwitchFormField,
-  TagInputFormField,
-  TextareaFormField,
-};
+const { useAppForm, withForm } = createFormHook({
+  fieldContext,
+  formContext,
+  fieldComponents: {
+    InputFormField,
+    MutationInputFormField,
+    FloatingLabelInputFormField,
+    TextareaFormField,
+    CheckboxFormField,
+    SelectFormField,
+    FloatingLabelSelectFormField,
+    SwitchFormField,
+    TagInputFormField,
+  },
+  formComponents: {},
+});
+
+export { useAppForm, withForm };

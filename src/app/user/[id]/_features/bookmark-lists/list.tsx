@@ -1,13 +1,11 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useStore } from "@tanstack/react-form";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { BookmarkListFormFields } from "@/shared/map/bookmark/lists-popover";
@@ -25,6 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
+import { useAppForm } from "@/ui/form-field-item";
 import { ThumbnailImage } from "@/ui/image";
 import { Small } from "@/ui/typography";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
@@ -153,16 +152,18 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const form = useForm({
-    resolver: zodResolver(MapBookmarkListFormSchema),
+  const form = useAppForm({
+    validators: { onChange: MapBookmarkListFormSchema },
     defaultValues: {
       title: list.title,
       visibility: list.isPublic ? ("public" as const) : ("private" as const),
     },
+    onSubmit: ({ value }) => {
+      const { visibility, ...rest } = value;
+      updateListMutation.mutate({ id: list.id, ...rest, isPublic: visibility === "public" });
+    },
   });
-  const {
-    formState: { isDirty },
-  } = form;
+  const isDirty = useStore(form.store, (state) => state.isDirty);
 
   const updateListMutation = useMutation(
     trpc.map.bookmark.lists.update.mutationOptions({
@@ -178,11 +179,6 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
     }),
   );
 
-  const onSubmit = (data: z.infer<typeof MapBookmarkListFormSchema>) => {
-    const { visibility, ...rest } = data;
-    updateListMutation.mutate({ id: list.id, ...rest, isPublic: visibility === "public" });
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -190,14 +186,19 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
         <DialogHeader>
           <DialogTitle>リストを編集</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <BookmarkListFormFields />
-            <Button type="submit" loading={updateListMutation.isPending} disabled={!isDirty}>
-              編集
-            </Button>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="flex flex-col gap-4"
+        >
+          <BookmarkListFormFields form={form} />
+          <Button type="submit" loading={updateListMutation.isPending} disabled={!isDirty}>
+            編集
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );

@@ -1,16 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type z from "zod/v4";
 import { z as zod } from "zod/v4";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
-import { TextareaFormField } from "@/ui/form-field-item";
+import { useAppForm } from "@/ui/form-field-item";
 
 interface ReportActionsProps {
   reportId: number;
@@ -72,9 +69,16 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const form = useForm<z.infer<typeof banFormSchema>>({
-    resolver: zodResolver(banFormSchema),
+  const form = useAppForm({
+    validators: { onChange: banFormSchema },
     defaultValues: { banReason: "", adminNote: "" },
+    onSubmit: ({ value }) => {
+      ban.mutate({
+        reportId,
+        adminNote: value.adminNote,
+        banReason: value.banReason.trim() || undefined,
+      });
+    },
   });
 
   const ban = useMutation({
@@ -87,14 +91,6 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
     },
     onError: (e) => toast.error(e.message),
   });
-
-  const onSubmit = (values: z.infer<typeof banFormSchema>) => {
-    ban.mutate({
-      reportId,
-      adminNote: values.adminNote,
-      banReason: values.banReason.trim() || undefined,
-    });
-  };
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();
@@ -112,26 +108,36 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
         <DialogHeader>
           <DialogTitle>ユーザーをBANする</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
-            <TextareaFormField name="banReason" label="BAN理由（BANされたユーザーに表示）" rows={3} maxLength={500} />
-            <TextareaFormField
-              name="adminNote"
-              label="管理者コメント（通報したユーザーに通知されます）"
-              rows={3}
-              maxLength={1000}
-              required
-            />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
-                キャンセル
-              </Button>
-              <Button type="submit" variant="destructive" disabled={ban.isPending}>
-                BANする
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="flex flex-col gap-3"
+        >
+          <form.AppField name="banReason">
+            {(field) => <field.TextareaFormField label="BAN理由（BANされたユーザーに表示）" rows={3} maxLength={500} />}
+          </form.AppField>
+          <form.AppField name="adminNote">
+            {(field) => (
+              <field.TextareaFormField
+                label="管理者コメント（通報したユーザーに通知されます）"
+                rows={3}
+                maxLength={1000}
+                required
+              />
+            )}
+          </form.AppField>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+              キャンセル
+            </Button>
+            <Button type="submit" variant="destructive" disabled={ban.isPending}>
+              BANする
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -142,9 +148,12 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const defaultWarningComment = buildDefaultWarningComment(warningCount);
-  const form = useForm<z.infer<typeof warnFormSchema>>({
-    resolver: zodResolver(warnFormSchema),
+  const form = useAppForm({
+    validators: { onChange: warnFormSchema },
     defaultValues: { warningComment: defaultWarningComment, adminNote: "" },
+    onSubmit: ({ value }) => {
+      warn.mutate({ reportId, warningComment: value.warningComment, adminNote: value.adminNote });
+    },
   });
 
   const warn = useMutation({
@@ -157,10 +166,6 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
     },
     onError: (e) => toast.error(e.message),
   });
-
-  const onSubmit = (values: z.infer<typeof warnFormSchema>) => {
-    warn.mutate({ reportId, warningComment: values.warningComment, adminNote: values.adminNote });
-  };
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset({ warningComment: defaultWarningComment, adminNote: "" });
@@ -178,32 +183,43 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
         <DialogHeader>
           <DialogTitle>対象ユーザーに警告する</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
-            <TextareaFormField
-              name="warningComment"
-              label="警告コメント（対象ユーザーに通知されます）"
-              rows={5}
-              maxLength={1000}
-              required
-            />
-            <TextareaFormField
-              name="adminNote"
-              label="管理者コメント（通報したユーザーに通知されます）"
-              rows={3}
-              maxLength={1000}
-              required
-            />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
-                キャンセル
-              </Button>
-              <Button type="submit" variant="warning" disabled={warn.isPending}>
-                警告する
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="flex flex-col gap-3"
+        >
+          <form.AppField name="warningComment">
+            {(field) => (
+              <field.TextareaFormField
+                label="警告コメント（対象ユーザーに通知されます）"
+                rows={5}
+                maxLength={1000}
+                required
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="adminNote">
+            {(field) => (
+              <field.TextareaFormField
+                label="管理者コメント（通報したユーザーに通知されます）"
+                rows={3}
+                maxLength={1000}
+                required
+              />
+            )}
+          </form.AppField>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+              キャンセル
+            </Button>
+            <Button type="submit" variant="warning" disabled={warn.isPending}>
+              警告する
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -213,9 +229,12 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const form = useForm<z.infer<typeof noBanFormSchema>>({
-    resolver: zodResolver(noBanFormSchema),
+  const form = useAppForm({
+    validators: { onChange: noBanFormSchema },
     defaultValues: { adminNote: "" },
+    onSubmit: ({ value }) => {
+      dismiss.mutate({ reportId, adminNote: value.adminNote.trim() || undefined });
+    },
   });
 
   const dismiss = useMutation({
@@ -228,10 +247,6 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
     },
     onError: (e) => toast.error(e.message),
   });
-
-  const onSubmit = (values: z.infer<typeof noBanFormSchema>) => {
-    dismiss.mutate({ reportId, adminNote: values.adminNote.trim() || undefined });
-  };
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();
@@ -249,24 +264,32 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
         <DialogHeader>
           <DialogTitle>BANせずに処理する</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
-            <TextareaFormField
-              name="adminNote"
-              label="管理者コメント（入力した場合のみ、通報したユーザーに通知されます）"
-              rows={3}
-              maxLength={1000}
-            />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
-                キャンセル
-              </Button>
-              <Button type="submit" disabled={dismiss.isPending}>
-                対処不要にする
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="flex flex-col gap-3"
+        >
+          <form.AppField name="adminNote">
+            {(field) => (
+              <field.TextareaFormField
+                label="管理者コメント（入力した場合のみ、通報したユーザーに通知されます）"
+                rows={3}
+                maxLength={1000}
+              />
+            )}
+          </form.AppField>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+              キャンセル
+            </Button>
+            <Button type="submit" disabled={dismiss.isPending}>
+              対処不要にする
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
