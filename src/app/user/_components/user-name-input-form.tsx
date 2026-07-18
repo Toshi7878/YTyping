@@ -3,13 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { useSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
-import { Form } from "@/ui/form";
 import { MutationInputFormField } from "@/ui/form-field-item";
 import { UserNameSchema } from "@/validator/user/profile";
 

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
@@ -13,7 +13,6 @@ import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } fro
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
-import { Form } from "@/ui/form";
 import { InputFormField, SelectFormField } from "@/ui/form-field-item";
 import { ThumbnailImage } from "@/ui/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";

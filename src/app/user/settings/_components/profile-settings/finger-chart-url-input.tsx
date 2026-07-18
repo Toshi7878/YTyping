@@ -4,9 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import { useTRPC } from "@/trpc/provider";
-import { Form } from "@/ui/form";
 import { MutationInputFormField } from "@/ui/form-field-item";
 import { FingerChartUrlFormSchema } from "@/validator/user/profile";
 

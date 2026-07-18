@@ -1,12 +1,11 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { DEFAULT_USER_OPTIONS, type PRESENCE_STATE_TYPES } from "@/server/drizzle/schema";
 import { setUserOptions } from "@/store/user-options";
 import { useTRPC } from "@/trpc/provider";
-import { Form } from "@/ui/form";
 import { CheckboxFormField, SelectFormField } from "@/ui/form-field-item";
 
 interface UserOptionsFormProps {

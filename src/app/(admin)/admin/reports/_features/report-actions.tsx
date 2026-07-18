@@ -3,14 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider as Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod/v4";
 import { z as zod } from "zod/v4";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
-import { Form } from "@/ui/form";
 import { TextareaFormField } from "@/ui/form-field-item";
 
 interface ReportActionsProps {
