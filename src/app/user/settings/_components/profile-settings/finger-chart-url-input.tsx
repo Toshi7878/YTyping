@@ -29,7 +29,6 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
             label="みんなの運指表URL"
             placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
             successMessage="URLを更新しました"
-            onSuccess={(value) => form.reset({ url: value })}
             mutation={update}
           />
         )}

@@ -25,7 +25,6 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
           mutation={upsertKeyboard}
           label="使用キーボード"
           successMessage="更新しました"
-          onSuccess={(value) => form.reset({ keyboard: value })}
           className="w-md"
         />
       )}

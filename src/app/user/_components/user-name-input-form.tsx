@@ -3,6 +3,7 @@
 import { useStore } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useSession } from "@/auth/client";
 import { useTRPC } from "@/trpc/provider";
@@ -20,10 +21,15 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const pathname = usePathname();
   const trpc = useTRPC();
 
+  // currentName を defaultValues に使い、更新成功時に form.reset() と同時に更新する。
+  // session由来の値を直接defaultValuesに使うと、送信成功でform.reset()がisTouchedをクリアした
+  // 直後の再レンダリングでdefaultValuesがreset後の値と一致せず、useAppFormの内部effectが
+  // 「defaultValuesが変わった」と誤検知して値を巻き戻してしまう
+  const [currentName, setCurrentName] = useState(session?.user?.name ?? "");
   const form = useAppForm({
     validators: { onChange: UserNameSchema },
     defaultValues: {
-      newName: session?.user?.name ?? "",
+      newName: currentName,
     },
     onSubmit: ({ value }) => {
       updateUserName.mutate({ name: value.newName });
@@ -34,6 +40,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const updateUserName = useMutation(
     trpc.auth.updateName.mutationOptions({
       onSuccess: async (_data, variables) => {
+        setCurrentName(variables.name);
         form.reset({ newName: variables.name });
         toast.success("名前を更新しました");
 

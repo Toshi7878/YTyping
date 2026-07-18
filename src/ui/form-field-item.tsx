@@ -139,6 +139,7 @@ const MutationInputFormField = ({
       }
       disabledFormMessage={true}
       onChange={(e) => {
+        field.handleChange(e.target.value);
         props.onChange?.(e);
         mutation.reset();
         field.setErrorMap({ ...field.state.meta.errorMap, onSubmit: undefined });
