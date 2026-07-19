@@ -101,7 +101,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "csv-parse": "^6.1.0",
     "dotenv-cli": "^11.0.0",
-    "drizzle-kit": "1.0.0-beta.22",
+    "drizzle-kit": "1.0.0-rc.4-ca0f029",
     "dts-bundle-generator": "^9.0.0",
     "husky": "^9.1.7",
     "supabase": "^2.48.3",
