@@ -44,7 +44,9 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         form.reset({ newName: variables.name });
         toast.success("名前を更新しました");
 
-        refetchSession();
+        // disableCookieCacheを指定しないと、session cookie cache(5分)が有効な間はDBを見ずに
+        // 古いnameのままのセッションが返ってきてしまう(name更新直後は特に古い値が返りやすい)
+        await refetchSession({ query: { disableCookieCache: true } });
         if (pathname === "/user/register") {
           router.refresh();
         }
