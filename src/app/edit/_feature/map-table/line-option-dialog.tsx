@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { type Dispatch, useEffect, useState } from "react";
 import z from "zod";
 import { setRawMapAction, useRawMap } from "@/app/edit/_feature/map-table/map-reducer";
@@ -94,7 +94,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
     },
   });
 
-  const isDirty = useStore(form.store, (state) => state.isDirty);
+  const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   const handleModalClose = async () => {
     if (!isDirty) {
@@ -112,7 +112,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
     }
   };
 
-  const isChangeCSSValue = useStore(form.store, (state) => state.values.isChangeCSS);
+  const isChangeCSSValue = useSelector(form.store, (state) => state.values.isChangeCSS);
 
   return (
     <DialogWithContent

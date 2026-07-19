@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
       updateUserName.mutate({ name: value.newName });
     },
   });
-  const isDirty = useStore(form.store, (state) => state.isDirty);
+  const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   const updateUserName = useMutation(
     trpc.auth.updateName.mutationOptions({

@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "@bprogress/next";
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
 import { useRef, useState } from "react";
@@ -47,7 +47,7 @@ export const NewMapPopover = () => {
     },
   });
 
-  const watchedVideoId = useStore(form.store, (state) => state.values.videoId);
+  const watchedVideoId = useSelector(form.store, (state) => state.values.videoId);
   const extractedVideoId = extractYouTubeId(watchedVideoId);
 
   const inputRef = useRef<HTMLInputElement>(null);

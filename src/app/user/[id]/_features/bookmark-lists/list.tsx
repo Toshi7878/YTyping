@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -163,7 +163,7 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
       updateListMutation.mutate({ id: list.id, ...rest, isPublic: visibility === "public" });
     },
   });
-  const isDirty = useStore(form.store, (state) => state.isDirty);
+  const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   const updateListMutation = useMutation(
     trpc.map.bookmark.lists.update.mutationOptions({

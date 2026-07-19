@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { queryOptions, useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { atom, useAtomValue } from "jotai";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
@@ -149,7 +149,7 @@ export const EditMapInfoFormCard = () => {
     visibility: mapInfo.info.visibility,
   });
 
-  const tags = useStore(form.store, (state) => state.values.tags);
+  const tags = useSelector(form.store, (state) => state.values.tags);
 
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
@@ -315,7 +315,7 @@ export const AddMapInfoFormCard = () => {
     return () => subscription.unsubscribe();
   }, [videoId, form, debounce]);
 
-  const tags = useStore(form.store, (state) => state.values.tags);
+  const tags = useSelector(form.store, (state) => state.values.tags);
 
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
@@ -394,8 +394,8 @@ export const AddMapInfoFormCard = () => {
 const UpsertButton = withForm({
   defaultValues: mapInfoFormShape,
   render: ({ form }) => {
-    const isDirty = useStore(form.store, (state) => state.isDirty);
-    const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+    const isDirty = useSelector(form.store, (state) => state.isDirty);
+    const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
     const canUpload = useCanUpload();
     const { data: session } = useSession();
     const creatorId = useCreatorId();
@@ -416,8 +416,8 @@ const VideoIdInput = withForm({
   defaultValues: mapInfoFormShape,
   props: {} as { readOnly?: boolean },
   render: ({ form, readOnly = false }) => {
-    const formVideoId = useStore(form.store, (state) => state.values.videoId);
-    const isVideoIdDirty = useStore(form.store, (state) => state.fieldMeta.videoId?.isDirty ?? false);
+    const formVideoId = useSelector(form.store, (state) => state.values.videoId);
+    const isVideoIdDirty = useSelector(form.store, (state) => state.fieldMeta.videoId?.isDirty ?? false);
 
     return (
       <div className="flex items-center gap-4">
