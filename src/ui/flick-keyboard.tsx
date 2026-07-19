@@ -57,7 +57,7 @@ const FLICK_KEYS: FlickKey[] = [
     toggle: ["あ", "い", "う", "え", "お"],
   },
   {
-    id: "ka"
+    id: "ka",
     c: "か",
     l: "き",
     u: "く",
