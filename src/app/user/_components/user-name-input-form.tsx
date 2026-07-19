@@ -60,7 +60,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         if (error.data?.code === "CONFLICT") {
           form.setFieldMeta("newName", (prev) => ({
             ...prev,
-            errorMap: { ...prev.errorMap, onSubmit: error.message },
+            errorMap: { ...prev.errorMap, onSubmit: { message: error.message } },
           }));
         }
       },

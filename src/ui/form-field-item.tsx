@@ -142,7 +142,7 @@ const MutationInputFormField = ({
         field.handleChange(e.target.value);
         props.onChange?.(e);
         mutation.reset();
-        field.setErrorMap({ ...field.state.meta.errorMap, onSubmit: undefined });
+        field.setMeta((prev) => ({ ...prev, errorMap: { ...prev.errorMap, onSubmit: undefined } }));
         cancel();
         const { value } = e.currentTarget;
 
