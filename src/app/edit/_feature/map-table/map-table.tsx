@@ -45,9 +45,9 @@ import { scrollMapTableToRow } from "./scroll";
 import { wordSearchReplace } from "./word-search-replace";
 
 const playingLineIndexAtom = atom(0);
-// const cssTextLengthAtom = atom(0);
+prov// const cssTextLengthAtom = atom(0);
 
-export const useIsPlayingLine = (index: number) => {
+const useIsPlayingLine = (index: number) => {
   return useAtomValue(
     selectAtom(playingLineIndexAtom, (s) => s === index),
     { store },

@@ -20,7 +20,12 @@ export const updateUserResult = (
     typeCountDelta,
     newWordResults,
     nextWordIndex,
-  }: { name: string; typeCountDelta: number; newWordResults: WordResult[]; nextWordIndex: number },
+  }: {
+    name: string;
+    typeCountDelta: number;
+    newWordResults: WordResult[];
+    nextWordIndex: number;
+  },
 ) => {
   const userResult = getUserResult(id);
 
@@ -63,8 +68,6 @@ const resultRankingAtom = atom((get) => {
 });
 
 export const useResultRanking = () => useAtomValue(resultRankingAtom);
-export const getResultRanking = () => store.get(resultRankingAtom);
-
 const resultDialogAtom = atom(false);
 
 const useIsOpen = () => useAtomValue(resultDialogAtom);

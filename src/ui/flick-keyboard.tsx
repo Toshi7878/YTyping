@@ -47,18 +47,107 @@ interface FlickKeyboardProps {
 // ── Kana key data ──────────────────────────────────────────────────────────
 
 const FLICK_KEYS: FlickKey[] = [
-  { id: "a", c: "あ", l: "い", u: "う", r: "え", d: "お", toggle: ["あ", "い", "う", "え", "お"] },
-  { id: "ka", c: "か", l: "き", u: "く", r: "け", d: "こ", toggle: ["か", "き", "く", "け", "こ"] },
-  { id: "sa", c: "さ", l: "し", u: "す", r: "せ", d: "そ", toggle: ["さ", "し", "す", "せ", "そ"] },
-  { id: "ta", c: "た", l: "ち", u: "つ", r: "て", d: "と", toggle: ["た", "ち", "つ", "て", "と"] },
-  { id: "na", c: "な", l: "に", u: "ぬ", r: "ね", d: "の", toggle: ["な", "に", "ぬ", "ね", "の"] },
-  { id: "ha", c: "は", l: "ひ", u: "ふ", r: "へ", d: "ほ", toggle: ["は", "ひ", "ふ", "へ", "ほ"] },
-  { id: "ma", c: "ま", l: "み", u: "む", r: "め", d: "も", toggle: ["ま", "み", "む", "め", "も"] },
-  { id: "ya", c: "や", l: "「", u: "ゆ", r: "」", d: "よ", toggle: ["や", "ゆ", "よ"] },
-  { id: "ra", c: "ら", l: "り", u: "る", r: "れ", d: "ろ", toggle: ["ら", "り", "る", "れ", "ろ"] },
+  {
+    id: "a",
+    c: "あ",
+    l: "い",
+    u: "う",
+    r: "え",
+    d: "お",
+    toggle: ["あ", "い", "う", "え", "お"],
+  },
+  {
+    id: "ka"
+    c: "か",
+    l: "き",
+    u: "く",
+    r: "け",
+    d: "こ",
+    toggle: ["か", "き", "く", "け", "こ"],
+  },
+  {
+    id: "sa",
+    c: "さ",
+    l: "し",
+    u: "す",
+    r: "せ",
+    d: "そ",
+    toggle: ["さ", "し", "す", "せ", "そ"],
+  },
+  {
+    id: "ta",
+    c: "た",
+    l: "ち",
+    u: "つ",
+    r: "て",
+    d: "と",
+    toggle: ["た", "ち", "つ", "て", "と"],
+  },
+  {
+    id: "na",
+    c: "な",
+    l: "に",
+    u: "ぬ",
+    r: "ね",
+    d: "の",
+    toggle: ["な", "に", "ぬ", "ね", "の"],
+  },
+  {
+    id: "ha",
+    c: "は",
+    l: "ひ",
+    u: "ふ",
+    r: "へ",
+    d: "ほ",
+    toggle: ["は", "ひ", "ふ", "へ", "ほ"],
+  },
+  {
+    id: "ma",
+    c: "ま",
+    l: "み",
+    u: "む",
+    r: "め",
+    d: "も",
+    toggle: ["ま", "み", "む", "め", "も"],
+  },
+  {
+    id: "ya",
+    c: "や",
+    l: "「",
+    u: "ゆ",
+    r: "」",
+    d: "よ",
+    toggle: ["や", "ゆ", "よ"],
+  },
+  {
+    id: "ra",
+    c: "ら",
+    l: "り",
+    u: "る",
+    r: "れ",
+    d: "ろ",
+    toggle: ["ら", "り", "る", "れ", "ろ"],
+  },
   { id: "mod", type: "mod", face: "小゛゜", c: "小" },
-  { id: "wa", c: "わ", l: "を", u: "ん", r: "ー", d: "〜", toggle: ["わ", "を", "ん", "ー", "〜"] },
-  { id: "kut", c: "、", l: "。", u: "？", r: "！", d: "…", face: "、。?!", toggle: ["、", "。", "？", "！", "…"] },
+  {
+    id: "wa",
+    c: "わ",
+    l: "を",
+    u: "ん",
+    r: "ー",
+    d: "〜",
+    toggle: ["わ", "を", "ん", "ー", "〜"],
+  },
+  {
+    id: "kut",
+    c: "、",
+    l: "。",
+    u: "？",
+    r: "！",
+    d: "…",
+    face: "、。?!",
+    toggle: ["、", "。", "？", "！", "…"],
+  },
 ];
 
 const MOD_CYCLE: Record<string, string[]> = {
@@ -320,7 +409,11 @@ const fnCellSurfaceVariants = cva("", {
   compoundVariants: [
     { pressed: true, theme: "light", class: "bg-[#E3E5EA] text-[#1A1A1A]" },
     { pressed: true, theme: "dark", class: "bg-[#2d2e30] text-white" },
-    { pressed: false, theme: "light", class: "bg-[#B4B8C0] text-[#1A1A1A]" },
+    {
+      pressed: false,
+      theme: "light",
+      class: "bg-[#B4B8C0] text-[#1A1A1A]",
+    },
     { pressed: false, theme: "dark", class: "bg-[#434345] text-white" },
   ],
 });
@@ -367,7 +460,12 @@ function ContentCell({
           cellShellVariants({ theme }),
           "flex-col gap-px tracking-[0.5px] [font-variant-ligatures:none]",
           getCellTextClass(k, activeMode),
-          highlighted ? "bg-[#2E92FA] text-white" : contentCellSurfaceVariants({ theme, pressed: isPressed }),
+          highlighted
+            ? "bg-[#2E92FA] text-white"
+            : contentCellSurfaceVariants({
+                theme,
+                pressed: isPressed,
+              }),
           dimmed && "opacity-50",
         )}
         style={{
@@ -502,7 +600,12 @@ function Popup({ press, gridRef, activeMode, posMap, caps, isDark }: PopupProps)
   const top = press.cy - panelH / 2;
 
   const has = { u: !!k.u, d: !!k.d, l: !!k.l, r: !!k.r };
-  const slots: { slot: "c" | "l" | "r" | "u" | "d"; row: number; col: number; ch: string | undefined }[] = [
+  const slots: {
+    slot: "c" | "l" | "r" | "u" | "d";
+    row: number;
+    col: number;
+    ch: string | undefined;
+  }[] = [
     { slot: "u", row: 1, col: 2, ch: k.u },
     { slot: "l", row: 2, col: 1, ch: k.l },
     { slot: "c", row: 2, col: 2, ch: k.c },
@@ -573,9 +676,18 @@ function QuickFlickPopup({ quickFlick, gridRef, activeMode, posMap, caps, isDark
       left: quickFlick.cx - w / 2,
       top: quickFlick.cy - (isTopRowUpFlick ? topRowUpOffsetY : offsetY) - h / 2,
     },
-    d: { left: quickFlick.cx - w / 2, top: quickFlick.cy + offsetY - h / 2 },
-    l: { left: quickFlick.cx - offsetX - w / 2, top: quickFlick.cy - h / 2 },
-    r: { left: quickFlick.cx + offsetX - w / 2, top: quickFlick.cy - h / 2 },
+    d: {
+      left: quickFlick.cx - w / 2,
+      top: quickFlick.cy + offsetY - h / 2,
+    },
+    l: {
+      left: quickFlick.cx - offsetX - w / 2,
+      top: quickFlick.cy - h / 2,
+    },
+    r: {
+      left: quickFlick.cx + offsetX - w / 2,
+      top: quickFlick.cy - h / 2,
+    },
     c: { left: quickFlick.cx - w / 2, top: quickFlick.cy - h / 2 },
   } satisfies Record<"c" | "l" | "r" | "u" | "d", { left: number; top: number }>;
   const shapePaths = {
@@ -676,7 +788,18 @@ function FlickKeyboard({
         const pointerId = e.pointerId;
         setQuickFlicks((prev) => {
           const without = prev.filter((q) => q.pointerId !== pointerId);
-          return dir !== "c" && s.key[dir] ? [...without, { pointerId, key: s.key, dir, cx: s.cx, cy: s.cy }] : without;
+          return dir !== "c" && s.key[dir]
+            ? [
+                ...without,
+                {
+                  pointerId,
+                  key: s.key,
+                  dir,
+                  cx: s.cx,
+                  cy: s.cy,
+                },
+              ]
+            : without;
         });
         setPresses((prev) => prev.map((p) => (p.pointerId === pointerId ? { ...p, dir } : p)));
       }
@@ -749,7 +872,14 @@ function FlickKeyboard({
     const g = gridRef.current.getBoundingClientRect();
     const r = e.currentTarget.getBoundingClientRect();
     const pointers = pointersRef.current;
-    const s: PointerTrack = { key, sx: e.clientX, sy: e.clientY, dir: "c", cx: 0, cy: 0 };
+    const s: PointerTrack = {
+      key,
+      sx: e.clientX,
+      sy: e.clientY,
+      dir: "c",
+      cx: 0,
+      cy: 0,
+    };
     pointers.set(pointerId, s);
     setPressedKeyIds((prev) => {
       const next = new Map(prev);
@@ -838,8 +968,19 @@ function FlickKeyboard({
               />
             ))}
           {/* right column */}
-          {fnCell({ id: "del", col: 5, row: 1, action: { type: "delete" } })}
-          {fnCell({ id: "space", col: 5, row: 2, label: "空白", action: { type: "space" } })}
+          {fnCell({
+            id: "del",
+            col: 5,
+            row: 1,
+            action: { type: "delete" },
+          })}
+          {fnCell({
+            id: "space",
+            col: 5,
+            row: 2,
+            label: "空白",
+            action: { type: "space" },
+          })}
           {fnCell({
             id: "next",
             col: 5,
@@ -877,5 +1018,5 @@ function FlickKeyboard({
   );
 }
 
-export type { FlickEvent, FlickKey, FlickKeyboardProps, FlickMode };
+export type { FlickEvent, FlickMode };
 export { applyMod, dirOf, FLICK_KEYS, FlickKeyboard, getFlickModeForChar, MOD_CYCLE };

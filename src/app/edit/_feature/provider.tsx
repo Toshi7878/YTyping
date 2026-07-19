@@ -17,7 +17,7 @@ export const creatorIdAtom = atomWithReset<number | null>(null);
 export const useCreatorId = () => useAtomValue(creatorIdAtom, { store });
 export const setCreatorId = (value: ExtractAtomValue<typeof creatorIdAtom>) => store.set(creatorIdAtom, value);
 
-export const videoIdAtom = atomWithReset("");
+const videoIdAtom = atomWithReset("");
 export const useVideoId = () => useAtomValue(videoIdAtom, { store });
 export const getVideoId = () => store.get(videoIdAtom);
 export const setVideoId = (value: string) => store.set(videoIdAtom, value);
