@@ -88,7 +88,7 @@ const InputFormField = ({ onChange, ...props }: InputFormFieldProps & Omit<Input
       {...props}
       id={id}
       value={field.state.value}
-      errors={field.state.meta.errors}
+      errors={field.state.meta.isTouched ? field.state.meta.errors : []}
       onBlur={field.handleBlur}
       onChange={(e) => {
         field.handleChange(e.target.value);
@@ -117,7 +117,7 @@ const MutationInputFormField = ({
   const field = useFieldContext<string>();
   const id = useId();
   const { debounce, isPending, cancel } = useDebounce(debounceDelay);
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <InputField
@@ -213,7 +213,7 @@ const FloatingLabelInputFormField = ({
   Omit<ComponentProps<typeof Input>, "size" | "value" | "name" | "onChange" | "onBlur">) => {
   const field = useFieldContext<string>();
   const id = useId();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field className={cn("w-full", className)} data-invalid={errors.length > 0}>
@@ -257,7 +257,7 @@ const TextareaFormField = ({
   Omit<React.ComponentProps<"textarea">, "name" | "className" | "value" | "onChange" | "onBlur">) => {
   const field = useFieldContext<string>();
   const id = useId();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field data-invalid={errors.length > 0}>
@@ -296,7 +296,7 @@ const CheckboxFormField = ({
 }: CheckboxFormFieldProps & Omit<ComponentProps<typeof Checkbox>, "checked" | "onCheckedChange">) => {
   const field = useFieldContext<boolean>();
   const id = useId();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field orientation="horizontal" data-invalid={errors.length > 0}>
@@ -344,7 +344,7 @@ const SelectFormField = ({
 }: SelectFormFieldProps & Omit<ComponentProps<typeof Select>, "value" | "defaultValue" | "onValueChange">) => {
   const field = useFieldContext<string>();
   const id = useId();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field data-invalid={errors.length > 0}>
@@ -395,7 +395,7 @@ const FloatingLabelSelectFormField = ({
     "value" | "defaultValue" | "onValueChange" | "label" | "options"
   >) => {
   const field = useFieldContext<string>();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field className={className} data-invalid={errors.length > 0}>
@@ -453,7 +453,7 @@ const TagInputFormField = ({
   maxLength,
 }: TagInputFormFieldProps) => {
   const field = useFieldContext<string[]>();
-  const errors = field.state.meta.errors;
+  const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
   return (
     <Field className="w-full" data-invalid={errors.length > 0}>
