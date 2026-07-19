@@ -58,6 +58,7 @@
         "useSingleVarDeclarator": "error",
         "useThrowNewError": "error",
         "useFilenamingConvention": {
+          "level": "error",
           "options": {
             "filenameCases": ["kebab-case"]
           }
