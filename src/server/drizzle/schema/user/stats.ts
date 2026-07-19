@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { date, index, integer, pgTable, primaryKey, real, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./user";
 
-export const userDailyTypeCounts = pgTable(
+export const userDailyTypeCounts = pgTable.withRLS(
   "user_daily_type_counts",
   {
     userId: integer("user_id")
@@ -19,7 +19,7 @@ export const userDailyTypeCounts = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.date], name: "user_daily_type_counts_user_id_date_pk" })],
 );
 
-export const userMapCompletionPlayCounts = pgTable(
+export const userMapCompletionPlayCounts = pgTable.withRLS(
   "user_map_completion_play_counts",
   {
     userId: integer("user_id")
@@ -33,7 +33,7 @@ export const userMapCompletionPlayCounts = pgTable(
   ],
 );
 
-export const userStats = pgTable(
+export const userStats = pgTable.withRLS(
   "user_stats",
   {
     userId: integer("user_id")
@@ -53,6 +53,16 @@ export const userStats = pgTable(
     maxCombo: integer("max_combo").default(0).notNull(),
     createdAt: timestamp("created_at").default(sql`now()`).notNull(),
     totalPp: integer("total_pp").default(0).notNull(),
+    romaPp: integer("roma_pp").default(0).notNull(),
+    kanaPp: integer("kana_pp").default(0).notNull(),
+    flickPp: integer("flick_pp").default(0).notNull(),
+    englishPp: integer("english_pp").default(0).notNull(),
   },
-  (table) => [index("user_stats_total_pp_idx").using("btree", table.totalPp.asc().nullsLast())],
+  (table) => [
+    index("user_stats_total_pp_idx").using("btree", table.totalPp.asc().nullsLast()),
+    index("user_stats_roma_pp_idx").using("btree", table.romaPp.asc().nullsLast()),
+    index("user_stats_kana_pp_idx").using("btree", table.kanaPp.asc().nullsLast()),
+    index("user_stats_flick_pp_idx").using("btree", table.flickPp.asc().nullsLast()),
+    index("user_stats_english_pp_idx").using("btree", table.englishPp.asc().nullsLast()),
+  ],
 );

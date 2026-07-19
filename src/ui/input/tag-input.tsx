@@ -5,12 +5,10 @@ import { X } from "lucide-react";
 import type React from "react";
 import type { KeyboardEvent } from "react";
 import { useState } from "react";
-import { useFormContext } from "react-hook-form";
 import type { badgeVariants } from "@/ui/badge";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { cn } from "@/utils/cn";
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";
 
 interface TagInputProps {
@@ -26,7 +24,7 @@ interface TagInputProps {
   maxLength?: number;
 }
 
-const TagInput = ({
+export const TagInput = ({
   tags,
   onTagAdd,
   onTagRemove,
@@ -120,65 +118,3 @@ const TagInput = ({
     </div>
   );
 };
-
-interface TagInputFormFieldProps {
-  name: string;
-  label?: string;
-  description?: React.ReactNode;
-  className?: string;
-  maxTags?: number;
-  enableDragDrop?: boolean;
-  tagVariant?: VariantProps<typeof badgeVariants>["variant"];
-  disabledFormMessage?: boolean;
-  maxLength?: number;
-}
-
-const TagInputFormField = ({
-  name,
-  label,
-  description,
-  className,
-  maxTags,
-  enableDragDrop = true,
-  tagVariant = "secondary",
-  disabledFormMessage = false,
-  maxLength,
-}: TagInputFormFieldProps) => {
-  const { control, setValue, trigger } = useFormContext();
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="w-full">
-          <FormControl>
-            <TagInput
-              tags={field.value || []}
-              onTagAdd={(tag) => {
-                const newTags = [...field.value, tag];
-                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-                void trigger(name);
-              }}
-              onTagRemove={(index) => {
-                const newTags = field.value.filter((_: string, i: number) => i !== index);
-                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-                void trigger(name);
-              }}
-              label={label}
-              maxTags={maxTags}
-              enableDragDrop={enableDragDrop}
-              tagVariant={tagVariant}
-              className={className}
-              maxLength={maxLength}
-            />
-          </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          {!disabledFormMessage && <FormMessage />}
-        </FormItem>
-      )}
-    />
-  );
-};
-
-export { TagInput, TagInputFormField };

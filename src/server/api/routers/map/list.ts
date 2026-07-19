@@ -12,6 +12,7 @@ import {
   maps,
   resultStatuses,
   results,
+  tags,
   users,
 } from "@/server/drizzle/schema";
 import {
@@ -21,8 +22,7 @@ import {
   type mapSortSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
-import { bookmarkedMapExists } from "../../lib/map";
-import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { type ProtectedCtx, protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -32,16 +32,31 @@ const myLike = alias(mapLikes, "my_like");
 const myResult = alias(results, "my_result");
 const myResultStatus = alias(resultStatuses, "my_result_status");
 
+const createUserBookmarksSq = (db: DBType, userId: number) =>
+  db
+    .select({ mapId: mapBookmarkListItems.mapId })
+    .from(mapBookmarkListItems)
+    .innerJoin(
+      mapBookmarkLists,
+      and(eq(mapBookmarkLists.id, mapBookmarkListItems.listId), eq(mapBookmarkLists.userId, userId)),
+    )
+    .groupBy(mapBookmarkListItems.mapId)
+    .as("user_bookmarks");
+
+type UserBookmarksSq = ReturnType<typeof createUserBookmarksSq>;
+
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, sort, ...searchInput } = input ?? {};
     const { db, session } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
+    const bookmarkSq = session ? createUserBookmarksSq(db, session.user.id) : null;
 
     const mapItems = await buildBaseQuery(
-      db.select(buildBaseSelect(db, session)).from(maps).$dynamic(),
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
       session,
+      bookmarkSq,
       searchInput,
     )
       .limit(limit)
@@ -53,7 +68,7 @@ export const mapListRouter = {
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
-    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, input);
+    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, null, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
@@ -62,8 +77,13 @@ export const mapListRouter = {
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { videoId } = input;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    return await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.videoId, videoId))
       .orderBy(desc(maps.id));
   }),
@@ -71,27 +91,62 @@ export const mapListRouter = {
   getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { title } = input;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    return await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    return await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.title, title))
       .orderBy(desc(maps.id));
   }),
 
   getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
+    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    const map = await buildBaseQuery(db.select(buildBaseSelect(db, session)).from(maps).$dynamic(), session)
+    const map = await buildBaseQuery(
+      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+      session,
+      bookmarkSq,
+    )
       .where(eq(maps.id, input.mapId))
       .limit(1)
       .then((rows) => rows[0]);
 
     return map;
   }),
+
+  getSearchSuggestions: publicProcedure
+    .input(z.object({ keyword: z.string().trim().min(1) }))
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
+      const keyword = input.keyword;
+      const pattern = `%${keyword}%`;
+
+      const [tagResults, titleResults] = await Promise.all([
+        db
+          .select({ name: tags.name })
+          .from(tags)
+          .where(ilike(tags.name, pattern))
+          .orderBy(desc(tags.mapCount))
+          .limit(5),
+        db
+          .select({ id: maps.id, title: maps.title, artistName: maps.artistName })
+          .from(maps)
+          .where(and(eq(maps.visibility, "PUBLIC"), ilike(maps.title, pattern)))
+          .orderBy(desc(maps.likeCount))
+          .limit(5),
+      ]);
+
+      return { tags: tagResults, titles: titleResults };
+    }),
 } satisfies TRPCRouterRecord;
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
+const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookmarksSq | null) =>
   ({
     id: maps.id,
     updatedAt: maps.updatedAt,
@@ -113,8 +168,6 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       name: creator.name,
     },
     difficulty: {
-      romaKpmMedian: mapDifficulties.romaKpmMedian,
-      kanaKpmMedian: mapDifficulties.kanaKpmMedian,
       romaKpmMax: mapDifficulties.romaKpmMax,
       kanaKpmMax: mapDifficulties.kanaKpmMax,
       romaTotalNotes: mapDifficulties.romaTotalNotes,
@@ -127,7 +180,9 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
       rating: mapDifficulties.rating,
     },
     bookmark: {
-      hasBookmarked: session ? bookmarkedMapExists(db, session) : sql`false`.mapWith(Boolean),
+      hasBookmarked: bookmarkSq
+        ? sql<boolean>`(${bookmarkSq.mapId} IS NOT NULL)`.mapWith(Boolean)
+        : sql`false`.mapWith(Boolean),
     },
     like: {
       count: maps.likeCount,
@@ -150,6 +205,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
 const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   db: T,
   session: TRPCContext["session"],
+  bookmarkSq: UserBookmarksSq | null,
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
   let baseQuery = db
@@ -161,6 +217,11 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     baseQuery = baseQuery
       .leftJoin(myLike, and(eq(myLike.mapId, maps.id), eq(myLike.userId, session.user.id)))
       .leftJoin(myResult, and(eq(myResult.mapId, maps.id), eq(myResult.userId, session.user.id)));
+  }
+
+  if (bookmarkSq) {
+    // @ts-expect-error
+    baseQuery = baseQuery.leftJoin(bookmarkSq, eq(bookmarkSq.mapId, maps.id));
   }
 
   if (!input) return baseQuery;
@@ -199,7 +260,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     session ? filterByRankingStatus(input.rankingStatus) : undefined,
     filterByDifficulty({ minRate: input.minRate, maxRate: input.maxRate }),
     filterByKeyword(input.keyword),
-    input ? filterByChunkCount(input) : undefined,
+    input ? filterByEnglishRatio(input) : undefined,
     input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
     input.bookmarkListId
@@ -212,7 +273,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
 
 function filterByFilterType(
   filterType: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
-  session: NonNullable<TRPCContext["session"]>,
+  session: ProtectedCtx["session"],
 ) {
   switch (filterType) {
     case "liked": {
@@ -292,18 +353,26 @@ const filterByRankingStatus = (
 const filterByKeyword = (keyword?: string | null) => {
   if (!keyword || keyword.trim() === "") return;
 
-  const keywords = keyword.trim().split(/\s+/);
+  const keywordGroups = keyword
+    .trim()
+    .split(/\s+/)
+    .map((keyword) => keyword.split("/").filter(Boolean))
+    .filter((keywords) => keywords.length > 0);
 
-  const conditions = keywords.map((keyword) => {
-    const pattern = `%${keyword}%`;
-    return or(
-      ilike(maps.title, pattern),
-      ilike(maps.artistName, pattern),
-      ilike(maps.musicSource, pattern),
-      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
-      ilike(creator.name, pattern),
-    );
-  });
+  const conditions = keywordGroups.map((keywords) =>
+    or(
+      ...keywords.map((keyword) => {
+        const pattern = `%${keyword}%`;
+        return or(
+          ilike(maps.title, pattern),
+          ilike(maps.artistName, pattern),
+          ilike(maps.musicSource, pattern),
+          sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
+          ilike(creator.name, pattern),
+        );
+      }),
+    ),
+  );
 
   return and(...conditions);
 };
@@ -323,18 +392,28 @@ export const filterByMapVisibility = (
   return or(eq(maps.visibility, "PUBLIC"), and(eq(maps.visibility, "UNLISTED"), eq(maps.creatorId, session.user.id)));
 };
 
-const filterByChunkCount = (
-  input: Pick<z.output<typeof MapSearchFilterSchema>, "maxKanaChunkCount" | "minAlphabetChunkCount">,
-) => {
+const filterByEnglishRatio = (input: Pick<z.output<typeof MapSearchFilterSchema>, "englishRatio">) => {
   const conditions: SQL[] = [];
-  const { maxKanaChunkCount, minAlphabetChunkCount } = input ?? {};
+  const { englishRatio } = input ?? {};
 
-  if (typeof maxKanaChunkCount === "number" && maxKanaChunkCount >= 0) {
-    conditions.push(lte(mapDifficulties.kanaChunkCount, maxKanaChunkCount));
-  }
+  if (typeof englishRatio === "number") {
+    const languageChunkCount = sql`(${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`;
 
-  if (typeof minAlphabetChunkCount === "number" && minAlphabetChunkCount >= 0) {
-    conditions.push(gte(mapDifficulties.alphabetChunkCount, minAlphabetChunkCount));
+    if (englishRatio === 0) {
+      return and(eq(mapDifficulties.alphabetChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    if (englishRatio === 100) {
+      return and(eq(mapDifficulties.kanaChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    conditions.push(
+      sql`${languageChunkCount} > 0`,
+      sql`${mapDifficulties.kanaChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 >= ${englishRatio - 10} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 < ${englishRatio + 10} * ${languageChunkCount}`,
+    );
   }
 
   return and(...conditions);

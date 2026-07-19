@@ -1,17 +1,15 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq, max, sql } from "drizzle-orm";
+import { and, eq, inArray, max, sql } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
-import { env } from "@/env";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
-import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, users } from "@/server/drizzle/schema";
+import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, mapTags, tags, users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { calcRating } from "../../../../shared/map/rating/calc";
-import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
-import { mapBookmarkListItemRouter } from "./bookmark/list-item";
+import { bookmarkedMapExists, mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";
@@ -30,7 +28,12 @@ export const mapRouter = {
           videoId: maps.videoId,
         },
         info: {
-          tags: maps.tags,
+          tags: sql<string[]>`(
+            SELECT COALESCE(array_agg(t.name ORDER BY t.name), ARRAY[]::varchar[])
+            FROM map_tags mt
+            JOIN tags t ON t.id = mt.tag_id
+            WHERE mt.map_id = ${maps.id}
+          )`,
           title: maps.title,
           artistName: maps.artistName,
           source: maps.musicSource,
@@ -97,10 +100,11 @@ export const mapRouter = {
     }),
 
   upsert: protectedProcedure.input(upsertMapItemSchema).mutation(async ({ input, ctx }) => {
-    if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
+    // if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
 
     const { db, session } = ctx;
     const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
+    const { tags: tagNames, ...mapInfoWithoutTags } = mapInfo;
     const { id: userId, role: userRole } = session.user;
 
     const existingMapRow =
@@ -130,11 +134,11 @@ export const mapRouter = {
           .insert(maps)
           .values({
             id: nextId,
-            ...mapInfo,
+            ...mapInfoWithoutTags,
             creatorId: userId,
             category: getMapCategories(rawMapJson),
-            publishedAt: mapInfo.visibility === "PUBLIC" ? new Date() : undefined,
-            visibility: mapInfo.visibility,
+            publishedAt: mapInfoWithoutTags.visibility === "PUBLIC" ? new Date() : undefined,
+            visibility: mapInfoWithoutTags.visibility,
           })
           .returning({ id: maps.id })
           .then((res) => res[0]?.id);
@@ -142,10 +146,10 @@ export const mapRouter = {
         newId = await tx
           .update(maps)
           .set({
-            ...mapInfo,
+            ...mapInfoWithoutTags,
             category: getMapCategories(rawMapJson),
             ...(isMapDataEdited ? { updatedAt: new Date() } : {}),
-            ...(existingMapRow?.publishedAt === null && mapInfo.visibility === "PUBLIC"
+            ...(existingMapRow?.publishedAt === null && mapInfoWithoutTags.visibility === "PUBLIC"
               ? { publishedAt: new Date() }
               : {}),
           })
@@ -166,6 +170,8 @@ export const mapRouter = {
         .values({ mapId: newId, ...mapDifficulty, rating })
         .onConflictDoUpdate({ target: [mapDifficulties.mapId], set: { ...mapDifficulty, rating } });
 
+      await upsertMapTags(tx, newId, tagNames);
+
       await uploadPublicFile({
         key: `map-json/${mapId === null ? newId : mapId}.json`,
         body: JSON.stringify(rawMapJson, null, 2),
@@ -182,6 +188,38 @@ export const mapRouter = {
   like: mapLikeRouter,
   bookmark: { lists: mapBookmarkListsRouter, listItem: mapBookmarkListItemRouter },
 } satisfies TRPCRouterRecord;
+
+const upsertMapTags = async (tx: TXType, mapId: number, tagNames: string[]) => {
+  const oldTagRows = await tx.select({ tagId: mapTags.tagId }).from(mapTags).where(eq(mapTags.mapId, mapId));
+
+  const tagRows =
+    tagNames.length > 0
+      ? await tx
+          .insert(tags)
+          .values(tagNames.map((name) => ({ name })))
+          .onConflictDoUpdate({ target: [tags.name], set: { name: sql`EXCLUDED.name` } })
+          .returning({ id: tags.id })
+      : [];
+
+  await tx.delete(mapTags).where(eq(mapTags.mapId, mapId));
+  if (tagRows.length > 0) {
+    await tx.insert(mapTags).values(tagRows.map(({ id: tagId }) => ({ mapId, tagId })));
+  }
+
+  const affectedTagIds = [...new Set([...oldTagRows.map((r) => r.tagId), ...tagRows.map((r) => r.id)])];
+  if (affectedTagIds.length > 0) {
+    await tx
+      .update(tags)
+      .set({
+        mapCount: sql`(
+          SELECT COUNT(*) FROM map_tags mt
+          JOIN maps m ON m.id = mt.map_id AND m.visibility = 'PUBLIC'
+          WHERE mt.tag_id = ${tags.id}
+        )`,
+      })
+      .where(inArray(tags.id, affectedTagIds));
+  }
+};
 
 const getNextMapId = async (db: TXType) => {
   const maxId = await db

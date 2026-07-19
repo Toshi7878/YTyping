@@ -134,9 +134,8 @@ export function useAddBookmarkListItemMutation() {
       onSuccess: (_data, input, ctx) => {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
-        queryClient.invalidateQueries(
-          trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
-        );
+        queryClient.invalidateQueries(trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId }));
+        queryClient.invalidateQueries(trpc.map.bookmark.lists.getForSession.queryFilter());
       },
     }),
   );

@@ -11,7 +11,8 @@ import { store } from "../provider";
 const userResultMapAtom = atom<Map<string, UserResult>>(new Map());
 
 export const getUserResult = (id: string) => store.get(userResultMapAtom).get(id);
-
+export const getUserResults = () =>
+  Array.from(store.get(userResultMapAtom).entries()).map(([userId, result]) => ({ ...result, userId }));
 export const updateUserResult = (
   id: string,
   {
@@ -19,7 +20,12 @@ export const updateUserResult = (
     typeCountDelta,
     newWordResults,
     nextWordIndex,
-  }: { name: string; typeCountDelta: number; newWordResults: WordResult[]; nextWordIndex: number },
+  }: {
+    name: string;
+    typeCountDelta: number;
+    newWordResults: WordResult[];
+    nextWordIndex: number;
+  },
 ) => {
   const userResult = getUserResult(id);
 
@@ -31,6 +37,13 @@ export const updateUserResult = (
       currentWordIndex: nextWordIndex,
     }),
   );
+};
+
+export const updateUserName = (id: string, name: string) => {
+  const userResult = getUserResult(id);
+  if (!userResult) return;
+
+  store.set(userResultMapAtom, (prev) => new Map(prev).set(id, { ...userResult, name }));
 };
 
 export const resetUserResultMap = () => store.set(userResultMapAtom, new Map());
@@ -45,6 +58,7 @@ const resultRankingAtom = atom((get) => {
       name,
       score: Math.round((1000 / map.totalNotes) * typeCount),
       wordResults,
+      typeCount,
       currentWordIndex,
     }));
   return scored.map((entry, _, arr) => ({
@@ -54,8 +68,6 @@ const resultRankingAtom = atom((get) => {
 });
 
 export const useResultRanking = () => useAtomValue(resultRankingAtom);
-export const getResultRanking = () => store.get(resultRankingAtom);
-
 const resultDialogAtom = atom(false);
 
 const useIsOpen = () => useAtomValue(resultDialogAtom);
@@ -83,7 +95,7 @@ export const ResultDialog = () => {
           <div className="flex-1 space-y-4 overflow-hidden">
             {displayedResult && (
               <>
-                <ResultStatus score={displayedResult.score} typeCount={displayedResult.wordResults.length} />
+                <ResultStatus score={displayedResult.score} typeCount={displayedResult.typeCount} />
                 <ResultWordsTable
                   wordResults={displayedResult.wordResults}
                   currentWordIndex={displayedResult.currentWordIndex}

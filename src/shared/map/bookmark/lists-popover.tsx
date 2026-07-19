@@ -1,10 +1,8 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
@@ -13,11 +11,9 @@ import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } fro
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
-import { Form } from "@/ui/form";
+import { useAppForm, withForm } from "@/ui/form-field-item";
 import { ThumbnailImage } from "@/ui/image";
-import { InputFormField } from "@/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
-import { SelectFormField } from "@/ui/select/select-form-field";
 import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -25,6 +21,11 @@ import { H4, Small } from "@/ui/typography";
 import { cn } from "@/utils/cn";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { MAX_BOOKMARK_LIST_LENGTH, MapBookmarkListFormSchema } from "@/validator/map/bookmark";
+
+const bookmarkListFormDefaultValues: z.infer<typeof MapBookmarkListFormSchema> = {
+  title: "",
+  visibility: "public",
+};
 
 interface BookmarkListPopoverProps {
   mapId: number;
@@ -123,15 +124,21 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
 
 const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   const [open, setOpen] = useState(false);
-  const form = useForm({
-    resolver: zodResolver(MapBookmarkListFormSchema),
-    defaultValues: {
-      title: "",
-      visibility: "public" as const,
-    },
-  });
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+  const form = useAppForm({
+    validators: { onChange: MapBookmarkListFormSchema },
+    defaultValues: bookmarkListFormDefaultValues,
+    onSubmit: ({ value }) => {
+      const { visibility, ...rest } = value;
+      createListMutation.mutate({
+        ...rest,
+        isPublic: visibility === "public",
+      });
+    },
+  });
+
   const createListMutation = useMutation(
     trpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
@@ -152,14 +159,6 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
     }),
   );
 
-  const onSubmit = (data: z.infer<typeof MapBookmarkListFormSchema>) => {
-    const { visibility, ...rest } = data;
-    createListMutation.mutate({
-      ...rest,
-      isPublic: visibility === "public",
-    });
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -171,30 +170,38 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
         <DialogHeader>
           <DialogTitle>新しいリストを作成</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <BookmarkListFormFields />
-            <Button type="submit">作成</Button>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="flex flex-col gap-4"
+        >
+          <BookmarkListFormFields form={form} />
+          <Button type="submit">作成</Button>
+        </form>
       </DialogContent>
     </Dialog>
   );
 };
 
-export const BookmarkListFormFields = () => {
-  return (
+export const BookmarkListFormFields = withForm({
+  defaultValues: bookmarkListFormDefaultValues,
+  render: ({ form }) => (
     <>
-      <InputFormField name="title" label="リスト名" />
-      <SelectFormField
-        name="visibility"
-        label="公開範囲"
-        defaultValue="public"
-        options={[
-          { value: "public", label: "公開" },
-          { value: "private", label: "非公開" },
-        ]}
-      />
+      <form.AppField name="title">{(field) => <field.InputFormField label="リスト名" />}</form.AppField>
+      <form.AppField name="visibility">
+        {(field) => (
+          <field.SelectFormField
+            label="公開範囲"
+            options={[
+              { value: "public", label: "公開" },
+              { value: "private", label: "非公開" },
+            ]}
+          />
+        )}
+      </form.AppField>
     </>
-  );
-};
+  ),
+});

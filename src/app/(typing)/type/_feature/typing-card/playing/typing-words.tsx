@@ -7,6 +7,7 @@ import {
   setMainWordElements,
   setSubWordElements,
   setWordContainerElement,
+  useFlickPendingModConversion,
   usePlayingInputModeState,
 } from "../../atoms/typing-word";
 import { useTypingOptionsState } from "../../tabs/setting/popover";
@@ -121,6 +122,78 @@ export const TypingWords = () => {
         refs={subRefs}
         isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
       />
+    </div>
+  );
+};
+
+export const FlickTypingWord = () => {
+  const pendingModConversion = useFlickPendingModConversion();
+  const builtMap = useBuiltMapState();
+  const {
+    wordDisplay,
+    mainWordFontSize,
+    mainWordTopPosition,
+    kanaWordSpacing,
+    lineCompletedDisplay,
+    isCaseSensitive: isCaseSensitiveTypingOptions,
+  } = useTypingOptionsState();
+  const replayRankingResult = useReplayRankingResultState();
+  const { otherStatus } = replayRankingResult ?? {};
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
+
+  const wordContainerRef = useRef<HTMLDivElement | null>(null);
+  const mainRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+    nextWordRef: { current: null as HTMLSpanElement | null },
+  }).current;
+
+  const style = {
+    kanaLetterSpacing: `${kanaWordSpacing.toFixed(2)}em`,
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: マウント時のみ要素をatomにセットしたいため
+  useEffect(() => {
+    if (
+      mainRefs.viewportRef.current &&
+      mainRefs.trackRef.current &&
+      mainRefs.caretRef.current &&
+      mainRefs.nextWordRef.current
+    ) {
+      setMainWordElements({
+        viewportRef: mainRefs.viewportRef.current,
+        trackRef: mainRefs.trackRef.current,
+        caretRef: mainRefs.caretRef.current,
+        nextWordRef: mainRefs.nextWordRef.current,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (wordContainerRef.current) {
+      setWordContainerElement(wordContainerRef.current);
+    }
+  }, []);
+
+  return (
+    <div ref={wordContainerRef} className="word-font word-outline-text relative w-full whitespace-nowrap text-2xl">
+      <Word
+        id="main_word"
+        className={cn("word-kana", getWordCaseClass("kana", isCaseSensitive, wordDisplay))}
+        style={{
+          fontSize: `${mainWordFontSize}%`,
+          bottom: mainWordTopPosition,
+          letterSpacing: style.kanaLetterSpacing,
+        }}
+        refs={mainRefs}
+        isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
+      />
+      {pendingModConversion && (
+        <span className="absolute -top-5 right-0 text-sm text-word-nextChar opacity-80">
+          →{pendingModConversion.target}
+        </span>
+      )}
     </div>
   );
 };

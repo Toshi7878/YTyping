@@ -141,6 +141,7 @@ const handleStart = (player: YT.Player) => {
 
   const readyInputMode = getReadyInputMode();
   setPlayingInputMode(readyInputMode);
+  dispatchTypeEvent("change-input-mode", { newInputMode: readyInputMode });
   dispatchTypeEvent("yt:start", { scene: getScene() });
 };
 
@@ -173,10 +174,14 @@ const handlePlay = async ({ target: player }: { target: YT.Player }) => {
   dispatchTypeEvent("yt:play", {});
 };
 
-const handlePause = () => {
+const handlePause = ({ target: player }: { target: YT.Player }) => {
   console.log("一時停止");
 
   stopTimer();
+
+  // 一時停止中もiframeにフォーカスが残っていると、jキー等のYouTubeネイティブショートカットで
+  // ゲーム側の状態を伴わずに動画だけ操作されてしまうため、フォーカスを外す
+  player.getIframe()?.blur();
 
   const isPaused = getIsPaused();
   const scene = getScene();

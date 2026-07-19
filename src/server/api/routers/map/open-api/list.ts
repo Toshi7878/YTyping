@@ -17,8 +17,7 @@ import {
   type MapSearchFilterSchema,
   SelectMapListOpenApiSchema,
 } from "@/validator/map/list";
-import { OPENAPI_RATE_LIMITS } from "../../../lib/rate-limit-config";
-import { createRateLimitMiddleware, publicProcedure } from "../../../trpc";
+import { publicProcedure } from "../../../trpc";
 import { createPagination } from "../../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -27,7 +26,6 @@ const liker = alias(mapLikes, "liker");
 
 export const mapListOpenApiRouter = {
   get: publicProcedure
-    .use(createRateLimitMiddleware(OPENAPI_RATE_LIMITS["/maps"].get))
     .meta({
       openapi: {
         method: "GET",
@@ -121,6 +119,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(db: T, input?: z.output<
 
   const searchConditions = [
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+    buildChunkRatioCondition(input.englishRatio),
     buildKeywordCondition(input.keyword),
     input.creatorId ? eq(maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(liker.userId, input.likerId), eq(liker.hasLiked, true)) : undefined,
@@ -182,21 +181,55 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
   return and(...conditions);
 }
 
+function buildChunkRatioCondition(englishRatio?: number | null) {
+  const conditions: SQL[] = [];
+
+  if (typeof englishRatio === "number") {
+    const languageChunkCount = sql`(${mapDifficulties.kanaChunkCount} + ${mapDifficulties.alphabetChunkCount})`;
+
+    if (englishRatio === 0) {
+      return and(eq(mapDifficulties.alphabetChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    if (englishRatio === 100) {
+      return and(eq(mapDifficulties.kanaChunkCount, 0), sql`${languageChunkCount} > 0`);
+    }
+
+    conditions.push(
+      sql`${languageChunkCount} > 0`,
+      sql`${mapDifficulties.kanaChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} > 0`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 >= ${englishRatio - 10} * ${languageChunkCount}`,
+      sql`${mapDifficulties.alphabetChunkCount} * 100 < ${englishRatio + 10} * ${languageChunkCount}`,
+    );
+  }
+
+  return and(...conditions);
+}
+
 const buildKeywordCondition = (keyword?: string | null) => {
   if (!keyword || keyword.trim() === "") return;
 
-  const keywords = keyword.trim().split(/\s+/);
+  const keywordGroups = keyword
+    .trim()
+    .split(/\s+/)
+    .map((keyword) => keyword.split("/").filter(Boolean))
+    .filter((keywords) => keywords.length > 0);
 
-  const conditions = keywords.map((keyword) => {
-    const pattern = `%${keyword}%`;
-    return or(
-      ilike(maps.title, pattern),
-      ilike(maps.artistName, pattern),
-      ilike(maps.musicSource, pattern),
-      sql`array_to_string(${maps.tags}, ',') ilike ${pattern}`,
-      ilike(creator.name, pattern),
-    );
-  });
+  const conditions = keywordGroups.map((keywords) =>
+    or(
+      ...keywords.map((keyword) => {
+        const pattern = `%${keyword}%`;
+        return or(
+          ilike(maps.title, pattern),
+          ilike(maps.artistName, pattern),
+          ilike(maps.musicSource, pattern),
+          sql`EXISTS (SELECT 1 FROM map_tags mt JOIN tags t ON t.id = mt.tag_id WHERE mt.map_id = ${maps.id} AND t.name ILIKE ${pattern})`,
+          ilike(creator.name, pattern),
+        );
+      }),
+    ),
+  );
 
   return and(...conditions);
 };

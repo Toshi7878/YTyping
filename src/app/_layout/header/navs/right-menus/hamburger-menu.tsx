@@ -2,6 +2,7 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import type { Session } from "@/auth/client";
 import { useSession } from "@/auth/client";
 import { useIsDesktopDeviceState } from "@/store/user-agent";
 import { Button } from "@/ui/button";
@@ -43,11 +44,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
           <ThemeDropdownSubmenu />
           <DropdownMenuSeparator />
 
-          {session?.user?.name ? (
-            <UserMenuDropdownItems userId={session.user.id} />
-          ) : (
-            !session && <SignInDropdownItems />
-          )}
+          {session?.user?.name ? <UserMenuDropdownItems session={session} /> : !session && <SignInDropdownItems />}
           {session?.user?.name && (
             <>
               <DropdownMenuSeparator />
@@ -81,8 +78,8 @@ const MenuDropdownItems = () => {
   );
 };
 
-const UserMenuDropdownItems = ({ userId }: { userId: number }) => {
-  const userMenuLinkItems = buildUserMenuLinkItems(userId);
+const UserMenuDropdownItems = ({ session }: { session: Session }) => {
+  const userMenuLinkItems = buildUserMenuLinkItems(session);
   return (
     <>
       {userMenuLinkItems.map((item) => (

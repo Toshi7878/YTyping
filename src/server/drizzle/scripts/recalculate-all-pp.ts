@@ -4,11 +4,11 @@
  *
  * @example pnpm pp:recalculate
  */
-import { desc, eq } from "drizzle-orm";
-import type { TXType } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
+import { recalculateUserPP } from "@/server/api/utils/recalculate-user-pp";
 import { db } from "@/server/drizzle/client";
-import { calcRawPP, calcTotalPP, resultToRawPPInput, TOTAL_PP_TOP_N } from "@/shared/result/pp/calc";
-import { resultStatuses, results, userStats } from "../schema";
+import { calcRawPP, resultToRawPPInput } from "@/shared/result/pp/calc";
+import { resultStatuses, results } from "../schema";
 
 const BATCH = 150;
 
@@ -58,33 +58,13 @@ async function main() {
     const chunk = userRows.slice(i, i + BATCH);
     await db.transaction(async (tx) => {
       for (const { userId } of chunk) {
-        await syncUserTotalPP(tx, userId);
+        await recalculateUserPP(tx, userId);
       }
     });
     console.log(`  user_stats.total_pp 更新: ${Math.min(i + BATCH, userRows.length)} / ${userRows.length}`);
   }
 
   console.log("完了");
-}
-
-async function syncUserTotalPP(tx: TXType, userId: number) {
-  const ppRows = await tx
-    .select({ pp: resultStatuses.pp })
-    .from(resultStatuses)
-    .innerJoin(results, eq(results.id, resultStatuses.resultId))
-    .where(eq(results.userId, userId))
-    .orderBy(desc(resultStatuses.pp))
-    .limit(TOTAL_PP_TOP_N);
-
-  const totalPp = Math.round(calcTotalPP(ppRows));
-
-  await tx
-    .insert(userStats)
-    .values({ userId, totalPp })
-    .onConflictDoUpdate({
-      target: [userStats.userId],
-      set: { totalPp },
-    });
 }
 
 main().catch((e) => {

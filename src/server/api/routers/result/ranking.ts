@@ -1,7 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, desc, eq, inArray, lte, max } from "drizzle-orm";
+import { and, desc, eq, inArray, lte, max, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import { revalidateTag, unstable_cache } from "next/cache";
 import z from "zod/v4";
 import { env } from "@/env";
 import { uploadPublicFile } from "@/server/api/lib/storage";
@@ -10,79 +9,73 @@ import {
   maps,
   notificationOverTakes,
   notifications,
+  resultClaps,
   resultStatuses,
   results,
-  userStats,
   users,
 } from "@/server/drizzle/schema";
+import { calcRawPP, resultToRawPPInput } from "@/shared/result/pp/calc";
 import { CreateResultSchema } from "@/validator/result/result";
-import { calcRawPP, calcTotalPP, resultToRawPPInput, TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { gzipCompress } from "../../utils/gzip";
+import { recalculateUserPP } from "../../utils/recalculate-user-pp";
 import { generateNotificationId } from "../notification";
-import { getRankingClapCounts } from "./clap";
 
-export const rankingCacheTag = (mapId: number) => `ranking-${mapId}`;
+const player = alias(users, "player");
+const myClap = alias(resultClaps, "my_clap");
 
 export const resultRankingRouter = {
   get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, session } = ctx;
     const { mapId } = input;
 
-    const player = alias(users, "player");
-    const ranking = await unstable_cache(
-      async () =>
-        db
-          .select({
-            id: results.id,
-            updatedAt: results.updatedAt,
-            rank: results.rank,
-            score: resultStatuses.score,
-            player: { id: player.id, name: player.name },
-            typeCounts: {
-              romaType: resultStatuses.romaType,
-              kanaType: resultStatuses.kanaType,
-              flickType: resultStatuses.flickType,
-              englishType: resultStatuses.englishType,
-              symbolType: resultStatuses.symbolType,
-              spaceType: resultStatuses.spaceType,
-              numType: resultStatuses.numType,
-            },
-            otherStatus: {
-              playSpeed: resultStatuses.minPlaySpeed,
-              miss: resultStatuses.miss,
-              lost: resultStatuses.lost,
-              maxCombo: resultStatuses.maxCombo,
-              clearRate: resultStatuses.clearRate,
-              isCaseSensitive: resultStatuses.isCaseSensitive,
-              pp: resultStatuses.pp,
-            },
-            typeSpeed: {
-              kpm: resultStatuses.kpm,
-              rkpm: resultStatuses.rkpm,
-              kanaToRomaKpm: resultStatuses.kanaToRomaKpm,
-              kanaToRomaRkpm: resultStatuses.kanaToRomaRkpm,
-            },
-          })
-          .from(results)
-          .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-          .innerJoin(player, eq(player.id, results.userId))
-          .where(eq(results.mapId, mapId))
-          .orderBy(desc(resultStatuses.score)),
-      [rankingCacheTag(mapId)],
-      { tags: [rankingCacheTag(mapId)] },
-    )();
-
-    const clapDetails = await getRankingClapCounts(db, session, input.mapId);
-    const clapMap = new Map(clapDetails.map((c) => [c.resultId, c]));
-
-    return ranking.map((item) => {
-      const clap = clapMap.get(item.id);
-      return {
-        ...item,
-        clap: { count: clap?.clapCount ?? 0, hasClapped: clap?.hasClapped ?? false },
-      };
-    });
+    return db
+      .select({
+        id: results.id,
+        updatedAt: results.updatedAt,
+        rank: results.rank,
+        score: resultStatuses.score,
+        player: { id: player.id, name: player.name },
+        typeCounts: {
+          romaType: resultStatuses.romaType,
+          kanaType: resultStatuses.kanaType,
+          flickType: resultStatuses.flickType,
+          englishType: resultStatuses.englishType,
+          symbolType: resultStatuses.symbolType,
+          spaceType: resultStatuses.spaceType,
+          numType: resultStatuses.numType,
+        },
+        otherStatus: {
+          playSpeed: resultStatuses.minPlaySpeed,
+          miss: resultStatuses.miss,
+          lost: resultStatuses.lost,
+          maxCombo: resultStatuses.maxCombo,
+          clearRate: resultStatuses.clearRate,
+          isCaseSensitive: resultStatuses.isCaseSensitive,
+          pp: resultStatuses.pp,
+        },
+        typeSpeed: {
+          kpm: resultStatuses.kpm,
+          rkpm: resultStatuses.rkpm,
+          kanaToRomaKpm: resultStatuses.kanaToRomaKpm,
+          kanaToRomaRkpm: resultStatuses.kanaToRomaRkpm,
+        },
+        clap: {
+          count: results.clapCount,
+          hasClapped: session ? sql`COALESCE(${myClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+        },
+      })
+      .from(results)
+      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
+      .innerJoin(player, eq(player.id, results.userId))
+      .leftJoin(
+        myClap,
+        session
+          ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
+          : eq(myClap.resultId, results.id),
+      )
+      .where(and(eq(results.mapId, mapId), eq(player.banned, false)))
+      .orderBy(desc(resultStatuses.score));
   }),
 
   register: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
@@ -98,7 +91,7 @@ export const resultRankingRouter = {
     const statusWithPp = { ...status, pp, starRatingSnapshot: map.rating };
 
     const existingResult = await db.query.results.findFirst({ where: { userId, mapId }, columns: { id: true } });
-    const txResult = await db.transaction(async (tx) => {
+    const result = await db.transaction(async (tx) => {
       let resultId: number | undefined;
 
       if (existingResult) {
@@ -124,16 +117,7 @@ export const resultRankingRouter = {
         .values({ resultId, ...statusWithPp })
         .onConflictDoUpdate({ target: [resultStatuses.resultId], set: statusWithPp });
 
-      await recalculateUserTotalPP(tx, userId);
-
-      const jsonString = JSON.stringify(lineResults, null, 2);
-      const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
-
-      await uploadPublicFile({
-        key: `result-json/${resultId}.json.gz`,
-        body: compressed,
-        contentType: "application/gzip",
-      });
+      await recalculateUserPP(tx, userId);
 
       const rankedUsers = await tx
         .select({
@@ -143,7 +127,8 @@ export const resultRankingRouter = {
         })
         .from(results)
         .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-        .where(eq(results.mapId, mapId))
+        .innerJoin(users, eq(users.id, results.userId))
+        .where(and(eq(results.mapId, mapId), eq(users.banned, false)))
         .orderBy(desc(resultStatuses.score));
 
       await removeStaleOvertakeNotifications({ tx, mapId, userId, rankedUsers });
@@ -155,12 +140,19 @@ export const resultRankingRouter = {
       const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
       const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
 
-      return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
+      return { id: resultId, rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
     });
 
-    revalidateTag(rankingCacheTag(mapId), "max");
+    const jsonString = JSON.stringify(lineResults, null, 2);
+    const compressed = await gzipCompress(Buffer.from(jsonString, "utf8"));
 
-    return txResult;
+    await uploadPublicFile({
+      key: `result-json/${result.id}.json.gz`,
+      body: compressed,
+      contentType: "application/gzip",
+    });
+
+    return result;
   }),
 } satisfies TRPCRouterRecord;
 
@@ -293,21 +285,3 @@ const upsertOvertakeNotification = async (
     });
   }
 };
-
-/** ユーザーの全スコア pp から total pp を再計算し `user_stats.total_pp` を更新する */
-async function recalculateUserTotalPP(tx: TXType, userId: number) {
-  const rows = await tx
-    .select({ pp: resultStatuses.pp })
-    .from(resultStatuses)
-    .innerJoin(results, eq(results.id, resultStatuses.resultId))
-    .where(eq(results.userId, userId))
-    .orderBy(desc(resultStatuses.pp))
-    .limit(TOTAL_PP_TOP_N);
-
-  const totalPP = Math.round(calcTotalPP(rows));
-
-  await tx
-    .insert(userStats)
-    .values({ userId, totalPp: totalPP })
-    .onConflictDoUpdate({ target: [userStats.userId], set: { totalPp: totalPP } });
-}

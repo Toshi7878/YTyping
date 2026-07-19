@@ -3,7 +3,7 @@ import { boolean, check, integer, pgTable, primaryKey, real, timestamp, uniqueIn
 import { maps } from "./map";
 import { users } from "./user/user";
 
-export const results = pgTable(
+export const results = pgTable.withRLS(
   "results",
   {
     id: integer().primaryKey(),
@@ -26,7 +26,7 @@ export const results = pgTable(
   ],
 );
 
-export const resultClaps = pgTable(
+export const resultClaps = pgTable.withRLS(
   "result_claps",
   {
     userId: integer("user_id")
@@ -41,7 +41,7 @@ export const resultClaps = pgTable(
   (table) => [primaryKey({ columns: [table.userId, table.resultId], name: "result_claps_user_id_result_id_pk" })],
 );
 
-export const resultStatuses = pgTable(
+export const resultStatuses = pgTable.withRLS(
   "result_statuses",
   {
     resultId: integer("result_id")
@@ -76,7 +76,7 @@ export const resultStatuses = pgTable(
   ],
 );
 
-export const imeResults = pgTable("ime_results", {
+export const imeResults = pgTable.withRLS("ime_results", {
   id: integer().primaryKey(),
   userId: integer("user_id")
     .notNull()

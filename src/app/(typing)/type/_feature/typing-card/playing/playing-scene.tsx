@@ -1,10 +1,11 @@
 "use client";
 
 import { atom, type SetStateAction } from "jotai";
-import { createTypingWord, handleTyping, isTypingKey } from "lyrics-typing-engine";
+import { createTypingWord, executeTypingInput, handleTyping, isTypingKey, type TypingWord } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession } from "@/auth/client";
+import { type FlickEvent, MOD_CYCLE } from "@/ui/flick-keyboard";
 import { cn } from "@/utils/cn";
 import { getTimezone } from "@/utils/date";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -12,7 +13,13 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { getReplayRankingResult } from "../../atoms/replay";
 import { getTypingStats, resetTypingStats, type TypingStats } from "../../atoms/stats";
 import { store } from "../../atoms/store";
-import { getPlayingInputMode, getTypingWord, setTypingWord } from "../../atoms/typing-word";
+import {
+  getFlickPendingModConversion,
+  getPlayingInputMode,
+  getTypingWord,
+  setFlickPendingModConversion,
+  setTypingWord,
+} from "../../atoms/typing-word";
 import { resetCurrentLine } from "../../lib/play-restart";
 import { triggerMissSound, triggerTypeCompletedSound, triggerTypeSound } from "../../lib/sound-effect";
 import { getTypingOptions } from "../../tabs/setting/popover";
@@ -46,8 +53,42 @@ interface PlayingProps {
 }
 
 export const PlayingScene = ({ className }: PlayingProps) => {
-  const scene = useSceneState();
   const activeElement = useActiveElement();
+  usePlayingSetup();
+
+  // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
+  useEffect(() => {
+    const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
+
+    if (!isTextInput) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeElement]);
+
+  return (
+    <div
+      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
+      id="typing_scene"
+      onTouchStart={() => {
+        if (getActiveSkipKey()) {
+          const count = getLineCount();
+          skipLine(count);
+        }
+      }}
+    >
+      <TypingWords />
+      <Lyrics />
+      <NextLyrics />
+    </div>
+  );
+};
+
+export const usePlayingSetup = () => {
+  const scene = useSceneState();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -87,36 +128,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       resetCurrentLine(map);
     }
   }, [scene, map]);
-
-  // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
-  useEffect(() => {
-    const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
-
-    if (!isTextInput) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [activeElement]);
-
-  return (
-    <div
-      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
-      id="typing_scene"
-      onTouchStart={() => {
-        if (getActiveSkipKey()) {
-          const count = getLineCount();
-          skipLine(count);
-        }
-      }}
-    >
-      <TypingWords />
-      <Lyrics />
-      <NextLyrics />
-    </div>
-  );
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
@@ -126,14 +137,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
   const typingWord = getTypingWord();
-  if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
+  const inputMode = getPlayingInputMode();
+  if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event) && inputMode !== "flick") {
     const map = getBuiltMap();
     if (!map) return;
 
     const typingOptions = getTypingOptions();
     const { otherStatus } = getReplayRankingResult() ?? {};
     const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
-    const inputMode = getPlayingInputMode();
 
     handleTyping(
       { event, inputMode, isCaseSensitive, typingWord },
@@ -197,6 +208,122 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (!isHotKeyIgnored(event)) {
     playHotkey(event);
   }
+};
+
+export const handleFlickInput = (e: FlickEvent) => {
+  const isPaused = getIsPaused();
+  const scene = getScene();
+  const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
+  if (!shouldAcceptTyping) return;
+
+  const typingWord = getTypingWord();
+  const nextKana = typingWord.nextChunk.kana[0];
+  if (!nextKana) return;
+
+  const map = getBuiltMap();
+  if (!map) return;
+
+  const typingOptions = getTypingOptions();
+  const { otherStatus } = getReplayRankingResult() ?? {};
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map.isCaseSensitive || typingOptions.isCaseSensitive);
+
+  const applyTypingInput = (inputChar: string, currentWord: TypingWord): TypingWord => {
+    // kanaInputは大文字小文字を区別しない場合、期待文字を小文字化して比較するため、
+    // フリック入力側(英語配列はデフォルトで大文字)も合わせて小文字化する
+    const normalizedChar = isCaseSensitive ? inputChar : inputChar.toLowerCase();
+
+    const { nextTypingWord, successKey, failKey, isCompleted, updatePoint, chunkType } = executeTypingInput({
+      inputChar: normalizedChar,
+      inputMode: "kana",
+      typingWord: currentWord,
+      isCaseSensitive,
+    });
+
+    if (successKey) {
+      const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
+      if (isCompleted) {
+        triggerTypeCompletedSound();
+      } else {
+        triggerTypeSound();
+      }
+      setTypingWord(nextTypingWord);
+      updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
+      updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
+      dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
+
+      if (isCompleted) {
+        triggerTypeCompletedSound();
+
+        if (!isPaused) {
+          updateTypingTime({ constantLineTime });
+        }
+
+        const count = getLineCount();
+        if (hasLineResultImproved(count)) {
+          saveLineResult(count, constantLineTime);
+        }
+
+        dispatchTypeEvent("type:lineCompleted", { constantLineTime });
+
+        if (scene === "practice") {
+          recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
+
+          if (isPaused) {
+            const newCurrentLine = map.lines[count];
+            if (newCurrentLine) {
+              setTypingWord(createTypingWord(newCurrentLine));
+            }
+          }
+        }
+      }
+    } else if (failKey && currentWord.correct.roma) {
+      const { constantLineTime } = getRemainLineTime();
+      triggerMissSound();
+      updateMissStatus();
+      updateMissSubstatus({ constantLineTime, failKey });
+      dispatchTypeEvent("type:miss", { failKey });
+    }
+
+    return nextTypingWord;
+  };
+
+  const pending = getFlickPendingModConversion();
+
+  // modキーの操作(タップ/フリックいずれも): 変換待ち中の文字を確定してエンジンへ送信する
+  if ((e.type === "tap" && e.key.type === "mod") || e.type === "modConfirm") {
+    if (pending) {
+      applyTypingInput(pending.target, typingWord);
+      setFlickPendingModConversion(null);
+    }
+    return;
+  }
+
+  let baseChar: string | null = null;
+  if (e.type === "tap") {
+    if (e.key.type !== "caps") baseChar = e.key.c;
+  } else if (e.type === "flick") {
+    baseChar = e.char;
+  } else if (e.type === "space") {
+    baseChar = " ";
+  }
+
+  if (baseChar === null) {
+    if (pending) setFlickPendingModConversion(null);
+    return;
+  }
+
+  // 入力した文字がmod変換のベースであり、期待される次のかなが変換候補に含まれる場合は、
+  // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)
+  const candidates = MOD_CYCLE[baseChar];
+  if (candidates && nextKana !== baseChar && candidates.includes(nextKana)) {
+    triggerTypeSound();
+    setFlickPendingModConversion({ target: nextKana });
+    return;
+  }
+
+  if (pending) setFlickPendingModConversion(null);
+
+  applyTypingInput(baseChar, typingWord);
 };
 
 const sendTypingStats = (stats: TypingStats) => {

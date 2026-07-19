@@ -49,6 +49,16 @@ export const relations = defineRelations(schema, (r) => ({
     userProfiles: r.many.userProfiles(),
     userStats: r.many.userStats(),
     userTypingOptions: r.many.userTypingOptions(),
+    userReportsAsReporter: r.many.userReports({
+      from: r.users.id,
+      to: r.userReports.reporterId,
+      alias: "user_reports_reporter_id_users_id",
+    }),
+    userReportsAsReported: r.many.userReports({
+      from: r.users.id,
+      to: r.userReports.reportedUserId,
+      alias: "user_reports_reported_user_id_users_id",
+    }),
   },
   maps: {
     creator: r.one.users({
@@ -60,6 +70,10 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.maps.id,
       to: r.mapDifficulties.mapId,
       optional: false,
+    }),
+    mapTags: r.many.mapTags({
+      from: r.maps.id,
+      to: r.mapTags.mapId,
     }),
     mapLikes: r.many.mapLikes({
       from: r.maps.id,
@@ -102,6 +116,24 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.maps.id.through(r.results.mapId),
       to: r.users.id.through(r.results.userId),
       alias: "maps_id_users_id_via_results",
+    }),
+  },
+  tags: {
+    mapTags: r.many.mapTags({
+      from: r.tags.id,
+      to: r.mapTags.tagId,
+    }),
+  },
+  mapTags: {
+    map: r.one.maps({
+      from: r.mapTags.mapId,
+      to: r.maps.id,
+      optional: false,
+    }),
+    tag: r.one.tags({
+      from: r.mapTags.tagId,
+      to: r.tags.id,
+      optional: false,
     }),
   },
   mapBookmarkLists: {
@@ -164,6 +196,14 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.notifications.id,
       to: r.notificationClaps.notificationId,
     }),
+    reportResult: r.one.notificationReportResults({
+      from: r.notifications.id,
+      to: r.notificationReportResults.notificationId,
+    }),
+    warning: r.one.notificationWarnings({
+      from: r.notifications.id,
+      to: r.notificationWarnings.notificationId,
+    }),
     notificationClaps: r.many.notificationClaps({
       from: r.notifications.id,
       to: r.notificationClaps.notificationId,
@@ -179,6 +219,14 @@ export const relations = defineRelations(schema, (r) => ({
     notificationOverTakes: r.many.notificationOverTakes({
       from: r.notifications.id,
       to: r.notificationOverTakes.notificationId,
+    }),
+    notificationReportResults: r.many.notificationReportResults({
+      from: r.notifications.id,
+      to: r.notificationReportResults.notificationId,
+    }),
+    notificationWarnings: r.many.notificationWarnings({
+      from: r.notifications.id,
+      to: r.notificationWarnings.notificationId,
     }),
     user: r.one.users({
       from: r.notifications.recipientId,
@@ -292,6 +340,30 @@ export const relations = defineRelations(schema, (r) => ({
       optional: false,
     }),
   },
+  notificationReportResults: {
+    notification: r.one.notifications({
+      from: r.notificationReportResults.notificationId,
+      to: r.notifications.id,
+      optional: false,
+    }),
+    report: r.one.userReports({
+      from: r.notificationReportResults.reportId,
+      to: r.userReports.id,
+      optional: false,
+    }),
+  },
+  notificationWarnings: {
+    notification: r.one.notifications({
+      from: r.notificationWarnings.notificationId,
+      to: r.notifications.id,
+      optional: false,
+    }),
+    report: r.one.userReports({
+      from: r.notificationWarnings.reportId,
+      to: r.userReports.id,
+      optional: false,
+    }),
+  },
   resultStatuses: {
     result: r.one.results({
       from: r.resultStatuses.resultId,
@@ -333,6 +405,33 @@ export const relations = defineRelations(schema, (r) => ({
     user: r.one.users({
       from: r.userProfiles.userId,
       to: r.users.id,
+    }),
+  },
+  userReports: {
+    reporter: r.one.users({
+      from: r.userReports.reporterId,
+      to: r.users.id,
+      alias: "user_reports_reporter_id_users_id",
+      optional: false,
+    }),
+    reportedUser: r.one.users({
+      from: r.userReports.reportedUserId,
+      to: r.users.id,
+      alias: "user_reports_reported_user_id_users_id",
+      optional: false,
+    }),
+    resolver: r.one.users({
+      from: r.userReports.resolvedBy,
+      to: r.users.id,
+      alias: "user_reports_resolved_by_users_id",
+    }),
+    notificationReportResult: r.one.notificationReportResults({
+      from: r.userReports.id,
+      to: r.notificationReportResults.reportId,
+    }),
+    notificationWarning: r.one.notificationWarnings({
+      from: r.userReports.id,
+      to: r.notificationWarnings.reportId,
     }),
   },
   userStats: {

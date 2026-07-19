@@ -1,17 +1,15 @@
 "use client";
 import { useRouter } from "@bprogress/next";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useSelector } from "@tanstack/react-form";
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { editDb } from "@/app/edit/_lib/indexed-db";
+import { idb } from "@/app/edit/_feature/indexed-db";
 import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
 import { Button } from "@/ui/button";
-import { Form } from "@/ui/form";
-import { InputFormField } from "@/ui/input/input-form-field";
+import { useAppForm } from "@/ui/form-field-item";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H3 } from "@/ui/typography";
@@ -24,34 +22,33 @@ const formSchema = z.object({
 
 export const NewMapPopover = () => {
   const [open, setOpen] = useState(false);
-  const backupMapInfo = editDb.backup.useLiveQuery();
+  const backupMapInfo = idb.backup.useLiveQuery();
   const router = useRouter();
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
+  const form = useAppForm({
+    validators: { onChange: formSchema },
     defaultValues: {
       videoId: "",
     },
+    onSubmit: async ({ value }) => {
+      const videoId = extractYouTubeId(value.videoId);
+
+      if (!videoId) return;
+
+      if (backupMapInfo) {
+        const result = confirm(
+          "新規作成バックアップデータが存在します。\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
+        );
+        if (!result) return;
+      }
+
+      router.push(`/edit?new=${videoId}`);
+      setOpen(false);
+    },
   });
 
-  const watchedVideoId = form.watch("videoId");
+  const watchedVideoId = useSelector(form.store, (state) => state.values.videoId);
   const extractedVideoId = extractYouTubeId(watchedVideoId);
-
-  const onSubmit = async (data: z.output<typeof formSchema>) => {
-    const videoId = extractYouTubeId(data.videoId);
-
-    if (!videoId) return;
-
-    if (backupMapInfo) {
-      const result = confirm(
-        "新規作成バックアップデータが存在します。\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
-      );
-      if (!result) return;
-    }
-
-    router.push(`/edit?new=${videoId}`);
-    setOpen(false);
-  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,24 +68,32 @@ export const NewMapPopover = () => {
         align="end"
         sideOffset={8}
       >
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
-            <H3>譜面新規作成</H3>
-            <InputFormField
-              name="videoId"
-              label="譜面を作成したいYouTube動画のURLを入力"
-              placeholder="YouTube URLを入力"
-              autoComplete="off"
-              ref={inputRef}
-            />
-            <div className="flex flex-wrap-reverse items-center justify-end gap-4 sm:justify-between">
-              <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
-              <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
-                作成
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4 px-6 py-4"
+        >
+          <H3>譜面新規作成</H3>
+          <form.AppField name="videoId">
+            {(field) => (
+              <field.InputFormField
+                label="譜面を作成したいYouTube動画のURLを入力"
+                placeholder="YouTube URLを入力"
+                autoComplete="off"
+                ref={inputRef}
+              />
+            )}
+          </form.AppField>
+          <div className="flex flex-wrap-reverse items-center justify-end gap-4 sm:justify-between">
+            <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
+            <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
+              作成
+            </Button>
+          </div>
+        </form>
 
         {extractedVideoId && (
           <div className="px-6 pb-6">

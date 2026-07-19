@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { caller, HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { Content } from "../_components/content";
-import { PermissionToast } from "../_components/permission-toast";
-import { JotaiProvider } from "../_components/provider";
+import { Content } from "../_feature/content";
+import { PermissionToast } from "../_feature/permission/toast";
+import { JotaiProvider } from "../_feature/provider";
 
 const getMapInfo = cache(async (mapId: number) => await caller.map.getById({ mapId }));
 

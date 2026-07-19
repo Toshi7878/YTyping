@@ -1,41 +1,20 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
 import { sql as rawSql } from "drizzle-orm";
-import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
-import { mapDifficulties, maps, type mapVisibility, type thumbnailQuality } from "../schema/map";
+import {
+  mapDifficulties,
+  maps,
+  mapTags,
+  type mapVisibility,
+  tags as tagsTable,
+  type thumbnailQuality,
+} from "../schema/map";
 import { users } from "../schema/user/user";
-
-const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
-
-const isLocalSupabase = supabaseUrl.includes("localhost") || supabaseUrl.includes("127.0.0.1");
-
-if (!isLocalSupabase) {
-  throw new Error(
-    "This seed script can only be run in local development environment with local Supabase. " +
-      "Current Supabase URL: " +
-      env.NEXT_PUBLIC_SUPABASE_URL +
-      ". " +
-      "Expected: localhost or 127.0.0.1. " +
-      "Do not run this on production or remote Supabase environments.",
-  );
-}
-
-const serviceRoleKey = env.SUPABASE_SECRET_KEY;
-if (!serviceRoleKey) {
-  throw new Error(
-    "SUPABASE_SECRET_KEY is required for seeding. " +
-      "Please set it in your .env file. " +
-      "You can find the service_role key in 'pnpm db:status' output.",
-  );
-}
-
-console.log("🔧 Running seed script with local Supabase:", supabaseUrl);
-
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+import { seedBucketPolicy } from "./apply-bucket-policy";
+import { supabaseAdmin } from "./supabase-admin";
 
 // CSV パーサー
 function parseCSV(csvText: string): Record<string, string>[] {
@@ -57,6 +36,7 @@ function parseUserRow(row: Record<string, string>) {
     banned: row.banned === "true",
     banReason: row.ban_reason === "" ? null : (row.ban_reason ?? null),
     banExpires: row.ban_expires ? new Date(row.ban_expires.replace(" ", "T")) : null,
+    warningCount: Number(row.warning_count ?? 0),
     createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
     updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
@@ -107,15 +87,7 @@ async function main() {
   const mapJsonDir = join(__dirname, "map-json");
   const sqlDir = join(__dirname, "sql");
 
-  console.log("\n📦 Creating Supabase Storage bucket...");
-  await supabaseAdmin.storage.createBucket(SUPABASE_PUBLIC_BUCKET, {
-    public: true,
-  });
-
-  const policyFilePath = join(sqlDir, "apply-bucket-policy.sql");
-  const policySql = await readFile(policyFilePath, "utf-8");
-  const cleanedSql = policySql.replace(/public-bucket-name/g, SUPABASE_PUBLIC_BUCKET);
-  await db.execute(rawSql.raw(cleanedSql));
+  await seedBucketPolicy(sqlDir);
 
   // 2. Users テーブルにシードデータを挿入
   console.log("\n👥 Seeding users table...");
@@ -128,10 +100,36 @@ async function main() {
   // 3. Maps テーブルにシードデータを挿入
   console.log("\n🗺️  Seeding maps table...");
   const mapsCSV = await readFile(join(tableDir, "maps_rows.csv"), "utf-8");
-  const mapRows = parseCSV(mapsCSV).map(parseMapRow);
+  const mapRowsWithTags = parseCSV(mapsCSV).map(parseMapRow);
 
-  await db.insert(maps).values(mapRows);
-  console.log(`✅ Inserted ${mapRows.length} maps`);
+  const mapRowsForDb = mapRowsWithTags.map(({ tags: _tags, ...rest }) => rest);
+  await db.insert(maps).values(mapRowsForDb);
+  console.log(`✅ Inserted ${mapRowsForDb.length} maps`);
+
+  // 3b. Tags / map_tags テーブルにシードデータを挿入
+  console.log("\n🏷️  Seeding tags...");
+  const allTagNames = [...new Set(mapRowsWithTags.flatMap((row) => row.tags as string[]))];
+  if (allTagNames.length > 0) {
+    const insertedTags = await db
+      .insert(tagsTable)
+      .values(allTagNames.map((name) => ({ name })))
+      .onConflictDoUpdate({ target: [tagsTable.name], set: { name: rawSql`EXCLUDED.name` } })
+      .returning({ id: tagsTable.id, name: tagsTable.name });
+
+    const tagNameToId = new Map(insertedTags.map((t) => [t.name, t.id]));
+
+    const mapTagValues = mapRowsWithTags.flatMap((mapRow) =>
+      (mapRow.tags as string[]).flatMap((name) => {
+        const tagId = tagNameToId.get(name);
+        return tagId !== undefined ? [{ mapId: mapRow.id, tagId }] : [];
+      }),
+    );
+
+    if (mapTagValues.length > 0) {
+      await db.insert(mapTags).values(mapTagValues);
+    }
+    console.log(`✅ Inserted ${allTagNames.length} tags, ${mapTagValues.length} map_tags`);
+  }
 
   // 4. MapDifficulties テーブルにシードデータを挿入
   console.log("\n📊 Seeding map_difficulties table...");

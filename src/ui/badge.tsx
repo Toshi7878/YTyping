@@ -21,6 +21,7 @@ const badgeVariants = cva(
         "accent-light": "border-transparent bg-accent text-accent-foreground [a&]:hover:bg-accent-light/90",
         "accent-dark": "border-transparent bg-accent text-accent-foreground [a&]:hover:bg-accent-dark/90",
 
+        warning: "border-transparent bg-warning text-warning-foreground [a&]:hover:bg-warning/90",
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         "destructive-soft":

@@ -1,6 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { buildTypingMap } from "lyrics-typing-engine";
+import { useTheme } from "next-themes";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -14,17 +15,25 @@ import {
   hasAlphabetChunk,
 } from "@/shared/map/built-map-helper";
 import { getReadyInputMode } from "@/store/ready-input-mode";
+import { THEME_LIST } from "@/theme/const";
 import { useTRPC } from "@/trpc/provider";
+import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
+import { useFlickModeState, useFlickPendingModConversion } from "./atoms/typing-word";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
 import { TabsArea } from "./tabs/tabs";
 import { resetTypingStatus, setTypingStatus } from "./tabs/typing-status/status-cell";
+import { FlickSkipGuideMessage, getActiveSkipKey, skipLine } from "./typing-card/footer/skip";
 import { setTotalProgressMax } from "./typing-card/footer/total-time-progress";
-import { TypingCard, useSceneGroupState } from "./typing-card/typing-card";
+import { FlickLineTimeProgress } from "./typing-card/header/line-time-progress";
+import { FlickNextLyrics } from "./typing-card/playing/next-lyrics";
+import { getLineCount, handleFlickInput, usePlayingSetup } from "./typing-card/playing/playing-scene";
+import { FlickTypingWord } from "./typing-card/playing/typing-words";
+import { TypingCard, useIsFlickPlaying, useSceneGroupState } from "./typing-card/typing-card";
 import { useWindowScale } from "./utils/use-window-scale";
 import { YouTubePlayer } from "./youtube/youtube-player";
 
@@ -35,6 +44,7 @@ interface ContentProps {
 
 export const Content = ({ videoId, mapId }: ContentProps) => {
   useLoadSoundEffects();
+  const isFlickPlaying = useIsFlickPlaying();
   useHotkeys(
     "home, end, pageup, pagedown, capslock, `, f3, f6, space",
     (event) => {
@@ -80,9 +90,12 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   }, [rawMapLines]);
 
   return (
-    <div className="fixed flex h-screen w-screen flex-col items-center max-sm:-mt-1.5">
-      <TypingLayout isLoading={isLoading} videoId={videoId} />
-    </div>
+    <>
+      <div className="fixed flex h-screen w-screen flex-col items-center md:pt-2">
+        <TypingLayout isLoading={isLoading} videoId={videoId} />
+      </div>
+      {isFlickPlaying && <FlickKeyboardContainer />}
+    </>
   );
 };
 
@@ -119,6 +132,44 @@ const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: str
           <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
         </section>
       )}
+    </div>
+  );
+};
+
+const FlickKeyboardContainer = () => {
+  usePlayingSetup();
+  const pendingModConversion = useFlickPendingModConversion();
+  const flickMode = useFlickModeState();
+  const { resolvedTheme } = useTheme();
+  const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
+
+  return (
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50 }}>
+      <FlickKeyboard
+        mode={flickMode}
+        onEvent={handleFlickInput}
+        theme={flickTheme}
+        isLineStart={!pendingModConversion}
+        isModPending={!!pendingModConversion}
+        candidateBar={
+          <div
+            className="relative h-22"
+            onTouchStart={() => {
+              if (getActiveSkipKey()) {
+                const count = getLineCount();
+                skipLine(count);
+              }
+            }}
+          >
+            <FlickLineTimeProgress className="absolute -top-1 right-0 left-0" id="flick_line_time_progress" />
+            <div className="flex w-full items-center justify-center">
+              <FlickNextLyrics />
+              <FlickSkipGuideMessage />
+            </div>
+            <FlickTypingWord />
+          </div>
+        }
+      />
     </div>
   );
 };

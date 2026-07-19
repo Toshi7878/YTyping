@@ -21,6 +21,11 @@ const createMd5Hash = (value: string) => createHash("md5").update(value).digest(
 export const auth = betterAuth({
   baseURL: baseUrl,
   database: drizzleAdapter(db, { provider: "pg", usePlural: true, schema }),
+  session: {
+    expiresIn: 60 * 60 * 24 * 30,
+    updateAge: 60 * 60 * 24,
+    cookieCache: { enabled: true, maxAge: 60 * 5 },
+  },
   databaseHooks: {
     user: {
       create: {
@@ -47,6 +52,9 @@ export const auth = betterAuth({
     fields: { email: "emailHash" },
     additionalFields: {
       role: { type: "string", input: false },
+      banned: { type: "boolean", input: false },
+      banReason: { type: "string", input: false, required: false },
+      warningCount: { type: "number", input: false, defaultValue: 0 },
     },
   },
   socialProviders: {

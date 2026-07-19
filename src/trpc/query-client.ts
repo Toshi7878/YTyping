@@ -1,11 +1,11 @@
-import { defaultShouldDehydrateQuery, QueryClient } from "@tanstack/react-query";
+import { defaultShouldDehydrateQuery, environmentManager, QueryClient } from "@tanstack/react-query";
 import SuperJSON from "superjson";
 
 export const makeQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 30 * 1000,
+        staleTime: environmentManager.isServer() ? "static" : 30 * 1000,
       },
       dehydrate: {
         serializeData: SuperJSON.serialize,

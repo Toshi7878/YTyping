@@ -6,10 +6,10 @@ import type { DBType } from "@/server/drizzle/client";
 import { mapDifficulties, mapLikes, maps, resultClaps, resultStatuses, results, users } from "@/server/drizzle/schema";
 import { SelectResultPpListApiSchema } from "@/validator/result/pp";
 import { TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
-import { bookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
+import { bookmarkedMapExists } from "../map/bookmark/list-item";
 
 const player = alias(users, "player");
 const creator = alias(users, "creator");
@@ -177,7 +177,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(db: T, session: TRPCCon
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  return baseQuery.where(eq(player.id, playerId));
+  return baseQuery.where(and(eq(player.id, playerId), eq(player.banned, false)));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
@@ -203,8 +203,6 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
         },
         creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {
-          romaKpmMedian: map.romaKpmMedian,
-          kanaKpmMedian: map.kanaKpmMedian,
           romaKpmMax: map.romaKpmMax,
           kanaKpmMax: map.kanaKpmMax,
           romaTotalNotes: map.romaTotalNotes,

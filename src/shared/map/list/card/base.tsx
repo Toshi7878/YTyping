@@ -63,11 +63,11 @@ const MapInfo = ({ map }: MapInfoProps) => {
 
   return (
     <div className="relative h-auto w-full overflow-hidden">
-      <Link className="absolute size-full" href={link} />
+      <Link className="absolute size-full" href={link} prefetch={false} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-2.5 sm:pt-1.5">
         <section className="flex flex-col sm:gap-0.5">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={link} className="z-1 truncate font-bold text-secondary sm:text-lg">
+            <Link href={link} className="z-1 truncate font-bold text-secondary sm:text-lg" prefetch={false}>
               {map.info.title}
             </Link>
           </TooltipWrapper>
@@ -91,7 +91,7 @@ const MapInfo = ({ map }: MapInfoProps) => {
 const MapBadges = ({ map, href, className }: { map: Map; href: Route; className?: string }) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={href} className={cn("z-10 flex flex-1 items-center gap-2", className)}>
+      <Link href={href} className={cn("z-10 flex flex-1 items-center gap-2", className)} prefetch={false}>
         <RatingBadge rating={map.difficulty.rating} />
         <Badge variant="accent-light" className="rounded-full max-lg:hidden">
           {formatTime(map.info.duration)}

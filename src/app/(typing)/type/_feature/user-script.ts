@@ -48,6 +48,7 @@
  * const topPps = await window.__ytyping_type.getUserTopPPs(); // ログイン中ユーザーの PP 降順配列 { mapId, pp }[]
  */
 
+import type { InputMode } from "lyrics-typing-engine";
 import { calcRawPP } from "@/shared/result/pp/calc";
 import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
@@ -148,6 +149,10 @@ interface Timer1sUpdateDetail {
   constantTime: number;
 }
 
+interface ChangeInputModeDetail {
+  newInputMode: InputMode;
+}
+
 // ─── イベントマップ & リスナー ─────────────────────────────────
 
 type TypeEventMap = {
@@ -170,6 +175,7 @@ type TypeEventMap = {
   "yt:rateChange": RateChangeDetail;
   "yt:stateChange": StateChangeDetail;
   "yt:seeked": SeekedDetail;
+  "change-input-mode": ChangeInputModeDetail;
 };
 type TypeEventType = keyof TypeEventMap;
 type TypeEventCallback<T extends TypeEventType> = (detail: TypeEventMap[T]) => void;
@@ -279,3 +285,5 @@ declare global {
 
 // SSR 時は window が存在しないため、クライアント側でのみ登録する
 if (typeof window !== "undefined") window.__ytyping_type = ytypingType;
+
+export type YTypingTypeAPI = typeof ytypingType;

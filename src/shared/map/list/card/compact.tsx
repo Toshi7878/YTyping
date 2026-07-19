@@ -16,10 +16,8 @@ import { Badge } from "@/ui/badge";
 import { CardHeader } from "@/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/ui/hover-extract-card";
 import { RelativeTime } from "@/ui/relative-time";
-import { Separator } from "@/ui/separator";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
-import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 
@@ -34,7 +32,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
   return (
     <HoverExtractCard
       variant="map"
-      cardClassName="block"
+      cardClassName="block group/card"
       cardHoverContentClassName="py-2 z-50"
       cardHeader={
         <CardHeader className={cn("flex flex-wrap items-center gap-1 rounded-t-md px-2 py-1.5 text-sm", className)}>
@@ -56,6 +54,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
         size="sm"
         imageClassName="rounded-t-none rounded-br-none"
         isStyledMap={map.info.categories.includes("CSS")}
+        duration={map.info.duration}
       />
       <CompactMapInfo map={map} />
     </HoverExtractCard>
@@ -73,6 +72,7 @@ export const CompactMapCard = ({ map, initialInView, imagePriority = false }: Co
   return (
     <HoverExtractCard
       variant="map"
+      cardClassName="group/card"
       cardHoverContentClassName="py-2"
       ref={ref}
       openDelay={50}
@@ -85,6 +85,7 @@ export const CompactMapCard = ({ map, initialInView, imagePriority = false }: Co
         size="sm"
         priority={imagePriority}
         isStyledMap={map.info.categories.includes("CSS")}
+        duration={map.info.duration}
       />
       {shouldRender && <CompactMapInfo map={map} />}
     </HoverExtractCard>
@@ -103,11 +104,11 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
 
   return (
     <div className="relative h-auto w-full overflow-hidden rounded-md">
-      <Link className="absolute size-full" href={link} />
+      <Link className="absolute size-full" href={link} prefetch={false} />
       <div className="flex h-full flex-col justify-between pt-0.5 pl-1.5">
         <section className="flex flex-col">
           <TooltipWrapper label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)} asChild>
-            <Link href={link} className="z-1 truncate font-bold text-secondary">
+            <Link href={link} className="z-1 truncate font-bold text-secondary" prefetch={false}>
               {nolink(map.info.title)}
             </Link>
           </TooltipWrapper>
@@ -157,7 +158,7 @@ interface MapBadgesProps {
 const MapBadges = ({ map, href }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
-      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center">
+      <Link href={href} className="z-10 mb-0.5 flex flex-1 items-center" prefetch={false}>
         <RatingBadge rating={map.difficulty.rating} />
       </Link>
     </HoverExtractCardTrigger>
@@ -173,10 +174,6 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const { kanaRatio, alphabetRatio, otherRatio } = calcChunkRatios(map.difficulty);
   return (
     <div className="flex flex-wrap items-center gap-x-2">
-      <Badge variant="accent-light" size="xs" className="rounded-full">
-        {formatTime(map.info.duration)}
-      </Badge>
-      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
       <Badge variant={kanaRatio === 0 ? "english" : inputMode === "roma" ? "roma" : "kana"} size="xs">
         {kanaRatio === 0 ? "英語" : inputMode === "roma" ? "ローマ字" : "かな"}
       </Badge>

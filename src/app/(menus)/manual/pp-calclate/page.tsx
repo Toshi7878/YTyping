@@ -17,7 +17,7 @@ export default function Page() {
             <div className="flex items-center gap-x-2">
               <span>ソースコード:</span>
               <Link
-                href="https://github.com/Toshi7878/YTyping/blob/main/src/server/api/routers/map/rating.ts"
+                href="https://github.com/Toshi7878/YTyping/blob/main/src/shared/map/rating/calc.ts"
                 className="text-primary-light text-sm hover:underline"
               >
                 rating.ts
@@ -40,7 +40,7 @@ export default function Page() {
             <div className="flex items-center gap-x-2">
               <span>ソースコード:</span>
               <Link
-                href="https://github.com/Toshi7878/YTyping/blob/main/src/lib/pp.ts"
+                href="https://github.com/Toshi7878/YTyping/blob/main/src/shared/result/pp/calc.ts"
                 className="text-primary-light text-sm hover:underline"
               >
                 pp.ts

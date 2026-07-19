@@ -14,6 +14,7 @@ import {
 import { ThumbnailImage, thumbnailImageVariants } from "@/ui/image";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
+import { formatTime } from "@/utils/format-time";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 
 interface MapThumbnailImageProps {
@@ -24,10 +25,11 @@ interface MapThumbnailImageProps {
   imageClassName?: string;
   priority?: boolean;
   isStyledMap?: boolean;
+  duration?: number;
 }
 
 export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
-  const { alt, media, size, className, imageClassName, priority = false, isStyledMap = false } = props;
+  const { alt, media, size, className, imageClassName, priority = false, isStyledMap = false, duration } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewYTPlayer();
@@ -38,6 +40,7 @@ export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
         <>
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           {isStyledMap && <StyledMapBadge />}
+          {duration != null && <DurationBadge duration={duration} />}
           <ThumbnailImage
             src={getYouTubeThumbnailUrl(media.videoId, "mqdefault")}
             alt={alt}
@@ -49,6 +52,14 @@ export const MapThumbnailImage = (props: MapThumbnailImageProps) => {
       ) : (
         <div className={cn(thumbnailImageVariants({ size }), "flex flex-start items-center justify-center")}>{alt}</div>
       )}
+    </div>
+  );
+};
+
+const DurationBadge = ({ duration }: { duration: number }) => {
+  return (
+    <div className="absolute right-1 bottom-1 z-10 rounded bg-black/70 px-1 py-0.5 text-[11px] text-white tabular-nums opacity-0 group-hover/card:opacity-100">
+      {formatTime(duration)}
     </div>
   );
 };

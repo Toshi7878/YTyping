@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
-import { Content } from "../_components/content";
-import { JotaiProvider } from "../_components/provider";
-import { SimilarMapListByVideoId } from "../_components/similar-map-list";
-import { searchParamsLoader } from "../_lib/search-params";
+import { Content } from "../_feature/content";
+import { JotaiProvider } from "../_feature/provider";
+import { searchParamsLoader } from "../_feature/search-params";
+import { SimilarMapListByVideoId } from "../_feature/similar-map-list";
 
 export const metadata: Metadata = {
   title: "Edit New Map - YTyping",

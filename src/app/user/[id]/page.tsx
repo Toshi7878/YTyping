@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { caller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { H1 } from "@/ui/typography";
 import { loadUserPageSearchParams } from "./_features/search-params";
@@ -54,10 +55,16 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     }
   })();
 
-  const [userProfile] = await Promise.all([
-    caller.user.profile.get({ userId: Number(id) }),
+  const userProfile = await caller.user.profile.get({ userId: numericId });
+
+  if (!userProfile || userProfile.banned) {
+    notFound();
+  }
+
+  await Promise.all([
     prefetchAsync(trpc.map.list.getCount.queryOptions({ creatorId: numericId })),
     prefetchAsync(trpc.map.list.getCount.queryOptions({ likerId: numericId })),
+    prefetchAsync(trpc.ranking.pp.getRanksByUserId.queryOptions(numericId)),
     prefetchAsync(trpc.result.list.getCount.queryOptions({ playerId: numericId })),
     prefetchAsync(trpc.map.bookmark.lists.getCount.queryOptions({ userId: numericId })),
     ...tabQueryOptions.map(prefetchAsync),

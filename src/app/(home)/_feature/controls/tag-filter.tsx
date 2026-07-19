@@ -2,11 +2,12 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import type React from "react";
+import * as React from "react";
 import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select/select";
+import { Slider } from "@/ui/slider";
 import { cn } from "@/utils/cn";
 import type { MAP_RANKING_STATUS_FILTER_OPTIONS, MAP_USER_FILTER_OPTIONS } from "@/validator/map/list";
 import {
@@ -150,42 +151,72 @@ const BookmarkListSelect = () => {
 
 const GENRE_FILTERS = [
   {
+    label: "日本語",
+    params: { englishRatio: 0 },
+  },
+  {
     label: "English",
-    params: { maxKanaChunkCount: 0, minAlphabetChunkCount: 1 },
+    params: { englishRatio: 100 },
   },
 ] as const;
 
+const GENRE_FILTER_CLEAR = { englishRatio: null };
+
+const formatLanguageRatioLabel = (englishRatio?: number) => {
+  const ratio = englishRatio ?? 0;
+  return `日本語:${100 - ratio}% | English:${ratio}%`;
+};
+
 const GenreFilterRow = () => {
   const [params, setFilterParams] = useMapListFilterQueryStates();
+  const isLanguageFilterActive = params.englishRatio !== null;
+  const englishRatio = params.englishRatio ?? 0;
+  const [localSlider, setLocalSlider] = React.useState(englishRatio);
+
+  React.useEffect(() => {
+    setLocalSlider(englishRatio);
+  }, [englishRatio]);
 
   return (
     <>
       <div className="flex h-6 min-w-0 items-center font-medium text-[11px] text-muted-foreground md:mr-3 md:min-w-[72px]">
-        ジャンル
+        language
       </div>
       <div className="flex flex-wrap items-center gap-1">
-        {GENRE_FILTERS.map((filter) => {
-          const isActive =
-            params.maxKanaChunkCount === filter.params.maxKanaChunkCount &&
-            params.minAlphabetChunkCount === filter.params.minAlphabetChunkCount;
+        {GENRE_FILTERS.map((filter, index) => {
+          const isActive = params.englishRatio === filter.params.englishRatio;
 
           return (
-            <Button
-              key={filter.label}
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-                void setFilterParams(
-                  isActive ? { maxKanaChunkCount: null, minAlphabetChunkCount: null } : { ...filter.params },
-                );
-              }}
-              className={cn(
-                "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
-                isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+            <React.Fragment key={filter.label}>
+              <Button
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  void setFilterParams(isActive ? GENRE_FILTER_CLEAR : filter.params);
+                }}
+                className={cn(
+                  "rounded px-1.5 py-0.5 text-[11px] transition-none hover:underline",
+                  isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+                )}
+              >
+                {filter.label}
+              </Button>
+              {index === 0 && isLanguageFilterActive && (
+                <div className="group relative flex min-w-40 flex-1 items-center px-2">
+                  <Slider
+                    min={0}
+                    max={100}
+                    step={10}
+                    value={[localSlider]}
+                    thumbLabel={formatLanguageRatioLabel}
+                    onValueChange={(v) => setLocalSlider(v[0] ?? 0)}
+                    onValueCommit={(v) => {
+                      void setFilterParams({ englishRatio: v[0] ?? 0 });
+                    }}
+                  />
+                </div>
               )}
-            >
-              {filter.label}
-            </Button>
+            </React.Fragment>
           );
         })}
       </div>

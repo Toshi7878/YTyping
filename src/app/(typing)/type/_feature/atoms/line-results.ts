@@ -37,7 +37,12 @@ export const getLineResults = (): TypingLineResult[] => {
 export const getLineResultByIndex = (index: number): TypingLineResult | undefined => {
   return store.get(lineResultsAtom)[index]?.lineResult;
 };
+const isRankingResultLoadedAtom = atom(false);
+export const useIsRankingResultLoaded = () => useAtomValue(isRankingResultLoadedAtom);
+export const setRankingResultLoaded = (value: boolean) => store.set(isRankingResultLoadedAtom, value);
+
 export const setInitialLineResults = (initLineResults: TypingLineResult[]) => {
+  store.set(isRankingResultLoadedAtom, false);
   store.set(
     lineResultsAtom,
     initLineResults.map((lineResult) => ({ isSelected: false, lineResult })),

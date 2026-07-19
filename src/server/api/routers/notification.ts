@@ -3,10 +3,10 @@ import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
 import { type maps, notifications } from "@/server/drizzle/schema";
-import { bookmarkedMapExists } from "../lib/map";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map";
+import { bookmarkedMapExists } from "./map/bookmark/list-item";
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {
@@ -33,7 +33,6 @@ export const notificationRouter = {
         createdAt: false,
         creatorId: false,
         playCount: false,
-        tags: false,
       },
       extras: {
         hasBookmarked: (map: typeof maps) => bookmarkedMapExists(db, session, map.id).as("has_bookmarked"),
@@ -117,6 +116,37 @@ export const notificationRouter = {
             },
           },
         },
+        reportResult: {
+          columns: {},
+          with: {
+            report: {
+              columns: {
+                id: true,
+                reason: true,
+                reasonDetail: true,
+                status: true,
+                adminNote: true,
+                resolvedAt: true,
+              },
+              with: {
+                reportedUser: { columns: { id: true, name: true } },
+                resolver: { columns: { id: true, name: true } },
+              },
+            },
+          },
+        },
+        warning: {
+          columns: { comment: true },
+          with: {
+            report: {
+              columns: {
+                id: true,
+                reason: true,
+                reasonDetail: true,
+              },
+            },
+          },
+        },
       },
       where: { recipientId: session.user.id },
       orderBy: { updatedAt: "desc" },
@@ -145,8 +175,6 @@ export const notificationRouter = {
         },
         creator: { id: map.creator.id, name: map.creator.name },
         difficulty: {
-          romaKpmMedian: map.difficulty.romaKpmMedian,
-          kanaKpmMedian: map.difficulty.kanaKpmMedian,
           romaKpmMax: map.difficulty.romaKpmMax,
           kanaKpmMax: map.difficulty.kanaKpmMax,
           romaTotalNotes: map.difficulty.romaTotalNotes,
@@ -226,6 +254,28 @@ export const notificationRouter = {
         }
 
         // フォールバック（通常は到達しない）
+        if (notification.type === "REPORT_RESULT" && notification.reportResult) {
+          const { report } = notification.reportResult;
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            updatedAt: notification.updatedAt,
+            report,
+          };
+        }
+
+        if (notification.type === "WARNING" && notification.warning) {
+          const { warning } = notification;
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            updatedAt: notification.updatedAt,
+            warning,
+          };
+        }
+
         throw new Error(`Unknown notification action: ${notification.type}`);
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);

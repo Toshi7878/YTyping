@@ -1,0 +1,77 @@
+"use client";
+import { useState } from "react";
+import { toast } from "sonner";
+import { getRawMap, setRawMapAction } from "@/app/edit/_feature/map-table/map-reducer";
+import { timeValidate } from "@/app/edit/_feature/tabs/editor/time-validate";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input/input";
+import { Label } from "@/ui/label";
+import { TooltipWrapper } from "@/ui/tooltip";
+import { dispatchEditHistory } from "../../map-table/history";
+import { setCanUpload } from "../info-form/card";
+
+export const AllTimeAdjust = () => {
+  const [totalAdjustValue, setTotalAdjustValue] = useState("0");
+
+  const allTimeAdjust = () => {
+    if (!Number(totalAdjustValue)) {
+      return;
+    }
+
+    if (Number(totalAdjustValue) !== 0) {
+      const map = getRawMap();
+      const newMap = map.map((item, index) => {
+        if (index === 0) {
+          return {
+            ...item,
+            time: "0",
+          };
+        }
+        if (index === map.length - 1) {
+          return { ...item, time: item.time };
+        }
+
+        const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
+        return { ...item, time: newTime.toFixed(3) };
+      });
+
+      setCanUpload(true);
+      setRawMapAction({ type: "replaceAll", payload: [...newMap] });
+      dispatchEditHistory({
+        type: "add",
+        payload: { actionType: "replaceAll", data: { old: getRawMap(), new: newMap } },
+      });
+    }
+
+    toast.success("タイムを調整しました", {
+      description: `全体のタイムが ${totalAdjustValue} 秒調整されました。Ctrl + Zで前のタイムに戻ることができます。`,
+    });
+  };
+
+  return (
+    <TooltipWrapper label="数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します" asChild>
+      <form className="flex w-fit items-baseline gap-2">
+        <Label className="text-sm">全体タイム調整</Label>
+        <Input
+          type="number"
+          step="0.05"
+          min="-3"
+          max="3"
+          className="h-8 max-w-20"
+          value={totalAdjustValue}
+          onChange={(e) => setTotalAdjustValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              allTimeAdjust();
+            }
+          }}
+        />
+
+        <Button variant="outline-warning" type="button" onClick={allTimeAdjust} className="font-bold">
+          実行
+        </Button>
+      </form>
+    </TooltipWrapper>
+  );
+};

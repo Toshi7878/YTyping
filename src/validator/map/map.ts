@@ -82,6 +82,13 @@ const CreateMapDifficultySchema = createInsertSchema(mapDifficulties).pick({
   symbolChunkCount: true,
 });
 
+export const LrcSchema = z
+  .string()
+  .min(1, { error: "LRCファイルが空です" })
+  .refine((content) => content.split(/\r?\n/).some((line) => /\[\d{2}[:.]\d{2}[:.]\d{2}\]/.test(line)), {
+    error: "有効なLRCタイムスタンプ（[mm:ss.xx]形式）が見つかりません",
+  });
+
 export const upsertMapItemSchema = z.object({
   mapId: z.number().nullable(),
   mapInfo: MapInfoApiSchema,

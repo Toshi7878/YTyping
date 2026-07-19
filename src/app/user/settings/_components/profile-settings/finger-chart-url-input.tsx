@@ -1,13 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { useTRPC } from "@/trpc/provider";
-import { Form } from "@/ui/form";
-import { MutationInputFormField } from "@/ui/input/input-form-field";
+import { useAppForm } from "@/ui/form-field-item";
 import { FingerChartUrlFormSchema } from "@/validator/user/profile";
 
 interface FingerChartUrlInputProps {
@@ -15,30 +12,27 @@ interface FingerChartUrlInputProps {
 }
 
 export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
-  const form = useForm({
-    mode: "onChange",
-    resolver: zodResolver(FingerChartUrlFormSchema),
+  const form = useAppForm({
+    validators: { onChange: FingerChartUrlFormSchema },
     defaultValues: { url },
   });
-
-  const { reset } = form;
 
   const trpc = useTRPC();
   const update = useMutation(trpc.user.profile.upsertFingerChartUrl.mutationOptions());
 
   return (
     <div className="flex flex-col gap-2">
-      <Form {...form}>
-        <MutationInputFormField
-          className="w-md"
-          label="みんなの運指表URL"
-          placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
-          successMessage="URLを更新しました"
-          name="url"
-          onSuccess={(value) => reset({ url: value })}
-          mutation={update}
-        />
-      </Form>
+      <form.AppField name="url">
+        {(field) => (
+          <field.MutationInputFormField
+            className="w-md"
+            label="みんなの運指表URL"
+            placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
+            successMessage="URLを更新しました"
+            mutation={update}
+          />
+        )}
+      </form.AppField>
       <UnsiLink />
     </div>
   );

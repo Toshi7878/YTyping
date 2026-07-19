@@ -1,10 +1,8 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getLineResults } from "@/app/(typing)/type/_feature/atoms/line-results";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import type { TypingLineResult } from "@/validator/result/result";
@@ -22,15 +20,9 @@ interface RegisterRankingButtonProps {
 }
 
 export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-
   const registerRanking = useRegisterRankingMutation({
     onSuccess: async () => {
       onSuccess();
-      const mapId = getMapId();
-      await queryClient.invalidateQueries(trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }));
-      await queryClient.invalidateQueries(trpc.user.stats.getMyPpRank.queryOptions());
       setTabName("ランキング");
       toast.success("ランキング登録が完了しました");
     },

@@ -2,6 +2,7 @@ import { recreateTypingWord } from "lyrics-typing-engine";
 import { getBuiltMap } from "../../atoms/built-map";
 import { getLineSubstatus, setLineSubstatus } from "../../atoms/line-substatus";
 import { getPlayingInputMode, getTypingWord, setPlayingInputMode, setTypingWord } from "../../atoms/typing-word";
+import { dispatchTypeEvent } from "../../user-script";
 import { getLineTime } from "../../youtube/get-youtube-time";
 import { setNotify } from "../header/notify";
 import { setNextLyricsAndKpm } from "./next-lyrics";
@@ -29,6 +30,8 @@ export const togglePlayInputMode = () => {
       },
     ],
   });
+
+  dispatchTypeEvent("change-input-mode", { newInputMode });
 };
 
 export const applyKanaInputMode = () => {

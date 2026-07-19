@@ -45,7 +45,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.result.upsert.mutationOptions({
+    trpc.result.ranking.register.mutationOptions({
       onError,
       onSuccess: async (serverRes, input) => {
         onSuccess();
@@ -68,7 +68,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
 
         // Ranking自体のクエリだけは再取得（順位変動など他のユーザーの情報も含むため）
-        await queryClient.invalidateQueries(trpc.result.list.getRanking.queryFilter({ mapId }));
+        await queryClient.invalidateQueries(trpc.result.ranking.get.queryFilter({ mapId }));
       },
     }),
   );

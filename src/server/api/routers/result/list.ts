@@ -14,10 +14,10 @@ import {
   type ResultListFilterSchema,
   SelectResultListApiSchema,
 } from "@/validator/result/list";
-import { bookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
+import { bookmarkedMapExists } from "../map/bookmark/list-item";
 import { filterByMapVisibility } from "../map/list";
 
 const player = alias(users, "player");
@@ -168,7 +168,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  if (!input) return baseQuery;
+  if (!input) return baseQuery.where(eq(player.banned, false));
 
   const whereConditions = [
     input.playerId ? eq(player.id, input.playerId) : undefined,
@@ -179,7 +179,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     filterByKeyword({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions));
+  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions, eq(player.banned, false)));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
@@ -205,8 +205,6 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
         },
         creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {
-          romaKpmMedian: map.romaKpmMedian,
-          kanaKpmMedian: map.kanaKpmMedian,
           romaKpmMax: map.romaKpmMax,
           kanaKpmMax: map.kanaKpmMax,
           romaTotalNotes: map.romaTotalNotes,

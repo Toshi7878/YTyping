@@ -43,7 +43,7 @@ function StepList({ steps }: { steps: { title: string; content: ReactNode; links
 }
 
 export function DifficultySteps() {
-  const RATING_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/server/api/routers/map/rating.ts";
+  const RATING_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/shared/map/rating/calc.ts";
   const steps = [
     {
       title: "KPMの算出",
@@ -130,8 +130,8 @@ export function DifficultySteps() {
 }
 
 export function PPSteps() {
-  const PP_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/lib/pp.ts";
-  const HELPER_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/lib/build-map/built-map-helper.ts";
+  const PP_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/shared/result/pp/calc.ts";
+  const HELPER_URL = "https://github.com/Toshi7878/YTyping/blob/main/src/shared/result/pp/helper.ts";
   const MISS_URL =
     "https://github.com/Toshi7878/YTyping/blob/main/src/app/(typing)/type/_feature/typing-card/playing/update-status/miss.ts";
   const SAVE_LINE_URL =

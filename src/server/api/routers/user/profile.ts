@@ -11,6 +11,8 @@ export const userProfileRouter = {
     const userProfile = await db
       .select({
         name: users.name,
+        banned: users.banned,
+        warningCount: users.warningCount,
         fingerChartUrl: userProfiles.fingerChartUrl,
         keyboard: userProfiles.keyboard,
       })
