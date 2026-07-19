@@ -80,15 +80,22 @@ interface SyncableFormField {
 
 interface SyncableForm {
   state: { fieldMeta: Partial<Record<keyof MapInfoFormValues, SyncableFormField | undefined>> };
-  setFieldValue(name: keyof MapInfoFormValues, value: unknown): void;
+  setFieldValue(
+    name: keyof MapInfoFormValues,
+    value: unknown,
+    opts: { dontUpdateMeta: boolean; dontValidate: boolean },
+  ): void;
 }
 
 // mapInfo/backupMap 由来の値をダーティでないフィールドにのみ反映する(RHFの values+keepDirtyValues 相当)
+// dontUpdateMeta だけでは不十分: setFieldValue は内部で validateField を呼び、
+// validateField自体がisTouchedを強制的にtrueにしてしまうため、dontValidateも併せて指定する必要がある。
+// これを怠ると tags 等の未入力フィールドがマウント直後からバリデーションエラー表示されてしまう
 const useSyncNonDirtyValues = (form: SyncableForm, values: MapInfoFormValues) => {
   useEffect(() => {
     for (const key of Object.keys(values) as (keyof MapInfoFormValues)[]) {
       if (!form.state.fieldMeta[key]?.isDirty) {
-        form.setFieldValue(key, values[key]);
+        form.setFieldValue(key, values[key], { dontUpdateMeta: true, dontValidate: true });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
