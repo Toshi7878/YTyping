@@ -96,7 +96,7 @@
     "@types/node": "^24.5.2",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "@types/youtube": "^0.2.0",
+    "@types/youtube": "^0.3.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "csv-parse": "^6.1.0",
