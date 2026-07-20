@@ -44,7 +44,7 @@ export const ResultCardFooter = ({
         </TooltipWrapper>
       </div>
 
-      <TooltipWrapper label={`合計ポイント: ${Number(point) + Number(tBonus)}`} asChild>
+      <TooltipWrapper label={`合計ポイント: ${point + tBonus}`} asChild>
         <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
           ポイント: {point}
           {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}

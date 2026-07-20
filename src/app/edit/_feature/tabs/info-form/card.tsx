@@ -99,7 +99,7 @@ const useSyncNonDirtyValues = (form: SyncableForm, values: MapInfoFormValues) =>
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values]);
+  }, [JSON.stringify(values)]);
 };
 
 export const EditMapInfoFormCard = () => {
