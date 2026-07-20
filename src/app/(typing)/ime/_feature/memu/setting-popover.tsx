@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTRPC } from "@/trpc/provider";
+import { CounterInput } from "@/ui/counter";
 import { LabeledInput } from "@/ui/input/labeled-input";
 import { LabeledCheckbox } from "@/ui/labeled-items";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
@@ -108,6 +109,12 @@ const SettingCardDivider = () => {
   return <div className="my-4 h-px bg-foreground" />;
 };
 
+const LYRICS_FONT_SCALE_CONFIG = {
+  step: 10,
+  max: 200,
+  min: 80,
+};
+
 const MainSettingTab = () => {
   const imeOptions = useImeOptionsState();
 
@@ -150,13 +157,26 @@ const MainSettingTab = () => {
 
       <SettingCardDivider />
 
-      <LabeledCheckbox
-        label="次の歌詞を表示"
-        defaultChecked={imeOptions.enableNextLyrics}
-        onCheckedChange={(value: boolean) => {
-          setImeOptions({ enableNextLyrics: value });
-        }}
-      />
+      <div className="flex flex-col gap-4">
+        <CounterInput
+          label="歌詞文字サイズ"
+          value={imeOptions.lyricsFontScale}
+          step={LYRICS_FONT_SCALE_CONFIG.step}
+          max={LYRICS_FONT_SCALE_CONFIG.max}
+          min={LYRICS_FONT_SCALE_CONFIG.min}
+          unit="%"
+          incrementTooltip="歌詞の文字サイズを大きくします。"
+          decrementTooltip="歌詞の文字サイズを小さくします。"
+          onChange={(value) => setImeOptions({ lyricsFontScale: value })}
+        />
+        <LabeledCheckbox
+          label="次の歌詞を表示"
+          defaultChecked={imeOptions.enableNextLyrics}
+          onCheckedChange={(value: boolean) => {
+            setImeOptions({ enableNextLyrics: value });
+          }}
+        />
+      </div>
     </div>
   );
 };
