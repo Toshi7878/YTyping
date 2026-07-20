@@ -148,7 +148,7 @@ const TypingLayout = ({ videoId }: { videoId: string }) => {
         <ViewArea />
         <InputTextarea />
         <MenuBar />
-        <div className="lg:h-25 xl:h-37.5" />
+        <div id="bottom_spacer"  className="lg:h-25 xl:h-37.5" />
       </div>
     </>
   );

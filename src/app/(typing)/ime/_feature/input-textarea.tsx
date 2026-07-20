@@ -98,6 +98,7 @@ export const InputTextarea = () => {
   return (
     <div className="z-2 mx-auto flex w-[95%] items-center justify-center md:w-[85%]">
       <Textarea
+        id="typing_textarea"
         ref={lyricsTextareaRef}
         className="h-[130px] resize-none rounded-md px-4 font-bold text-2xl tracking-widest xl:text-3xl"
         autoComplete="off"
