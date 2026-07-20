@@ -1,6 +1,9 @@
 packages:
   - ./
 
+overrides:
+  better-call: 1.3.7
+
 patchedDependencies:
   '@pixi/sound': patches/@pixi__sound.patch
 
