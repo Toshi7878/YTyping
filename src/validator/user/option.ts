@@ -29,6 +29,7 @@ export const CreateUserImeTypingOptionSchema = createInsertSchema(userImeTypingO
   insertEnglishSpaces: true,
   enableNextLyrics: true,
   includeRegexPattern: true,
+  lyricsFontScale: true,
 });
 
 export const UpsertUserOptionSchema = createUpdateSchema(userOptions).pick({

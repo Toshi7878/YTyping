@@ -6,12 +6,15 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { type ImeStats, readImeStats, readTypingTextarea, resetImeStats } from "../../_lib/atoms/ref";
 import { useBuiltMapState, useSceneState } from "../../_lib/atoms/state";
 import { playYTPlayer } from "../../_lib/atoms/yt-player";
+import { useLyricsFontScaleState } from "../provider";
 import { ScoreRanking } from "./end/score-ranking";
+import { LyricsFontScaleControl } from "./lyrics-font-scale-control";
 import { LyricsContainer } from "./play/lyrics-container";
 
 export const ViewArea = () => {
   const scene = useSceneState();
   const map = useBuiltMapState();
+  const lyricsFontScale = useLyricsFontScaleState();
 
   const onClick = () => {
     if (scene === "ready" && map !== null) {
@@ -27,7 +30,7 @@ export const ViewArea = () => {
     <div
       onClick={onClick}
       className={cn(
-        "w-full bg-black/80 font-bold text-2xl sm:text-3xl lg:text-4xl",
+        "group relative w-full bg-black/80 font-bold text-2xl sm:text-3xl lg:text-4xl",
         scene === "ready" ? "cursor-pointer" : "cursor-default",
       )}
       style={{
@@ -35,7 +38,10 @@ export const ViewArea = () => {
         textShadow: "0px 0px 10px rgba(0, 0, 0, 1)",
       }}
     >
-      <SceneView />
+      <div style={{ fontSize: `${lyricsFontScale}%` }}>
+        <SceneView />
+      </div>
+      <LyricsFontScaleControl className="pointer-events-none absolute right-2 bottom-2 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
     </div>
   );
 };

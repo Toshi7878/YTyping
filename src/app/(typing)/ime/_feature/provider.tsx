@@ -15,6 +15,7 @@ export const resetMapId = () => store.set(mapIdAtom, null);
 
 const imeTypeOptionsAtom = atomWithReset(DEFAULT_IME_OPTIONS);
 const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableNextLyrics"));
+const lyricsFontScaleAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("lyricsFontScale"));
 
 let _isImeTypeOptionsEdited = false;
 export const isImeTypeOptionsEdited = () => _isImeTypeOptionsEdited;
@@ -26,6 +27,11 @@ export const useImeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store
 export const getImeOptions = () => store.get(imeTypeOptionsAtom);
 
 export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
+
+export const useLyricsFontScaleState = () => useAtomValue(lyricsFontScaleAtom, { store });
+export const setLyricsFontScale = (value: number) => {
+  store.set(lyricsFontScaleAtom, value);
+};
 export const setImeOptions = (newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
   store.set(imeTypeOptionsAtom, (prev) => ({
     ...prev,
