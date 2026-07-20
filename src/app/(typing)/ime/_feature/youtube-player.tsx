@@ -49,7 +49,7 @@ const onPlay = async () => {
   console.log("再生 1");
   const scene = readScene();
   if (scene === "ready") {
-    onStart();
+    await onStart();
   }
 
   if (scene === "play") {

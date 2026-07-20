@@ -24,13 +24,20 @@
           "options": {
             "functions": ["twMerge", "twJoin", "tv"]
           }
-        }
+        },
+        "noDrizzleDeleteWithoutWhere": "error",
+        "noDrizzleUpdateWithoutWhere": "error",
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error",
+        "noUselessTypeConversion": "error",
+        "useExhaustiveSwitchCases": "error"
       },
       "correctness": {
         "useExhaustiveDependencies": "info"
       },
       "suspicious": {
-        "noUnknownAtRules": "info"
+        "noUnknownAtRules": "info",
+        "noExplicitAny": "error"
       },
       "complexity": {
         "noImportantStyles": "info"

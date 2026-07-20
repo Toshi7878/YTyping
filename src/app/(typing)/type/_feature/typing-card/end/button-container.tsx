@@ -40,8 +40,8 @@ export const EndButtonContainer = ({ bestScore, status }: EndButtonContainerProp
         />
       </div>
       <div className="mx-12 flex items-center justify-end gap-14" id="end_sub_buttons">
-        <ModeChangeButton showAlert={Boolean(isRankingRegistration && !isSubmitRankingButtonDisabled)} />
-        <RetryButton showAlert={Boolean(isRankingRegistration && !isSubmitRankingButtonDisabled)} />
+        <ModeChangeButton showAlert={isRankingRegistration && !isSubmitRankingButtonDisabled} />
+        <RetryButton showAlert={isRankingRegistration && !isSubmitRankingButtonDisabled} />
       </div>
     </>
   );

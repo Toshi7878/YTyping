@@ -134,9 +134,9 @@ const MapTable = () => {
 
   useHotkeys("arrowUp", () => moveLine("prev"), hotKeyOptions);
   useHotkeys("arrowDown", () => moveLine("next"), hotKeyOptions);
-  useHotkeys("ctrl+z, meta+z", () => undo(), hotKeyOptions);
+  useHotkeys("ctrl+z, meta+z", () => void undo(), hotKeyOptions);
   useHotkeys("ctrl+y, meta+shift+z", () => redo(), hotKeyOptions);
-  useHotkeys("ctrl+shift+f, meta+shift+f", () => wordSearchReplace(), hotKeyOptions);
+  useHotkeys("ctrl+shift+f, meta+shift+f", () => void wordSearchReplace(), hotKeyOptions);
   useHotkeys(
     "d",
     () => {
