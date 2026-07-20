@@ -71,7 +71,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
-        className="w-[600px] p-4"
+        className="w-[640px] p-4"
         align="end"
         side="top"
         sideOffset={10}
