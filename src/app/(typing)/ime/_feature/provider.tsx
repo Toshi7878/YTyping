@@ -15,7 +15,6 @@ export const resetMapId = () => store.set(mapIdAtom, null);
 
 const imeTypeOptionsAtom = atomWithReset(DEFAULT_IME_OPTIONS);
 const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableNextLyrics"));
-const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableLargeVideoDisplay"));
 
 let _isImeTypeOptionsEdited = false;
 export const isImeTypeOptionsEdited = () => _isImeTypeOptionsEdited;
@@ -27,7 +26,6 @@ export const useImeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store
 export const getImeOptions = () => store.get(imeTypeOptionsAtom);
 
 export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
-export const useEnableLargeVideoDisplayState = () => useAtomValue(enableLargeVideoDisplayAtom, { store });
 export const setImeOptions = (newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
   store.set(imeTypeOptionsAtom, (prev) => ({
     ...prev,

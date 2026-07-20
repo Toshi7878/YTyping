@@ -157,14 +157,6 @@ const MainSettingTab = () => {
           setImeOptions({ enableNextLyrics: value });
         }}
       />
-
-      <LabeledCheckbox
-        label="動画を大きく表示"
-        defaultChecked={imeOptions.enableLargeVideoDisplay}
-        onCheckedChange={(value: boolean) => {
-          setImeOptions({ enableLargeVideoDisplay: value });
-        }}
-      />
     </div>
   );
 };

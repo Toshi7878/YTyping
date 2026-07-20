@@ -23,7 +23,7 @@ import "./user-script";
 import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
 import { Notifications } from "./notifications";
-import { getImeOptions, useEnableLargeVideoDisplayState } from "./provider";
+import { getImeOptions } from "./provider";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
 
@@ -93,7 +93,6 @@ const TypingLayout = ({ videoId }: { videoId: string }) => {
     height: "calc(100vh - var(--header-height))",
   });
   const [notificationsHeight, setNotificationsHeight] = useState("calc(100vh - var(--header-height))");
-  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
 
   useEffect(() => {
     const lyricsViewAreaElement = lyricsViewAreaRef.current;
@@ -105,11 +104,8 @@ const TypingLayout = ({ videoId }: { videoId: string }) => {
       const bottomValue = computedStyle.bottom;
       const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
 
-      // 画面幅がmd（768px）以下の場合はlyricsViewAreaHeightを引かない
-      const isMdOrBelow = window.innerWidth <= 1280;
-      const textareaHeight = lyricsViewAreaElement.querySelector("textarea")?.offsetHeight || 0;
-      const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
-      const viewheight = isMdOrBelow || enableLargeVideoDisplay ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
+      const viewAreaHeight = lyricsViewAreaElement.firstElementChild?.getBoundingClientRect().height || 0;
+      const viewheight = lyricsViewAreaHeight - viewAreaHeight;
 
       const scene = readScene();
 
@@ -137,24 +133,22 @@ const TypingLayout = ({ videoId }: { videoId: string }) => {
     resizeObserver.observe(lyricsViewAreaElement);
 
     return () => resizeObserver.disconnect();
-  }, [enableLargeVideoDisplay]);
+  }, []);
 
   return (
     <>
       <Notifications style={{ height: notificationsHeight }} />
       <YouTubePlayer
         videoId={videoId}
-        className="fixed top-[40px] left-0 w-full"
+        className="fixed top-10 left-0 w-full"
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 
-      <div
-        ref={lyricsViewAreaRef}
-        className="fixed bottom-0 left-0 flex w-full flex-col lg:bottom-[100px] xl:bottom-[150px]"
-      >
+      <div ref={lyricsViewAreaRef} className="fixed bottom-0 left-0 flex w-full flex-col">
         <ViewArea />
         <InputTextarea />
         <MenuBar />
+        <div className="lg:h-25 xl:h-37.5" />
       </div>
     </>
   );
