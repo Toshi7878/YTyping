@@ -62,6 +62,7 @@ export const auth = betterAuth({
       clientId: env.AUTH_DISCORD_ID,
       clientSecret: env.AUTH_DISCORD_SECRET,
       mapProfileToUser: ({ email }) => {
+        if (!email) throw new Error("Discord account has no verified email");
         const emailHash = createMd5Hash(email);
         return { email: emailHash, image: undefined, name: undefined };
       },
