@@ -2,7 +2,7 @@
   "name": "ytyping",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.0.6",
+  "packageManager": "pnpm@11.15.1",
   "engines": {
     "node": "24.x"
   },
