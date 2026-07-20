@@ -193,9 +193,9 @@ const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookma
       myRank: session ? sql<number | null>`${myResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: session
         ? sql`${myResult.updatedAt}`.mapWith({
-            mapFromDriverValue: (value) => {
+            mapFromDriverValue: (value: unknown) => {
               if (value === null) return null;
-              return new Date(value);
+              return new Date(value as string);
             },
           })
         : sql<null>`null`,
