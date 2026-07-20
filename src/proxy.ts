@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/auth/server";
 import { env } from "@/env";
 
+export const runtime = "nodejs";
+
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
 };
