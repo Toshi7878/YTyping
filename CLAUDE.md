@@ -89,4 +89,4 @@ All env vars are validated via `@t3-oss/env-nextjs` in `src/env.ts`. **Never use
 - **`noProcessEnv`** — use `@/env` instead
 - **`noCommonJs`** — ESM only
 - Line ending: **LF** (enforced by formatter)
-- `biome.json` references schema `2.2.4` but installed version is `2.4.11` — this is intentional
+- `biome.json`'s `$schema` version must match the installed `@biomejs/biome` version in `package.json`, or editor tooling will flag valid options (e.g. `css.parser.tailwindDirectives`) as errors
