@@ -22,7 +22,7 @@ import { pathChangeAtomReset } from "../_lib/core/reset";
 import "./user-script";
 import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
-import { Notifications } from "./notifications";
+import { addNotifications, Notifications } from "./notifications";
 import { getImeOptions } from "./provider";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
@@ -54,6 +54,12 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const initWordResults = createInitWordResults(flatWords);
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       overlay.hide();
+
+      const settingNotifications: string[] = [];
+      if (insertEnglishSpaces) settingNotifications.push("英語スペースあり");
+      if (isCaseSensitive) settingNotifications.push("英語大文字あり");
+      if (enableIncludeRegex && includeRegexPattern) settingNotifications.push(`有効文字: ${includeRegexPattern}`);
+      if (settingNotifications.length > 0) addNotifications(settingNotifications);
     } catch {
       overlay.message(
         <div className="flex h-full flex-col items-center justify-center gap-2">
