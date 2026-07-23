@@ -24,6 +24,7 @@ import {
   setImeOptions,
   useImeOptionsState,
 } from "../provider";
+import { buildRuleText, setRuleText } from "../rule-display";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -55,6 +56,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
           const flatWords = createFlatWords(words);
           const initWordResults = createInitWordResults(flatWords);
           setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
+          setRuleText(buildRuleText({ insertEnglishSpaces, isCaseSensitive, enableIncludeRegex }));
         }
       }
     }

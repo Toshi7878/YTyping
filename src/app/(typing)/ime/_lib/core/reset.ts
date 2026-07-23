@@ -2,6 +2,7 @@ import { mutatePlayCountStats } from "@/shared/map/play-count";
 import { resetUserResultMap } from "../../_feature/memu/result-dialog";
 import { resetNotifications } from "../../_feature/notifications";
 import { getMapId, resetMapId } from "../../_feature/provider";
+import { resetRuleText } from "../../_feature/rule-display";
 import { dispatchImeEvent } from "../../_feature/user-script";
 import { readTypingTextarea } from "../atoms/ref";
 import { readScene, resetBuiltMap, resetScene, resetTypingWord, resetUtilityParams, setScene } from "../atoms/state";
@@ -36,5 +37,6 @@ export const pathChangeAtomReset = () => {
   resetScene();
   resetUserResultMap();
   resetNotifications();
+  resetRuleText();
   resetMapId();
 };
