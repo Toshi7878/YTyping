@@ -7,6 +7,20 @@ const ruleTextAtom = atomWithReset("");
 export const setRuleText = (text: string) => store.set(ruleTextAtom, text);
 export const resetRuleText = () => store.set(ruleTextAtom, RESET);
 
+interface RuleOptions {
+  insertEnglishSpaces: boolean;
+  isCaseSensitive: boolean;
+  enableIncludeRegex: boolean;
+}
+
+export const buildRuleText = ({ insertEnglishSpaces, isCaseSensitive, enableIncludeRegex }: RuleOptions) => {
+  const rules: string[] = [];
+  if (insertEnglishSpaces) rules.push("英語スペースあり");
+  if (isCaseSensitive) rules.push("英語大文字あり");
+  if (enableIncludeRegex) rules.push("記号入力あり");
+  return rules.join(" / ");
+};
+
 export const RuleDisplay = () => {
   const ruleText = useAtomValue(ruleTextAtom);
 

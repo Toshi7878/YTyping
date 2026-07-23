@@ -24,7 +24,7 @@ import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
 import { Notifications } from "./notifications";
 import { getImeOptions } from "./provider";
-import { RuleDisplay, setRuleText } from "./rule-display";
+import { buildRuleText, RuleDisplay, setRuleText } from "./rule-display";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
 
@@ -55,12 +55,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const initWordResults = createInitWordResults(flatWords);
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       overlay.hide();
-
-      const ruleNotifications: string[] = [];
-      if (insertEnglishSpaces) ruleNotifications.push("英語スペースあり");
-      if (isCaseSensitive) ruleNotifications.push("英語大文字あり");
-      if (enableIncludeRegex && includeRegexPattern) ruleNotifications.push(`有効文字: ${includeRegexPattern}`);
-      setRuleText(ruleNotifications.length > 0 ? `${ruleNotifications.join(" / ")}` : "");
+      setRuleText(buildRuleText({ insertEnglishSpaces, isCaseSensitive, enableIncludeRegex }));
     } catch {
       overlay.message(
         <div className="flex h-full flex-col items-center justify-center gap-2">
