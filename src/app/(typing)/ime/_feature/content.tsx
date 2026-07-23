@@ -55,11 +55,11 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       overlay.hide();
 
-      const settingNotifications: string[] = [];
-      if (insertEnglishSpaces) settingNotifications.push("英語スペースあり");
-      if (isCaseSensitive) settingNotifications.push("英語大文字あり");
-      if (enableIncludeRegex && includeRegexPattern) settingNotifications.push(`有効文字: ${includeRegexPattern}`);
-      if (settingNotifications.length > 0) addNotifications(settingNotifications);
+      const ruleNotifications: string[] = [];
+      if (insertEnglishSpaces) ruleNotifications.push("英語スペースあり");
+      if (isCaseSensitive) ruleNotifications.push("英語大文字あり");
+      if (enableIncludeRegex && includeRegexPattern) ruleNotifications.push(`有効文字: ${includeRegexPattern}`);
+      if (ruleNotifications.length > 0) addNotifications([`ルール: ${ruleNotifications.join(" / ")}`]);
     } catch {
       overlay.message(
         <div className="flex h-full flex-col items-center justify-center gap-2">
