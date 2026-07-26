@@ -122,36 +122,12 @@ store.sub(playingInputModeAtom, () => {
   }
 });
 
-// viewportの幅はリサイズ時以外変化しないため、打鍵毎の`clientWidth`読み取り(強制レイアウト要因)を避けてキャッシュする
-let mainViewportWidth = 0;
-let subViewportWidth = 0;
-let mainViewportObserver: ResizeObserver | null = null;
-let subViewportObserver: ResizeObserver | null = null;
-
 export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
   store.set(mainWordElementsAtom, elements);
-
-  mainViewportObserver?.disconnect();
-  if (elements) {
-    mainViewportWidth = elements.viewportRef.clientWidth;
-    mainViewportObserver = new ResizeObserver(([entry]) => {
-      if (entry) mainViewportWidth = entry.contentRect.width;
-    });
-    mainViewportObserver.observe(elements.viewportRef);
-  }
 };
 
 export const setSubWordElements = (elements: ExtractAtomValue<typeof subWordElementsAtom>) => {
   store.set(subWordElementsAtom, elements);
-
-  subViewportObserver?.disconnect();
-  if (elements) {
-    subViewportWidth = elements.viewportRef.clientWidth;
-    subViewportObserver = new ResizeObserver(([entry]) => {
-      if (entry) subViewportWidth = entry.contentRect.width;
-    });
-    subViewportObserver.observe(elements.viewportRef);
-  }
 };
 
 // キャッシュ用変数を定義
@@ -353,7 +329,9 @@ const scheduleScroll = (
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
 ) => {
   requestDebouncedAnimationFrame("word-scroll", () => {
-    applyScroll(mainRefs, subRefs, mainCorrect, subCorrect, options);
+    requestAnimationFrame(() => {
+      applyScroll(mainRefs, subRefs, mainCorrect, subCorrect, options);
+    });
   });
 };
 
@@ -390,7 +368,7 @@ const applyScroll = (
   if (mainCorrect.length > 0 && (isMainTextChanged || prevMainShift === -1)) {
     const currentShift = prevMainShift > 0 ? prevMainShift : 0;
     const caretX = mainRefs.caretRef.offsetLeft;
-    const rightBound = Math.floor(mainViewportWidth * mainRightBoundRatio);
+    const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * mainRightBoundRatio);
     const visibleCaretX = caretX - currentShift;
 
     if (visibleCaretX > rightBound) {
@@ -401,7 +379,7 @@ const applyScroll = (
   if (subRefs && subCorrect.length > 0 && (isSubTextChanged || prevSubShift === -1)) {
     const currentShift = prevSubShift > 0 ? prevSubShift : 0;
     const caretX = subRefs.caretRef.offsetLeft;
-    const rightBound = Math.floor(subViewportWidth * subRightBoundRatio);
+    const rightBound = Math.floor(subRefs.viewportRef.clientWidth * subRightBoundRatio);
     const visibleCaretX = caretX - currentShift;
 
     if (visibleCaretX > rightBound) {
