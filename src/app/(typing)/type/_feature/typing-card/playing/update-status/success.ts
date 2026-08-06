@@ -10,6 +10,7 @@ import { getCombo, setCombo } from "../../header/combo";
 import { setLineKpm } from "../../header/line-kpm";
 import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
+import { calcTimeBonus } from "./calc-time-bonus";
 
 export const updateSuccessStatus = ({
   isCompleted,
@@ -46,11 +47,7 @@ export const updateSuccessStatus = ({
     }
 
     if (isCompleted) {
-      // constantRemainLineTime/constantLineTime は実時間換算のため、そのまま playSpeed を掛けると
-      // 動画時間軸の残り時間になり倍速時にボーナス減衰が playSpeed 倍加速してしまう。
-      // duration(=動画時間軸)から実時間の経過分を引くことで速度に依存しない減衰にする。
-      const lineDuration = (constantRemainLineTime + constantLineTime) * playSpeed;
-      const timeBonus = Math.floor((lineDuration - constantLineTime) * 100);
+      const timeBonus = calcTimeBonus({ constantRemainLineTime, constantLineTime, playSpeed });
       const score = prev.score + point + timeBonus;
       return { ...prev, point, type, kpm, timeBonus, score, line: prev.line - 1, rank: calcCurrentRank(score) };
     }

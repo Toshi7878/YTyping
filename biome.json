@@ -75,7 +75,14 @@
   },
   "overrides": [
     {
-      "includes": ["**/layout.tsx", "**/page.tsx", "**/loading.tsx", "**/error.tsx", "**/not-found.tsx"],
+      "includes": [
+        "**/layout.tsx",
+        "**/page.tsx",
+        "**/loading.tsx",
+        "**/error.tsx",
+        "**/not-found.tsx",
+        "vitest.config.mts"
+      ],
       "linter": {
         "rules": {
           "style": {
