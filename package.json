@@ -99,7 +99,7 @@
     "@types/youtube": "^0.3.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "babel-plugin-react-compiler": "^1.0.0",
-    "csv-parse": "^6.1.0",
+    "csv-parse": "^7.0.0",
     "dotenv-cli": "^11.0.0",
     "drizzle-kit": "1.0.0-rc.4-ca0f029",
     "dts-bundle-generator": "^9.0.0",
