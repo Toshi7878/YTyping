@@ -1,15 +1,15 @@
 "use client";
 
+import { Radio as RadioPrimitive } from "@base-ui/react/radio";
+import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
 import { cva, type VariantProps } from "class-variance-authority";
 import { CircleIcon } from "lucide-react";
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
-import type * as React from "react";
 
 import { cn } from "@/utils/cn";
 import { buttonVariants } from "../button";
 
-function RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
-  return <RadioGroupPrimitive.Root data-slot="radio-group" className={cn("grid gap-3", className)} {...props} />;
+function RadioGroup<Value = unknown>({ className, ...props }: RadioGroupPrimitive.Props<Value>) {
+  return <RadioGroupPrimitive data-slot="radio-group" className={cn("grid gap-3", className)} {...props} />;
 }
 
 const radioGroupItemVariants = cva(
@@ -18,7 +18,7 @@ const radioGroupItemVariants = cva(
     "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
     "dark:bg-input/30 aspect-square shrink-0 cursor-pointer rounded-full border shadow-xs",
     "transition-[color,box-shadow] outline-none focus-visible:ring-[3px]",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "data-disabled:cursor-not-allowed data-disabled:opacity-50",
   ],
   {
     variants: {
@@ -47,24 +47,21 @@ const radioGroupIndicatorVariants = cva("fill-primary absolute top-1/2 left-1/2 
   },
 });
 
-interface RadioGroupItemProps
-  extends React.ComponentProps<typeof RadioGroupPrimitive.Item>,
+interface RadioGroupItemProps<Value = unknown>
+  extends RadioPrimitive.Root.Props<Value>,
     VariantProps<typeof radioGroupItemVariants> {}
 
-function RadioGroupItem({ className, size, ...props }: RadioGroupItemProps) {
+function RadioGroupItem<Value = unknown>({ className, size, ...props }: RadioGroupItemProps<Value>) {
   return (
-    <RadioGroupPrimitive.Item
+    <RadioPrimitive.Root
       data-slot="radio-group-item"
       className={cn(radioGroupItemVariants({ size }), className)}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator
-        data-slot="radio-group-indicator"
-        className="relative flex items-center justify-center"
-      >
+      <RadioPrimitive.Indicator data-slot="radio-group-indicator" className="relative flex items-center justify-center">
         <CircleIcon className={cn(radioGroupIndicatorVariants({ size }))} />
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
+      </RadioPrimitive.Indicator>
+    </RadioPrimitive.Root>
   );
 }
 
@@ -74,27 +71,20 @@ const radioCardVariants = cva(
     variants: {
       variant: {
         default:
-          "hover:opacity-90 hover:shadow-lg bg-background text-foreground data-[state=checked]:ring-2 data-[state=checked]:ring-primary/20",
-        primary:
-          "data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        secondary:
-          "data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground data-[state=checked]:shadow-lg",
-        accent:
-          "data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground data-[state=checked]:shadow-lg",
-        destructive:
-          "data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground data-[state=checked]:shadow-lg",
-        outline: "data-[state=checked]:border-primary data-[state=checked]:border-2 data-[state=checked]:shadow-lg",
-        roma: "data-[state=checked]:bg-roma data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        kana: "data-[state=checked]:bg-kana data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        english:
-          "data-[state=checked]:bg-english data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+          "hover:opacity-90 hover:shadow-lg bg-background text-foreground data-checked:ring-2 data-checked:ring-primary/20",
+        primary: "data-checked:bg-primary data-checked:text-primary-foreground data-checked:shadow-lg",
+        secondary: "data-checked:bg-secondary data-checked:text-secondary-foreground data-checked:shadow-lg",
+        accent: "data-checked:bg-accent data-checked:text-accent-foreground data-checked:shadow-lg",
+        destructive: "data-checked:bg-destructive data-checked:text-destructive-foreground data-checked:shadow-lg",
+        outline: "data-checked:border-primary data-checked:border-2 data-checked:shadow-lg",
+        roma: "data-checked:bg-roma data-checked:text-primary-foreground data-checked:shadow-lg",
+        kana: "data-checked:bg-kana data-checked:text-primary-foreground data-checked:shadow-lg",
+        english: "data-checked:bg-english data-checked:text-primary-foreground data-checked:shadow-lg",
         romakana:
-          "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:to-kana data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        flick:
-          "data-[state=checked]:bg-flick data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        perfect:
-          "data-[state=checked]:bg-perfect data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
-        all: "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:via-kana data-[state=checked]:to-english data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+          "data-checked:bg-gradient-to-r data-checked:from-roma data-checked:to-kana data-checked:text-primary-foreground data-checked:shadow-lg",
+        flick: "data-checked:bg-flick data-checked:text-primary-foreground data-checked:shadow-lg",
+        perfect: "data-checked:bg-perfect data-checked:text-primary-foreground data-checked:shadow-lg",
+        all: "data-checked:bg-gradient-to-r data-checked:from-roma data-checked:via-kana data-checked:to-english data-checked:text-primary-foreground data-checked:shadow-lg",
       },
       size: {
         default: "text-sm px-3 py-2",
@@ -109,37 +99,43 @@ const radioCardVariants = cva(
   },
 );
 
-interface RadioCardProps extends React.ComponentProps<typeof RadioGroupPrimitive.Item> {
+interface RadioCardProps<Value = unknown> extends RadioPrimitive.Root.Props<Value> {
   variant?: VariantProps<typeof radioCardVariants>["variant"];
   size?: VariantProps<typeof radioCardVariants>["size"];
 }
 
-const RadioCard = ({ className, variant = "default", size = "default", children, ...props }: RadioCardProps) => {
+const RadioCard = <Value = unknown>({
+  className,
+  variant = "default",
+  size = "default",
+  children,
+  ...props
+}: RadioCardProps<Value>) => {
   return (
-    <RadioGroupPrimitive.Item
+    <RadioPrimitive.Root
       data-slot="radio-card"
       className={cn(radioCardVariants({ variant, size, className }))}
       {...props}
     >
       {children}
-    </RadioGroupPrimitive.Item>
+    </RadioPrimitive.Root>
   );
 };
 
-interface RadioButtonProps extends React.ComponentProps<typeof RadioGroupPrimitive.Item> {
+interface RadioButtonProps<Value = unknown> extends RadioPrimitive.Root.Props<Value> {
   variant?: VariantProps<typeof buttonVariants>["variant"];
   size?: VariantProps<typeof buttonVariants>["size"];
 }
 
-const RadioButton = ({ className, variant, size, children, ...props }: RadioButtonProps) => {
+const RadioButton = <Value = unknown>({ className, variant, size, children, ...props }: RadioButtonProps<Value>) => {
   return (
-    <RadioGroupPrimitive.Item
+    <RadioPrimitive.Root
       data-slot="radio-button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
       {children}
-    </RadioGroupPrimitive.Item>
+    </RadioPrimitive.Root>
   );
 };
 

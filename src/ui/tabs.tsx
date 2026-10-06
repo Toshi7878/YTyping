@@ -1,8 +1,8 @@
 "use client";
 
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { Tabs as TabsPrimitive } from "radix-ui";
 import type * as React from "react";
 import { cn } from "@/utils/cn";
 
@@ -45,14 +45,14 @@ function TabsList({
 }
 
 const tabsTriggerVariants = cva(
-  "focus-visible:border-ring inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1  whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "focus-visible:border-ring inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1  whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-active:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "hover:data-[state=inactive]:bg-accent/40 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground focus-visible:ring-ring/50 focus-visible:outline-ring font-medium text-foreground text-sm",
+          "not-data-active:hover:bg-accent/40 data-active:bg-accent data-active:text-accent-foreground focus-visible:ring-ring/50 focus-visible:outline-ring font-medium text-foreground text-sm",
         underline:
-          "data-[state=active]:border-b-accent-foreground/80 text-muted-foreground data-[state=active]:text-foreground text-lg data-[state=active]:font-medium h-full rounded-none border-b-2 data-[state=active]:shadow-none hover:text-foreground/80",
+          "data-active:border-b-accent-foreground/80 text-muted-foreground data-active:text-foreground text-lg data-active:font-medium h-full rounded-none border-b-2 data-active:shadow-none hover:text-foreground/80",
       },
     },
     defaultVariants: {
@@ -65,9 +65,9 @@ function TabsTrigger({
   className,
   variant,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger> & VariantProps<typeof tabsTriggerVariants>) {
+}: React.ComponentProps<typeof TabsPrimitive.Tab> & VariantProps<typeof tabsTriggerVariants>) {
   return (
-    <TabsPrimitive.Trigger
+    <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(tabsTriggerVariants({ variant }), className)}
       {...props}
@@ -75,11 +75,11 @@ function TabsTrigger({
   );
 }
 
-function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
+function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Panel>) {
   return (
-    <TabsPrimitive.Content
+    <TabsPrimitive.Panel
       data-slot="tabs-content"
-      className={cn("flex-1 outline-none", props.forceMount && "data-[state=inactive]:hidden", className)}
+      className={cn("flex-1 outline-none", props.keepMounted && "data-hidden:hidden", className)}
       {...props}
     />
   );

@@ -210,7 +210,7 @@ const GenreFilterRow = () => {
                     value={[localSlider]}
                     thumbLabel={formatLanguageRatioLabel}
                     onValueChange={(v) => setLocalSlider(v[0] ?? 0)}
-                    onValueCommit={(v) => {
+                    onValueCommitted={(v) => {
                       void setFilterParams({ englishRatio: v[0] ?? 0 });
                     }}
                   />

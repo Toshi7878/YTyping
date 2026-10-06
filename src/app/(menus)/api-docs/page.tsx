@@ -132,7 +132,7 @@ export default async function Page() {
       <H1>API Docs</H1>
 
       <CardWithContent className={{ cardContent: "space-y-8" }}>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion className="w-full">
           {endpoints.map((endpoint) => (
             <AccordionItem key={`${endpoint.method}-${endpoint.path}`} value={`${endpoint.method}-${endpoint.path}`}>
               <AccordionTrigger className="gap-4 rounded-md border border-border/60 bg-muted/20 px-4 py-3 transition-colors hover:bg-muted/40">

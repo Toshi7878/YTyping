@@ -30,11 +30,11 @@ export const EditTabs = () => {
         })}
       </TabsList>
 
-      <TabsContent value="情報&保存" forceMount>
+      <TabsContent value="情報&保存" keepMounted>
         {mapId ? <EditMapInfoFormCard /> : <AddMapInfoFormCard />}
       </TabsContent>
 
-      <TabsContent value="エディター" forceMount>
+      <TabsContent value="エディター" keepMounted>
         <EditorCard />
       </TabsContent>
 

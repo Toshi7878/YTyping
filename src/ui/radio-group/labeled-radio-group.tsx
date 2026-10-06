@@ -5,16 +5,17 @@ import { cn } from "@/utils/cn";
 import { Label } from "../label";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 
-interface LabeledRadioItemProps extends Omit<React.ComponentProps<typeof RadioGroupItem>, "onCheckedChange"> {
+interface LabeledRadioItemProps<Value = string>
+  extends Omit<React.ComponentProps<typeof RadioGroupItem<Value>>, "onCheckedChange"> {
   label: React.ReactNode;
   labelClassName?: string;
   containerClassName?: string;
   description?: React.ReactNode;
   error?: string;
-  value: string;
+  value: Value;
 }
 
-const LabeledRadioItem = ({
+const LabeledRadioItem = <Value = string>({
   id,
   label,
   labelClassName,
@@ -25,7 +26,7 @@ const LabeledRadioItem = ({
   value,
   ref,
   ...props
-}: LabeledRadioItemProps) => {
+}: LabeledRadioItemProps<Value>) => {
   const radioId = React.useId();
 
   return (
@@ -55,8 +56,8 @@ const LabeledRadioItem = ({
   );
 };
 
-interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup> {
-  items: { label: string; value: string }[];
+interface LabeledRadioGroupProps<Value = string> extends React.ComponentProps<typeof RadioGroup<Value>> {
+  items: { label: string; value: Value }[];
   label?: React.ReactNode;
   labelClassName?: string;
   containerClassName?: string;
@@ -64,7 +65,7 @@ interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup>
   error?: string;
 }
 
-const LabeledRadioGroup = ({
+const LabeledRadioGroup = <Value = string>({
   label,
   labelClassName,
   containerClassName,
@@ -74,14 +75,14 @@ const LabeledRadioGroup = ({
   items,
   ref,
   ...props
-}: LabeledRadioGroupProps & { ref?: React.Ref<React.ComponentRef<typeof RadioGroup>> }) => {
+}: LabeledRadioGroupProps<Value> & { ref?: React.Ref<React.ComponentRef<typeof RadioGroup<Value>>> }) => {
   return (
     <div className={cn("space-y-3", containerClassName)}>
       {label && <Label className={cn("font-medium text-sm", labelClassName)}>{label}</Label>}
       {description && <p className="text-muted-foreground text-xs">{description}</p>}
       <RadioGroup ref={ref} className={cn(error && "border-destructive", className)} {...props}>
         {items.map((item) => (
-          <LabeledRadioItem key={item.value} label={item.label} value={item.value} />
+          <LabeledRadioItem key={String(item.value)} label={item.label} value={item.value} />
         ))}
       </RadioGroup>
       {error && <p className="text-destructive text-sm">{error}</p>}

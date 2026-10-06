@@ -44,7 +44,7 @@ export const WordScrollFields = () => {
 const WordScrollAnimationRadioOptions = () => {
   const { isSmoothScroll } = useTypingOptionsState();
 
-  const items = [
+  const items: { label: string; value: "smooth" | "instant" }[] = [
     { label: "アニメーションあり", value: "smooth" },
     { label: "アニメーションなし", value: "instant" },
   ];

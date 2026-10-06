@@ -1,12 +1,12 @@
 "use client";
 
-import { Slider as SliderPrimitive } from "radix-ui";
+import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import type * as React from "react";
 
 import { cn } from "@/utils/cn";
 import { Badge } from "./badge";
 
-interface SliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
+interface SliderProps extends SliderPrimitive.Root.Props<number[]> {
   thumbLabel?: (value: number | undefined) => React.ReactNode;
 }
 
@@ -20,38 +20,44 @@ function Slider({ className, defaultValue, thumbLabel, value, min = 0, max = 100
       value={value}
       min={min}
       max={max}
-      className={cn(
-        "relative flex w-full cursor-grab touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col data-disabled:opacity-50",
-        className,
-      )}
+      thumbAlignment="edge"
+      className={cn("data-disabled:opacity-50", className)}
       {...props}
     >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className={cn(
-          "relative grow overflow-hidden rounded-full bg-muted-foreground/50 data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-1.5",
-        )}
+      <SliderPrimitive.Control
+        data-slot="slider-control"
+        className="relative flex w-full cursor-grab touch-none select-none items-center data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col"
       >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
-          className={cn("absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full")}
-        />
-      </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
-        <SliderPrimitive.Thumb
-          data-slot="slider-thumb"
-          // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
-          key={index}
-          className="block size-4 shrink-0 rounded-full border border-primary bg-foreground shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50"
+        <SliderPrimitive.Track
+          data-slot="slider-track"
+          className={cn(
+            "relative grow overflow-hidden rounded-full bg-muted-foreground/50 data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-1.5",
+          )}
         >
-          <Badge
-            variant="outline"
-            className="absolute -top-4 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-0 bg-background group-hover:scale-100"
+          <SliderPrimitive.Indicator
+            data-slot="slider-indicator"
+            className={cn(
+              "absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
+            )}
+          />
+        </SliderPrimitive.Track>
+        {Array.from({ length: _values.length }, (_, index) => (
+          <SliderPrimitive.Thumb
+            data-slot="slider-thumb"
+            index={index}
+            // biome-ignore lint/suspicious/noArrayIndexKey: 配列の長さ・順序が不変のため安全
+            key={index}
+            className="block size-4 shrink-0 rounded-full border border-primary bg-foreground shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 data-disabled:pointer-events-none data-disabled:opacity-50"
           >
-            {thumbLabel ? thumbLabel(_values[index]) : _values[index]}
-          </Badge>
-        </SliderPrimitive.Thumb>
-      ))}
+            <Badge
+              variant="outline"
+              className="absolute -top-4 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-0 bg-background group-hover:scale-100"
+            >
+              {thumbLabel ? thumbLabel(_values[index]) : _values[index]}
+            </Badge>
+          </SliderPrimitive.Thumb>
+        ))}
+      </SliderPrimitive.Control>
     </SliderPrimitive.Root>
   );
 }
