@@ -120,7 +120,7 @@ export const PracticeLineSheet = () => {
             {lineFailureCount > 0 && <span className="text-failure">Failure Line: {lineFailureCount}</span>}
             {session && <LoadResultButton userId={session.user.id} />}
           </div>
-          <ScrollArea type="always" className="min-h-0 flex-1 overflow-hidden">
+          <ScrollArea className="min-h-0 flex-1 overflow-hidden">
             <PracticeLineTable map={map} lineItemsRef={lineItemsRef} onRowClick={handleItemClick} />
           </ScrollArea>
         </div>
