@@ -117,6 +117,10 @@ const BookmarkListSelect = () => {
 
   return (
     <Select
+      items={[
+        { label: "指定なし", value: CLEAR_VALUE },
+        ...(lists?.map((list) => ({ label: list.title, value: list.id.toString() })) ?? []),
+      ]}
       value={value}
       onValueChange={(nextValue) => {
         if (nextValue === CLEAR_VALUE) {

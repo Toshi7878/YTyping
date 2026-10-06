@@ -68,7 +68,7 @@ type FloatingLabelSelectOption = {
   disabled?: boolean;
 };
 
-type FloatingLabelSelectProps = React.ComponentProps<typeof Select> & {
+type FloatingLabelSelectProps = React.ComponentProps<typeof Select<string>> & {
   label: React.ReactNode;
   required?: boolean;
   options: FloatingLabelSelectOption[];
@@ -90,7 +90,7 @@ export const FloatingLabelSelect = ({
   const id = useId();
   return (
     <div className={cn("relative w-full", containerClassName)}>
-      <Select {...selectProps}>
+      <Select items={options} {...selectProps}>
         <SelectTrigger id={id} className={cn("peer bg-input", triggerClassName)}>
           <SelectValue />
         </SelectTrigger>

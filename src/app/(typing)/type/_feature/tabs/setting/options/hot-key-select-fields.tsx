@@ -32,7 +32,7 @@ export const HotKeySelectFields = () => {
             { label: "無効化", value: "NONE" },
           ]}
           value={inputModeToggleKey}
-          onValueChange={(value: string) => {
+          onValueChange={(value) => {
             setTypingOptions({ inputModeToggleKey: value as (typeof INPUT_MODE_KEY_TYPES)[number] });
           }}
         />

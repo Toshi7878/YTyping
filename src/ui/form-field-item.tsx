@@ -341,7 +341,7 @@ const SelectFormField = ({
   options,
   onValueChange,
   ...props
-}: SelectFormFieldProps & Omit<ComponentProps<typeof Select>, "value" | "defaultValue" | "onValueChange">) => {
+}: SelectFormFieldProps & Omit<ComponentProps<typeof Select<string>>, "value" | "defaultValue" | "onValueChange">) => {
   const field = useFieldContext<string>();
   const id = useId();
   const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
@@ -351,8 +351,10 @@ const SelectFormField = ({
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <Select
         {...props}
+        items={options}
         value={field.state.value}
         onValueChange={(value) => {
+          if (value === null) return;
           field.handleChange(value);
           onValueChange?.(value);
         }}
@@ -400,7 +402,9 @@ const FloatingLabelSelectFormField = ({
   return (
     <Field className={className} data-invalid={errors.length > 0}>
       <FloatingLabelSelect
-        onValueChange={field.handleChange}
+        onValueChange={(value) => {
+          if (value !== null) field.handleChange(value);
+        }}
         value={field.state.value}
         label={label}
         options={options}
