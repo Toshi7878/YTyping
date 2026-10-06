@@ -9,7 +9,7 @@ pnpm dev          # Start dev server
 pnpm build        # Production build
 pnpm check        # Biome lint + format check (runs in pre-commit hook)
 pnpm check:fix    # Auto-fix Biome issues
-pnpm typecheck    # Type check via tsgo (@typescript/native-preview)
+pnpm typecheck    # Type check via tsc (native Go compiler, bundled in typescript 7.x)
 
 # Database (local Supabase)
 pnpm db:start     # Start local Supabase
