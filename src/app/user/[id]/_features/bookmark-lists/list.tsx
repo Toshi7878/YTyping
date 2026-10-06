@@ -122,23 +122,25 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="z-10 shrink-0">
-          <MoreHorizontal className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon" className="z-10 shrink-0">
+            <MoreHorizontal className="size-4" />
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         <EditBookmarkListDialogForm
           list={list}
           trigger={
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            <DropdownMenuItem closeOnClick={false}>
               <Pencil className="size-4" />
               編集
             </DropdownMenuItem>
           }
         />
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
+        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
           <Trash2 className="size-4" />
           削除
         </DropdownMenuItem>

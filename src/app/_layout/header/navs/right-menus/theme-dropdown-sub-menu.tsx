@@ -34,7 +34,7 @@ export const ThemeDropdownSubmenu = () => {
               <DropdownMenuItem
                 key={theme.class}
                 className={resolvedTheme === theme.class ? "font-bold" : undefined}
-                onSelect={(e) => e.preventDefault()}
+                closeOnClick={false}
                 onClick={() => handleThemeChange(theme.class)}
               >
                 <span>{theme.label}</span>
@@ -51,7 +51,7 @@ export const ThemeDropdownSubmenu = () => {
               <DropdownMenuItem
                 key={theme.class}
                 className={resolvedTheme === theme.class ? "font-bold" : undefined}
-                onSelect={(e) => e.preventDefault()}
+                closeOnClick={false}
                 onClick={() => handleThemeChange(theme.class)}
               >
                 <span>{theme.label}</span>

@@ -47,11 +47,13 @@ export const LeftMenus = () => {
 const LinksDropdownMenu = () => {
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="unstyled" size="sm" className="text-sm hover:text-header-foreground">
-          Menu <ChevronDown className="relative top-px size-4" />
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="unstyled" size="sm" className="text-sm hover:text-header-foreground">
+            Menu <ChevronDown className="relative top-px size-4" />
+          </Button>
+        }
+      />
       <DropdownMenuContent align="start" className="min-w-fit">
         {LEFT_MENU_LINK_ITEMS.map((menuItem) => (
           <Link href={menuItem.href} key={menuItem.title}>

@@ -27,16 +27,18 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   return (
     <div className={className}>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="border border-header-foreground border-solid p-2 hover:bg-accent/50"
-          >
-            <Menu className="size-4 text-header-foreground" />
-            <span className="sr-only">メニューを開く</span>
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="sm"
+              className="border border-header-foreground border-solid p-2 hover:bg-accent/50"
+            >
+              <Menu className="size-4 text-header-foreground" />
+              <span className="sr-only">メニューを開く</span>
+            </Button>
+          }
+        />
 
         <DropdownMenuContent align="end" className="w-56">
           <MenuDropdownItems />

@@ -30,17 +30,19 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="unstyled"
-          size="sm"
-          className={cn("mb-0.5 text-header-foreground/80 hover:text-header-foreground", className)}
-        >
-          <span id="header_user_name">{session.user.name}</span>
-          <span className="tabular-nums opacity-60">#{ppRank}</span>
-          <ChevronDown className="relative top-px size-4" />
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="unstyled"
+            size="sm"
+            className={cn("mb-0.5 text-header-foreground/80 hover:text-header-foreground", className)}
+          >
+            <span id="header_user_name">{session.user.name}</span>
+            <span className="tabular-nums opacity-60">#{ppRank}</span>
+            <ChevronDown className="relative top-px size-4" />
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end" className="min-w-fit">
         {userMenuLinkItems.map((item) => (
           <Link href={item.href} key={item.title}>

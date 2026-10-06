@@ -45,7 +45,7 @@ export const SignInDropdownItems = () => {
       {[...items].map((item) => (
         <DropdownMenuItem
           key={item.provider}
-          onSelect={async () => {
+          onClick={async () => {
             start();
             await signIn.social({ provider: item.provider });
           }}
