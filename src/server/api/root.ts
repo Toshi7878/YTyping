@@ -1,5 +1,6 @@
 import { aiRouter } from "./routers/ai";
 import { authRouter } from "./routers/auth";
+import { importantNoticeRouter } from "./routers/important-notice";
 import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
 import { morphRouter } from "./routers/morph";
@@ -31,6 +32,7 @@ export const appRouter = router({
     pp: rankingPpRouter,
   },
   notification: notificationRouter,
+  importantNotice: importantNoticeRouter,
   morph: morphRouter,
   ai: aiRouter,
   auth: authRouter,

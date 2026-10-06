@@ -59,6 +59,56 @@ export const relations = defineRelations(schema, (r) => ({
       to: r.userReports.reportedUserId,
       alias: "user_reports_reported_user_id_users_id",
     }),
+    importantNoticesCreated: r.many.importantNotices({
+      from: r.users.id,
+      to: r.importantNotices.createdBy,
+    }),
+    importantNoticeTargets: r.many.importantNoticeTargets({
+      from: r.users.id,
+      to: r.importantNoticeTargets.userId,
+    }),
+    importantNoticeAcknowledgements: r.many.importantNoticeAcknowledgements({
+      from: r.users.id,
+      to: r.importantNoticeAcknowledgements.userId,
+    }),
+  },
+  importantNotices: {
+    creator: r.one.users({
+      from: r.importantNotices.createdBy,
+      to: r.users.id,
+    }),
+    targets: r.many.importantNoticeTargets({
+      from: r.importantNotices.id,
+      to: r.importantNoticeTargets.noticeId,
+    }),
+    acknowledgements: r.many.importantNoticeAcknowledgements({
+      from: r.importantNotices.id,
+      to: r.importantNoticeAcknowledgements.noticeId,
+    }),
+  },
+  importantNoticeTargets: {
+    notice: r.one.importantNotices({
+      from: r.importantNoticeTargets.noticeId,
+      to: r.importantNotices.id,
+      optional: false,
+    }),
+    user: r.one.users({
+      from: r.importantNoticeTargets.userId,
+      to: r.users.id,
+      optional: false,
+    }),
+  },
+  importantNoticeAcknowledgements: {
+    notice: r.one.importantNotices({
+      from: r.importantNoticeAcknowledgements.noticeId,
+      to: r.importantNotices.id,
+      optional: false,
+    }),
+    user: r.one.users({
+      from: r.importantNoticeAcknowledgements.userId,
+      to: r.users.id,
+      optional: false,
+    }),
   },
   maps: {
     creator: r.one.users({
