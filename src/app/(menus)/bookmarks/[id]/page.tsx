@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { MapList } from "@/shared/map/list/list";
 import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
-import { Button } from "@/ui/button";
+import { buttonVariants } from "@/ui/button";
 
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;
@@ -16,12 +16,13 @@ export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   return (
     <HydrateClient>
       <div className="mx-auto max-w-6xl space-y-4 lg:px-8">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/bookmarks" className="flex items-center gap-2">
-            <ArrowLeft className="size-4" />
-            ブックマーク一覧に戻る
-          </Link>
-        </Button>
+        <Link
+          href="/bookmarks"
+          className={buttonVariants({ variant: "ghost", size: "sm", className: "flex items-center gap-2" })}
+        >
+          <ArrowLeft className="size-4" />
+          ブックマーク一覧に戻る
+        </Link>
         <MapList filterParams={{ bookmarkListId: Number(id) }} />
       </div>
     </HydrateClient>

@@ -18,7 +18,7 @@ interface LikeToggleButtonProps {
   label?: string;
 }
 
-type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild">;
+type IconButtonProps = Omit<ComponentProps<typeof Button>, "children">;
 
 export const LikeToggleButton = ({
   onClick,
@@ -28,7 +28,7 @@ export const LikeToggleButton = ({
   className,
   ...buttonProps
 }: LikeToggleButtonProps & IconButtonProps) => {
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const buttonRef = useRef<HTMLElement | null>(null);
   const [buttonSizePx, setButtonSizePx] = useState(0);
   const [shouldAnimate, setShouldAnimate] = useState(false);
 

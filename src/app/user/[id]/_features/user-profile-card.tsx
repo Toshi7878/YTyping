@@ -9,7 +9,7 @@ import { PAGE_SIZE } from "@/server/api/routers/ranking/pp/const";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { INPUT_PP_MODES, PP_MODE_LABELS } from "@/shared/result/pp/mode";
 import { useTRPC } from "@/trpc/provider";
-import { Button } from "@/ui/button";
+import { buttonVariants } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -96,12 +96,10 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
           {session &&
             (isMyProfilePage ? (
               <TooltipWrapper label="プロフィール編集ページに移動" asChild>
-                <Button variant="outline" size="icon" asChild>
-                  <Link href="/user/settings">
-                    <MdOutlineEdit className="size-4" />
-                    <span className="sr-only">編集</span>
-                  </Link>
-                </Button>
+                <Link href="/user/settings" className={buttonVariants({ variant: "outline", size: "icon" })}>
+                  <MdOutlineEdit className="size-4" />
+                  <span className="sr-only">編集</span>
+                </Link>
               </TooltipWrapper>
             ) : (
               <ReportDialog reportedUserId={Number(userId)} userName={userProfile?.name} />

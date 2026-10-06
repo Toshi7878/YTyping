@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/ui/button";
+import { Button, buttonVariants } from "@/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
 import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "./menu-items";
 
@@ -28,9 +28,17 @@ export const LeftMenus = () => {
     <nav className="hidden select-none items-center text-header-foreground/80 md:flex">
       <LinksDropdownMenu />
       {LEFT_LINKS.map((link) => (
-        <Button key={link.title} variant="unstyled" size="sm" asChild className="text-sm hover:text-header-foreground">
-          <Link href={link.href}>{link.title}</Link>
-        </Button>
+        <Link
+          key={link.title}
+          href={link.href}
+          className={buttonVariants({
+            variant: "unstyled",
+            size: "sm",
+            className: "text-sm hover:text-header-foreground",
+          })}
+        >
+          {link.title}
+        </Link>
       ))}
     </nav>
   );

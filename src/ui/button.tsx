@@ -1,6 +1,6 @@
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
-import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
 
 import { cn } from "@/utils/cn";
@@ -75,27 +75,23 @@ function Button({
   className,
   variant,
   size,
-  asChild = false,
   loading = false,
   children,
   disabled,
   ...props
-}: React.ComponentProps<"button"> &
+}: React.ComponentProps<typeof ButtonPrimitive> &
   VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
     loading?: boolean;
   }) {
-  const Comp = asChild ? SlotPrimitive.Slot : "button";
-
   return (
-    <Comp
+    <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
       disabled={loading || disabled}
     >
       {loading ? <Loader2 className={loadingVariants({ size })} /> : children}
-    </Comp>
+    </ButtonPrimitive>
   );
 }
 

@@ -11,7 +11,7 @@ import { useSession } from "@/auth/client";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
+import { buttonVariants } from "@/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/ui/card";
 import { H2 } from "@/ui/typography";
 import { cn } from "@/utils/cn";
@@ -155,19 +155,19 @@ const MyHideOptionInfo = () => {
         <div className="flex items-center gap-4">
           <p>現在プロフィールは自分のみが閲覧できます</p>
           {!isHidePreview ? (
-            <Button size="sm" variant="outline" asChild>
-              <Link href="?hidePreview=true">他の人が見ているページを見る</Link>
-            </Button>
+            <Link href="?hidePreview=true" className={buttonVariants({ size: "sm", variant: "outline" })}>
+              他の人が見ているページを見る
+            </Link>
           ) : (
-            <Button size="sm" variant="outline" asChild>
-              <Link href={`/user/${userId}`}>統計情報を表示</Link>
-            </Button>
+            <Link href={`/user/${userId}`} className={buttonVariants({ size: "sm", variant: "outline" })}>
+              統計情報を表示
+            </Link>
           )}
         </div>
         <div className="flex justify-end">
-          <Button size="sm" variant="outline" asChild>
-            <Link href="/user/settings#user-settings">設定を変更</Link>
-          </Button>
+          <Link href="/user/settings#user-settings" className={buttonVariants({ size: "sm", variant: "outline" })}>
+            設定を変更
+          </Link>
         </div>
       </div>
     </InfoCard>

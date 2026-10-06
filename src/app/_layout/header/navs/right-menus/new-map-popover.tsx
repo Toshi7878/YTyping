@@ -8,7 +8,7 @@ import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
 import { idb } from "@/app/edit/_feature/indexed-db";
 import { CreatedMapListByVideoId } from "@/shared/map/list/created-video";
-import { Button } from "@/ui/button";
+import { Button, buttonVariants } from "@/ui/button";
 import { useAppForm } from "@/ui/form-field-item";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -121,14 +121,17 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
       }
       asChild
     >
-      <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)} type="button" asChild>
-        <Link
-          href={`/edit?new=${props.backupData?.videoId}&isBackup=true`}
-          className={cn(!props.backupData?.videoId && "invisible")}
-        >
-          前回のバックアップデータが存在します。
-        </Link>
-      </Button>
+      <Link
+        href={`/edit?new=${props.backupData?.videoId}&isBackup=true`}
+        onClick={() => props.onOpenChange(false)}
+        className={buttonVariants({
+          variant: "outline",
+          size: "sm",
+          className: cn(!props.backupData?.videoId && "invisible"),
+        })}
+      >
+        前回のバックアップデータが存在します。
+      </Link>
     </TooltipWrapper>
   );
 }

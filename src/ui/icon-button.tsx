@@ -7,9 +7,9 @@ import { FaHandsClapping, FaRankingStar } from "react-icons/fa6";
 import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io";
 import { TiFilter } from "react-icons/ti";
 import { cn } from "@/utils/cn";
-import { Button } from "./button";
+import { Button, buttonVariants } from "./button";
 
-type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "asChild" | "type">;
+type IconButtonProps = Omit<ComponentProps<typeof Button>, "children" | "type">;
 
 export const SettingIconButton = (props: IconButtonProps) => {
   return (
@@ -56,14 +56,16 @@ export const BookmarkListIconButton = ({
 export const EditIconLinkButton = <R extends string>({
   href,
   replace,
-  ...props
-}: IconButtonProps & { href: Route<R>; replace?: boolean }) => {
+  className,
+}: {
+  href: Route<R>;
+  replace?: boolean;
+  className?: string;
+}) => {
   return (
-    <Button variant="unstyled" size="icon" asChild {...props}>
-      <Link href={href} replace={replace}>
-        <BiEdit />
-      </Link>
-    </Button>
+    <Link href={href} replace={replace} className={buttonVariants({ variant: "unstyled", size: "icon", className })}>
+      <BiEdit />
+    </Link>
   );
 };
 
