@@ -1,6 +1,8 @@
 "use client";
 
-import { HoverCard as HoverCardPrimitive, Slot as SlotPrimitive } from "radix-ui";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { PreviewCard as HoverCardPrimitive } from "@base-ui/react/preview-card";
+import { useRender } from "@base-ui/react/use-render";
 import type * as React from "react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, type CardWithContent } from "@/ui/card";
@@ -125,21 +127,24 @@ export const HoverExtractCard = ({
 
             {children}
             <HoverCardPrimitive.Portal>
-              <HoverCardPrimitive.Content
-                avoidCollisions={false}
+              <HoverCardPrimitive.Positioner
+                collisionAvoidance={{ side: "none", align: "none", fallbackAxisSide: "none" }}
                 align="start"
                 side="bottom"
                 sideOffset={-2}
-                className={cn(
-                  "z-10 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
-                  cardHoverContentClassName,
-                )}
-                style={{ width: cardWidth }}
-                onPointerEnter={closeHover}
-                onPointerLeave={closeHover}
               >
-                {extractContent}
-              </HoverCardPrimitive.Content>
+                <HoverCardPrimitive.Popup
+                  className={cn(
+                    "z-10 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
+                    cardHoverContentClassName,
+                  )}
+                  style={{ width: cardWidth }}
+                  onPointerEnter={closeHover}
+                  onPointerLeave={closeHover}
+                >
+                  {extractContent}
+                </HoverCardPrimitive.Popup>
+              </HoverCardPrimitive.Positioner>
             </HoverCardPrimitive.Portal>
           </HoverCardPrimitive.Root>
         </CardContent>
@@ -150,13 +155,15 @@ export const HoverExtractCard = ({
 
 export const HoverExtractCardTrigger = ({
   children,
-  className,
   ...props
-}: SlotPrimitive.SlotProps & { children: React.ReactNode }) => {
+}: Omit<useRender.ComponentProps<"div">, "render" | "children"> & { children: React.ReactElement }) => {
   const { openHover, closeHover } = useHoverExtract();
-  return (
-    <SlotPrimitive.Slot {...props} onPointerEnter={openHover} onPointerLeave={closeHover}>
-      {children}
-    </SlotPrimitive.Slot>
-  );
+  return useRender({
+    defaultTagName: "div",
+    render: children,
+    props: mergeProps<"div">(
+      { onPointerEnter: openHover, onPointerLeave: closeHover } as React.ComponentProps<"div">,
+      props,
+    ),
+  });
 };
