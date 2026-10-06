@@ -105,14 +105,14 @@ importers:
         specifier: ^5.2.6
         version: 5.2.17(@types/react@19.2.17)(react@19.2.7)
       jotai:
-        specifier: ^2.20.0
-        version: 2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7)
+        specifier: ^3.0.1
+        version: 3.0.1(@types/react@19.2.17)(react@19.2.7)
       jotai-optics:
         specifier: ^0.4.0
-        version: 0.4.0(jotai@2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7))(optics-ts@2.4.1)
+        version: 0.4.0(jotai@3.0.1(@types/react@19.2.17)(react@19.2.7))(optics-ts@2.4.1)
       jotai-uncontrolled:
         specifier: ^0.4.1
-        version: 0.4.1(jotai@2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)
+        version: 0.4.1(jotai@3.0.1(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.7)
@@ -2728,6 +2728,7 @@ packages:
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -3754,19 +3755,13 @@ packages:
       jotai: '>=1.11.0'
       react: '>=17.0.0'
 
-  jotai@2.20.2:
-    resolution: {integrity: sha512-aHB4CNb9qRcyf0mwSB6EO5bCGAjx8cTwFgOFCE2leOnTzqACbnSWG8XoWB3LxCT1Qoj03I1OWAHszDmN4uHb/w==}
-    engines: {node: '>=12.20.0'}
+  jotai@3.0.1:
+    resolution: {integrity: sha512-6tS7wY9otdiNp26Wqb/1ds3OuVJVoV+tJlN4hpLrYmfFf/t9bauVt+zKBNSpS5qSl5h6GieVQ+OknVraZX+udQ==}
+    engines: {node: '>=22.12.0'}
     peerDependencies:
-      '@babel/core': '>=7.0.0'
-      '@babel/template': '>=7.0.0'
-      '@types/react': '>=17.0.0'
-      react: '>=17.0.0'
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
     peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/template':
-        optional: true
       '@types/react':
         optional: true
       react:
@@ -7950,20 +7945,18 @@ snapshots:
 
   jose@6.2.3: {}
 
-  jotai-optics@0.4.0(jotai@2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7))(optics-ts@2.4.1):
+  jotai-optics@0.4.0(jotai@3.0.1(@types/react@19.2.17)(react@19.2.7))(optics-ts@2.4.1):
     dependencies:
-      jotai: 2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7)
+      jotai: 3.0.1(@types/react@19.2.17)(react@19.2.7)
       optics-ts: 2.4.1
 
-  jotai-uncontrolled@0.4.1(jotai@2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7))(react@19.2.7):
+  jotai-uncontrolled@0.4.1(jotai@3.0.1(@types/react@19.2.17)(react@19.2.7))(react@19.2.7):
     dependencies:
-      jotai: 2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7)
+      jotai: 3.0.1(@types/react@19.2.17)(react@19.2.7)
       react: 19.2.7
 
-  jotai@2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7):
+  jotai@3.0.1(@types/react@19.2.17)(react@19.2.7):
     optionalDependencies:
-      '@babel/core': 7.29.7
-      '@babel/template': 7.29.7
       '@types/react': 19.2.17
       react: 19.2.7
 
