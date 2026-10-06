@@ -1,14 +1,12 @@
 "use client";
 
-"use client";
-
-import { Tooltip as TooltipPrimitive } from "radix-ui";
+import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import type * as React from "react";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
 
-function TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
-  return <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />;
+function TooltipProvider({ delay = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+  return <TooltipPrimitive.Provider data-slot="tooltip-provider" delay={delay} {...props} />;
 }
 function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
@@ -19,33 +17,46 @@ function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimiti
 function TooltipContent({
   className,
   sideOffset = 0,
+  side,
+  align,
+  alignOffset,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Popup> &
+  Pick<React.ComponentProps<typeof TooltipPrimitive.Positioner>, "side" | "align" | "alignOffset" | "sideOffset">) {
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
+      <TooltipPrimitive.Positioner
+        className="isolate z-50"
+        side={side}
+        align={align}
         sideOffset={sideOffset}
-        className={cn(
-          "data-open:fade-in-0 data-open:zoom-in-95 data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-closed:fade-out-0 data-closed:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) rounded-md border bg-background px-3 py-1.5 text-foreground text-xs data-[state=delayed-open]:animate-in data-closed:animate-out data-open:animate-in",
-          className,
-        )}
-        {...props}
+        alignOffset={alignOffset}
       >
-        {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] border-r border-b bg-background fill-background" />
-      </TooltipPrimitive.Content>
+        <TooltipPrimitive.Popup
+          data-slot="tooltip-content"
+          className={cn(
+            "data-open:fade-in-0 data-open:zoom-in-95 data-closed:fade-out-0 data-closed:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit max-w-xs origin-(--transform-origin) rounded-md border bg-background px-3 py-1.5 text-foreground text-xs data-closed:animate-out data-open:animate-in",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-[2px] border-r border-b bg-background fill-background" />
+        </TooltipPrimitive.Popup>
+      </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>
   );
 }
-interface TooltipWrapperProps extends React.ComponentProps<typeof TooltipPrimitive.Content> {
+interface TooltipWrapperProps extends React.ComponentProps<typeof TooltipContent> {
   children: React.ReactNode;
   label?: React.ReactNode;
   delayDuration?: number;
   open?: boolean;
   disabled?: boolean;
   asChild?: boolean;
+  /** Keep the tooltip open when the user presses outside it (e.g. while it's externally open-controlled). */
+  disableOutsidePressDismiss?: boolean;
 }
 
 function TooltipWrapper({
@@ -55,6 +66,7 @@ function TooltipWrapper({
   open,
   disabled = false,
   asChild = false,
+  disableOutsidePressDismiss = false,
   ...props
 }: TooltipWrapperProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,8 +74,19 @@ function TooltipWrapper({
   if (!label || disabled) return <>{children}</>;
 
   return (
-    <Tooltip delayDuration={delayDuration} open={open ?? isOpen} onOpenChange={setIsOpen}>
-      <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
+    <Tooltip
+      open={open ?? isOpen}
+      onOpenChange={(next, eventDetails) => {
+        if (disableOutsidePressDismiss && !next && eventDetails.reason === "outside-press") {
+          eventDetails.cancel();
+          return;
+        }
+        setIsOpen(next);
+      }}
+    >
+      <TooltipTrigger delay={delayDuration} render={asChild ? (children as React.ReactElement) : undefined}>
+        {asChild ? undefined : children}
+      </TooltipTrigger>
       <TooltipContent {...props} onMouseEnter={() => setIsOpen(false)}>
         {label}
       </TooltipContent>

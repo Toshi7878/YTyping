@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
           >
             <TRPCProvider>
-              <TooltipProvider delayDuration={600}>
+              <TooltipProvider delay={600}>
                 <AppAtomsHydrator userOptions={userOptions} userAgent={userAgent}>
                   <SessionProvider session={session}>
                     <LinkProgressProvider>

@@ -209,7 +209,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
             align="end"
             sideOffset={-12}
             delayDuration={0}
-            onPointerDownOutside={(event) => event.preventDefault()}
+            disableOutsidePressDismiss
             open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
             asChild
           >
