@@ -107,9 +107,7 @@ export const SettingPopover = () => {
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange} modal>
       <TooltipWrapper label="設定" asChild>
-        <PopoverTrigger asChild>
-          <SettingIconButton />
-        </PopoverTrigger>
+        <PopoverTrigger render={<SettingIconButton />} />
       </TooltipWrapper>
       <PopoverContent
         className="w-screen p-4 sm:w-xl"

@@ -60,7 +60,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
       <TooltipWrapper label={tooltipLabel} asChild>
-        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+        <PopoverTrigger render={trigger as React.ReactElement} />
       </TooltipWrapper>
       <PopoverContent className="w-80 p-0" align="end">
         <H4 className="px-2 py-2 text-base">

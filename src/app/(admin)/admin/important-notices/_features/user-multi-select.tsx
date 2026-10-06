@@ -95,7 +95,7 @@ export const UserMultiSelectFormField = ({ label, description }: UserMultiSelect
             onBlur={field.handleBlur}
           />
         </PopoverAnchor>
-        <PopoverContent align="start" className="p-1" style={{ width: "var(--radix-popper-anchor-width)" }}>
+        <PopoverContent align="start" className="p-1" style={{ width: "var(--anchor-width)" }}>
           <ul>
             {suggestions.map((user) => (
               <li key={user.id}>

@@ -15,9 +15,7 @@ export const FilterFieldsPopover = () => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">詳細フィルター</Button>
-      </PopoverTrigger>
+      <PopoverTrigger render={<Button variant="outline">詳細フィルター</Button>} />
       <PopoverContent className="w-screen sm:w-fit" align="start">
         <SearchModeRadioCardGroup mode={filterParams.mode} onModeChange={(mode) => void setFilterParams({ mode })} />
         <SearchRange

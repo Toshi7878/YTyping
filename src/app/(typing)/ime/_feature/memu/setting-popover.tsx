@@ -7,7 +7,7 @@ import {
   getTotalNotes,
 } from "lyrics-ime-typing-engine";
 import { useParams } from "next/navigation";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 import { useTRPC } from "@/trpc/provider";
 import { CounterInput } from "@/ui/counter";
@@ -70,20 +70,21 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
   ] as const;
 
   return (
-    <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent
-        className="w-[640px] p-4"
-        align="end"
-        side="top"
-        sideOffset={10}
-        onInteractOutside={(e) => {
-          const target = e.target as HTMLElement;
+    <Popover
+      open={isOpen}
+      onOpenChange={(open, eventDetails) => {
+        if (!open && eventDetails.reason === "outside-press") {
+          const target = eventDetails.event.target as HTMLElement;
           if (target.closest("#reset-setting-modal-overlay")) {
-            e.preventDefault();
+            eventDetails.cancel();
+            return;
           }
-        }}
-      >
+        }
+        void handleOpenChange(open);
+      }}
+    >
+      <PopoverTrigger render={trigger as ReactElement} />
+      <PopoverContent className="w-[640px] p-4" align="end" side="top" sideOffset={10}>
         <Tabs defaultValue="main" className="w-full">
           <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
             {tabData.map((tab, index) => (

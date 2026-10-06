@@ -55,19 +55,15 @@ export const NewMapPopover = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="譜面新規作成" className="relative bottom-3" asChild>
-        <PopoverTrigger asChild>
-          <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
-            <RiAddBoxFill size={20} />
-          </Button>
-        </PopoverTrigger>
+        <PopoverTrigger
+          render={
+            <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
+              <RiAddBoxFill size={20} />
+            </Button>
+          }
+        />
       </TooltipWrapper>
-      <PopoverContent
-        onOpenAutoFocus={() => inputRef.current?.focus()}
-        className="p-1 sm:w-[640px]"
-        side="bottom"
-        align="end"
-        sideOffset={8}
-      >
+      <PopoverContent initialFocus={inputRef} className="p-1 sm:w-[640px]" side="bottom" align="end" sideOffset={8}>
         <form
           onSubmit={(e) => {
             e.preventDefault();

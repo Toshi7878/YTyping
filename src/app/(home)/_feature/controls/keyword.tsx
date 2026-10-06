@@ -144,7 +144,7 @@ export const KeywordInput = () => {
             onKeyDown={handleKeyDown}
           />
         </PopoverAnchor>
-        <PopoverContent align="start" className="p-1" style={{ width: "var(--radix-popper-anchor-width)" }}>
+        <PopoverContent align="start" className="p-1" style={{ width: "var(--anchor-width)" }}>
           <SuggestionSection
             items={displaySuggestions?.tags.map(({ name }) => ({ value: name })) ?? []}
             onSelect={handleSelect}
