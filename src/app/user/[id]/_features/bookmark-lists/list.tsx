@@ -183,7 +183,7 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger render={trigger as React.ReactElement} nativeButton={false} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>リストを編集</DialogTitle>

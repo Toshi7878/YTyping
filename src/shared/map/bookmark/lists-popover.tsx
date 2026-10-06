@@ -161,11 +161,13 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start gap-2 py-5">
-          <Plus className="size-4" /> 新しいリストを作成
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button variant="ghost" className="w-full justify-start gap-2 py-5">
+            <Plus className="size-4" /> 新しいリストを作成
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>新しいリストを作成</DialogTitle>

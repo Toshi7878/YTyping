@@ -119,7 +119,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       open={index !== null}
       onOpenChange={handleModalClose}
       className="bg-card text-card-foreground"
-      disableOutsideClick={true}
+      disablePointerDismissal
     >
       <DialogHeader>
         <DialogTitle>ラインオプション</DialogTitle>

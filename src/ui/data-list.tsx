@@ -1,7 +1,8 @@
 "use client";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
 import { cn } from "@/utils/cn";
 
@@ -25,23 +26,20 @@ const dataListVariants = cva("overflow-hidden font-normal text-left", {
   },
 });
 
-interface DataListProps extends React.HTMLAttributes<HTMLDListElement>, VariantProps<typeof dataListVariants> {
-  asChild?: boolean;
-}
+interface DataListProps extends useRender.ComponentProps<"dl">, VariantProps<typeof dataListVariants> {}
 
-const DataList = ({
-  className,
-  orientation = "horizontal",
-  size,
-  asChild = false,
-  ref,
-  ...props
-}: DataListProps & { ref?: React.Ref<React.ComponentRef<"dl">> }) => {
-  const Comp = asChild ? SlotPrimitive.Slot : "dl";
-
+const DataList = ({ className, orientation = "horizontal", size, render, ref, ...props }: DataListProps) => {
   return (
     <DataListOrientationContext.Provider value={orientation || "horizontal"}>
-      <Comp ref={ref} className={cn(dataListVariants({ orientation, size }), className)} {...props} />
+      {useRender({
+        defaultTagName: "dl",
+        render,
+        ref,
+        props: mergeProps<"dl">(
+          { className: cn(dataListVariants({ orientation, size }), className) } as React.ComponentProps<"dl">,
+          props,
+        ),
+      })}
     </DataListOrientationContext.Provider>
   );
 };

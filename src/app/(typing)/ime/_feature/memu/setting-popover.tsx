@@ -91,7 +91,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
               <TabsTrigger
                 key={tab.label}
                 value={index === 0 ? "main" : `tab-${index}`}
-                className="rounded-md border border-border bg-card text-foreground text-sm hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="rounded-md border border-border bg-card text-foreground text-sm hover:bg-primary/80 hover:text-primary-foreground data-active:bg-primary data-active:text-primary-foreground"
               >
                 {tab.label}
               </TabsTrigger>

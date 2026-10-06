@@ -57,13 +57,11 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange} disablePointerDismissal>
       <TooltipWrapper label="このユーザーを報告" asChild>
-        <DialogTrigger asChild>
-          <ReportIconButton aria-label="報告" />
-        </DialogTrigger>
+        <DialogTrigger render={<ReportIconButton aria-label="報告" />} />
       </TooltipWrapper>
-      <DialogContent disableOutsideClick className="max-w-sm">
+      <DialogContent className="max-w-sm">
         <div className="flex flex-col items-center gap-1 pb-2 text-center">
           <TriangleAlertIcon className="mb-1 size-10 text-destructive" />
           <DialogTitle className="text-xl">{userName ? `${userName}` : "このユーザー"}を報告しますか？</DialogTitle>

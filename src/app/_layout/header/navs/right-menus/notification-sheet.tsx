@@ -33,16 +33,18 @@ export const NotificationSheet = () => {
   return (
     <Sheet>
       <TooltipWrapper label="通知" className="relative bottom-3" asChild>
-        <SheetTrigger asChild>
-          <Button
-            variant="unstyled"
-            size="icon"
-            className="p-2 text-header-foreground/80 hover:text-header-foreground"
-            onClick={() => postUserNotificationRead.mutate()}
-          >
-            {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
-          </Button>
-        </SheetTrigger>
+        <SheetTrigger
+          render={
+            <Button
+              variant="unstyled"
+              size="icon"
+              className="p-2 text-header-foreground/80 hover:text-header-foreground"
+              onClick={() => postUserNotificationRead.mutate()}
+            >
+              {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
+            </Button>
+          }
+        />
       </TooltipWrapper>
 
       <SheetContent side="right" className="sm:max-w-md">

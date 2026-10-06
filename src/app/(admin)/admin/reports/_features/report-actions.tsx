@@ -99,11 +99,13 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="destructive">
-          BAN
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="destructive">
+            BAN
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>ユーザーをBANする</DialogTitle>
@@ -174,11 +176,13 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="warning">
-          警告
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="warning">
+            警告
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>対象ユーザーに警告する</DialogTitle>
@@ -255,11 +259,13 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          対処不要
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="outline">
+            対処不要
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>BANせずに処理する</DialogTitle>
@@ -312,11 +318,13 @@ const UnbanDialog = ({ reportId }: { reportId: number }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline-destructive">
-          BAN解除
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="outline-destructive">
+            BAN解除
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>BANを解除する</DialogTitle>

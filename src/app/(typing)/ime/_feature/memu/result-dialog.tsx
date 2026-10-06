@@ -140,10 +140,10 @@ const ResultRanking = ({
             className={cn(
               "group/ranking-item relative grid h-auto w-full grid-cols-[22px_1fr] items-center gap-2 whitespace-normal rounded-md px-2 py-[5px] transition-colors",
               "focus-visible:ring-0",
-              "data-[state=checked]:bg-accent data-[state=unchecked]:hover:bg-accent/50",
+              "data-checked:bg-accent data-unchecked:hover:bg-accent/50",
             )}
           >
-            <span className="absolute top-1.5 bottom-1.5 left-0 w-[3px] rounded-r-sm bg-primary-light opacity-0 transition-opacity group-data-[state=checked]/ranking-item:opacity-100" />
+            <span className="absolute top-1.5 bottom-1.5 left-0 w-[3px] rounded-r-sm bg-primary-light opacity-0 transition-opacity group-data-checked/ranking-item:opacity-100" />
             <span
               className={cn(
                 "text-center font-bold font-mono text-sm tabular-nums leading-none",

@@ -107,7 +107,7 @@ export const PracticeLineSheet = () => {
       <SheetContent
         ref={sheetRef}
         hideCloseButton
-        forceMount
+        keepMounted
         side="right"
         className="flex min-h-0 flex-col gap-0 rounded-l-sm border-y"
         style={sheetStyle}

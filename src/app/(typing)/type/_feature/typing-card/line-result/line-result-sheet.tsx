@@ -20,7 +20,7 @@ export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpe
 
   return (
     <Sheet modal={false} open={open} onOpenChange={setOpen}>
-      <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
+      <SheetContent keepMounted side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
           <SheetTitle>詳細リザルト</SheetTitle>
         </SheetHeader>
@@ -77,8 +77,8 @@ export const EndResultLineSheet = ({ trigger }: { trigger: React.ReactNode }) =>
 
   return (
     <Sheet modal={false} open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent forceMount side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
+      <SheetTrigger render={trigger as React.ReactElement} />
+      <SheetContent keepMounted side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
           <SheetTitle>詳細リザルト</SheetTitle>
         </SheetHeader>

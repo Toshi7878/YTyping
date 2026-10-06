@@ -58,9 +58,7 @@ export const ImportantNoticeForm = () => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button>新規作成</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button>新規作成</Button>} />
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>重要なお知らせを作成</DialogTitle>
