@@ -1,7 +1,7 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
-import type { Store } from "jotai/vanilla/store";
+import type { Store } from "jotai/vanilla";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";

@@ -101,6 +101,7 @@ export const DEFAULT_IME_OPTIONS = {
   isCaseSensitive: false,
   enableNextLyrics: true,
   includeRegexPattern: "",
+  lyricsFontScale: 100,
 };
 
 export const userImeTypingOptions = pgTable.withRLS("user_ime_typing_options", {
@@ -112,4 +113,5 @@ export const userImeTypingOptions = pgTable.withRLS("user_ime_typing_options", {
   isCaseSensitive: boolean("is_case_sensitive").default(false).notNull(),
   enableNextLyrics: boolean("enable_next_lyrics").default(true).notNull(),
   includeRegexPattern: varchar("include_regex_pattern", { length: 1024 }).default("").notNull(),
+  lyricsFontScale: integer("lyrics_font_scale").default(100).notNull(),
 });

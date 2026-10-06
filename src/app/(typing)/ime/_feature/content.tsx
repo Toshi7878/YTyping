@@ -24,6 +24,7 @@ import { InputTextarea } from "./input-textarea";
 import { MenuBar } from "./memu/menu-bar";
 import { Notifications } from "./notifications";
 import { getImeOptions } from "./provider";
+import { buildRuleText, RuleDisplay, setRuleText } from "./rule-display";
 import { ViewArea } from "./view-area/view-area";
 import { YouTubePlayer } from "./youtube-player";
 
@@ -54,6 +55,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
       const initWordResults = createInitWordResults(flatWords);
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       overlay.hide();
+      setRuleText(buildRuleText({ insertEnglishSpaces, isCaseSensitive, enableIncludeRegex }));
     } catch {
       overlay.message(
         <div className="flex h-full flex-col items-center justify-center gap-2">
@@ -138,17 +140,18 @@ const TypingLayout = ({ videoId }: { videoId: string }) => {
   return (
     <>
       <Notifications style={{ height: notificationsHeight }} />
+      <RuleDisplay />
       <YouTubePlayer
         videoId={videoId}
         className="fixed top-10 left-0 w-full"
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 
-      <div ref={lyricsViewAreaRef} className="fixed bottom-0 left-0 flex w-full flex-col">
+      <div ref={lyricsViewAreaRef} className="fixed bottom-0 left-0 z-20 flex w-full flex-col">
         <ViewArea />
         <InputTextarea />
         <MenuBar />
-        <div className="lg:h-25 xl:h-37.5" />
+        <div id="bottom_spacer" className="lg:h-25 xl:h-37.5" />
       </div>
     </>
   );

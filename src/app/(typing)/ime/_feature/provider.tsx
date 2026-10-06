@@ -26,6 +26,7 @@ export const useImeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store
 export const getImeOptions = () => store.get(imeTypeOptionsAtom);
 
 export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
+
 export const setImeOptions = (newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
   store.set(imeTypeOptionsAtom, (prev) => ({
     ...prev,

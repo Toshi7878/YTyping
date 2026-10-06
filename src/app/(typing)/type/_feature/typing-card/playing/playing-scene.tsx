@@ -175,8 +175,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
         },
 
         onCompleted: ({ constantLineTime }) => {
-          triggerTypeCompletedSound();
-
           if (!isPaused) {
             updateTypingTime({ constantLineTime });
           }
@@ -252,8 +250,6 @@ export const handleFlickInput = (e: FlickEvent) => {
       dispatchTypeEvent("type:success", { successKey, isCompleted, chunkType, constantLineTime, updatePoint });
 
       if (isCompleted) {
-        triggerTypeCompletedSound();
-
         if (!isPaused) {
           updateTypingTime({ constantLineTime });
         }

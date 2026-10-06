@@ -10,6 +10,7 @@ import { getCombo, setCombo } from "../../header/combo";
 import { setLineKpm } from "../../header/line-kpm";
 import { getScene } from "../../typing-card";
 import { calcCurrentRank } from "./calc-current-rank";
+import { calcTimeBonus } from "./calc-time-bonus";
 
 export const updateSuccessStatus = ({
   isCompleted,
@@ -46,7 +47,7 @@ export const updateSuccessStatus = ({
     }
 
     if (isCompleted) {
-      const timeBonus = Math.floor(constantRemainLineTime * playSpeed * 100);
+      const timeBonus = calcTimeBonus({ constantRemainLineTime, constantLineTime, playSpeed });
       const score = prev.score + point + timeBonus;
       return { ...prev, point, type, kpm, timeBonus, score, line: prev.line - 1, rank: calcCurrentRank(score) };
     }

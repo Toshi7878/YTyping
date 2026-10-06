@@ -211,7 +211,7 @@ const FloatingLabelInputFormField = ({
   ...inputProps
 }: FloatingLabelInputFormFieldProps &
   Omit<ComponentProps<typeof Input>, "size" | "value" | "name" | "onChange" | "onBlur">) => {
-  const field = useFieldContext<string>();
+  const field = useFieldContext<string | number>();
   const id = useId();
   const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
@@ -228,7 +228,7 @@ const FloatingLabelInputFormField = ({
         size={size}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(e.target.value);
+          field.handleChange(inputProps.type === "number" ? e.target.valueAsNumber : e.target.value);
           onChange?.(e);
         }}
       />

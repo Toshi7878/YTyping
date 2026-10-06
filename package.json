@@ -2,7 +2,7 @@
   "name": "ytyping",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.15.1",
+  "packageManager": "pnpm@12.10.0+sha512.122a7b6ddf9d40268bc0db1a9780899b95e4fa8badfca7bd450615ad8cf7c2659f5f569c20ed7c53886bc7b08d0d50a54f4ad50706847f5682ec6c5048416539",
   "engines": {
     "node": "24.x"
   },
@@ -12,7 +12,8 @@
     "start": "next start",
     "check": "biome check --diagnostic-level=warn --reporter=summary",
     "check:fix": "biome check --diagnostic-level=warn --reporter=summary --write",
-    "typecheck": "next typegen && tsgo",
+    "typecheck": "next typegen && tsc",
+    "test": "vitest run",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:start": "pnpx supabase start",
     "db:stop": "pnpx supabase stop",
@@ -59,7 +60,7 @@
     "fast-deep-equal": "^3.1.3",
     "googleapis": "^171.0.0",
     "html-react-parser": "^5.2.6",
-    "jotai": "^2.20.0",
+    "jotai": "^3.0.1",
     "jotai-optics": "^0.4.0",
     "jotai-uncontrolled": "^0.4.1",
     "lucide-react": "^0.577.0",
@@ -97,7 +98,6 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/youtube": "^0.3.0",
-    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "csv-parse": "^6.1.0",
     "dotenv-cli": "^11.0.0",
@@ -107,7 +107,8 @@
     "supabase": "^2.48.3",
     "tsx": "^4.22.4",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "repository": {
     "type": "git",
