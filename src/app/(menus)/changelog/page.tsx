@@ -1,4 +1,4 @@
-import { caller } from "@/trpc/server";
+import { caller } from "@/orpc/server";
 import { CardWithContent } from "@/ui/card";
 import { H1, Large, Small, UList } from "@/ui/typography";
 import { formatDate } from "@/utils/date";

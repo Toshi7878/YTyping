@@ -1,10 +1,10 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { DEFAULT_USER_OPTIONS, type PRESENCE_STATE_TYPES } from "@/server/drizzle/schema";
 import { setUserOptions } from "@/store/user-options";
-import { useTRPC } from "@/trpc/provider";
 import { useAppForm } from "@/ui/form-field-item";
 
 interface UserOptionsFormProps {
@@ -18,10 +18,9 @@ export const UserOptionsForm = ({ userOptions }: UserOptionsFormProps) => {
       hideUserStats: userOptions?.hideUserStats ?? DEFAULT_USER_OPTIONS.hideUserStats,
     },
   });
-  const trpc = useTRPC();
 
   const upsertUserOption = useMutation(
-    trpc.user.option.upsert.mutationOptions({
+    orpc.user.option.upsert.mutationOptions({
       onSuccess: (data) => setUserOptions(data),
     }),
   );

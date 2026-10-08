@@ -2,9 +2,9 @@
 
 import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { PP_MODE_DESCRIPTIONS, PP_MODE_LABELS, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
-import { useTRPC } from "@/trpc/provider";
 import { PageNavigation } from "@/ui/page-navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { cn } from "@/utils/cn";
@@ -23,13 +23,12 @@ const MODE_TAB_COLORS: Partial<Record<PpMode, string>> = {
 };
 
 export const PPRanking = () => {
-  const trpc = useTRPC();
   const [{ page, mode }, setQuery] = usePpRankingQueryStates();
 
   const { data, isPlaceholderData } = useQuery(
-    trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1, mode }, { placeholderData: keepPreviousData }),
+    orpc.ranking.pp.list.get.queryOptions({ input: { cursor: page - 1, mode }, placeholderData: keepPreviousData }),
   );
-  const { data: pageCount } = useSuspenseQuery(trpc.ranking.pp.list.getPageCount.queryOptions({ mode }));
+  const { data: pageCount } = useSuspenseQuery(orpc.ranking.pp.list.getPageCount.queryOptions({ input: { mode } }));
 
   const rows: PpRow[] = data?.items ?? [];
 

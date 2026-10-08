@@ -1,11 +1,11 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { orpc } from "@/orpc/provider";
 import { MinimumMapCard } from "@/shared/map/list/card/minimum";
 import { MapThumbnailImage } from "@/shared/map/thumbnail-image";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { CardWithContent } from "@/ui/card";
@@ -66,9 +66,8 @@ export const ActiveUsersSheet = () => {
 };
 
 const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
-  const trpc = useTRPC();
   const { data: map } = useQuery(
-    trpc.map.list.getByMapId.queryOptions({ mapId: activeUser.mapId ?? 0 }, { enabled: !!activeUser.mapId }),
+    orpc.map.list.getByMapId.queryOptions({ input: activeUser.mapId ? { mapId: activeUser.mapId } : skipToken }),
   );
 
   if (!map) {

@@ -5,9 +5,9 @@ import { TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type z from "zod/v4";
+import { orpc } from "@/orpc/provider";
 import { REPORT_REASON_TYPES } from "@/server/drizzle/schema";
 import { REPORT_REASON_LABELS } from "@/shared/user/report";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
@@ -22,7 +22,6 @@ interface ReportDialogProps {
 
 export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) => {
   const [open, setOpen] = useState(false);
-  const trpc = useTRPC();
 
   const form = useAppForm({
     validators: { onChange: userReportFormSchema },
@@ -39,17 +38,18 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
     },
   });
 
-  const submitReport = useMutation({
-    ...trpc.user.report.submit.mutationOptions(),
-    onSuccess: () => {
-      toast.success("報告を送信しました");
-      setOpen(false);
-      form.reset();
-    },
-    onError: (error) => {
-      toast.error(`報告に失敗しました: ${error.message}`);
-    },
-  });
+  const submitReport = useMutation(
+    orpc.user.report.submit.mutationOptions({
+      onSuccess: () => {
+        toast.success("報告を送信しました");
+        setOpen(false);
+        form.reset();
+      },
+      onError: (error) => {
+        toast.error(`報告に失敗しました: ${error.message}`);
+      },
+    }),
+  );
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();

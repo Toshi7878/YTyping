@@ -4,7 +4,7 @@ import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/typ
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_feature/typing-card/playing/update-status/recalc-from-results";
 import { getSession } from "@/auth/client";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
 import { setInitialLineResults } from "../../atoms/line-results";
@@ -15,7 +15,6 @@ import { getScene, setScene } from "../typing-card";
 export const ReadyPracticeButton = () => {
   const map = useBuiltMapState();
   const queryClient = useQueryClient();
-  const trpc = useTRPC();
 
   const handleClick = async () => {
     if (map) {
@@ -29,7 +28,9 @@ export const ReadyPracticeButton = () => {
 
       try {
         if (resultId) {
-          const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+          const resultData = await queryClient.ensureQueryData(
+            orpc.result.getJsonById.queryOptions({ input: { resultId } }),
+          );
           setInitialLineResults(resultData);
         }
       } finally {

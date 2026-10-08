@@ -1,4 +1,3 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
 import { count, eq, sql } from "drizzle-orm";
 import z from "zod";
@@ -11,12 +10,12 @@ import {
   userStats,
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user/stats";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../orpc";
 import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../../utils/date";
 
 export const userStatsRouter = {
-  get: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  get: publicProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db } = context;
 
     const stats = await db
       .select({
@@ -50,8 +49,8 @@ export const userStatsRouter = {
     return stats;
   }),
 
-  getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db } = context;
     const { userId } = input;
 
     return db
@@ -66,8 +65,8 @@ export const userStatsRouter = {
 
   getYearlyTypingActivity: publicProcedure
     .input(z.object({ userId: z.number(), targetYear: z.number().nullish(), timezone: z.string() }))
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db } = context;
 
       const currentYear = getNowInTimeZone(input.timezone).getFullYear();
       const { startOfYear, endOfYear } = getYearDateRangeInTimeZone(input.targetYear ?? currentYear);
@@ -132,8 +131,8 @@ export const userStatsRouter = {
       });
     }),
 
-  getActivityOldestYear: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  getActivityOldestYear: publicProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db } = context;
 
     return await db.query.userDailyTypeCounts
       .findFirst({
@@ -146,8 +145,8 @@ export const userStatsRouter = {
 
   incrementMapCompletionPlayCount: protectedProcedure
     .input(z.object({ mapId: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { mapId } = input;
 
       await db
@@ -160,16 +159,14 @@ export const userStatsRouter = {
     }),
 
   incrementPlayCountStats: publicProcedure
-    .meta({
-      openapi: {
-        method: "POST",
-        path: "/user-stats/play-count/increment",
-      },
+    .route({
+      method: "POST",
+      path: "/user-stats/play-count/increment",
     })
     .input(z.object({ mapId: z.number() }))
     .output(z.void())
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { mapId } = input;
 
       await db
@@ -188,16 +185,14 @@ export const userStatsRouter = {
     }),
 
   incrementImeStats: protectedProcedure
-    .meta({
-      openapi: {
-        method: "POST",
-        path: "/user-stats/ime/increment",
-      },
+    .route({
+      method: "POST",
+      path: "/user-stats/ime/increment",
     })
     .input(IncrementImeTypeCountStatsSchema)
     .output(z.void())
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
 
       await db
         .insert(userStats)
@@ -222,16 +217,14 @@ export const userStatsRouter = {
     }),
 
   incrementTypingStats: protectedProcedure
-    .meta({
-      openapi: {
-        method: "POST",
-        path: "/user-stats/typing/increment",
-      },
+    .route({
+      method: "POST",
+      path: "/user-stats/typing/increment",
     })
     .input(IncrementTypingCountStatsSchema)
     .output(z.void())
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
 
       const currentMaxCombo = await db.query.userStats
         .findFirst({
@@ -284,7 +277,7 @@ export const userStatsRouter = {
           },
         });
     }),
-} satisfies TRPCRouterRecord;
+};
 
 const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
   const sortedLevels = Object.entries(LEVELS[type])

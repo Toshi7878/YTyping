@@ -1,4 +1,3 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, type SQL, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
@@ -22,7 +21,7 @@ import {
   type mapSortSchema,
   SelectMapListApiSchema,
 } from "@/validator/map/list";
-import { type ProtectedCtx, protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { type ORPCContext, type ProtectedCtx, protectedProcedure, publicProcedure } from "../../orpc";
 import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -46,9 +45,9 @@ const createUserBookmarksSq = (db: DBType, userId: number) =>
 type UserBookmarksSq = ReturnType<typeof createUserBookmarksSq>;
 
 export const mapListRouter = {
-  get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
+  get: publicProcedure.input(SelectMapListApiSchema).handler(async ({ input, context }) => {
     const { cursor, sort, ...searchInput } = input ?? {};
-    const { db, session } = ctx;
+    const { db, session } = context;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
     const bookmarkSq = session ? createUserBookmarksSq(db, session.user.id) : null;
@@ -66,30 +65,32 @@ export const mapListRouter = {
     return buildPageResult(mapItems);
   }),
 
-  getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getCount: publicProcedure.input(MapSearchFilterSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const baseQuery = buildBaseQuery(db.select({ count: count() }).from(maps).$dynamic(), session, null, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
   }),
 
-  getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
-    const { videoId } = input;
-    const bookmarkSq = createUserBookmarksSq(db, session.user.id);
+  getByVideoId: protectedProcedure
+    .input(z.object({ videoId: z.string().length(11) }))
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
+      const { videoId } = input;
+      const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
-    return await buildBaseQuery(
-      db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
-      session,
-      bookmarkSq,
-    )
-      .where(eq(maps.videoId, videoId))
-      .orderBy(desc(maps.id));
-  }),
+      return await buildBaseQuery(
+        db.select(buildBaseSelect(session, bookmarkSq)).from(maps).$dynamic(),
+        session,
+        bookmarkSq,
+      )
+        .where(eq(maps.videoId, videoId))
+        .orderBy(desc(maps.id));
+    }),
 
-  getByTitle: protectedProcedure.input(z.object({ title: z.string() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getByTitle: protectedProcedure.input(z.object({ title: z.string() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { title } = input;
     const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
@@ -102,8 +103,8 @@ export const mapListRouter = {
       .orderBy(desc(maps.id));
   }),
 
-  getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const bookmarkSq = createUserBookmarksSq(db, session.user.id);
 
     const map = await buildBaseQuery(
@@ -120,8 +121,8 @@ export const mapListRouter = {
 
   getSearchSuggestions: publicProcedure
     .input(z.object({ keyword: z.string().trim().min(1) }))
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db } = context;
       const keyword = input.keyword;
       const pattern = `%${keyword}%`;
 
@@ -142,11 +143,11 @@ export const mapListRouter = {
 
       return { tags: tagResults, titles: titleResults };
     }),
-} satisfies TRPCRouterRecord;
+};
 
 export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookmarksSq | null) =>
+const buildBaseSelect = (session: ORPCContext["session"], bookmarkSq: UserBookmarksSq | null) =>
   ({
     id: maps.id,
     updatedAt: maps.updatedAt,
@@ -204,7 +205,7 @@ const buildBaseSelect = (session: TRPCContext["session"], bookmarkSq: UserBookma
 
 const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   db: T,
-  session: TRPCContext["session"],
+  session: ORPCContext["session"],
   bookmarkSq: UserBookmarksSq | null,
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
@@ -378,7 +379,7 @@ const filterByKeyword = (keyword?: string | null) => {
 };
 
 export const filterByMapVisibility = (
-  session: TRPCContext["session"],
+  session: ORPCContext["session"],
   inputFilter?: z.output<typeof MapSearchFilterSchema>["filterType"],
 ) => {
   if (!session) {

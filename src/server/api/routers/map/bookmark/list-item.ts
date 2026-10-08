@@ -1,4 +1,3 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, eq, exists, type SQLWrapper, sql } from "drizzle-orm";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
@@ -9,14 +8,14 @@ import {
   notificationMapBookmarks,
   notifications,
 } from "@/server/drizzle/schema";
-import { type ProtectedCtx, protectedProcedure } from "../../../trpc";
+import { type ProtectedCtx, protectedProcedure } from "../../../orpc";
 import { generateNotificationId } from "../../notification";
 
 export const mapBookmarkListItemRouter = {
   add: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
 
       const list = await db.query.mapBookmarkLists.findFirst({
         where: { id: input.listId, userId: session.user.id },
@@ -68,8 +67,8 @@ export const mapBookmarkListItemRouter = {
 
   remove: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
 
       const list = await db.query.mapBookmarkLists.findFirst({
         where: { id: input.listId, userId: session.user.id },
@@ -82,7 +81,7 @@ export const mapBookmarkListItemRouter = {
 
       return { action: "removed" as const };
     }),
-} satisfies TRPCRouterRecord;
+};
 
 export const bookmarkedMapExists = (
   db: DBType,

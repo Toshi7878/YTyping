@@ -1,4 +1,4 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import type { TXType } from "@/server/drizzle/client";
@@ -13,16 +13,16 @@ import {
   users,
 } from "@/server/drizzle/schema";
 import { userReportApiSchema, userReportWarningApiSchema } from "@/validator/user/report";
-import { adminProcedure, protectedProcedure } from "../../trpc";
+import { adminProcedure, protectedProcedure } from "../../orpc";
 import { generateNotificationId } from "../notification";
 
 export const userReportRouter = {
-  submit: protectedProcedure.input(userReportApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  submit: protectedProcedure.input(userReportApiSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { reportedUserId, reason, reasonDetail } = input;
 
     if (session.user.id === reportedUserId) {
-      throw new TRPCError({ code: "BAD_REQUEST", message: "自分自身を報告することはできません" });
+      throw new ORPCError("BAD_REQUEST", { message: "自分自身を報告することはできません" });
     }
 
     const target = await db.query.users.findFirst({
@@ -31,7 +31,7 @@ export const userReportRouter = {
     });
 
     if (!target) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "ユーザーが見つかりません" });
+      throw new ORPCError("NOT_FOUND", { message: "ユーザーが見つかりません" });
     }
 
     const existing = await db.query.userReports.findFirst({
@@ -40,7 +40,7 @@ export const userReportRouter = {
     });
 
     if (existing) {
-      throw new TRPCError({ code: "CONFLICT", message: "このユーザーへの報告は既に受け付けています" });
+      throw new ORPCError("CONFLICT", { message: "このユーザーへの報告は既に受け付けています" });
     }
 
     await db.insert(userReports).values({
@@ -60,8 +60,8 @@ export const userReportRouter = {
         banExpires: z.date().optional(),
       }),
     )
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { reportId, adminNote, banReason, banExpires } = input;
 
       const report = await db.query.userReports.findFirst({
@@ -70,11 +70,11 @@ export const userReportRouter = {
       });
 
       if (!report) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "報告が見つかりません" });
+        throw new ORPCError("NOT_FOUND", { message: "報告が見つかりません" });
       }
 
       if (report.status !== "PENDING") {
-        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "この報告は既に処理済みです" });
+        throw new ORPCError("PRECONDITION_FAILED", { message: "この報告は既に処理済みです" });
       }
 
       await db.transaction(async (tx) => {
@@ -100,8 +100,8 @@ export const userReportRouter = {
 
   dismiss: adminProcedure
     .input(z.object({ reportId: z.number(), adminNote: z.string().max(1000).optional() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { reportId, adminNote } = input;
 
       const report = await db.query.userReports.findFirst({
@@ -110,11 +110,11 @@ export const userReportRouter = {
       });
 
       if (!report) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "報告が見つかりません" });
+        throw new ORPCError("NOT_FOUND", { message: "報告が見つかりません" });
       }
 
       if (report.status !== "PENDING") {
-        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "この報告は既に処理済みです" });
+        throw new ORPCError("PRECONDITION_FAILED", { message: "この報告は既に処理済みです" });
       }
 
       await db.transaction(async (tx) => {
@@ -134,8 +134,8 @@ export const userReportRouter = {
       });
     }),
 
-  warn: adminProcedure.input(userReportWarningApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  warn: adminProcedure.input(userReportWarningApiSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { reportId, warningComment, adminNote } = input;
 
     const report = await db.query.userReports.findFirst({
@@ -144,11 +144,11 @@ export const userReportRouter = {
     });
 
     if (!report) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "通報が見つかりません" });
+      throw new ORPCError("NOT_FOUND", { message: "通報が見つかりません" });
     }
 
     if (report.status !== "PENDING") {
-      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "この通報は既に処理済みです" });
+      throw new ORPCError("PRECONDITION_FAILED", { message: "この通報は既に処理済みです" });
     }
 
     await db.transaction(async (tx) => {
@@ -176,8 +176,8 @@ export const userReportRouter = {
     });
   }),
 
-  unban: adminProcedure.input(z.object({ reportId: z.number() })).mutation(async ({ input, ctx }) => {
-    const { db } = ctx;
+  unban: adminProcedure.input(z.object({ reportId: z.number() })).handler(async ({ input, context }) => {
+    const { db } = context;
     const { reportId } = input;
 
     const report = await db.query.userReports.findFirst({
@@ -189,11 +189,11 @@ export const userReportRouter = {
     });
 
     if (!report) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "通報が見つかりません" });
+      throw new ORPCError("NOT_FOUND", { message: "通報が見つかりません" });
     }
 
     if (report.status !== "RESOLVED" || !report.reportedUser.banned) {
-      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "BAN済みの通報ではありません" });
+      throw new ORPCError("PRECONDITION_FAILED", { message: "BAN済みの通報ではありません" });
     }
 
     await db.transaction(async (tx) => {
@@ -206,11 +206,11 @@ export const userReportRouter = {
     });
   }),
 
-  getWarnings: protectedProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getWarnings: protectedProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     if (session.user.id !== input.userId && session.user.role !== "ADMIN") {
-      throw new TRPCError({ code: "FORBIDDEN" });
+      throw new ORPCError("FORBIDDEN");
     }
 
     return db.query.userReports.findMany({
@@ -223,8 +223,8 @@ export const userReportRouter = {
     });
   }),
 
-  list: adminProcedure.query(async ({ ctx }) => {
-    const { db } = ctx;
+  list: adminProcedure.handler(async ({ context }) => {
+    const { db } = context;
 
     return db.query.userReports.findMany({
       orderBy: (t) => [asc(sql`case when ${t.status} = 'PENDING' then 0 else 1 end`), desc(t.createdAt)],
@@ -236,7 +236,7 @@ export const userReportRouter = {
       },
     });
   }),
-} satisfies TRPCRouterRecord;
+};
 
 const createReportResultNotification = async (
   tx: TXType,

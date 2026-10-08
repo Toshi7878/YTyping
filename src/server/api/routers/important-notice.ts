@@ -1,14 +1,14 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, desc, eq, ilike, inArray, isNotNull } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
 import { importantNotices, importantNoticeTargets, users } from "@/server/drizzle/schema";
 import { importantNoticeCreateApiSchema } from "@/validator/important-notice";
-import { adminProcedure } from "../trpc";
+import { adminProcedure } from "../orpc";
 
 export const importantNoticeRouter = {
-  list: adminProcedure.query(async ({ ctx }) => {
-    const { db } = ctx;
+  list: adminProcedure.handler(async ({ context }) => {
+    const { db } = context;
 
     return db.query.importantNotices.findMany({
       orderBy: (t) => [desc(t.createdAt)],
@@ -22,8 +22,8 @@ export const importantNoticeRouter = {
   // 対象ユーザー選択UIの検索候補用（名前は変更されうるので、選択結果はidで送信する）
   searchUsers: adminProcedure
     .input(z.object({ query: z.string().trim().min(1).max(100) }))
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db } = context;
 
       return db
         .select({ id: users.id, name: users.name })
@@ -33,12 +33,12 @@ export const importantNoticeRouter = {
         .limit(10);
     }),
 
-  create: adminProcedure.input(importantNoticeCreateApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  create: adminProcedure.input(importantNoticeCreateApiSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { title, body, audience, expiresAt, targetUserIds } = input;
 
     if (audience === "SPECIFIC" && targetUserIds.length === 0) {
-      throw new TRPCError({ code: "BAD_REQUEST", message: "送信対象のユーザーを1人以上指定してください" });
+      throw new ORPCError("BAD_REQUEST", { message: "送信対象のユーザーを1人以上指定してください" });
     }
 
     const noticeId = nanoid(10);
@@ -59,7 +59,7 @@ export const importantNoticeRouter = {
         const foundUsers = await tx.select({ id: users.id }).from(users).where(inArray(users.id, uniqueTargetUserIds));
 
         if (foundUsers.length !== uniqueTargetUserIds.length) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "存在しないユーザーが含まれています" });
+          throw new ORPCError("NOT_FOUND", { message: "存在しないユーザーが含まれています" });
         }
 
         await tx.insert(importantNoticeTargets).values(uniqueTargetUserIds.map((userId) => ({ noticeId, userId })));
@@ -67,15 +67,15 @@ export const importantNoticeRouter = {
     });
   }),
 
-  delete: adminProcedure.input(z.object({ noticeId: z.string() })).mutation(async ({ input, ctx }) => {
-    const { db } = ctx;
+  delete: adminProcedure.input(z.object({ noticeId: z.string() })).handler(async ({ input, context }) => {
+    const { db } = context;
 
     await db.delete(importantNotices).where(eq(importantNotices.id, input.noticeId));
   }),
 
-  expireNow: adminProcedure.input(z.object({ noticeId: z.string() })).mutation(async ({ input, ctx }) => {
-    const { db } = ctx;
+  expireNow: adminProcedure.input(z.object({ noticeId: z.string() })).handler(async ({ input, context }) => {
+    const { db } = context;
 
     await db.update(importantNotices).set({ expiresAt: new Date() }).where(eq(importantNotices.id, input.noticeId));
   }),
-} satisfies TRPCRouterRecord;
+};

@@ -6,9 +6,9 @@ import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { getSession } from "@/auth/server";
+import ORPCProvider from "@/orpc/provider";
+import { caller } from "@/orpc/server";
 import { THEME_LIST } from "@/theme/const";
-import TRPCProvider from "@/trpc/provider";
-import { caller } from "@/trpc/server";
 import { ConfirmDialogHost } from "@/ui/confirm-dialog";
 import { OverlayHost } from "@/ui/overlay";
 import { Toaster } from "@/ui/sonner";
@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             disableTransitionOnChange
             themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
           >
-            <TRPCProvider>
+            <ORPCProvider>
               <TooltipProvider delay={600}>
                 <AppAtomsHydrator userOptions={userOptions} userAgent={userAgent}>
                   <SessionProvider session={session}>
@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   </SessionProvider>
                 </AppAtomsHydrator>
               </TooltipProvider>
-            </TRPCProvider>
+            </ORPCProvider>
           </ThemeProvider>
         </NuqsAdapter>
         <Toaster />

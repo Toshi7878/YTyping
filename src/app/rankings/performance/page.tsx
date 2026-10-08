@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { H1 } from "@/ui/typography";
 import { PPRanking } from "./_feature/pp-ranking";
 import { PPRankingInfoTrigger } from "./_feature/pp-ranking-info-trigger";
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default async function Page({ searchParams }: PageProps<"/">) {
   const { page, mode } = await loadPpRankingSearchParams(searchParams);
-  await prefetchAsync(trpc.ranking.pp.list.get.queryOptions({ cursor: page - 1, mode }));
-  await prefetchAsync(trpc.ranking.pp.list.getPageCount.queryOptions({ mode }));
+  await prefetchAsync(orpc.ranking.pp.list.get.queryOptions({ input: { cursor: page - 1, mode } }));
+  await prefetchAsync(orpc.ranking.pp.list.getPageCount.queryOptions({ input: { mode } }));
 
   return (
     <HydrateClient>

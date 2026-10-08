@@ -1,17 +1,17 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, count, eq, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
 import { notificationClaps, notifications, resultClaps, results } from "@/server/drizzle/schema";
-import { protectedProcedure, type TRPCContext } from "../../trpc";
+import { type ORPCContext, protectedProcedure } from "../../orpc";
 import { generateNotificationId } from "../notification";
 
 export const resultClapRouter = {
   toggleClap: protectedProcedure
     .input(z.object({ resultId: z.number(), newState: z.boolean() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { resultId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
@@ -44,7 +44,7 @@ export const resultClapRouter = {
           .then((res) => res[0]?.mapId);
 
         if (!mapId) {
-          throw new TRPCError({ code: "PRECONDITION_FAILED" });
+          throw new ORPCError("PRECONDITION_FAILED");
         }
 
         if (isFirstClap) {
@@ -75,9 +75,9 @@ export const resultClapRouter = {
 
       return payload;
     }),
-} satisfies TRPCRouterRecord;
+};
 
-export const getRankingClapCounts = async (db: DBType, session: TRPCContext["session"], mapId: number) => {
+export const getRankingClapCounts = async (db: DBType, session: ORPCContext["session"], mapId: number) => {
   if (session) {
     const myClap = alias(resultClaps, "my_clap");
 

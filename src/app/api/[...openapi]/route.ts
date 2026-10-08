@@ -1,8 +1,8 @@
+import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import type { NextRequest } from "next/server";
-import { createOpenApiFetchHandler } from "trpc-to-openapi";
 import { auth } from "@/auth/server";
+import { createORPCContext } from "@/server/api/orpc";
 import { openApiRouter } from "@/server/api/root";
-import { createTRPCContext } from "@/server/api/trpc";
 
 export const dynamic = "force-dynamic";
 
@@ -25,19 +25,15 @@ const withCors = (response: Response) => {
   });
 };
 
+const openApiHandler = new OpenAPIHandler(openApiRouter);
+
 const handler = async (req: NextRequest) => {
-  const response = await createOpenApiFetchHandler({
-    endpoint: "/api",
-    router: openApiRouter,
-    createContext: () =>
-      createTRPCContext({
-        auth,
-        headers: req.headers,
-      }),
-    req,
+  const { response } = await openApiHandler.handle(req, {
+    prefix: "/api",
+    context: await createORPCContext({ auth, headers: req.headers }),
   });
 
-  return withCors(response);
+  return withCors(response ?? new Response("Not found", { status: 404 }));
 };
 
 const optionsHandler = () => new Response(null, { status: 204, headers: CORS_HEADERS });

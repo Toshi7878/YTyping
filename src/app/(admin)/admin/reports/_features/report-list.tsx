@@ -1,9 +1,9 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { orpc } from "@/orpc/provider";
 import { getReportStatusBadgeVariant, getReportStatusLabel } from "@/shared/user/report";
 import { UserNameLinkText } from "@/shared/user/user-name-link";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Card, CardContent, CardHeader } from "@/ui/card";
 import { InfoIconButton } from "@/ui/icon-button";
@@ -13,8 +13,7 @@ import { formatDate } from "@/utils/date";
 import { ReportActions } from "./report-actions";
 
 export const ReportList = () => {
-  const trpc = useTRPC();
-  const { data: reports } = useSuspenseQuery(trpc.user.report.list.queryOptions());
+  const { data: reports } = useSuspenseQuery(orpc.user.report.list.queryOptions());
 
   const pendingCount = reports.filter((report) => report.status === "PENDING").length;
 

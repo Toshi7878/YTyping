@@ -2,13 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Large, Small } from "@/ui/typography";
 
 export const ResultSummary = ({ userId }: { userId: string }) => {
-  const trpc = useTRPC();
   const { data: stats, isPending } = useQuery(
-    trpc.user.stats.getRankingSummary.queryOptions({ userId: Number(userId) }),
+    orpc.user.stats.getRankingSummary.queryOptions({ input: { userId: Number(userId) } }),
   );
 
   if (isPending) {

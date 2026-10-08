@@ -4,9 +4,9 @@ import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { useState } from "react";
 import { toast } from "sonner";
+import { orpc } from "@/orpc/provider";
 import type { LINE_COMPLETED_DISPLAY_TYPES, NEXT_DISPLAY_TYPES } from "@/server/drizzle/schema";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { SettingIconButton } from "@/ui/icon-button";
@@ -43,8 +43,7 @@ const resetTypingOptions = () => {
 };
 
 export const SettingPopover = () => {
-  const trpc = useTRPC();
-  const updateTypingOptions = useMutation(trpc.user.typingOption.upsert.mutationOptions());
+  const updateTypingOptions = useMutation(orpc.user.typingOption.upsert.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
 

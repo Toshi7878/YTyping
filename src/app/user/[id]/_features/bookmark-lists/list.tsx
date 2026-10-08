@@ -7,10 +7,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getSession, useSession } from "@/auth/client";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { BookmarkListFormFields } from "@/shared/map/bookmark/lists-popover";
 import { MapList } from "@/shared/map/list/list";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
@@ -43,9 +43,10 @@ export const UserBookmarkLists = ({ id }: { id: string }) => {
 };
 
 const BookmarkListCardList = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
   const { data: session } = useSession();
-  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: Number(id) }));
+  const { data: lists } = useSuspenseQuery(
+    orpc.map.bookmark.lists.getByUserId.queryOptions({ input: { userId: Number(id) } }),
+  );
 
   if (lists.length === 0) {
     return <div className="py-10 text-center text-muted-foreground text-sm">ブックマークリストがありません</div>;
@@ -91,16 +92,15 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
 
 const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   const [open, setOpen] = useState(false);
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const deleteListMutation = useMutation(
-    trpc.map.bookmark.lists.delete.mutationOptions({
+    orpc.map.bookmark.lists.delete.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries(
-          trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: Number(session?.user?.id) }),
-        );
+        queryClient.invalidateQueries({
+          queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { userId: Number(session?.user?.id) } }),
+        });
         setOpen(false);
         toast.success("リストを削除しました");
       },
@@ -151,7 +151,6 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
 
 const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; trigger: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const form = useAppForm({
@@ -168,10 +167,12 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
   const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   const updateListMutation = useMutation(
-    trpc.map.bookmark.lists.update.mutationOptions({
+    orpc.map.bookmark.lists.update.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries(trpc.map.bookmark.lists.getByUserId.queryFilter({ userId: session?.user?.id }));
+        queryClient.invalidateQueries({
+          queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { userId: session?.user?.id } as never }),
+        });
         setOpen(false);
         toast.success("リストを編集しました");
       },

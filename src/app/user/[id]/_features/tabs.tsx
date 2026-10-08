@@ -1,8 +1,8 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { orpc } from "@/orpc/provider";
 import { MapList } from "@/shared/map/list/list";
 import { ResultList } from "@/shared/result/list/list";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { UserBookmarkLists } from "./bookmark-lists/list";
@@ -63,28 +63,28 @@ export const UserTabs = ({ id }: { id: string }) => {
 };
 
 const MapTabLabelWithCount = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
-  const { data: mapCount } = useSuspenseQuery(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
+  const { data: mapCount } = useSuspenseQuery(
+    orpc.map.list.getCount.queryOptions({ input: { creatorId: Number(id) } }),
+  );
   return <LabelWithCount label="制作譜面" count={mapCount} />;
 };
 
 const LikedMapTabLabelWithCount = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
-  const { data: mapCount } = useSuspenseQuery(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
+  const { data: mapCount } = useSuspenseQuery(orpc.map.list.getCount.queryOptions({ input: { likerId: Number(id) } }));
   return <LabelWithCount label="いいねした譜面" count={mapCount} />;
 };
 
 const ResultTabLabelWithCount = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
-  const { data: resultCount } = useSuspenseQuery(trpc.result.list.getCount.queryOptions({ playerId: Number(id) }));
+  const { data: resultCount } = useSuspenseQuery(
+    orpc.result.list.getCount.queryOptions({ input: { playerId: Number(id) } }),
+  );
 
   return <LabelWithCount label="ランキング履歴" count={resultCount} />;
 };
 
 const BookmarkTabLabelWithCount = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
   const { data: bookmarkCount } = useSuspenseQuery(
-    trpc.map.bookmark.lists.getCount.queryOptions({ userId: Number(id) }),
+    orpc.map.bookmark.lists.getCount.queryOptions({ input: { userId: Number(id) } }),
   );
   return <LabelWithCount label="ブックマークリスト" count={bookmarkCount} />;
 };

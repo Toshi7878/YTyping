@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
 import { store, useCreatorId } from "@/app/edit/_feature/provider";
 import { useSession } from "@/auth/client";
+import { getQueryClient, orpc } from "@/orpc/provider";
 import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import {
   katakanaToHiragana,
@@ -65,14 +65,10 @@ export const wordConvertAction = async (lyrics: string) => {
 
 const fetchReading = async (sentence: string) => {
   setIsWordConverting(true);
-  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
   try {
     const { regexDict } = await queryClient.ensureQueryData(
-      trpc.morph.getCustomDict.queryOptions(undefined, {
-        staleTime: Infinity,
-        gcTime: Infinity,
-      }),
+      orpc.morph.getCustomDict.queryOptions({ staleTime: Infinity, gcTime: Infinity }),
     );
 
     let processedSentence = sentence;
@@ -82,10 +78,11 @@ const fetchReading = async (sentence: string) => {
     }
 
     const tokenizedWord = await queryClient.ensureQueryData(
-      trpc.morph.tokenizeSentence.queryOptions(
-        { sentence: processedSentence },
-        { staleTime: Infinity, gcTime: Infinity },
-      ),
+      orpc.morph.tokenizeSentence.queryOptions({
+        input: { sentence: processedSentence },
+        staleTime: Infinity,
+        gcTime: Infinity,
+      }),
     );
 
     const result = await replaceReadingWithCustomDict(tokenizedWord);

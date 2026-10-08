@@ -9,8 +9,8 @@ import {
 } from "lyrics-ime-typing-engine";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
 import type { RawMapLine } from "@/validator/map/raw-map-json";
@@ -37,10 +37,9 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   const {
     media: { videoId },
   } = mapInfo;
-  const trpc = useTRPC();
   const pathname = usePathname();
   const { data: mapJson } = useQuery(
-    trpc.map.getJsonById.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
+    orpc.map.getJsonById.queryOptions({ input: { mapId }, enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const loadMap = async (mapData: RawMapLine[]) => {
     overlay.loading("ひらがな判定生成中...");

@@ -1,19 +1,16 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import z from "zod";
 import { env } from "@/env";
 import { generateMapInfoWithGemini } from "../lib/google-ai";
 import { getYouTubeInfo } from "../lib/youtube";
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../orpc";
 
 const apiKey = env.GCP_AUTH_KEY;
 
 export const aiRouter = {
-  generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input }) => {
+  generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).handler(async ({ input }) => {
     if (!apiKey) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "譜面情報の生成に失敗しました",
-      });
+      throw new ORPCError("INTERNAL_SERVER_ERROR", { message: "譜面情報の生成に失敗しました" });
     }
 
     try {
@@ -21,15 +18,12 @@ export const aiRouter = {
       const responseText = await generateMapInfoWithGemini(youtubeInfo);
       return parseMapInfoResponseText(responseText);
     } catch (error) {
-      if (error instanceof TRPCError) throw error;
+      if (error instanceof ORPCError) throw error;
 
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "譜面情報の生成に失敗しました",
-      });
+      throw new ORPCError("BAD_REQUEST", { message: "譜面情報の生成に失敗しました" });
     }
   }),
-} satisfies TRPCRouterRecord;
+};
 
 const parseMapInfoResponseText = (responseText: string) => {
   const parsed = JSON.parse(responseText.trim()) as {

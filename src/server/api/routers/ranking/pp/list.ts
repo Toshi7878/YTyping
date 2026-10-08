@@ -1,7 +1,6 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, gt, sql } from "drizzle-orm";
 import z from "zod";
-import { publicProcedure } from "@/server/api/trpc";
+import { publicProcedure } from "@/server/api/orpc";
 import { createPagination } from "@/server/api/utils/pagination";
 import { userStats, users } from "@/server/drizzle/schema";
 import { PP_MODES } from "@/shared/result/pp/mode";
@@ -10,8 +9,8 @@ import { PAGE_SIZE, PP_MODE_COLUMNS } from "./const";
 export const rankingPpListRouter = {
   get: publicProcedure
     .input(z.object({ cursor: z.number().int().optional(), mode: z.enum(PP_MODES).default("total") }))
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db } = context;
       const { mode } = input;
       const column = PP_MODE_COLUMNS[mode];
 
@@ -36,8 +35,8 @@ export const rankingPpListRouter = {
 
   getPageCount: publicProcedure
     .input(z.object({ mode: z.enum(PP_MODES).default("total") }))
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db } = context;
       const { mode } = input;
       const column = PP_MODE_COLUMNS[mode];
 
@@ -50,4 +49,4 @@ export const rankingPpListRouter = {
       const total = result[0]?.count ?? 0;
       return Math.ceil(total / PAGE_SIZE);
     }),
-} satisfies TRPCRouterRecord;
+};

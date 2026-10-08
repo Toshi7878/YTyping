@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { orpc } from "@/orpc/provider";
 import { useIsSearching } from "@/shared/map/list/list";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { Popover, PopoverAnchor, PopoverContent } from "@/ui/popover";
@@ -35,7 +35,6 @@ export const KeywordInput = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const isSearching = useIsSearching();
   const { debounce } = useDebounce(200);
-  const trpc = useTRPC();
   const router = useRouter();
   const hasInputKeyword = keyword.trim() !== "";
   const hasDebouncedKeyword = debouncedKeyword.trim() !== "";
@@ -45,10 +44,11 @@ export const KeywordInput = () => {
   }, [params.keyword]);
 
   const { data: suggestions } = useQuery(
-    trpc.map.list.getSearchSuggestions.queryOptions(
-      { keyword: debouncedKeyword },
-      { enabled: hasDebouncedKeyword, staleTime: Infinity },
-    ),
+    orpc.map.list.getSearchSuggestions.queryOptions({
+      input: { keyword: debouncedKeyword },
+      enabled: hasDebouncedKeyword,
+      staleTime: Infinity,
+    }),
   );
 
   const displaySuggestions = useMemo(

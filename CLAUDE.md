@@ -36,6 +36,7 @@ Tests are sparse (currently one file under `src/app/(typing)/type/_feature/`). C
 
 - **Node 24.x only** (`engines` and `.nvmrc`). Vercel cannot select newer Node, so do not bump Node or `@types/node` past 24.x.
 - **TypeScript 7 (native Go compiler)**. The `typescript` package has no JS API; `tsc` is the Go binary. Next.js 16.4+ copes with this — older Next versions failed `next build` at the "Running TypeScript" step.
+- `tsconfig` uses `module: preserve` + `moduleResolution: bundler`; `nodenext` makes ESM-only typings (e.g. `@orpc/tanstack-query`) resolve a second copy of `@tanstack/query-core` types.
 - `tsx` is still needed for scripts: they import via the `@/` alias, which Node's built-in type stripping does not resolve.
 - Path alias `@/*` → `src/*`. tsconfig has `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters`.
 
@@ -61,25 +62,29 @@ Husky runs `pnpm check` on every commit. Biome format violations fail the hook e
 
 Route-specific code lives in a `_feature` / `_components` folder next to the route. Cross-route domain code is in `src/shared/` (map, result, user, morph); generic UI is in `src/ui/`.
 
-### API Layer (tRPC 11 + React Query)
+### API Layer (oRPC + React Query)
 
 Three separate route handlers with distinct purposes:
 
-- `/api/trpc/[trpc]` → `appRouter` — standard tRPC for client components
-- `/api/[...openapi]` → `openApiRouter` — public REST (CORS enabled)
-- `/api/internal/[...openapi]` → `appRouter` — internal REST (same-origin only)
+- `/api/orpc/[[...rest]]` → `appRouter` via `RPCHandler` — RPC for client components
+- `/api/[...openapi]` → `openApiRouter` via `OpenAPIHandler` — public REST (CORS enabled)
+- `/api/internal/[...openapi]` → `userStatsRouter` via `OpenAPIHandler` — internal REST for `sendBeacon` stats (same-origin only)
 
-**Server-side usage** (`src/trpc/server.tsx`): `caller` for direct calls in RSC, `trpc` + `prefetch` for TanStack Query prefetching, `HydrateClient` to stream dehydrated state to the client.
+`/api/openapi.json` is generated from `openApiRouter` with `OpenAPIGenerator`; `(menus)/api-docs` renders it.
 
-**Client-side usage** (`src/trpc/provider.tsx`): `useTRPC()` hook inside `TRPCReactProvider`. Uses `httpBatchStreamLink`.
+**Server-side usage** (`src/orpc/server.tsx`): `caller` for direct calls in RSC (no HTTP), `orpc` + `prefetch`/`prefetchAsync` for TanStack Query prefetching, `HydrateClient` to stream dehydrated state to the client.
 
-### tRPC Procedures (`src/server/api/trpc.ts`)
+**Client-side usage** (`src/orpc/provider.tsx`): `orpc` (TanStack Query utils: `queryOptions`, `infiniteOptions`, `mutationOptions`, `queryKey`, `key`) and `orpcClient` (plain calls) are plain module exports — no hook. `ORPCReactProvider` only wraps `QueryClientProvider`. Options take one object (`orpc.x.queryOptions({ input, ...options })`); infinite queries need `input: (pageParam) => ({ ..., cursor: pageParam })` and an `initialPageParam`. Query data is dehydrated/hydrated with SuperJSON (`src/orpc/query-client.ts`).
+
+### Procedures (`src/server/api/orpc.ts`)
 
 - `publicProcedure` — no auth required
-- `protectedProcedure` — requires session (throws string error, not `TRPCError`, if unauthenticated)
-- Both have a global rate limit: **60 requests / 60 seconds** via Upstash Redis. Rate limit is skipped if `KV_REST_API_URL` / `KV_REST_API_TOKEN` env vars are absent. Keyed by `user:{id}` (logged in) or `ip:{ip}` (anonymous).
+- `protectedProcedure` — requires session (`UNAUTHORIZED` otherwise)
+- `adminProcedure` — requires `role === "ADMIN"` (`FORBIDDEN` otherwise)
+- Handler context is `context` (`db`, `session`, `authApi`, `headers`). Throw `ORPCError("NOT_FOUND", { message })`; read codes on the client with `getORPCErrorCode` (`src/orpc/error.ts`).
+- Procedures exposed over REST declare `.route({ method, path, tags, summary })`. REST inputs arrive as strings, so use `z.coerce.number()` / `z.stringbool()` in those schemas.
 
-New procedures go in `src/server/api/routers/`. Export from `src/server/api/root.ts`. External-service clients (R2/S3 storage, Supabase, Google AI, YouTube, Vercel API) are in `src/server/api/lib/`.
+New procedures go in `src/server/api/routers/`. Export from `src/server/api/root.ts`. External-service clients (R2/S3 storage, Supabase, Google AI, YouTube, Vercel API) are in `src/server/api/lib/`. `RouterInputs` / `RouterOutputs` are exported from `src/server/api/root.ts`.
 
 ### State Management (Jotai)
 
@@ -97,7 +102,7 @@ The typing engines come from the external packages `lyrics-typing-engine` and `l
 
 ### Auth (better-auth)
 
-Configured in `src/auth/server.ts`. OAuth via Google and Discord. Emails are stored as MD5 hashes. Users set their own name after registration — providers do not supply it. Session is accessed via `getSession()` (cached per request) in server contexts, or via tRPC context `ctx.session`. The signing secret is `env.AUTH_SECRET`, passed explicitly to `betterAuth` (required on Vercel, defaults locally).
+Configured in `src/auth/server.ts`. OAuth via Google and Discord. Emails are stored as MD5 hashes. Users set their own name after registration — providers do not supply it. Session is accessed via `getSession()` (cached per request) in server contexts, or via the procedure `context.session`. The signing secret is `env.AUTH_SECRET`, passed explicitly to `betterAuth` (required on Vercel, defaults locally).
 
 ### UI
 

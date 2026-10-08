@@ -22,6 +22,8 @@ import {
 } from "@/app/edit/_feature/provider";
 import { useIsBuckupQueryState } from "@/app/edit/_feature/search-params";
 import { useSession } from "@/auth/client";
+import { getORPCErrorCode } from "@/orpc/error";
+import { orpc } from "@/orpc/provider";
 import {
   calcChunkCounts,
   calculateSpeedDifficulty,
@@ -29,7 +31,6 @@ import {
   calculateTypingDuration,
   getStartLine,
 } from "@/shared/map/built-map-helper";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { CardWithContent } from "@/ui/card";
 import { useAppForm, withForm } from "@/ui/form-field-item";
@@ -104,10 +105,9 @@ const useSyncNonDirtyValues = (form: SyncableForm, values: MapInfoFormValues) =>
 
 export const EditMapInfoFormCard = () => {
   const mapId = useMapId();
-  const trpc = useTRPC();
 
   const { data: mapInfo } = useSuspenseQuery(
-    trpc.map.getById.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+    orpc.map.getById.queryOptions({ input: { mapId: mapId ?? 0 }, staleTime: Infinity, gcTime: Infinity }),
   );
 
   const videoId = useVideoId();
@@ -208,8 +208,6 @@ export const EditMapInfoFormCard = () => {
 };
 
 export const AddMapInfoFormCard = () => {
-  const trpc = useTRPC();
-
   const [isBackup] = useIsBuckupQueryState();
   const { data: session } = useSession();
   const creatorId = useCreatorId();
@@ -268,14 +266,12 @@ export const AddMapInfoFormCard = () => {
     error: aiError,
     isFetching: isAIFetching,
   } = useQuery(
-    trpc.ai.generateMapInfo.queryOptions(
-      { videoId },
-      {
-        enabled: hasUploadPermission,
-        staleTime: Infinity,
-        gcTime: Infinity,
-      },
-    ),
+    orpc.ai.generateMapInfo.queryOptions({
+      input: { videoId },
+      enabled: hasUploadPermission,
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   useEffect(() => {
@@ -567,15 +563,14 @@ const TypeLinkButton = ({ mapId }: { mapId: number }) => {
 };
 
 const useUpsertMapMutation = () => {
-  const trpc = useTRPC();
   return useMutation(
-    trpc.map.upsert.mutationOptions({
+    orpc.map.upsert.mutationOptions({
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         context.client.setQueriesData<RawMapLine[]>(
-          trpc.map.getJsonById.queryFilter({ mapId: id }),
+          { queryKey: orpc.map.getJsonById.queryKey({ input: { mapId: id } }) },
           () => _variables.rawMapJson,
         );
-        await context.client.invalidateQueries(trpc.map.getById.queryOptions({ mapId: id }));
+        await context.client.invalidateQueries(orpc.map.getById.queryOptions({ input: { mapId: id } }));
 
         const mapId = getMapId();
         if (!mapId) {
@@ -584,15 +579,15 @@ const useUpsertMapMutation = () => {
           setMapId(id);
           setCreatorId(creatorId);
           toast.success("アップロード完了");
-          await context.client.resetQueries({ queryKey: trpc.map.list.get.pathKey() });
+          await context.client.resetQueries({ queryKey: orpc.map.list.get.key() });
         } else {
           toast.success("アップデート完了");
-          await context.client.invalidateQueries({ queryKey: trpc.map.list.get.pathKey() });
+          await context.client.invalidateQueries({ queryKey: orpc.map.list.get.key() });
         }
         setCanUpload(false);
       },
       onError: (error) => {
-        switch (error.data?.code) {
+        switch (getORPCErrorCode(error)) {
           case "FORBIDDEN":
             toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
             return;

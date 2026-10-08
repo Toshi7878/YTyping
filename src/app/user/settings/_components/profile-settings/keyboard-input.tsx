@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { useAppForm } from "@/ui/form-field-item";
 import { keyboardFormSchema } from "@/validator/user/profile";
 
@@ -14,9 +14,7 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
     validators: { onChange: keyboardFormSchema },
     defaultValues: { keyboard },
   });
-
-  const trpc = useTRPC();
-  const upsertKeyboard = useMutation(trpc.user.profile.upsertKeyboard.mutationOptions());
+  const upsertKeyboard = useMutation(orpc.user.profile.upsertKeyboard.mutationOptions());
 
   return (
     <form.AppField name="keyboard">

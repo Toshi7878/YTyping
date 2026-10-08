@@ -1,15 +1,15 @@
+import { getQueryClient, orpc } from "@/orpc/provider";
 import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 
 export const ensureLyricsWithReadings = async (comparisonLyrics: string[][]) => {
-  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
 
   const data = await queryClient.ensureQueryData(
-    trpc.morph.tokenizeSentence.queryOptions(
-      { sentence: comparisonLyrics.flat().join(" ") },
-      { staleTime: Infinity, gcTime: Infinity },
-    ),
+    orpc.morph.tokenizeSentence.queryOptions({
+      input: { sentence: comparisonLyrics.flat().join(" ") },
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   // selectの変換をensureQueryDataの外で行う

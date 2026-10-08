@@ -1,15 +1,14 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { mapLikes, maps, notificationLikes, notifications } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../../trpc";
+import { protectedProcedure } from "../../orpc";
 import { generateNotificationId } from "../notification";
 
 export const mapLikeRouter = {
   toggle: protectedProcedure
     .input(z.object({ mapId: z.number(), newState: z.boolean() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
       const { mapId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
@@ -58,4 +57,4 @@ export const mapLikeRouter = {
 
       return payload;
     }),
-} satisfies TRPCRouterRecord;
+};

@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { orpc } from "@/orpc/provider";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -16,7 +17,6 @@ import {
 } from "@/shared/map/built-map-helper";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { THEME_LIST } from "@/theme/const";
-import { useTRPC } from "@/trpc/provider";
 import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
@@ -52,10 +52,8 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     },
     { enableOnFormTags: false, preventDefault: true },
   );
-
-  const trpc = useTRPC();
   const { data: rawMapLines, isLoading } = useQuery(
-    trpc.map.getJsonById.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
+    orpc.map.getJsonById.queryOptions({ input: { mapId }, staleTime: Infinity, gcTime: Infinity }),
   );
 
   useEffect(() => {

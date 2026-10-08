@@ -1,4 +1,3 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
@@ -14,7 +13,7 @@ import {
   type ResultListFilterSchema,
   SelectResultListApiSchema,
 } from "@/validator/result/list";
-import { publicProcedure, type TRPCContext } from "../../trpc";
+import { type ORPCContext, publicProcedure } from "../../orpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { bookmarkedMapExists } from "../map/bookmark/list-item";
@@ -29,9 +28,9 @@ const myClap = alias(resultClaps, "my_clap");
 const PAGE_SIZE = 25;
 
 export const resultListRouter = {
-  get: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+  get: publicProcedure.input(SelectResultListApiSchema).handler(async ({ input, context }) => {
     const { cursor, ...searchInput } = input ?? {};
-    const { db, session } = ctx;
+    const { db, session } = context;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
     const baseSelect = buildBaseSelect(db, session);
@@ -48,9 +47,9 @@ export const resultListRouter = {
     return buildPageResult(formatMapListItem(items));
   }),
 
-  getCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+  getCount: publicProcedure.input(SelectResultListApiSchema).handler(async ({ input, context }) => {
     const { cursor, ...searchInput } = input ?? {};
-    const { db, session } = ctx;
+    const { db, session } = context;
 
     const baseQuery = buildResultWithMapBaseQuery(
       db.select({ count: count() }).from(results).$dynamic(),
@@ -62,9 +61,9 @@ export const resultListRouter = {
 
     return total[0]?.count ?? 0;
   }),
-} satisfies TRPCRouterRecord;
+};
 
-const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
+const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
   ({
     id: results.id,
     updatedAt: results.updatedAt,
@@ -147,7 +146,7 @@ export type ResultWithMapItem = ReturnType<typeof formatMapListItem>[number];
 
 const buildResultWithMapBaseQuery = <T extends PgSelect>(
   db: T,
-  session: TRPCContext["session"],
+  session: ORPCContext["session"],
   input?: z.output<typeof ResultListFilterSchema>,
 ) => {
   let baseQuery = db

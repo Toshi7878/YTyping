@@ -1,11 +1,11 @@
 "use client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { atom } from "jotai";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession, useSession } from "@/auth/client";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
 import { Sheet, SheetContent } from "@/ui/sheet";
@@ -34,12 +34,11 @@ const LAYOUT_CALCULATE_DELAY_MS = 100;
 
 const LoadResultButton = ({ userId }: { userId: number }) => {
   const queryClient = useQueryClient();
-  const trpc = useTRPC();
   const [isLoading, setIsLoading] = useState(false);
   const isRankingResultLoaded = useIsRankingResultLoaded();
   const mapId = getMapId();
   const { data: rankingData } = useQuery(
-    trpc.result.ranking.get.queryOptions({ mapId: mapId ?? 0 }, { enabled: !!mapId, gcTime: Infinity }),
+    orpc.result.ranking.get.queryOptions({ input: mapId ? { mapId } : skipToken, gcTime: Infinity }),
   );
   const hasMyResult = rankingData?.some((result) => result.player.id === userId) ?? false;
 
@@ -53,7 +52,9 @@ const LoadResultButton = ({ userId }: { userId: number }) => {
 
     setIsLoading(true);
     try {
-      const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+      const resultData = await queryClient.ensureQueryData(
+        orpc.result.getJsonById.queryOptions({ input: { resultId } }),
+      );
       setInitialLineResults(resultData);
       setRankingResultLoaded(true);
     } catch {

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { caller, HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { caller, HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { H1 } from "@/ui/typography";
 import { loadUserPageSearchParams } from "./_features/search-params";
 import { UserTabs } from "./_features/tabs";
@@ -15,40 +15,45 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     switch (tab) {
       case "stats":
         return [
-          trpc.user.stats.get.queryOptions({ userId: numericId }),
-          trpc.user.stats.getActivityOldestYear.queryOptions({ userId: numericId }),
-          trpc.result.pp.userTopList.infiniteQueryOptions(
-            { playerId: numericId },
-            { getNextPageParam: ({ nextCursor }) => nextCursor },
-          ),
+          orpc.user.stats.get.queryOptions({ input: { userId: numericId } }),
+          orpc.user.stats.getActivityOldestYear.queryOptions({ input: { userId: numericId } }),
+          orpc.result.pp.userTopList.infiniteOptions({
+            input: (pageParam) => ({ playerId: numericId, cursor: pageParam }),
+            initialPageParam: undefined as number | undefined,
+            getNextPageParam: ({ nextCursor }) => nextCursor,
+          }),
         ];
       case "maps":
         return [
-          trpc.map.list.get.infiniteQueryOptions(
-            { creatorId: numericId, sort: {} },
-            { getNextPageParam: ({ nextCursor }) => nextCursor },
-          ),
+          orpc.map.list.get.infiniteOptions({
+            input: (pageParam) => ({ creatorId: numericId, sort: {}, cursor: pageParam }),
+            initialPageParam: undefined as number | undefined,
+            getNextPageParam: ({ nextCursor }) => nextCursor,
+          }),
         ];
       case "liked":
         return [
-          trpc.map.list.get.infiniteQueryOptions(
-            { likerId: numericId, sort: { type: "like", isDesc: true } },
-            { getNextPageParam: ({ nextCursor }) => nextCursor },
-          ),
+          orpc.map.list.get.infiniteOptions({
+            input: (pageParam) => ({ likerId: numericId, sort: { type: "like", isDesc: true }, cursor: pageParam }),
+            initialPageParam: undefined as number | undefined,
+            getNextPageParam: ({ nextCursor }) => nextCursor,
+          }),
         ];
       case "bookmarks": {
         if (bookmarkListId) {
           return [
-            trpc.map.list.get.infiniteQueryOptions(
-              {
+            orpc.map.list.get.infiniteOptions({
+              input: (pageParam) => ({
                 bookmarkListId: Number(bookmarkListId),
                 sort: { type: "bookmark", isDesc: true },
-              },
-              { getNextPageParam: ({ nextCursor }) => nextCursor },
-            ),
+                cursor: pageParam,
+              }),
+              initialPageParam: undefined as number | undefined,
+              getNextPageParam: ({ nextCursor }) => nextCursor,
+            }),
           ];
         }
-        return [trpc.map.bookmark.lists.getByUserId.queryOptions({ userId: numericId })];
+        return [orpc.map.bookmark.lists.getByUserId.queryOptions({ input: { userId: numericId } })];
       }
       default:
         return [];
@@ -62,11 +67,11 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   }
 
   await Promise.all([
-    prefetchAsync(trpc.map.list.getCount.queryOptions({ creatorId: numericId })),
-    prefetchAsync(trpc.map.list.getCount.queryOptions({ likerId: numericId })),
-    prefetchAsync(trpc.ranking.pp.getRanksByUserId.queryOptions(numericId)),
-    prefetchAsync(trpc.result.list.getCount.queryOptions({ playerId: numericId })),
-    prefetchAsync(trpc.map.bookmark.lists.getCount.queryOptions({ userId: numericId })),
+    prefetchAsync(orpc.map.list.getCount.queryOptions({ input: { creatorId: numericId } })),
+    prefetchAsync(orpc.map.list.getCount.queryOptions({ input: { likerId: numericId } })),
+    prefetchAsync(orpc.ranking.pp.getRanksByUserId.queryOptions({ input: numericId })),
+    prefetchAsync(orpc.result.list.getCount.queryOptions({ input: { playerId: numericId } })),
+    prefetchAsync(orpc.map.bookmark.lists.getCount.queryOptions({ input: { userId: numericId } })),
     ...tabQueryOptions.map(prefetchAsync),
   ]);
 

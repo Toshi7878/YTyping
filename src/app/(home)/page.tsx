@@ -1,6 +1,6 @@
 import { loadMapListSearchParams } from "@/app/(home)/_feature/controls/search-params";
 import { getSession } from "@/auth/server";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { MapListControls } from "./_feature/controls/controls";
 import { HomeMapList } from "./_feature/map-list";
 import { JotaiProvider } from "./_feature/provider";
@@ -11,12 +11,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
   await Promise.all([
     prefetchAsync(
-      trpc.map.list.get.infiniteQueryOptions(
-        { ...mapListFilterParams, sort },
-        { getNextPageParam: ({ nextCursor }) => nextCursor },
-      ),
+      orpc.map.list.get.infiniteOptions({
+        input: (pageParam) => ({ ...mapListFilterParams, sort, cursor: pageParam }),
+        initialPageParam: undefined as number | undefined,
+        getNextPageParam: ({ nextCursor }) => nextCursor,
+      }),
     ),
-    session ? prefetchAsync(trpc.map.bookmark.lists.getForSession.queryOptions()) : Promise.resolve(),
+    session ? prefetchAsync(orpc.map.bookmark.lists.getForSession.queryOptions()) : Promise.resolve(),
   ]);
 
   return (

@@ -1,9 +1,9 @@
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { HydrateClient, orpc, prefetch } from "@/orpc/server";
 import { H1 } from "@/ui/typography";
 import { BookmarkListView } from "./_components/bookmark-list";
 
 export default async function Page() {
-  prefetch(trpc.map.bookmark.lists.getAll.queryOptions());
+  prefetch(orpc.map.bookmark.lists.getAll.queryOptions());
 
   return (
     <HydrateClient>

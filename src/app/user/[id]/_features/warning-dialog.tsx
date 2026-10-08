@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { WarningIconButton } from "@/ui/icon-button";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -13,8 +13,7 @@ interface WarningDialogProps {
 }
 
 export const WarningDialog = ({ userId, warningCount }: WarningDialogProps) => {
-  const trpc = useTRPC();
-  const { data: warnings } = useQuery(trpc.user.report.getWarnings.queryOptions({ userId }));
+  const { data: warnings } = useQuery(orpc.user.report.getWarnings.queryOptions({ input: { userId } }));
 
   if (warningCount === 0) return null;
 

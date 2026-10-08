@@ -6,7 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSession } from "@/auth/client";
-import { useTRPC } from "@/trpc/provider";
+import { getORPCErrorCode } from "@/orpc/error";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { useAppForm } from "@/ui/form-field-item";
 import { UserNameSchema } from "@/validator/user/profile";
@@ -19,7 +20,6 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const { data: session, refetch: refetchSession } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const trpc = useTRPC();
 
   // currentName を defaultValues に使い、更新成功時に form.reset() と同時に更新する。
   // session由来の値を直接defaultValuesに使うと、送信成功でform.reset()がisTouchedをクリアした
@@ -38,7 +38,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const isDirty = useSelector(form.store, (state) => state.isDirty);
 
   const updateUserName = useMutation(
-    trpc.auth.updateName.mutationOptions({
+    orpc.auth.updateName.mutationOptions({
       onSuccess: async (_data, variables) => {
         setCurrentName(variables.name);
         form.reset({ newName: variables.name });
@@ -55,9 +55,9 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   );
 
   const checkNameAvailability = useMutation(
-    trpc.user.profile.checkUsernameAvailability.mutationOptions({
+    orpc.user.profile.checkUsernameAvailability.mutationOptions({
       onError: (error) => {
-        if (error.data?.code === "CONFLICT") {
+        if (getORPCErrorCode(error) === "CONFLICT") {
           form.setFieldMeta("newName", (prev) => ({
             ...prev,
             errorMap: { ...prev.errorMap, onSubmit: { message: error.message } },

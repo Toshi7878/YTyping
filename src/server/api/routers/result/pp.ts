@@ -1,4 +1,3 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, desc, eq, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
@@ -6,7 +5,7 @@ import type { DBType } from "@/server/drizzle/client";
 import { mapDifficulties, mapLikes, maps, resultClaps, resultStatuses, results, users } from "@/server/drizzle/schema";
 import { SelectResultPpListApiSchema } from "@/validator/result/pp";
 import { TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
-import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { type ORPCContext, protectedProcedure, publicProcedure } from "../../orpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 import { bookmarkedMapExists } from "../map/bookmark/list-item";
@@ -18,8 +17,8 @@ const myLike = alias(mapLikes, "my_like");
 const myClap = alias(resultClaps, "my_clap");
 
 export const resultPpRouter = {
-  getUserTopPps: protectedProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  getUserTopPps: protectedProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
 
     return db
       .select({ mapId: results.mapId, pp: resultStatuses.pp })
@@ -30,9 +29,9 @@ export const resultPpRouter = {
       .limit(TOTAL_PP_TOP_N);
   }),
 
-  userTopList: publicProcedure.input(SelectResultPpListApiSchema).query(async ({ input, ctx }) => {
+  userTopList: publicProcedure.input(SelectResultPpListApiSchema).handler(async ({ input, context }) => {
     const { cursor, playerId, order } = input;
-    const { db, session } = ctx;
+    const { db, session } = context;
 
     const PAGE_SIZE = 6;
     const page = cursor ?? 0;
@@ -77,9 +76,9 @@ export const resultPpRouter = {
 
     return buildPageResult(formatMapListItem(items));
   }),
-} satisfies TRPCRouterRecord;
+};
 
-const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
+const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
   ({
     id: results.id,
     updatedAt: results.updatedAt,
@@ -158,7 +157,7 @@ const buildBaseSelect = (db: DBType, session: TRPCContext["session"]) =>
 
 type ResultWithMapBaseItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const buildResultWithMapBaseQuery = <T extends PgSelect>(db: T, session: TRPCContext["session"], playerId: number) => {
+const buildResultWithMapBaseQuery = <T extends PgSelect>(db: T, session: ORPCContext["session"], playerId: number) => {
   let baseQuery = db
     .innerJoin(maps, eq(maps.id, results.mapId))
     .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))

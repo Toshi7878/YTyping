@@ -4,7 +4,7 @@ import { atomWithReset } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
 import { AtomsHydrator } from "@/lib/jotai-hydrator";
-import type { RouterOutputs } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/root";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 
 export const store = createStore();

@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import { useSession } from "@/auth/client";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { PAGE_SIZE } from "@/server/api/routers/ranking/pp/const";
-import type { RouterOutputs } from "@/server/api/trpc";
 import { INPUT_PP_MODES, PP_MODE_LABELS } from "@/shared/result/pp/mode";
-import { useTRPC } from "@/trpc/provider";
 import { buttonVariants } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
@@ -24,8 +24,7 @@ interface UserProfileCardProps {
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
-  const trpc = useTRPC();
-  const { data: ppRanks } = useSuspenseQuery(trpc.ranking.pp.getRanksByUserId.queryOptions(Number(userId)));
+  const { data: ppRanks } = useSuspenseQuery(orpc.ranking.pp.getRanksByUserId.queryOptions({ input: Number(userId) }));
   const isMyProfilePage = session?.user.id === Number(userId);
   const isAdmin = session?.user.role === "ADMIN";
   const canSeeWarnings = isMyProfilePage || isAdmin;

@@ -4,9 +4,9 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
+import { orpc } from "@/orpc/provider";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { ResultCard } from "@/shared/result/list/card/card";
-import { useTRPC } from "@/trpc/provider";
 import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
 import { usePageCounter } from "@/utils/hooks/intersection";
@@ -22,12 +22,13 @@ interface ResultListProps {
 }
 
 export const ResultList = ({ filterParams = {}, atomStore = getDefaultStore() }: ResultListProps) => {
-  const trpc = useTRPC();
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom, { store: atomStore });
 
   const { data, isFetchedAfterMount, isPlaceholderData, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    trpc.result.list.get.infiniteQueryOptions(filterParams, {
+    orpc.result.list.get.infiniteOptions({
+      input: (pageParam) => ({ ...filterParams, cursor: pageParam }),
+      initialPageParam: undefined as number | undefined,
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

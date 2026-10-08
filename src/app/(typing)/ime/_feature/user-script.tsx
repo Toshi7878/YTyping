@@ -1,5 +1,5 @@
 "use client";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
+import { getQueryClient, orpc } from "@/orpc/provider";
 import { getBuiltMap } from "../_lib/atoms/state";
 import { handleImeInput } from "./input-textarea";
 import { getUserResult, getUserResults, updateUserName, updateUserResult } from "./memu/result-dialog";
@@ -24,9 +24,8 @@ export const dispatchImeEvent = <T extends ImeEventType>(type: T) => {
 const ensureMapInfo = async () => {
   const mapId = getMapId();
   if (mapId === null) return null;
-  const trpc = getTRPCOptions();
   const queryClient = getQueryClient();
-  const map = await queryClient.ensureQueryData(trpc.map.getById.queryOptions({ mapId }));
+  const map = await queryClient.ensureQueryData(orpc.map.getById.queryOptions({ input: { mapId } }));
   return map;
 };
 

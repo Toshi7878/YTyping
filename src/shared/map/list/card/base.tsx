@@ -2,8 +2,8 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useSession } from "@/auth/client";
+import type { RouterOutputs } from "@/server/api/root";
 import type { MapListItem } from "@/server/api/routers/map";
-import type { RouterOutputs } from "@/server/api/trpc";
 import { MapListActionButtons } from "@/shared/map/action-buttons";
 import { calcChunkRatios } from "@/shared/map/built-map-helper";
 import { RatingBadge } from "@/shared/map/rating/badge";

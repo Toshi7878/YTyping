@@ -1,6 +1,5 @@
-import { getTRPCClient } from "@/trpc/provider";
+import { orpcClient } from "@/orpc/provider";
 
 export const mutatePlayCountStats = ({ mapId }: { mapId: number }) => {
-  const trpcClient = getTRPCClient();
-  void trpcClient.user.stats.incrementPlayCountStats.mutate({ mapId });
+  void orpcClient.user.stats.incrementPlayCountStats({ mapId });
 };

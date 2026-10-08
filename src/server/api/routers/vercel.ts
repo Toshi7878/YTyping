@@ -1,11 +1,10 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { env } from "@/env";
 import { JST_OFFSET } from "@/utils/date";
 import { getActiveDeployment } from "../lib/vercel";
-import { publicProcedure } from "../trpc";
+import { publicProcedure } from "../orpc";
 
 export const vercelRouter = {
-  getActiveBuildingAt: publicProcedure.query(async () => {
+  getActiveBuildingAt: publicProcedure.handler(async () => {
     if (!env.VERCEL) return;
 
     const { buildingAt } = await getActiveDeployment();
@@ -14,4 +13,4 @@ export const vercelRouter = {
     // Vercel APIはUTCで返すが、表示上JSTとして扱いたいため9時間加算する
     return new Date(buildingAt + JST_OFFSET);
   }),
-} satisfies TRPCRouterRecord;
+};

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import type z from "zod/v4";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
@@ -22,7 +22,6 @@ const defaultValues: FormValues = {
 };
 
 export const ImportantNoticeForm = () => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
@@ -40,16 +39,17 @@ export const ImportantNoticeForm = () => {
     },
   });
 
-  const create = useMutation({
-    ...trpc.importantNotice.create.mutationOptions(),
-    onSuccess: () => {
-      toast.success("重要なお知らせを作成しました");
-      queryClient.invalidateQueries(trpc.importantNotice.list.queryOptions());
-      form.reset();
-      setOpen(false);
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const create = useMutation(
+    orpc.importantNotice.create.mutationOptions({
+      onSuccess: () => {
+        toast.success("重要なお知らせを作成しました");
+        queryClient.invalidateQueries(orpc.importantNotice.list.queryOptions());
+        form.reset();
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();

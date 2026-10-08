@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { ResultToolTipText } from "@/app/(typing)/type/_feature/tabs/ranking/result-tooltip-text";
 import { useSession } from "@/auth/client";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { useToggleClapMutation } from "@/shared/result/clap";
 import { ClearRateText } from "@/shared/result/clear-rate-text";
 import { InputModeText } from "@/shared/result/input-mode-text";
-import { useTRPC } from "@/trpc/provider";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
 import { RelativeTime } from "@/ui/relative-time";
@@ -23,10 +23,9 @@ type RankingResult = RouterOutputs["result"]["ranking"]["get"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
-  const trpc = useTRPC();
   const { id: mapId } = useParams();
   const { data, isPending } = useQuery(
-    trpc.result.ranking.get.queryOptions({ mapId: mapId ? Number(mapId) : 0 }, { gcTime: Infinity }),
+    orpc.result.ranking.get.queryOptions({ input: { mapId: mapId ? Number(mapId) : 0 }, gcTime: Infinity }),
   );
 
   useEffect(() => {

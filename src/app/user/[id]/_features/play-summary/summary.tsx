@@ -8,8 +8,8 @@ import type { ReactNode } from "react";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useSession } from "@/auth/client";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { Badge } from "@/ui/badge";
 import { buttonVariants } from "@/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/ui/card";
@@ -25,9 +25,7 @@ const formatTime = (totalSeconds: number) => {
 };
 
 export const UserPlaySummary = ({ id }: { id: string }) => {
-  const trpc = useTRPC();
-
-  const { data: userStats } = useSuspenseQuery(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
+  const { data: userStats } = useSuspenseQuery(orpc.user.stats.get.queryOptions({ input: { userId: Number(id) } }));
 
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();

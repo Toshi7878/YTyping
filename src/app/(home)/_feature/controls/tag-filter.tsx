@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import * as React from "react";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select/select";
@@ -107,8 +107,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 };
 
 const BookmarkListSelect = () => {
-  const trpc = useTRPC();
-  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getForSession.queryOptions());
+  const { data: lists } = useSuspenseQuery(orpc.map.bookmark.lists.getForSession.queryOptions());
   const [params, setFilterParams] = useMapListFilterQueryStates();
   const [, setSortParam] = useMapListSortQueryState();
 

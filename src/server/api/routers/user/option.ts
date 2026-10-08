@@ -1,11 +1,11 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { userOptions } from "@/server/drizzle/schema";
 import { UpsertUserOptionSchema } from "@/validator/user/option";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../orpc";
 
 export const userOptionRouter = {
-  getForSession: publicProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  getForSession: publicProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
     if (!session) return null;
 
     const userOption = await db.query.userOptions.findFirst({
@@ -16,8 +16,8 @@ export const userOptionRouter = {
     return userOption ?? null;
   }),
 
-  upsert: protectedProcedure.input(UpsertUserOptionSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  upsert: protectedProcedure.input(UpsertUserOptionSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     const [newuserOptions] = await db
       .insert(userOptions)
@@ -30,9 +30,9 @@ export const userOptionRouter = {
       });
 
     if (!newuserOptions) {
-      throw new TRPCError({ code: "NOT_FOUND" });
+      throw new ORPCError("NOT_FOUND");
     }
 
     return newuserOptions;
   }),
-} satisfies TRPCRouterRecord;
+};

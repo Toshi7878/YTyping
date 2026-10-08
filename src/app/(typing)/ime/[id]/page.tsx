@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { caller } from "@/trpc/server";
+import { caller } from "@/orpc/server";
 import { toLocaleDateString } from "@/utils/date";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { Content } from "../_feature/content";

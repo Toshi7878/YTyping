@@ -2,8 +2,8 @@
 
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { orpc } from "@/orpc/provider";
 import { UserNameLinkText } from "@/shared/user/user-name-link";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader } from "@/ui/card";
@@ -14,29 +14,30 @@ import { formatDate } from "@/utils/date";
 import { ImportantNoticeForm } from "./important-notice-form";
 
 export const ImportantNoticeList = () => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: notices } = useSuspenseQuery(trpc.importantNotice.list.queryOptions());
+  const { data: notices } = useSuspenseQuery(orpc.importantNotice.list.queryOptions());
 
-  const invalidate = () => queryClient.invalidateQueries(trpc.importantNotice.list.queryOptions());
+  const invalidate = () => queryClient.invalidateQueries(orpc.importantNotice.list.queryOptions());
 
-  const expireNow = useMutation({
-    ...trpc.importantNotice.expireNow.mutationOptions(),
-    onSuccess: () => {
-      toast.success("お知らせを終了しました");
-      invalidate();
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const expireNow = useMutation(
+    orpc.importantNotice.expireNow.mutationOptions({
+      onSuccess: () => {
+        toast.success("お知らせを終了しました");
+        invalidate();
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
-  const deleteNotice = useMutation({
-    ...trpc.importantNotice.delete.mutationOptions(),
-    onSuccess: () => {
-      toast.success("お知らせを削除しました");
-      invalidate();
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const deleteNotice = useMutation(
+    orpc.importantNotice.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("お知らせを削除しました");
+        invalidate();
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   const handleDelete = async (noticeId: string, title: string) => {
     const confirmed = await confirmDialog.danger({

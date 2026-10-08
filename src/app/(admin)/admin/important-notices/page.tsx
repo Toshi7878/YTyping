@@ -1,9 +1,9 @@
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { H1 } from "@/ui/typography";
 import { ImportantNoticeList } from "./_features/important-notice-list";
 
 export default async function Page() {
-  await prefetchAsync(trpc.importantNotice.list.queryOptions());
+  await prefetchAsync(orpc.importantNotice.list.queryOptions());
 
   return (
     <HydrateClient>

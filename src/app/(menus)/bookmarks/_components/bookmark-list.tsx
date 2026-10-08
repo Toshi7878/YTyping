@@ -2,8 +2,8 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { Card, CardContent } from "@/ui/card";
 import { ThumbnailImage } from "@/ui/image";
 import { Small } from "@/ui/typography";
@@ -12,8 +12,7 @@ import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 type PublicBookmarkList = RouterOutputs["map"]["bookmark"]["lists"]["getAll"][number];
 
 export const BookmarkListView = () => {
-  const trpc = useTRPC();
-  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.lists.getAll.queryOptions());
+  const { data: lists } = useSuspenseQuery(orpc.map.bookmark.lists.getAll.queryOptions());
 
   return (
     <section className="grid grid-cols-1 gap-3 md:grid-cols-2">

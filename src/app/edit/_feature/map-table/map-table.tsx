@@ -1,6 +1,6 @@
 "use client";
 
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions, skipToken, useQuery } from "@tanstack/react-query";
 import parse from "html-react-parser";
 import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
@@ -11,7 +11,7 @@ import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
 import { idb } from "@/app/edit/_feature/indexed-db";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { Input } from "@/ui/input/input";
@@ -99,14 +99,14 @@ export const NewMapTable = () => {
 };
 
 export const EditMapTable = () => {
-  const trpc = useTRPC();
   const { id: mapId } = useParams();
 
   const { data: mapData, isLoading } = useQuery(
-    trpc.map.getJsonById.queryOptions(
-      { mapId: Number(mapId) },
-      { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
-    ),
+    orpc.map.getJsonById.queryOptions({
+      input: mapId ? { mapId: Number(mapId) } : skipToken,
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   useEffect(() => {

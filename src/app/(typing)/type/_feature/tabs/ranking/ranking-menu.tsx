@@ -4,8 +4,8 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
+import { orpc } from "@/orpc/provider";
 import { useToggleClapMutation } from "@/shared/result/clap";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
 import { PopoverContent } from "@/ui/popover";
@@ -32,9 +32,8 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const queryClient = useQueryClient();
-  const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapInfo } = useQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
+  const { data: mapInfo } = useQuery(orpc.map.getById.queryOptions({ input: { mapId: Number(mapId) } }));
 
   const toggleClap = useToggleClapMutation();
 
@@ -44,7 +43,9 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     overlay.loading("リザルトデータを読込中...");
     setScene("replay");
     try {
-      const resultData = await queryClient.ensureQueryData(trpc.result.getJsonById.queryOptions({ resultId }));
+      const resultData = await queryClient.ensureQueryData(
+        orpc.result.getJsonById.queryOptions({ input: { resultId } }),
+      );
       setInitialLineResults(resultData);
       const mode = resultData[0]?.status?.mode ?? "roma";
       setPlayingInputMode(mode);

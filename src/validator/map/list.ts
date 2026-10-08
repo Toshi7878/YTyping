@@ -46,17 +46,18 @@ export const MAP_SORT_OPTIONS_WITH_OPEN_API = [
   "random",
 ] as const satisfies (typeof MAP_SORT_OPTIONS)[number][];
 
+// REST(クエリ文字列/パス)ではすべて文字列で届くため coerce / stringbool で変換する
 export const SelectMapListOpenApiSchema = z.object({
-  cursor: z.number().optional(),
+  cursor: z.coerce.number().optional(),
   sortType: z.enum(MAP_SORT_OPTIONS_WITH_OPEN_API).nullish(),
-  isSortDesc: z.boolean().nullish(),
-  bookmarkListId: z.number().nullish(),
+  isSortDesc: z.stringbool().nullish(),
+  bookmarkListId: z.coerce.number().nullish(),
   keyword: z.string().nullish(),
-  minRate: z.number().nullish(),
-  maxRate: z.number().nullish(),
-  englishRatio: z.number().min(0).max(100).nullish(),
-  creatorId: z.number().nullish(),
-  likerId: z.number().nullish(),
+  minRate: z.coerce.number().nullish(),
+  maxRate: z.coerce.number().nullish(),
+  englishRatio: z.coerce.number().min(0).max(100).nullish(),
+  creatorId: z.coerce.number().nullish(),
+  likerId: z.coerce.number().nullish(),
 });
 
 const MapListItemSchema = z.object({

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateInfiniteQueryCache, updateQueryCache } from "@/lib/react-query";
+import { orpc } from "@/orpc/provider";
 import type { MapListItem } from "@/server/api/routers/map";
-import { useTRPC } from "@/trpc/provider";
 
 function calculateRankingState(
   current: MapListItem["ranking"],
@@ -41,11 +41,10 @@ const createMapUpdater = (mapId: number, newState: { optimistic?: Date; server?:
 };
 
 export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: () => void; onError: () => void }) => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.result.ranking.register.mutationOptions({
+    orpc.result.ranking.register.mutationOptions({
       onError,
       onSuccess: async (serverRes, input) => {
         onSuccess();
@@ -58,9 +57,9 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
           server: { count: rankingCount, myRank, myRankUpdatedAt },
         });
 
-        const mapListFilter = trpc.map.list.pathFilter();
-        const resultListFilter = trpc.result.list.pathFilter();
-        const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
+        const mapListFilter = { queryKey: orpc.map.list.key() };
+        const resultListFilter = { queryKey: orpc.result.list.key() };
+        const notificationsFilter = { queryKey: orpc.notification.getInfinite.key({ type: "infinite" }) };
 
         updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMap);
         updateQueryCache(queryClient, mapListFilter, updater.forMap);
@@ -68,7 +67,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
 
         // Ranking自体のクエリだけは再取得（順位変動など他のユーザーの情報も含むため）
-        await queryClient.invalidateQueries(trpc.result.ranking.get.queryFilter({ mapId }));
+        await queryClient.invalidateQueries({ queryKey: orpc.result.ranking.get.queryKey({ input: { mapId } }) });
       },
     }),
   );

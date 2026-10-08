@@ -5,8 +5,8 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useSession } from "@/auth/client";
+import { orpc } from "@/orpc/provider";
 import { useReadyInputMode } from "@/store/ready-input-mode";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "@/ui/button-with-kbd";
@@ -171,9 +171,8 @@ const ResultListButton = () => {
 };
 
 const DifficultyInfo = () => {
-  const trpc = useTRPC();
   const { id: mapId } = useParams();
-  const { data: mapInfo } = useQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
+  const { data: mapInfo } = useQuery(orpc.map.getById.queryOptions({ input: { mapId: Number(mapId) } }));
   const inputMode = useReadyInputMode();
   const minMediaSpeed = useMinMediaSpeedState();
 

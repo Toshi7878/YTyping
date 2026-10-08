@@ -1,4 +1,4 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, eq, inArray, max, sql } from "drizzle-orm";
 import { buildTypingMap } from "lyrics-typing-engine";
 import z from "zod";
@@ -8,15 +8,15 @@ import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, mapTags, tags, users }
 import { upsertMapItemSchema } from "@/validator/map/map";
 import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
 import { calcRating } from "../../../../shared/map/rating/calc";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../orpc";
 import { bookmarkedMapExists, mapBookmarkListItemRouter } from "./bookmark/list-item";
 import { mapBookmarkListsRouter } from "./bookmark/lists";
 import { mapLikeRouter } from "./like";
 import { mapListRouter } from "./list";
 
 export const mapRouter = {
-  getById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getById: publicProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { mapId } = input;
 
     const mapInfo = await db
@@ -72,7 +72,7 @@ export const mapRouter = {
       .then((rows) => rows[0]);
 
     if (!mapInfo) {
-      throw new TRPCError({ code: "NOT_FOUND" });
+      throw new ORPCError("NOT_FOUND");
     }
 
     return mapInfo;
@@ -81,12 +81,12 @@ export const mapRouter = {
   getJsonById: publicProcedure
     .input(z.object({ mapId: z.number() }))
     .output(z.array(RawMapLineSchema))
-    .query(async ({ input }) => {
+    .handler(async ({ input }) => {
       try {
         const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 
         if (!data) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Map data not found" });
+          throw new ORPCError("NOT_FOUND", { message: "Map data not found" });
         }
 
         const jsonString = new TextDecoder().decode(data);
@@ -95,14 +95,14 @@ export const mapRouter = {
         return mapJson;
       } catch (error) {
         console.error("Error fetching map data from R2:", error);
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        throw new ORPCError("INTERNAL_SERVER_ERROR");
       }
     }),
 
-  upsert: protectedProcedure.input(upsertMapItemSchema).mutation(async ({ input, ctx }) => {
-    // if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
+  upsert: protectedProcedure.input(upsertMapItemSchema).handler(async ({ input, context }) => {
+    // if (env.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
 
-    const { db, session } = ctx;
+    const { db, session } = context;
     const { mapId, isMapDataEdited, rawMapJson, mapInfo, mapDifficulty } = input;
     const { tags: tagNames, ...mapInfoWithoutTags } = mapInfo;
     const { id: userId, role: userRole } = session.user;
@@ -118,10 +118,7 @@ export const mapRouter = {
     const hasUpsertPermission = mapId === null ? true : existingMapRow?.creatorId === userId || userRole === "ADMIN";
 
     if (!hasUpsertPermission) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "この譜面を保存する権限がありません",
-      });
+      throw new ORPCError("FORBIDDEN", { message: "この譜面を保存する権限がありません" });
     }
 
     const newMapId = await db.transaction(async (tx) => {
@@ -159,7 +156,7 @@ export const mapRouter = {
       }
 
       if (!newId) {
-        throw new TRPCError({ code: "PRECONDITION_FAILED" });
+        throw new ORPCError("PRECONDITION_FAILED");
       }
 
       const builtMapLines = buildTypingMap({ rawMapLines: rawMapJson, charPoint: 0 });
@@ -187,7 +184,7 @@ export const mapRouter = {
   list: mapListRouter,
   like: mapLikeRouter,
   bookmark: { lists: mapBookmarkListsRouter, listItem: mapBookmarkListItemRouter },
-} satisfies TRPCRouterRecord;
+};
 
 const upsertMapTags = async (tx: TXType, mapId: number, tagNames: string[]) => {
   const oldTagRows = await tx.select({ tagId: mapTags.tagId }).from(mapTags).where(eq(mapTags.mapId, mapId));

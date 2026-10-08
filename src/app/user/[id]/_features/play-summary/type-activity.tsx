@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { cloneElement, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { Button } from "@/ui/button";
 import { Separator } from "@/ui/separator";
 import { Skeleton } from "@/ui/skeleton";
@@ -14,15 +14,15 @@ import { getTimezone, getYearsDesc } from "@/utils/date";
 import { useTargetYearQueryState } from "../search-params";
 
 export const TypeActivity = () => {
-  const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
   const [targetYear] = useTargetYearQueryState();
 
   const { data: typeActivities, isPending } = useQuery(
-    trpc.user.stats.getYearlyTypingActivity.queryOptions(
-      { userId: Number(userId), targetYear, timezone: getTimezone() },
-      { staleTime: Infinity, gcTime: Infinity },
-    ),
+    orpc.user.stats.getYearlyTypingActivity.queryOptions({
+      input: { userId: Number(userId), targetYear, timezone: getTimezone() },
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   if (isPending) {
@@ -88,13 +88,12 @@ export const ActivityYearButtons = () => {
   const [targetYear, setTargetYear] = useTargetYearQueryState();
   const [currentYear] = useState(() => new Date().getFullYear());
   const { id: userId } = useParams<{ id: string }>();
-
-  const trpc = useTRPC();
   const { data: oldestYear } = useQuery(
-    trpc.user.stats.getActivityOldestYear.queryOptions(
-      { userId: Number(userId) },
-      { staleTime: Infinity, gcTime: Infinity },
-    ),
+    orpc.user.stats.getActivityOldestYear.queryOptions({
+      input: { userId: Number(userId) },
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   const years = getYearsDesc({ oldestYear, currentYear });

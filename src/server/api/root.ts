@@ -1,3 +1,4 @@
+import type { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 import { aiRouter } from "./routers/ai";
 import { authRouter } from "./routers/auth";
 import { importantNoticeRouter } from "./routers/important-notice";
@@ -14,10 +15,9 @@ import { userReportRouter } from "./routers/user/report";
 import { userStatsRouter } from "./routers/user/stats";
 import { userTypingOptionRouter } from "./routers/user/typing-option";
 import { vercelRouter } from "./routers/vercel";
-import { router } from "./trpc";
 import "server-only";
 
-export const appRouter = router({
+export const appRouter = {
   map: mapRouter,
   result: resultRouter,
   user: {
@@ -37,10 +37,12 @@ export const appRouter = router({
   ai: aiRouter,
   auth: authRouter,
   vercel: vercelRouter,
-});
+};
 
-export const openApiRouter = router({
+export const openApiRouter = {
   map: mapOpenApiRouter,
-});
+};
 
 export type AppRouter = typeof appRouter;
+export type RouterInputs = InferRouterInputs<AppRouter>;
+export type RouterOutputs = InferRouterOutputs<AppRouter>;

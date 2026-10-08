@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import type { MapListItem } from "@/server/api/routers/map";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../../../lib/react-query";
 
 type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["lists"]["getByUserId"][number];
@@ -26,7 +26,7 @@ const createMapBookmarkUpdater = (mapId: number, hasBookmarked: boolean) => {
 
 type ToggleInput = { listId: number; mapId: number; action: "add" | "remove" };
 
-function getIncludeMapIdFromTrpcQueryKey(key: unknown): number | undefined {
+function getIncludeMapIdFromQueryKey(key: unknown): number | undefined {
   const k = key as unknown[] | undefined;
   const meta = (k?.[1] ?? null) as { input?: unknown } | null;
   const input = meta?.input as { includeMapId?: unknown } | null;
@@ -44,18 +44,14 @@ function computeNextHasBookmarkedFromBookmarkLists(args: {
   return nextHasMapForTargetList || anyOtherHasMap;
 }
 
-async function runOptimisticUpdate(args: {
-  trpc: ReturnType<typeof useTRPC>;
-  queryClient: ReturnType<typeof useQueryClient>;
-  input: ToggleInput;
-}) {
-  const { trpc, queryClient, input } = args;
+async function runOptimisticUpdate(args: { queryClient: ReturnType<typeof useQueryClient>; input: ToggleInput }) {
+  const { queryClient, input } = args;
 
-  const mapListFilter = trpc.map.list.pathFilter();
-  const mapInfoFilter = trpc.map.getById.queryFilter({ mapId: input.mapId });
-  const resultListFilter = trpc.result.list.pathFilter();
-  const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-  const bookmarkListsByUserIdFilter = trpc.map.bookmark.lists.getByUserId.queryFilter();
+  const mapListFilter = { queryKey: orpc.map.list.key() };
+  const mapInfoFilter = { queryKey: orpc.map.getById.queryKey({ input: { mapId: input.mapId } }) };
+  const resultListFilter = { queryKey: orpc.result.list.key() };
+  const notificationsFilter = { queryKey: orpc.notification.getInfinite.key({ type: "infinite" }) };
+  const bookmarkListsByUserIdFilter = { queryKey: orpc.map.bookmark.lists.getByUserId.key({ type: "query" }) };
 
   await Promise.all([
     queryClient.cancelQueries(mapInfoFilter),
@@ -80,7 +76,7 @@ async function runOptimisticUpdate(args: {
   let nextHasBookmarked: boolean | undefined;
 
   for (const [key, data] of listQueries) {
-    const includeMapId = getIncludeMapIdFromTrpcQueryKey(key);
+    const includeMapId = getIncludeMapIdFromQueryKey(key);
     if (includeMapId !== input.mapId) continue;
     if (!data) continue;
 
@@ -121,12 +117,11 @@ async function runOptimisticUpdate(args: {
 }
 
 export function useAddBookmarkListItemMutation() {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.bookmark.listItem.add.mutationOptions({
-      onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "add" } }),
+    orpc.map.bookmark.listItem.add.mutationOptions({
+      onMutate: async (input) => runOptimisticUpdate({ queryClient, input: { ...input, action: "add" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
         for (const [key, data] of ctx.previous) queryClient.setQueryData(key, data);
@@ -134,20 +129,21 @@ export function useAddBookmarkListItemMutation() {
       onSuccess: (_data, input, ctx) => {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
-        queryClient.invalidateQueries(trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId }));
-        queryClient.invalidateQueries(trpc.map.bookmark.lists.getForSession.queryFilter());
+        queryClient.invalidateQueries({
+          queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { includeMapId: input.mapId } as never }),
+        });
+        queryClient.invalidateQueries({ queryKey: orpc.map.bookmark.lists.getForSession.key({ type: "query" }) });
       },
     }),
   );
 }
 
 export function useRemoveBookmarkListItemMutation() {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.bookmark.listItem.remove.mutationOptions({
-      onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "remove" } }),
+    orpc.map.bookmark.listItem.remove.mutationOptions({
+      onMutate: async (input) => runOptimisticUpdate({ queryClient, input: { ...input, action: "remove" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
         for (const [key, data] of ctx.previous) queryClient.setQueryData(key, data);
@@ -155,9 +151,9 @@ export function useRemoveBookmarkListItemMutation() {
       onSuccess: (_data, input, ctx) => {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
-        queryClient.invalidateQueries(
-          trpc.map.bookmark.lists.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
-        );
+        queryClient.invalidateQueries({
+          queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { includeMapId: input.mapId } as never }),
+        });
       },
     }),
   );

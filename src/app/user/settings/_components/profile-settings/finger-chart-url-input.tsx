@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { useAppForm } from "@/ui/form-field-item";
 import { FingerChartUrlFormSchema } from "@/validator/user/profile";
 
@@ -16,9 +16,7 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
     validators: { onChange: FingerChartUrlFormSchema },
     defaultValues: { url },
   });
-
-  const trpc = useTRPC();
-  const update = useMutation(trpc.user.profile.upsertFingerChartUrl.mutationOptions());
+  const update = useMutation(orpc.user.profile.upsertFingerChartUrl.mutationOptions());
 
   return (
     <div className="flex flex-col gap-2">

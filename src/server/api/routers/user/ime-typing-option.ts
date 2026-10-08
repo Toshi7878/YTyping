@@ -1,11 +1,10 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { userImeTypingOptions } from "@/server/drizzle/schema";
 import { CreateUserImeTypingOptionSchema } from "@/validator/user/option";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../orpc";
 
 export const userImeTypingOptionRouter = {
-  getForSession: publicProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  getForSession: publicProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
     if (!session) return null;
 
     return (
@@ -16,12 +15,12 @@ export const userImeTypingOptionRouter = {
     );
   }),
 
-  upsert: protectedProcedure.input(CreateUserImeTypingOptionSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  upsert: protectedProcedure.input(CreateUserImeTypingOptionSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     await db
       .insert(userImeTypingOptions)
       .values({ userId: session.user.id, ...input })
       .onConflictDoUpdate({ target: [userImeTypingOptions.userId], set: { ...input } });
   }),
-} satisfies TRPCRouterRecord;
+};

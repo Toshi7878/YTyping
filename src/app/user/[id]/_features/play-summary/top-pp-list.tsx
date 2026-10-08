@@ -2,9 +2,9 @@
 
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { orpc } from "@/orpc/provider";
 import { TOTAL_PP_TOP_N } from "@/shared/result/pp/calc";
 import { PPResultCard } from "@/shared/result/pp/card";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Label } from "@/ui/label";
@@ -12,14 +12,14 @@ import { RadioGroup, RadioGroupItem } from "@/ui/radio-group/radio-group";
 import { usePpOrderQueryState } from "../search-params";
 
 export function UserTopPpList({ id }: { id: string }) {
-  const trpc = useTRPC();
   const [order, setOrder] = usePpOrderQueryState();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    trpc.result.pp.userTopList.infiniteQueryOptions(
-      { playerId: Number(id), order },
-      { getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined },
-    ),
+    orpc.result.pp.userTopList.infiniteOptions({
+      input: (pageParam) => ({ playerId: Number(id), order, cursor: pageParam }),
+      initialPageParam: undefined as number | undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    }),
   );
 
   return (

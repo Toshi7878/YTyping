@@ -5,10 +5,10 @@ import { Bell, BellDot } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { NotificationMapCard } from "@/shared/map/list/card/compact";
 import { getReportStatusBadgeVariant, getReportStatusLabel } from "@/shared/user/report";
-import { useTRPC } from "@/trpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
@@ -18,14 +18,13 @@ import { ScrollSpinner, Spinner } from "@/ui/spinner";
 import { TooltipWrapper } from "@/ui/tooltip";
 
 export const NotificationSheet = () => {
-  const trpc = useTRPC();
-  const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions());
+  const { data: isNewNotificationFound } = useQuery(orpc.notification.hasUnread.queryOptions());
   const queryClient = useQueryClient();
 
   const postUserNotificationRead = useMutation(
-    trpc.notification.postUserNotificationRead.mutationOptions({
+    orpc.notification.postUserNotificationRead.mutationOptions({
       onSuccess: () => {
-        void queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter());
+        void queryClient.invalidateQueries({ queryKey: orpc.notification.hasUnread.key({ type: "query" }) });
       },
     }),
   );
@@ -39,7 +38,7 @@ export const NotificationSheet = () => {
               variant="unstyled"
               size="icon"
               className="p-2 text-header-foreground/80 hover:text-header-foreground"
-              onClick={() => postUserNotificationRead.mutate()}
+              onClick={() => postUserNotificationRead.mutate(undefined)}
             >
               {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
             </Button>
@@ -58,17 +57,15 @@ export const NotificationSheet = () => {
 };
 
 const NotificationContent = () => {
-  const trpc = useTRPC();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data, isPending, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    trpc.notification.getInfinite.infiniteQueryOptions(
-      {},
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        refetchOnWindowFocus: false,
-        gcTime: Infinity,
-      },
-    ),
+    orpc.notification.getInfinite.infiniteOptions({
+      input: (pageParam) => ({ cursor: pageParam }),
+      initialPageParam: undefined as number | undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      refetchOnWindowFocus: false,
+      gcTime: Infinity,
+    }),
   );
 
   return (

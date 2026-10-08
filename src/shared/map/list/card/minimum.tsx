@@ -1,8 +1,8 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
+import type { RouterOutputs } from "@/server/api/root";
 import type { MapListItem } from "@/server/api/routers/map";
-import type { RouterOutputs } from "@/server/api/trpc";
 import { MapListActionButtons } from "@/shared/map/action-buttons";
 import { RatingBadge } from "@/shared/map/rating/badge";
 import { MapThumbnailImage } from "@/shared/map/thumbnail-image";

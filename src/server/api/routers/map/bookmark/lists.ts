@@ -1,5 +1,4 @@
-import type { TRPCRouterRecord } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, count, desc, eq, gt, inArray, sql } from "drizzle-orm";
 import z from "zod";
 import type { DBType } from "@/server/drizzle/client";
@@ -12,11 +11,11 @@ import {
   users,
 } from "@/server/drizzle/schema";
 import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/map/bookmark";
-import { protectedProcedure, publicProcedure } from "../../../trpc";
+import { protectedProcedure, publicProcedure } from "../../../orpc";
 
 export const mapBookmarkListsRouter = {
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const { db } = ctx;
+  getAll: publicProcedure.handler(async ({ context }) => {
+    const { db } = context;
 
     const firstMapByListSubquery = getFirstMapByListSubquery(db);
 
@@ -43,8 +42,8 @@ export const mapBookmarkListsRouter = {
       .orderBy(desc(mapBookmarkLists.updatedAt));
   }),
 
-  getForSession: protectedProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  getForSession: protectedProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
 
     return db
       .select({ id: mapBookmarkLists.id, title: mapBookmarkLists.title })
@@ -56,8 +55,8 @@ export const mapBookmarkListsRouter = {
 
   getByUserId: publicProcedure
     .input(z.object({ userId: z.number(), includeMapId: z.number().optional() }))
-    .query(async ({ input, ctx }) => {
-      const { db, session } = ctx;
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
 
       const firstMapByListSubquery = getFirstMapByListSubquery(db);
 
@@ -91,8 +90,8 @@ export const mapBookmarkListsRouter = {
         .orderBy(desc(mapBookmarkLists.updatedAt));
     }),
 
-  getCount: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  getCount: publicProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     const total = await db
       .select({ count: count() })
@@ -107,8 +106,8 @@ export const mapBookmarkListsRouter = {
     return total[0]?.count ?? 0;
   }),
 
-  create: protectedProcedure.input(CreateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  create: protectedProcedure.input(CreateMapBookmarkListApiSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     const listCount = await db
       .select({ count: count() })
@@ -117,10 +116,7 @@ export const mapBookmarkListsRouter = {
       .then((rows) => rows[0]?.count ?? 0);
 
     if (listCount >= 15) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "ブックマークリストは最大15件まで作成できます",
-      });
+      throw new ORPCError("BAD_REQUEST", { message: "ブックマークリストは最大15件まで作成できます" });
     }
 
     return db.insert(mapBookmarkLists).values({
@@ -130,8 +126,8 @@ export const mapBookmarkListsRouter = {
     });
   }),
 
-  update: protectedProcedure.input(UpdateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  update: protectedProcedure.input(UpdateMapBookmarkListApiSchema).handler(async ({ input, context }) => {
+    const { db, session } = context;
     return db
       .update(mapBookmarkLists)
       .set({
@@ -141,8 +137,8 @@ export const mapBookmarkListsRouter = {
       .where(and(eq(mapBookmarkLists.id, input.id), eq(mapBookmarkLists.userId, session.user.id)));
   }),
 
-  delete: protectedProcedure.input(z.object({ listId: z.number() })).mutation(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  delete: protectedProcedure.input(z.object({ listId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
 
     return db.transaction(async (tx) => {
       // list削除の cascade で notification_map_bookmarks 側は消えるが、notifications は残り得る。
@@ -167,7 +163,7 @@ export const mapBookmarkListsRouter = {
         .where(and(eq(mapBookmarkLists.id, input.listId), eq(mapBookmarkLists.userId, session.user.id)));
     });
   }),
-} satisfies TRPCRouterRecord;
+};
 
 const getFirstMapByListSubquery = (db: DBType) => {
   return db

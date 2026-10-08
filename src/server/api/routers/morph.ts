@@ -1,12 +1,12 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { env } from "@/env";
 import { fixWordEditLogs, readingConversionDict } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../orpc";
 
 export const morphRouter = {
-  tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+  tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).handler(async ({ input }) => {
     if (env.SUDACHI_API_KEY && env.SUDACHI_API_URL) {
       return tokenizeSentenceWithSudachi({
         sentence: input.sentence,
@@ -19,11 +19,11 @@ export const morphRouter = {
       return tokenizeSentenceWithYahoo(input.sentence);
     }
 
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "読み変換用APIの環境変数が設定されていません" });
+    throw new ORPCError("INTERNAL_SERVER_ERROR", { message: "読み変換用APIの環境変数が設定されていません" });
   }),
 
-  getCustomDict: protectedProcedure.query(async ({ ctx }) => {
-    const dictionaryDict = await ctx.db
+  getCustomDict: protectedProcedure.handler(async ({ context }) => {
+    const dictionaryDict = await context.db
       .select({
         surface: readingConversionDict.surface,
         reading: readingConversionDict.reading,
@@ -32,7 +32,7 @@ export const morphRouter = {
       .where(eq(readingConversionDict.type, "DICTIONARY"))
       .orderBy(desc(sql`char_length(${readingConversionDict.surface})`));
 
-    const regexDict = await ctx.db
+    const regexDict = await context.db
       .select({
         surface: readingConversionDict.surface,
         reading: readingConversionDict.reading,
@@ -46,12 +46,12 @@ export const morphRouter = {
 
   fixWordLog: protectedProcedure
     .input(z.object({ lyrics: z.string(), word: z.string() }))
-    .mutation(async ({ input, ctx }) => {
+    .handler(async ({ input, context }) => {
       const { lyrics, word } = input;
 
-      await ctx.db.insert(fixWordEditLogs).values({ lyrics, word });
+      await context.db.insert(fixWordEditLogs).values({ lyrics, word });
     }),
-} satisfies TRPCRouterRecord;
+};
 
 async function tokenizeSentenceWithSudachi({
   sentence,

@@ -1,7 +1,5 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, desc, eq, gte, ilike, lte, or, type SQL, sql } from "drizzle-orm";
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
-import type { OpenApiContentType } from "trpc-to-openapi";
 import type z from "zod";
 import {
   mapBookmarkListItems,
@@ -17,7 +15,7 @@ import {
   type MapSearchFilterSchema,
   SelectMapListOpenApiSchema,
 } from "@/validator/map/list";
-import { publicProcedure } from "../../../trpc";
+import { publicProcedure } from "../../../orpc";
 import { createPagination } from "../../../utils/pagination";
 
 const PAGE_SIZE = 30;
@@ -26,26 +24,17 @@ const liker = alias(mapLikes, "liker");
 
 export const mapListOpenApiRouter = {
   get: publicProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/maps",
-        protect: false,
-        tags: ["Map"],
-        summary: "Get map list",
-        contentTypes: ["application/json" as OpenApiContentType],
-        errorResponses: {
-          400: "Invalid input data",
-          429: "Too many requests",
-          500: "Internal server error",
-        },
-      },
+    .route({
+      method: "GET",
+      path: "/maps",
+      tags: ["Map"],
+      summary: "Get map list",
     })
     .input(SelectMapListOpenApiSchema)
     .output(GetMapListOpenApiResponseSchema)
-    .query(async ({ input, ctx }) => {
+    .handler(async ({ input, context }) => {
       const { cursor, sortType: sortValue, isSortDesc: sortDesc, ...searchInput } = input ?? {};
-      const { db } = ctx;
+      const { db } = context;
 
       const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
@@ -56,7 +45,7 @@ export const mapListOpenApiRouter = {
 
       return buildPageResult(mapRows);
     }),
-} satisfies TRPCRouterRecord;
+};
 
 const buildBaseSelect = () =>
   ({

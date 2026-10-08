@@ -1,4 +1,4 @@
-import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import { ORPCError } from "@orpc/server";
 import { and, desc, eq, inArray, lte, max, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod/v4";
@@ -16,7 +16,7 @@ import {
 } from "@/server/drizzle/schema";
 import { calcRawPP, resultToRawPPInput } from "@/shared/result/pp/calc";
 import { CreateResultSchema } from "@/validator/result/result";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../orpc";
 import { gzipCompress } from "../../utils/gzip";
 import { recalculateUserPP } from "../../utils/recalculate-user-pp";
 import { generateNotificationId } from "../notification";
@@ -25,8 +25,8 @@ const player = alias(users, "player");
 const myClap = alias(resultClaps, "my_clap");
 
 export const resultRankingRouter = {
-  get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
+  get: publicProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
     const { mapId } = input;
 
     return db
@@ -78,14 +78,14 @@ export const resultRankingRouter = {
       .orderBy(desc(resultStatuses.score));
   }),
 
-  register: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
-    if (env.NODE_ENV === "development") throw new TRPCError({ code: "FORBIDDEN" });
-    const { db, session } = ctx;
+  register: protectedProcedure.input(CreateResultSchema).handler(async ({ input, context }) => {
+    if (env.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
+    const { db, session } = context;
     const { id: userId } = session.user;
     const { mapId, lineResults, status } = input;
 
     const map = await db.query.mapDifficulties.findFirst({ columns: { rating: true }, where: { mapId } });
-    if (!map) throw new TRPCError({ code: "NOT_FOUND" });
+    if (!map) throw new ORPCError("NOT_FOUND");
 
     const pp = calcRawPP(resultToRawPPInput(status), map.rating);
     const statusWithPp = { ...status, pp, starRatingSnapshot: map.rating };
@@ -110,7 +110,7 @@ export const resultRankingRouter = {
           .returning({ id: results.id })
           .then((res) => res[0]?.id);
       }
-      if (!resultId) throw new TRPCError({ code: "PRECONDITION_FAILED" });
+      if (!resultId) throw new ORPCError("PRECONDITION_FAILED");
 
       await tx
         .insert(resultStatuses)
@@ -154,7 +154,7 @@ export const resultRankingRouter = {
 
     return result;
   }),
-} satisfies TRPCRouterRecord;
+};
 
 const getNextResultId = async (db: TXType) => {
   const maxId = await db

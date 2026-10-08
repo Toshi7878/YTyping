@@ -1,8 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/auth/client";
+import { orpc } from "@/orpc/provider";
 import { MapCard } from "@/shared/map/list/card/base";
-import { useTRPC } from "@/trpc/provider";
 import { hasMapUploadPermission } from "./permission/has-permission";
 import { useCreatorId } from "./provider";
 
@@ -11,32 +11,27 @@ interface SimilarMapListByVideoIdProps {
 }
 
 export const SimilarMapListByVideoId = ({ videoId }: SimilarMapListByVideoIdProps) => {
-  const trpc = useTRPC();
   const { data: session } = useSession();
   const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   const { data: generatedMapInfo } = useQuery(
-    trpc.ai.generateMapInfo.queryOptions(
-      { videoId },
-      {
-        enabled: hasUploadPermission,
-        staleTime: Infinity,
-        gcTime: Infinity,
-      },
-    ),
+    orpc.ai.generateMapInfo.queryOptions({
+      input: { videoId },
+      enabled: hasUploadPermission,
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   const title = generatedMapInfo?.originalTitle?.trim() ?? "";
 
   const { data: maps, isPending } = useQuery(
-    trpc.map.list.getByTitle.queryOptions(
-      { title },
-      {
-        enabled: hasUploadPermission && generatedMapInfo && title.length > 0,
-        staleTime: Infinity,
-      },
-    ),
+    orpc.map.list.getByTitle.queryOptions({
+      input: { title },
+      enabled: hasUploadPermission && generatedMapInfo && title.length > 0,
+      staleTime: Infinity,
+    }),
   );
 
   if (!hasUploadPermission) return null;

@@ -4,10 +4,10 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import type { Store } from "jotai/vanilla";
 import { useEffect, useState } from "react";
 import type z from "zod/v4";
+import { orpc } from "@/orpc/provider";
 import type { MapListItem } from "@/server/api/routers/map";
 import { MapCard } from "@/shared/map/list/card/base";
 import { CompactMapCard } from "@/shared/map/list/card/compact";
-import { useTRPC } from "@/trpc/provider";
 import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
 import { usePageCounter } from "@/utils/hooks/intersection";
@@ -30,20 +30,18 @@ export const MapList = ({
   layoutType = "TWO_COLUMNS",
   atomStore = getDefaultStore(),
 }: MapListProps) => {
-  const trpc = useTRPC();
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom, { store: atomStore });
 
   const { data, isFetchedAfterMount, isPlaceholderData, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    trpc.map.list.get.infiniteQueryOptions(
-      { ...filterParams, sort: sortParams },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        staleTime: Infinity,
-        gcTime: Infinity,
-        placeholderData: (previousData) => previousData,
-      },
-    ),
+    orpc.map.list.get.infiniteOptions({
+      input: (pageParam) => ({ ...filterParams, sort: sortParams, cursor: pageParam }),
+      initialPageParam: undefined as number | undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      staleTime: Infinity,
+      gcTime: Infinity,
+      placeholderData: (previousData) => previousData,
+    }),
   );
 
   useEffect(() => {

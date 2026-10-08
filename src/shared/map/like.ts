@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { orpc } from "@/orpc/provider";
 import type { MapListItem } from "@/server/api/routers/map";
-import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../../lib/react-query";
 
 function calculateLikeState(
@@ -43,16 +43,15 @@ const createMapUpdater = (
 };
 
 export function useToggleMapLikeMutation() {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.map.like.toggle.mutationOptions({
+    orpc.map.like.toggle.mutationOptions({
       onMutate: async (input) => {
-        const mapListFilter = trpc.map.list.pathFilter();
-        const mapInfoFilter = trpc.map.getById.queryFilter();
-        const resultListFilter = trpc.result.list.pathFilter();
-        const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
+        const mapListFilter = { queryKey: orpc.map.list.key() };
+        const mapInfoFilter = { queryKey: orpc.map.getById.key({ type: "query" }) };
+        const resultListFilter = { queryKey: orpc.result.list.key() };
+        const notificationsFilter = { queryKey: orpc.notification.getInfinite.key({ type: "infinite" }) };
 
         await Promise.all([
           queryClient.cancelQueries(mapListFilter),

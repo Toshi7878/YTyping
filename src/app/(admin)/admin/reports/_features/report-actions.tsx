@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z as zod } from "zod/v4";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
@@ -66,7 +66,6 @@ export const ReportActions = ({
 };
 
 const BanDialog = ({ reportId }: { reportId: number }) => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const form = useAppForm({
@@ -81,16 +80,17 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
     },
   });
 
-  const ban = useMutation({
-    ...trpc.user.report.ban.mutationOptions(),
-    onSuccess: () => {
-      toast.success("通報をBAN済みにしました");
-      queryClient.invalidateQueries(trpc.user.report.list.queryOptions());
-      form.reset();
-      setOpen(false);
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const ban = useMutation(
+    orpc.user.report.ban.mutationOptions({
+      onSuccess: () => {
+        toast.success("通報をBAN済みにしました");
+        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        form.reset();
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();
@@ -146,7 +146,6 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
 };
 
 const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount: number }) => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const defaultWarningComment = buildDefaultWarningComment(warningCount);
@@ -158,16 +157,17 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
     },
   });
 
-  const warn = useMutation({
-    ...trpc.user.report.warn.mutationOptions(),
-    onSuccess: () => {
-      toast.success("対象ユーザーに警告しました");
-      queryClient.invalidateQueries(trpc.user.report.list.queryOptions());
-      form.reset({ warningComment: defaultWarningComment, adminNote: "" });
-      setOpen(false);
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const warn = useMutation(
+    orpc.user.report.warn.mutationOptions({
+      onSuccess: () => {
+        toast.success("対象ユーザーに警告しました");
+        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        form.reset({ warningComment: defaultWarningComment, adminNote: "" });
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset({ warningComment: defaultWarningComment, adminNote: "" });
@@ -230,7 +230,6 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
 };
 
 const NoBanDialog = ({ reportId }: { reportId: number }) => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const form = useAppForm({
@@ -241,16 +240,17 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
     },
   });
 
-  const dismiss = useMutation({
-    ...trpc.user.report.dismiss.mutationOptions(),
-    onSuccess: () => {
-      toast.success("通報を対処不要にしました");
-      queryClient.invalidateQueries(trpc.user.report.list.queryOptions());
-      form.reset();
-      setOpen(false);
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const dismiss = useMutation(
+    orpc.user.report.dismiss.mutationOptions({
+      onSuccess: () => {
+        toast.success("通報を対処不要にしました");
+        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        form.reset();
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   const handleOpenChange = (next: boolean) => {
     if (!next) form.reset();
@@ -302,19 +302,19 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
 };
 
 const UnbanDialog = ({ reportId }: { reportId: number }) => {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  const unban = useMutation({
-    ...trpc.user.report.unban.mutationOptions(),
-    onSuccess: () => {
-      toast.success("BANを解除しました");
-      queryClient.invalidateQueries(trpc.user.report.list.queryOptions());
-      setOpen(false);
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const unban = useMutation(
+    orpc.user.report.unban.mutationOptions({
+      onSuccess: () => {
+        toast.success("BANを解除しました");
+        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

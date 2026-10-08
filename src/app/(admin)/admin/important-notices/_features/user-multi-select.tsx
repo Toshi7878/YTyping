@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/field";
@@ -31,16 +31,16 @@ export const UserMultiSelectFormField = ({ label, description }: UserMultiSelect
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [open, setOpen] = useState(false);
   const { debounce } = useDebounce(200);
-  const trpc = useTRPC();
 
   const selectedUsers = field.state.value;
   const selectedIds = new Set(selectedUsers.map((u) => u.id));
 
   const { data: candidates } = useQuery(
-    trpc.importantNotice.searchUsers.queryOptions(
-      { query: debouncedQuery },
-      { enabled: debouncedQuery.trim() !== "", staleTime: 10_000 },
-    ),
+    orpc.importantNotice.searchUsers.queryOptions({
+      input: { query: debouncedQuery },
+      enabled: debouncedQuery.trim() !== "",
+      staleTime: 10_000,
+    }),
   );
 
   const suggestions = (candidates ?? []).filter((u) => u.name !== null && !selectedIds.has(u.id));

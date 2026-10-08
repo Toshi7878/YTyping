@@ -1,14 +1,13 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq, gt, sql } from "drizzle-orm";
 import z from "zod";
-import { publicProcedure } from "@/server/api/trpc";
+import { publicProcedure } from "@/server/api/orpc";
 import { userStats, users } from "@/server/drizzle/schema";
 import type { PpMode } from "@/shared/result/pp/mode";
 import { rankingPpListRouter } from "./list";
 
 export const rankingPpRouter = {
-  getRankByUserId: publicProcedure.input(z.number().int()).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  getRankByUserId: publicProcedure.input(z.number().int()).handler(async ({ input, context }) => {
+    const { db } = context;
 
     const userRow = await db.query.userStats.findFirst({
       columns: { totalPp: true },
@@ -34,8 +33,8 @@ export const rankingPpRouter = {
     return aboveCount + 1;
   }),
 
-  getRanksByUserId: publicProcedure.input(z.number().int()).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  getRanksByUserId: publicProcedure.input(z.number().int()).handler(async ({ input, context }) => {
+    const { db } = context;
 
     const emptyRanks: Record<PpMode, number | null> = {
       total: null,
@@ -75,4 +74,4 @@ export const rankingPpRouter = {
   }),
 
   list: rankingPpListRouter,
-} satisfies TRPCRouterRecord;
+};

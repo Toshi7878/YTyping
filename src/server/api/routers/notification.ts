@@ -1,16 +1,15 @@
-import type { TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
 import { type maps, notifications } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../orpc";
 import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map";
 import { bookmarkedMapExists } from "./map/bookmark/list-item";
 
 export const notificationRouter = {
-  hasUnread: protectedProcedure.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  hasUnread: protectedProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
 
     const isUnreadNotificationFound = await db.query.notifications
       .findFirst({
@@ -22,275 +21,277 @@ export const notificationRouter = {
     return isUnreadNotificationFound;
   }),
 
-  getInfinite: protectedProcedure.input(z.object({ cursor: z.number().optional() })).query(async ({ input, ctx }) => {
-    const { db, session } = ctx;
-    const PAGE_SIZE = 20;
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
+  getInfinite: protectedProcedure
+    .input(z.object({ cursor: z.number().optional() }))
+    .handler(async ({ input, context }) => {
+      const { db, session } = context;
+      const PAGE_SIZE = 20;
+      const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const mapQuery = {
-      columns: {
-        creatorComment: false,
-        createdAt: false,
-        creatorId: false,
-        playCount: false,
-      },
-      extras: {
-        hasBookmarked: (map: typeof maps) => bookmarkedMapExists(db, session, map.id).as("has_bookmarked"),
-      },
-      with: {
-        creator: { columns: { id: true, name: true } },
-        difficulty: {
-          columns: {
-            kanaKpmMedian: true,
-            kanaKpmMax: true,
-            romaKpmMedian: true,
-            romaKpmMax: true,
-            romaTotalNotes: true,
-            kanaTotalNotes: true,
-            kanaChunkCount: true,
-            alphabetChunkCount: true,
-            numChunkCount: true,
-            spaceChunkCount: true,
-            symbolChunkCount: true,
-            rating: true,
+      const mapQuery = {
+        columns: {
+          creatorComment: false,
+          createdAt: false,
+          creatorId: false,
+          playCount: false,
+        },
+        extras: {
+          hasBookmarked: (map: typeof maps) => bookmarkedMapExists(db, session, map.id).as("has_bookmarked"),
+        },
+        with: {
+          creator: { columns: { id: true, name: true } },
+          difficulty: {
+            columns: {
+              kanaKpmMedian: true,
+              kanaKpmMax: true,
+              romaKpmMedian: true,
+              romaKpmMax: true,
+              romaTotalNotes: true,
+              kanaTotalNotes: true,
+              kanaChunkCount: true,
+              alphabetChunkCount: true,
+              numChunkCount: true,
+              spaceChunkCount: true,
+              symbolChunkCount: true,
+              rating: true,
+            },
+          },
+          mapLikes: {
+            where: { userId: session.user.id },
+            columns: { hasLiked: true },
+            limit: 1,
+          },
+          results: {
+            where: { userId: session.user.id },
+            columns: { rank: true, updatedAt: true },
+            limit: 1,
           },
         },
-        mapLikes: {
-          where: { userId: session.user.id },
-          columns: { hasLiked: true },
-          limit: 1,
-        },
-        results: {
-          where: { userId: session.user.id },
-          columns: { rank: true, updatedAt: true },
-          limit: 1,
-        },
-      },
-    } as const;
+      } as const;
 
-    const notifications = await db.query.notifications.findMany({
-      columns: {
-        id: true,
-        type: true,
-        updatedAt: true,
-      },
+      const notifications = await db.query.notifications.findMany({
+        columns: {
+          id: true,
+          type: true,
+          updatedAt: true,
+        },
 
-      with: {
-        mapBookmark: {
-          columns: {},
-          with: {
-            bookmarker: { columns: { id: true, name: true } },
-            map: mapQuery,
-            list: { columns: { id: true, title: true } },
+        with: {
+          mapBookmark: {
+            columns: {},
+            with: {
+              bookmarker: { columns: { id: true, name: true } },
+              map: mapQuery,
+              list: { columns: { id: true, title: true } },
+            },
           },
-        },
-        overTake: {
-          columns: { visitorId: true, prevRank: true },
-          with: {
-            visitor: { columns: { id: true, name: true } },
-            map: mapQuery,
-            visitedResult: { with: { status: { columns: { score: true } } } },
-            visitorResult: { with: { status: { columns: { score: true } } } },
+          overTake: {
+            columns: { visitorId: true, prevRank: true },
+            with: {
+              visitor: { columns: { id: true, name: true } },
+              map: mapQuery,
+              visitedResult: { with: { status: { columns: { score: true } } } },
+              visitorResult: { with: { status: { columns: { score: true } } } },
+            },
           },
-        },
-        like: {
-          columns: {},
-          with: {
-            liker: { columns: { id: true, name: true } },
-            map: mapQuery,
+          like: {
+            columns: {},
+            with: {
+              liker: { columns: { id: true, name: true } },
+              map: mapQuery,
+            },
           },
-        },
-        clap: {
-          columns: {},
-          with: {
-            clapper: { columns: { id: true, name: true } },
-            result: {
-              with: {
-                map: mapQuery,
-                status: {
-                  columns: {
-                    minPlaySpeed: true,
+          clap: {
+            columns: {},
+            with: {
+              clapper: { columns: { id: true, name: true } },
+              result: {
+                with: {
+                  map: mapQuery,
+                  status: {
+                    columns: {
+                      minPlaySpeed: true,
+                    },
                   },
                 },
               },
             },
           },
-        },
-        reportResult: {
-          columns: {},
-          with: {
-            report: {
-              columns: {
-                id: true,
-                reason: true,
-                reasonDetail: true,
-                status: true,
-                adminNote: true,
-                resolvedAt: true,
+          reportResult: {
+            columns: {},
+            with: {
+              report: {
+                columns: {
+                  id: true,
+                  reason: true,
+                  reasonDetail: true,
+                  status: true,
+                  adminNote: true,
+                  resolvedAt: true,
+                },
+                with: {
+                  reportedUser: { columns: { id: true, name: true } },
+                  resolver: { columns: { id: true, name: true } },
+                },
               },
-              with: {
-                reportedUser: { columns: { id: true, name: true } },
-                resolver: { columns: { id: true, name: true } },
+            },
+          },
+          warning: {
+            columns: { comment: true },
+            with: {
+              report: {
+                columns: {
+                  id: true,
+                  reason: true,
+                  reasonDetail: true,
+                },
               },
             },
           },
         },
-        warning: {
-          columns: { comment: true },
-          with: {
-            report: {
-              columns: {
-                id: true,
-                reason: true,
-                reasonDetail: true,
-              },
-            },
+        where: { recipientId: session.user.id },
+        orderBy: { updatedAt: "desc" },
+        limit,
+        offset,
+      });
+
+      type NotificationMap = NonNullable<NonNullable<(typeof notifications)[number]["overTake"]>["map"]>;
+      const toMapListItem = (map: NotificationMap, previewSpeed?: number) => {
+        return {
+          id: map.id,
+          updatedAt: map.updatedAt,
+          media: {
+            videoId: map.videoId,
+            previewTime: map.previewTime,
+            thumbnailQuality: map.thumbnailQuality,
+            previewSpeed,
           },
-        },
-      },
-      where: { recipientId: session.user.id },
-      orderBy: { updatedAt: "desc" },
-      limit,
-      offset,
-    });
+          info: {
+            title: map.title,
+            artistName: map.artistName,
+            source: map.musicSource,
+            duration: map.duration,
+            categories: map.category,
+            visibility: map.visibility,
+          },
+          creator: { id: map.creator.id, name: map.creator.name },
+          difficulty: {
+            romaKpmMax: map.difficulty.romaKpmMax,
+            kanaKpmMax: map.difficulty.kanaKpmMax,
+            romaTotalNotes: map.difficulty.romaTotalNotes,
+            kanaTotalNotes: map.difficulty.kanaTotalNotes,
+            kanaChunkCount: map.difficulty.kanaChunkCount,
+            alphabetChunkCount: map.difficulty.alphabetChunkCount,
+            numChunkCount: map.difficulty.numChunkCount,
+            spaceChunkCount: map.difficulty.spaceChunkCount,
+            symbolChunkCount: map.difficulty.symbolChunkCount,
+            rating: map.difficulty.rating,
+          },
+          like: { count: map.likeCount, hasLiked: map.mapLikes?.[0]?.hasLiked ?? false },
+          ranking: {
+            count: map.rankingCount,
+            myRank: map.results?.[0]?.rank ?? null,
+            myRankUpdatedAt: map.results?.[0]?.updatedAt ?? null,
+          },
+          bookmark: { hasBookmarked: !!map.hasBookmarked },
+        } satisfies MapListItem;
+      };
 
-    type NotificationMap = NonNullable<NonNullable<(typeof notifications)[number]["overTake"]>["map"]>;
-    const toMapListItem = (map: NotificationMap, previewSpeed?: number) => {
-      return {
-        id: map.id,
-        updatedAt: map.updatedAt,
-        media: {
-          videoId: map.videoId,
-          previewTime: map.previewTime,
-          thumbnailQuality: map.thumbnailQuality,
-          previewSpeed,
-        },
-        info: {
-          title: map.title,
-          artistName: map.artistName,
-          source: map.musicSource,
-          duration: map.duration,
-          categories: map.category,
-          visibility: map.visibility,
-        },
-        creator: { id: map.creator.id, name: map.creator.name },
-        difficulty: {
-          romaKpmMax: map.difficulty.romaKpmMax,
-          kanaKpmMax: map.difficulty.kanaKpmMax,
-          romaTotalNotes: map.difficulty.romaTotalNotes,
-          kanaTotalNotes: map.difficulty.kanaTotalNotes,
-          kanaChunkCount: map.difficulty.kanaChunkCount,
-          alphabetChunkCount: map.difficulty.alphabetChunkCount,
-          numChunkCount: map.difficulty.numChunkCount,
-          spaceChunkCount: map.difficulty.spaceChunkCount,
-          symbolChunkCount: map.difficulty.symbolChunkCount,
-          rating: map.difficulty.rating,
-        },
-        like: { count: map.likeCount, hasLiked: map.mapLikes?.[0]?.hasLiked ?? false },
-        ranking: {
-          count: map.rankingCount,
-          myRank: map.results?.[0]?.rank ?? null,
-          myRankUpdatedAt: map.results?.[0]?.updatedAt ?? null,
-        },
-        bookmark: { hasBookmarked: !!map.hasBookmarked },
-      } satisfies MapListItem;
-    };
+      const items = notifications
+        .map((notification) => {
+          if (notification.type === "OVER_TAKE" && notification.overTake) {
+            const { overTake } = notification;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              visitor: {
+                id: overTake.visitorId,
+                name: overTake.visitor?.name ?? "名無し",
+                score: overTake.visitorResult.status.score,
+              },
+              myResult: {
+                prevRank: overTake.prevRank,
+                score: overTake.visitedResult.status.score,
+              },
+              map: toMapListItem(overTake.map),
+            };
+          }
 
-    const items = notifications
-      .map((notification) => {
-        if (notification.type === "OVER_TAKE" && notification.overTake) {
-          const { overTake } = notification;
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            visitor: {
-              id: overTake.visitorId,
-              name: overTake.visitor?.name ?? "名無し",
-              score: overTake.visitorResult.status.score,
-            },
-            myResult: {
-              prevRank: overTake.prevRank,
-              score: overTake.visitedResult.status.score,
-            },
-            map: toMapListItem(overTake.map),
-          };
-        }
+          if (notification.type === "LIKE" && notification.like) {
+            const { like } = notification;
 
-        if (notification.type === "LIKE" && notification.like) {
-          const { like } = notification;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              liker: like.liker,
+              map: toMapListItem(like.map),
+            };
+          }
+          if (notification.type === "CLAP" && notification.clap) {
+            const { clap } = notification;
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            liker: like.liker,
-            map: toMapListItem(like.map),
-          };
-        }
-        if (notification.type === "CLAP" && notification.clap) {
-          const { clap } = notification;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              clapper: clap.clapper,
+              map: toMapListItem(clap.result.map, clap.result.status.minPlaySpeed),
+            };
+          }
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            clapper: clap.clapper,
-            map: toMapListItem(clap.result.map, clap.result.status.minPlaySpeed),
-          };
-        }
+          if (notification.type === "MAP_BOOKMARK" && notification.mapBookmark) {
+            const { mapBookmark } = notification;
 
-        if (notification.type === "MAP_BOOKMARK" && notification.mapBookmark) {
-          const { mapBookmark } = notification;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              bookmarker: mapBookmark.bookmarker,
+              map: toMapListItem(mapBookmark.map),
+              mapBookmark: notification.mapBookmark,
+            };
+          }
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            bookmarker: mapBookmark.bookmarker,
-            map: toMapListItem(mapBookmark.map),
-            mapBookmark: notification.mapBookmark,
-          };
-        }
+          // フォールバック（通常は到達しない）
+          if (notification.type === "REPORT_RESULT" && notification.reportResult) {
+            const { report } = notification.reportResult;
 
-        // フォールバック（通常は到達しない）
-        if (notification.type === "REPORT_RESULT" && notification.reportResult) {
-          const { report } = notification.reportResult;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              report,
+            };
+          }
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            report,
-          };
-        }
+          if (notification.type === "WARNING" && notification.warning) {
+            const { warning } = notification;
 
-        if (notification.type === "WARNING" && notification.warning) {
-          const { warning } = notification;
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              warning,
+            };
+          }
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            updatedAt: notification.updatedAt,
-            warning,
-          };
-        }
+          throw new Error(`Unknown notification action: ${notification.type}`);
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null);
 
-        throw new Error(`Unknown notification action: ${notification.type}`);
-      })
-      .filter((item): item is NonNullable<typeof item> => item !== null);
+      return buildPageResult(items);
+    }),
 
-    return buildPageResult(items);
-  }),
-
-  postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {
-    const { db, session } = ctx;
+  postUserNotificationRead: protectedProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
 
     await db
       .update(notifications)
       .set({ checked: true })
       .where(and(eq(notifications.recipientId, session.user.id), eq(notifications.checked, false)));
   }),
-} satisfies TRPCRouterRecord;
+};
 
 export const generateNotificationId = () => nanoid(10);

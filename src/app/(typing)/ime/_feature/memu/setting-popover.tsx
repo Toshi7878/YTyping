@@ -9,7 +9,7 @@ import {
 import { useParams } from "next/navigation";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { CounterInput } from "@/ui/counter";
 import { LabeledInput } from "@/ui/input/labeled-input";
 import { LabeledCheckbox } from "@/ui/labeled-items";
@@ -31,8 +31,7 @@ interface SettingPopoverProps {
 }
 
 export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
-  const trpc = useTRPC();
-  const updateImeTypingOptions = useMutation(trpc.user.imeTypingOption.upsert.mutationOptions());
+  const updateImeTypingOptions = useMutation(orpc.user.imeTypingOption.upsert.mutationOptions());
   const queryClient = useQueryClient();
   const { id: mapId } = useParams<{ id: string }>();
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +44,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
         resetIsImeTypeOptionsEdited();
         updateImeTypingOptions.mutate({ ...getImeOptions() });
         const rawMapLines = queryClient.getQueryData(
-          trpc.map.getJsonById.queryOptions({ mapId: Number(mapId) }).queryKey,
+          orpc.map.getJsonById.queryOptions({ input: { mapId: Number(mapId) } }).queryKey,
         );
 
         if (rawMapLines) {

@@ -3,9 +3,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useParams } from "next/navigation";
 import { useSession } from "@/auth/client";
+import { orpc } from "@/orpc/provider";
 import { BookmarkListPopover } from "@/shared/map/bookmark/lists-popover";
 import { useToggleMapLikeMutation } from "@/shared/map/like";
-import { useTRPC } from "@/trpc/provider";
 import { BookmarkListIconButton, EditIconLinkButton } from "@/ui/icon-button";
 import { LikeToggleButton } from "@/ui/like-button/like-button";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -15,8 +15,7 @@ import { SettingPopover } from "./setting/popover";
 export const MapActionIconButtons = ({ className }: { className: string }) => {
   const { data: session } = useSession();
   const { id: mapId } = useParams();
-  const trpc = useTRPC();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.getById.queryOptions({ mapId: Number(mapId) }));
+  const { data: mapInfo } = useSuspenseQuery(orpc.map.getById.queryOptions({ input: { mapId: Number(mapId) } }));
   const hasBookmarked = mapInfo.bookmark.hasBookmarked;
   const hasLiked = mapInfo.like.hasLiked;
 

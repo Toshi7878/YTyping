@@ -1,14 +1,14 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
-import type { RouterOutputs } from "@/server/api/trpc";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { useAddBookmarkListItemMutation, useRemoveBookmarkListItemMutation } from "@/shared/map/bookmark/list-item";
-import { useTRPC } from "@/trpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm, withForm } from "@/ui/form-field-item";
@@ -34,15 +34,14 @@ interface BookmarkListPopoverProps {
 }
 
 export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkListPopoverProps) => {
-  const trpc = useTRPC();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: lists, isLoading } = useQuery(
-    trpc.map.bookmark.lists.getByUserId.queryOptions(
-      { userId: session?.user?.id ?? 0, includeMapId: mapId },
-      { enabled: !!session?.user?.id && isOpen },
-    ),
+    orpc.map.bookmark.lists.getByUserId.queryOptions({
+      input: session?.user?.id ? { userId: session.user.id, includeMapId: mapId } : skipToken,
+      enabled: isOpen,
+    }),
   );
 
   const addMapToList = useAddBookmarkListItemMutation();
@@ -124,7 +123,6 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
 
 const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   const [open, setOpen] = useState(false);
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const form = useAppForm({
@@ -140,13 +138,15 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   });
 
   const createListMutation = useMutation(
-    trpc.map.bookmark.lists.create.mutationOptions({
+    orpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
         const session = getSession();
         queryClient.invalidateQueries(
-          trpc.map.bookmark.lists.getByUserId.queryOptions({
-            userId: session?.user?.id ?? 0,
-            includeMapId: mapId,
+          orpc.map.bookmark.lists.getByUserId.queryOptions({
+            input: {
+              userId: session?.user?.id ?? 0,
+              includeMapId: mapId,
+            },
           }),
         );
         form.reset();

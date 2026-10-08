@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateInfiniteQueryCache, updateQueryCache } from "@/lib/react-query";
+import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
-import type { RouterOutputs } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/provider";
 
 type RankingItem = RouterOutputs["result"]["ranking"]["get"][number];
 
@@ -37,14 +37,13 @@ const createResultUpdater = (
 };
 
 export function useToggleClapMutation() {
-  const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.result.clap.toggleClap.mutationOptions({
+    orpc.result.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const resultListFilter = trpc.result.list.pathFilter();
-        const resultRankingFilter = trpc.result.ranking.pathFilter();
+        const resultListFilter = { queryKey: orpc.result.list.key() };
+        const resultRankingFilter = { queryKey: orpc.result.ranking.key() };
 
         await Promise.all([
           queryClient.cancelQueries(resultListFilter),

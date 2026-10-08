@@ -1,16 +1,21 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { MapList } from "@/shared/map/list/list";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
 import { buttonVariants } from "@/ui/button";
 
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;
   await prefetchAsync(
-    trpc.map.list.get.infiniteQueryOptions(
-      { bookmarkListId: Number(id), sort: { type: "bookmark", isDesc: true } },
-      { getNextPageParam: ({ nextCursor }) => nextCursor },
-    ),
+    orpc.map.list.get.infiniteOptions({
+      input: (pageParam) => ({
+        bookmarkListId: Number(id),
+        sort: { type: "bookmark", isDesc: true },
+        cursor: pageParam,
+      }),
+      initialPageParam: undefined as number | undefined,
+      getNextPageParam: ({ nextCursor }) => nextCursor,
+    }),
   );
 
   return (

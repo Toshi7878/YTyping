@@ -1,12 +1,16 @@
 import { loadResultListSearchParams } from "@/app/timeline/_feature/search-params";
-import { HydrateClient, prefetchAsync, trpc } from "@/trpc/server";
+import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { SearchContent } from "./_feature/controls/controls";
 import { TimelineResultList } from "./_feature/result-list";
 
 export default async function Home({ searchParams }: PageProps<"/timeline">) {
   const params = await loadResultListSearchParams(searchParams);
   await prefetchAsync(
-    trpc.result.list.get.infiniteQueryOptions(params, { getNextPageParam: ({ nextCursor }) => nextCursor }),
+    orpc.result.list.get.infiniteOptions({
+      input: (pageParam) => ({ ...params, cursor: pageParam }),
+      initialPageParam: undefined as number | undefined,
+      getNextPageParam: ({ nextCursor }) => nextCursor,
+    }),
   );
 
   return (

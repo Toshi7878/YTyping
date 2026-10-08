@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { Session } from "@/auth/client";
-import { useTRPC } from "@/trpc/provider";
+import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import {
   DropdownMenu,
@@ -24,8 +24,7 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ session, className }: UserMenuProps) => {
-  const trpc = useTRPC();
-  const { data: ppRank } = useSuspenseQuery(trpc.ranking.pp.getRankByUserId.queryOptions(session.user.id));
+  const { data: ppRank } = useSuspenseQuery(orpc.ranking.pp.getRankByUserId.queryOptions({ input: session.user.id }));
   const userMenuLinkItems = buildUserMenuLinkItems(session);
 
   return (

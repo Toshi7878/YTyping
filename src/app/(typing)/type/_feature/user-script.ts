@@ -49,8 +49,8 @@
  */
 
 import type { InputMode } from "lyrics-typing-engine";
+import { getQueryClient, orpc } from "@/orpc/provider";
 import { calcRawPP } from "@/shared/result/pp/calc";
-import { getQueryClient, getTRPCOptions } from "@/trpc/provider";
 import { getBuiltMap } from "./atoms/built-map";
 import { getLineResults, getSelectLineIndex } from "./atoms/line-results";
 import { getLineSubstatus } from "./atoms/line-substatus";
@@ -254,8 +254,7 @@ const ytypingType = {
     return () => {
       const mapId = getMapId();
       if (mapId === null) return undefined;
-      const trpc = getTRPCOptions();
-      return getQueryClient().getQueryData(trpc.map.getById.queryOptions({ mapId }).queryKey);
+      return getQueryClient().getQueryData(orpc.map.getById.queryOptions({ input: { mapId } }).queryKey);
     };
   },
   get calcRawPP() {
@@ -263,8 +262,7 @@ const ytypingType = {
   },
   get getUserTopPPs() {
     return async () => {
-      const trpc = getTRPCOptions();
-      return getQueryClient().ensureQueryData(trpc.result.pp.getUserTopPps.queryOptions());
+      return getQueryClient().ensureQueryData(orpc.result.pp.getUserTopPps.queryOptions());
     };
   },
   addEventListener<T extends TypeEventType>(type: T, callback: TypeEventCallback<T>) {

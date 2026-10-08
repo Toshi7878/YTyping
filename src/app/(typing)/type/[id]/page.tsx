@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { caller, HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { caller, HydrateClient, orpc, prefetch } from "@/orpc/server";
 import { toLocaleDateString } from "@/utils/date";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { Content } from "../_feature/content";
@@ -41,7 +41,7 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
     getMapInfo(Number(mapId)),
   ]);
   if (!mapInfo) notFound();
-  prefetch(trpc.map.getById.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
+  prefetch(orpc.map.getById.queryOptions({ input: { mapId: Number(mapId) }, initialData: mapInfo }));
 
   return (
     <HydrateClient>

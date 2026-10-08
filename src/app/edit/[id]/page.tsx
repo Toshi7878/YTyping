@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { caller, HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { caller, HydrateClient, orpc, prefetch } from "@/orpc/server";
 import { Content } from "../_feature/content";
 import { PermissionToast } from "../_feature/permission/toast";
 import { JotaiProvider } from "../_feature/provider";
@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   if (!mapInfo) notFound();
 
-  prefetch(trpc.map.getById.queryOptions({ mapId: Number(id) }, { initialData: mapInfo }));
+  prefetch(orpc.map.getById.queryOptions({ input: { mapId: Number(id) }, initialData: mapInfo }));
 
   return (
     <HydrateClient>

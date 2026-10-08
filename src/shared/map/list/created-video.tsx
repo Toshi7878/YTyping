@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { orpc } from "@/orpc/provider";
 import { MapCard } from "@/shared/map/list/card/base";
-import { useTRPC } from "@/trpc/provider";
 import { Spinner } from "@/ui/spinner";
 
 interface CreatedMapListByVideoIdProps {
@@ -11,8 +11,7 @@ interface CreatedMapListByVideoIdProps {
 }
 
 export const CreatedMapListByVideoId = ({ videoId, disabledNotFoundText = false }: CreatedMapListByVideoIdProps) => {
-  const trpc = useTRPC();
-  const { data, isPending } = useQuery(trpc.map.list.getByVideoId.queryOptions({ videoId }));
+  const { data, isPending } = useQuery(orpc.map.list.getByVideoId.queryOptions({ input: { videoId } }));
   if (isPending) return <Spinner />;
 
   if (data?.length) {

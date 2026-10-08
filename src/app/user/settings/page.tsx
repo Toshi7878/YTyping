@@ -1,5 +1,5 @@
 import { getSession } from "@/auth/server";
-import { caller } from "@/trpc/server";
+import { caller } from "@/orpc/server";
 import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
 import { H2 } from "@/ui/typography";
 import { UserNameInputForm } from "../_components/user-name-input-form";

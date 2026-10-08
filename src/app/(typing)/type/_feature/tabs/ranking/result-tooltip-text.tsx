@@ -1,4 +1,4 @@
-import type { RouterOutputs } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/root";
 import { Separator } from "@/ui/separator";
 
 interface ResultToolTipTextProps {

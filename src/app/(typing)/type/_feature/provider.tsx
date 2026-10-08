@@ -3,7 +3,7 @@ import { Provider } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
 import { AtomsHydrator } from "@/lib/jotai-hydrator";
-import type { RouterOutputs } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/root";
 import { resetAllTypingFeatureAtoms } from "./atoms/reset";
 import { getTypingStats } from "./atoms/stats";
 import { store } from "./atoms/store";
