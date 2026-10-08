@@ -20,6 +20,7 @@ const createMd5Hash = (value: string) => createHash("md5").update(value).digest(
 
 export const auth = betterAuth({
   baseURL: baseUrl,
+  secret: env.AUTH_SECRET,
   database: drizzleAdapter(db, { provider: "pg", usePlural: true, schema }),
   session: {
     expiresIn: 60 * 60 * 24 * 30,
