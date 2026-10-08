@@ -1,4 +1,4 @@
-import { sound } from "@pixi/sound";
+import type { sound as PixiSound } from "@pixi/sound";
 import { useEffect } from "react";
 import { getIsMobileDevice } from "@/store/user-agent";
 import { getVolume } from "@/store/volume";
@@ -9,6 +9,9 @@ const manifest = [
   { alias: "typeCompleted", src: "/wav/type-completed.wav" },
   { alias: "miss", src: "/wav/miss.wav" },
 ] as const;
+
+// @pixi/soundはimport時にwindow/documentへアクセスするためSSR中は読み込まず、クライアントでのみ動的importする
+let sound: typeof PixiSound | null = null;
 
 type SoundAlias = (typeof manifest)[number]["alias"];
 
@@ -38,25 +41,36 @@ export const triggerMissSound = () => {
 
 export const iosActiveSound = () => {
   manifest.forEach(({ alias }) => {
-    void sound.play(alias, { volume: 0 });
+    void sound?.play(alias, { volume: 0 });
   });
 };
 
 export const useLoadSoundEffects = () => {
   useEffect(() => {
-    sound.disableAutoPause = true;
+    let cancelled = false;
 
-    manifest.forEach(({ alias, src }) => {
-      if (!sound.exists(alias)) {
-        sound.add(alias, { url: src, preload: true });
-      }
+    void import("@pixi/sound").then((module) => {
+      if (cancelled) return;
+      const loaded = module.sound;
+      loaded.disableAutoPause = true;
+
+      manifest.forEach(({ alias, src }) => {
+        if (!loaded.exists(alias)) {
+          loaded.add(alias, { url: src, preload: true });
+        }
+      });
+      sound = loaded;
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 };
 
 export const playSound = (alias: SoundAlias) => {
   const volume = getSoundVolume();
-  void sound.play(alias, { volume });
+  void sound?.play(alias, { volume });
 };
 
 const getSoundVolume = () => {
