@@ -1,10 +1,12 @@
 # YTyping開発環境セットアップ手順
 
-## Node.js v24をインストール
+## Node.js v24 (24.x) をインストール
 
 <https://nodejs.org/ja/download/>
 
-## pnpm v11をインストール
+Vercelが24.xまでしか選択できないため、Node.js 24系を使用してください（`package.json` の `engines` で固定しています）。
+
+## pnpm v12をインストール
 
 <https://pnpm.io/installation>
 

@@ -33,7 +33,7 @@
     "drizzle.config.ts",
     ".next/dev/types/**/*.ts",
     "scripts/**/*.ts",
-    "dts-bundle-generator.config.ts"
+    "tsdown.config.ts"
   ],
   "exclude": ["node_modules"]
 }
