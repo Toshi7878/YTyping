@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import type { ColumnDef } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -13,7 +12,7 @@ import { useTRPC } from "@/trpc/provider";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
 import { RelativeTime } from "@/ui/relative-time";
-import { DataTable } from "@/ui/table/data-table";
+import { DataTable, type DataTableColumnDef } from "@/ui/table/data-table";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 import { useSceneGroupState } from "../../typing-card/typing-card";
@@ -58,7 +57,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
   const { id: mapId } = useParams();
   const toggleClap = useToggleClapMutation();
 
-  const columns: ColumnDef<RankingResult, unknown>[] = [
+  const columns: DataTableColumnDef<RankingResult>[] = [
     {
       id: "rank",
       header: () => "順位",

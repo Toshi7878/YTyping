@@ -1,7 +1,7 @@
 "use client";
 
-import type { Cell, ColumnDef } from "@tanstack/react-table";
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import type { Cell, CellData, ColumnDef, RowData, TableFeatures } from "@tanstack/react-table";
+import { columnSizingFeature, tableFeatures, useTable } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 import * as React from "react";
 
@@ -9,16 +9,25 @@ import { cn } from "@/utils/cn";
 import { Spinner } from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
+// 使用する機能のみ登録(ソート・フィルタ等は未登録)
+const features = tableFeatures({ columnSizingFeature });
+
+export type DataTableColumnDef<TData extends RowData> = ColumnDef<typeof features, TData>;
+
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData, TValue> {
-    cellClassName?: (cell: Cell<TData, unknown>, index: number) => string;
+  interface ColumnMeta<
+    in out TFeatures extends TableFeatures,
+    in out TData extends RowData,
+    TValue extends CellData = CellData,
+  > {
+    cellClassName?: (cell: Cell<TFeatures, TData, TValue>, index: number) => string;
     headerClassName?: string;
     onClick?: (event: MouseEvent<HTMLDivElement>, row: TData, index: number) => void;
   }
 }
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData extends RowData> {
+  columns: DataTableColumnDef<TData>[];
   data: TData[];
   onRowClick?: (event: React.MouseEvent<HTMLTableRowElement>, row: TData, index: number) => void;
   className?: string;
@@ -30,7 +39,7 @@ interface DataTableProps<TData, TValue> {
   loading?: boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends RowData>({
   columns,
   data,
   onRowClick,
@@ -41,12 +50,8 @@ export function DataTable<TData, TValue>({
   headerRowClassName,
   rowWrapper,
   loading,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+}: DataTableProps<TData>) {
+  const table = useTable({ features, columns, data });
 
   return (
     <div className={cn("overflow-hidden rounded-md border", className)}>
@@ -61,7 +66,7 @@ export function DataTable<TData, TValue>({
                     key={header.id}
                     style={{ maxWidth: header.column.getSize(), minWidth: header.column.getSize() }}
                   >
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder ? null : <table.FlexRender header={header} />}
                   </TableHead>
                 );
               })}
@@ -80,11 +85,10 @@ export function DataTable<TData, TValue>({
               const rowNode = (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
                   onClick={(event) => onRowClick?.(event, row.original, index)}
                   className={cn("transition-none", onRowClick && "cursor-pointer", rowClassName?.(index))}
                 >
-                  {row.getVisibleCells().map((cell) => {
+                  {row.getAllCells().map((cell) => {
                     const columnMeta = cell.column.columnDef.meta;
                     const hasColumnClick = columnMeta?.onClick;
 
@@ -103,7 +107,7 @@ export function DataTable<TData, TValue>({
                           columnMeta?.cellClassName?.(cell, index),
                         )}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <table.FlexRender cell={cell} />
                       </TableCell>
                     );
                   })}

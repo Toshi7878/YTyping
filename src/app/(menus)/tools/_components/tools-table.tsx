@@ -1,8 +1,7 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
 import type { Route } from "next";
-import { DataTable } from "@/ui/table/data-table";
+import { DataTable, type DataTableColumnDef } from "@/ui/table/data-table";
 import { LinkText } from "@/ui/typography";
 import { ByUser } from "./by-user";
 
@@ -14,7 +13,7 @@ export interface Tool {
 }
 
 export function ToolsTable({ tools }: { tools: Tool[] }) {
-  const columns: ColumnDef<Tool, unknown>[] = [
+  const columns: DataTableColumnDef<Tool>[] = [
     {
       id: "title",
       header: () => "ツール名",
