@@ -112,13 +112,15 @@ Configured in `src/auth/server.ts`. OAuth via Google and Discord. Emails are sto
 
 ### Environment Variables
 
-All env vars are validated via `@t3-oss/env-nextjs` in `src/env.ts`. **Never use `process.env` directly** — Biome will error (`noProcessEnv`). Import `env` from `@/env` instead. Server-only env vars are enforced with `import "server-only"`. Many vars are required only on Vercel/production and optional locally.
+Managed by **varlock**. `.env.schema` (committed, no values) declares every variable: type, required-ness (e.g. `@required=not(isEmpty($VERCEL))`, `forEnv(production)`) and sensitivity (`NEXT_PUBLIC_*` is public, everything else sensitive). Values live in git-ignored `.env` / `.env.local` and Vercel. **Never use `process.env` directly** — Biome will error (`noProcessEnv`). Import `ENV` from `varlock/env` instead; types come from the generated `env.d.ts` (committed; regenerate with `npx varlock load` after editing the schema). Sensitive values are runtime-only on the server; non-sensitive ones are inlined at build time unless marked `@dynamic` (e.g. `PORT`).
+
+Next.js loads env through `@varlock/nextjs-integration`, which replaces `@next/env` via the `overrides` entry in `pnpm-workspace.yaml` and the `varlockNextConfigPlugin` in `next.config.ts`. Scripts outside Next (`tsx`, `drizzle-kit`) run through `varlock run -- <cmd>` (see `package.json`). Many variables are required only on Vercel/production and optional locally.
 
 ## Biome Rules to Know
 
 - **`noDefaultExport`** is an error everywhere except `layout.tsx`, `page.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx` (and `next.config.ts`)
 - **`useFilenamingConvention`** enforces `kebab-case` for all filenames
-- **`noProcessEnv`** — use `@/env` instead
+- **`noProcessEnv`** — use `ENV` from `varlock/env` instead
 - **`noCommonJs`** — ESM only
 - Line ending: **LF** (enforced by formatter)
 - `biome.json`'s `$schema` version must match the installed `@biomejs/biome` version in `package.json`, or editor tooling will flag valid options (e.g. `css.parser.tailwindDirectives`) as errors

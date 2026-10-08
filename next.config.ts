@@ -1,7 +1,10 @@
 // @ts-check
 
 /** biome-ignore-all lint/style/noProcessEnv: <process.envを使用する必要がある> */
+import { varlockNextConfigPlugin } from "@varlock/nextjs-integration/plugin";
 import type { NextConfig } from "next";
+
+const withVarlock = varlockNextConfigPlugin();
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
@@ -18,4 +21,4 @@ const nextConfig: NextConfig = {
 };
 
 // biome-ignore lint/style/noDefaultExport: required default export
-export default nextConfig;
+export default withVarlock(nextConfig);

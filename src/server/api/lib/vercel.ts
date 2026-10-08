@@ -1,14 +1,14 @@
 import { Vercel } from "@vercel/sdk";
-import { env } from "@/env";
+import { ENV } from "varlock/env";
 
 const vercel = new Vercel({
-  bearerToken: `Bearer ${env.VERCEL_API_TOKEN}`,
+  bearerToken: `Bearer ${ENV.VERCEL_API_TOKEN}`,
 });
 
 export const getActiveDeployment = async () => {
   const { deployments } = await vercel.deployments.getDeployments({
-    projectId: env.VERCEL_PROJECT_ID,
-    target: env.VERCEL_ENV,
+    projectId: ENV.VERCEL_PROJECT_ID,
+    target: ENV.VERCEL_ENV,
     state: "READY",
     limit: 1,
   });

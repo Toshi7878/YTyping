@@ -1,8 +1,8 @@
 import { ORPCError } from "@orpc/server";
 import { and, desc, eq, inArray, lte, max, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { ENV } from "varlock/env";
 import z from "zod/v4";
-import { env } from "@/env";
 import { uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import {
@@ -79,7 +79,7 @@ export const resultRankingRouter = {
   }),
 
   register: protectedProcedure.input(CreateResultSchema).handler(async ({ input, context }) => {
-    if (env.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
+    if (ENV.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
     const { db, session } = context;
     const { id: userId } = session.user;
     const { mapId, lineResults, status } = input;

@@ -3,6 +3,7 @@ packages:
 
 overrides:
   better-call: 1.3.7
+  '@next/env': npm:@varlock/nextjs-integration
 
 allowBuilds:
   '@prisma/client': false
