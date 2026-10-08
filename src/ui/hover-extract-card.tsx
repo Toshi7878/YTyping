@@ -128,6 +128,7 @@ export const HoverExtractCard = ({
             {children}
             <HoverCardPrimitive.Portal>
               <HoverCardPrimitive.Positioner
+                className="z-50"
                 collisionAvoidance={{ side: "none", align: "none", fallbackAxisSide: "none" }}
                 align="start"
                 side="bottom"
@@ -135,7 +136,7 @@ export const HoverExtractCard = ({
               >
                 <HoverCardPrimitive.Popup
                   className={cn(
-                    "z-10 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
+                    "rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
                     cardHoverContentClassName,
                   )}
                   style={{ width: cardWidth }}

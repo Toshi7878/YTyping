@@ -33,7 +33,7 @@ export const NotificationMapCard = ({ map, user, className, title }: Notificatio
     <HoverExtractCard
       variant="map"
       cardClassName="block group/card"
-      cardHoverContentClassName="py-2 z-50"
+      cardHoverContentClassName="py-2"
       cardHeader={
         <CardHeader className={cn("flex flex-wrap items-center gap-1 rounded-t-md px-2 py-1.5 text-sm", className)}>
           <UserNameLinkText
@@ -177,16 +177,16 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
       <Badge variant={kanaRatio === 0 ? "english" : inputMode === "roma" ? "roma" : "kana"} size="xs">
         {kanaRatio === 0 ? "英語" : inputMode === "roma" ? "ローマ字" : "かな"}
       </Badge>
-      <div className="flex items-center gap-2 text-xs">
+      <div className="flex items-center gap-2">
         <span className="text-muted-foreground">最大</span>
         <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
       </div>
-      <div className="flex items-center gap-2 text-xs">
+      <div className="flex items-center gap-2">
         <span className="text-muted-foreground">打鍵数</span>
         <span className="font-semibold tabular-nums">{totalNotes}打</span>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="mt-2 flex w-full flex-wrap items-center gap-2">
         {kanaRatio > 0 && (
           <>
             <span className="text-muted-foreground">ひらがな</span>

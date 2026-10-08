@@ -76,10 +76,7 @@ function SelectContent({
         >
           <SelectScrollUpButton />
           <SelectPrimitive.List
-            className={cn(
-              "p-1",
-              !alignItemWithTrigger && "h-(--anchor-height) w-full min-w-(--anchor-width) scroll-my-1",
-            )}
+            className={cn("p-1", !alignItemWithTrigger && "w-full min-w-(--anchor-width) scroll-my-1")}
           >
             {children}
           </SelectPrimitive.List>

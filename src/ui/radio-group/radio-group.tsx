@@ -16,7 +16,7 @@ const radioGroupItemVariants = cva(
   [
     "border-foreground text-primary focus-visible:border-ring focus-visible:ring-ring/50",
     "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-    "dark:bg-input/30 aspect-square shrink-0 cursor-pointer rounded-full border shadow-xs",
+    "dark:bg-input/30 relative aspect-square shrink-0 cursor-pointer rounded-full border shadow-xs",
     "transition-[color,box-shadow] outline-none focus-visible:ring-[3px]",
     "data-disabled:cursor-not-allowed data-disabled:opacity-50",
   ],
@@ -34,7 +34,7 @@ const radioGroupItemVariants = cva(
   },
 );
 
-const radioGroupIndicatorVariants = cva("fill-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2", {
+const radioGroupIndicatorVariants = cva("fill-primary", {
   variants: {
     size: {
       sm: "size-1.5",
@@ -58,7 +58,10 @@ function RadioGroupItem<Value = unknown>({ className, size, ...props }: RadioGro
       className={cn(radioGroupItemVariants({ size }), className)}
       {...props}
     >
-      <RadioPrimitive.Indicator data-slot="radio-group-indicator" className="relative flex items-center justify-center">
+      <RadioPrimitive.Indicator
+        data-slot="radio-group-indicator"
+        className="absolute inset-0 flex items-center justify-center"
+      >
         <CircleIcon className={cn(radioGroupIndicatorVariants({ size }))} />
       </RadioPrimitive.Indicator>
     </RadioPrimitive.Root>
