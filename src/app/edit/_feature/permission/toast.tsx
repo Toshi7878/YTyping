@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import { useSession } from "@/auth/client";
+import { toast } from "@/ui/toast";
 import { useCreatorId } from "../provider";
 import { hasMapUploadPermission } from "./has-permission";
 

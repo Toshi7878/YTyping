@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
@@ -9,6 +8,7 @@ import { useToggleClapMutation } from "@/shared/result/clap";
 import { Button } from "@/ui/button";
 import { overlay } from "@/ui/overlay";
 import { PopoverContent } from "@/ui/popover";
+import { toast } from "@/ui/toast";
 import { cn } from "@/utils/cn";
 import { setInitialLineResults } from "../../atoms/line-results";
 import { setReplayRankingResult } from "../../atoms/replay";

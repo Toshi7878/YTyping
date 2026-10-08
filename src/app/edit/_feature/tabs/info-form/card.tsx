@@ -6,7 +6,6 @@ import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
-import { toast } from "sonner";
 import z from "zod";
 import { idb } from "@/app/edit/_feature/indexed-db";
 import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
@@ -34,6 +33,7 @@ import {
 import { Button } from "@/ui/button";
 import { CardWithContent } from "@/ui/card";
 import { useAppForm, withForm } from "@/ui/form-field-item";
+import { toast } from "@/ui/toast";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 import { useDebounce } from "@/utils/hooks/use-debounce";

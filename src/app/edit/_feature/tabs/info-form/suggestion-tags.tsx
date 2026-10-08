@@ -1,8 +1,8 @@
 import type { VariantProps } from "class-variance-authority";
-import { toast } from "sonner";
 import type { badgeVariants } from "@/ui/badge";
 import { Badge } from "@/ui/badge";
 import { Skeleton } from "@/ui/skeleton";
+import { toast } from "@/ui/toast";
 import { cn } from "@/utils/cn";
 import { TAG_MAX_LENGTH } from "./card";
 

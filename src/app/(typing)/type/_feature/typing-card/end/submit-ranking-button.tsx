@@ -1,10 +1,10 @@
 "use client";
 
-import { toast } from "sonner";
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getLineResults } from "@/app/(typing)/type/_feature/atoms/line-results";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
+import { toast } from "@/ui/toast";
 import type { TypingLineResult } from "@/validator/result/result";
 import { getTypingSubstatus, type TypingSubstatus } from "../../atoms/substatus";
 import { getMapId } from "../../provider";

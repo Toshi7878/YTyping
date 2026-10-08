@@ -3,7 +3,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import type z from "zod/v4";
 import { orpc } from "@/orpc/provider";
 import { REPORT_REASON_TYPES } from "@/server/drizzle/schema";
@@ -12,6 +11,7 @@ import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
 import { ReportIconButton } from "@/ui/icon-button";
+import { toast } from "@/ui/toast";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { userReportFormSchema } from "@/validator/user/report";
 

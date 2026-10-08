@@ -1,5 +1,4 @@
 import { defaultShouldDehydrateQuery, environmentManager, QueryClient } from "@tanstack/react-query";
-import SuperJSON from "superjson";
 
 export const makeQueryClient = () =>
   new QueryClient({
@@ -8,7 +7,6 @@ export const makeQueryClient = () =>
         staleTime: environmentManager.isServer() ? "static" : 30 * 1000,
       },
       dehydrate: {
-        serializeData: SuperJSON.serialize,
         shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === "pending",
         shouldRedactErrors: () => {
           // We should not catch Next.js server errors
@@ -18,9 +16,6 @@ export const makeQueryClient = () =>
           // with better digests.
           return false;
         },
-      },
-      hydrate: {
-        deserializeData: SuperJSON.deserialize,
       },
     },
   });

@@ -10,9 +10,6 @@ export const entries = [
     filePath: "./scripts/types-entry-global.ts",
     outFile: "./dist/index.d.ts",
     noCheck: true,
-    libraries: {
-      inlinedLibraries: ["sonner"],
-    },
     output: {
       inlineDeclareGlobals: true,
     },

@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { toast } from "sonner";
 import { getRawMap, setRawMapAction } from "@/app/edit/_feature/map-table/map-reducer";
 import { timeValidate } from "@/app/edit/_feature/tabs/editor/time-validate";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { Label } from "@/ui/label";
+import { toast } from "@/ui/toast";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { dispatchEditHistory } from "../../map-table/history";
 import { setCanUpload } from "../info-form/card";

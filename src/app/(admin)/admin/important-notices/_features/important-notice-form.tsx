@@ -2,12 +2,12 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 import type z from "zod/v4";
 import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
+import { toast } from "@/ui/toast";
 import { importantNoticeFormSchema } from "@/validator/important-notice";
 import { UserMultiSelectFormField } from "./user-multi-select";
 

@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
 import { FileImportButton } from "@/ui/file-import-button";
 import { overlay } from "@/ui/overlay";
+import { toast } from "@/ui/toast";
 import { normalizeSymbols } from "@/utils/string";
 import { decodeText } from "@/utils/text-decoder";
 import { LrcSchema } from "@/validator/map/map";

@@ -1,7 +1,7 @@
 "use client";
-import { toast } from "sonner";
 import { getSession } from "@/auth/client";
 import { setTypingLinkMode } from "@/store/typing-link-mode";
+import { toast } from "@/ui/toast";
 
 const ytypingGlobal = {
   get toast(): typeof toast {

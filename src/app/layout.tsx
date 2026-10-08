@@ -11,7 +11,7 @@ import { caller } from "@/orpc/server";
 import { THEME_LIST } from "@/theme/const";
 import { ConfirmDialogHost } from "@/ui/confirm-dialog";
 import { OverlayHost } from "@/ui/overlay";
-import { Toaster } from "@/ui/sonner";
+import { Toaster } from "@/ui/toast";
 import { TooltipProvider } from "@/ui/tooltip";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
 import { AppAtomsHydrator } from "./_layout/hydrate";

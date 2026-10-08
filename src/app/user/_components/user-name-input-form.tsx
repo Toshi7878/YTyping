@@ -4,12 +4,12 @@ import { useSelector } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useSession } from "@/auth/client";
 import { getORPCErrorCode } from "@/orpc/error";
 import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { useAppForm } from "@/ui/form-field-item";
+import { toast } from "@/ui/toast";
 import { UserNameSchema } from "@/validator/user/profile";
 
 interface UserNameInputFormProps {

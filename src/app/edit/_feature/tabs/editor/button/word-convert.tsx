@@ -1,11 +1,11 @@
 import { atom, useAtomValue } from "jotai";
-import { toast } from "sonner";
 import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
 import { store, useCreatorId } from "@/app/edit/_feature/provider";
 import { useSession } from "@/auth/client";
 import { getQueryClient, orpc } from "@/orpc/provider";
 import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
 import { Button } from "@/ui/button";
+import { toast } from "@/ui/toast";
 import {
   katakanaToHiragana,
   normalizeExclamationQuestionMarks,

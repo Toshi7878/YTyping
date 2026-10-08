@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { orpc } from "@/orpc/provider";
 import { UserNameLinkText } from "@/shared/user/user-name-link";
 import { Badge } from "@/ui/badge";
@@ -9,6 +8,7 @@ import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader } from "@/ui/card";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table/table";
+import { toast } from "@/ui/toast";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { formatDate } from "@/utils/date";
 import { ImportantNoticeForm } from "./important-notice-form";

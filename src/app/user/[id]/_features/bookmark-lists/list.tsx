@@ -5,7 +5,6 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
 import { getSession, useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
@@ -25,6 +24,7 @@ import {
 } from "@/ui/dropdown-menu";
 import { useAppForm } from "@/ui/form-field-item";
 import { ThumbnailImage } from "@/ui/image";
+import { toast } from "@/ui/toast";
 import { Small } from "@/ui/typography";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { MapBookmarkListFormSchema } from "@/validator/map/bookmark";

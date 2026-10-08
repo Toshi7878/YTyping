@@ -3,7 +3,6 @@
 import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
@@ -16,6 +15,7 @@ import { ThumbnailImage } from "@/ui/image";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import { Separator } from "@/ui/separator";
 import { Spinner } from "@/ui/spinner";
+import { toast } from "@/ui/toast";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H4, Small } from "@/ui/typography";
 import { cn } from "@/utils/cn";

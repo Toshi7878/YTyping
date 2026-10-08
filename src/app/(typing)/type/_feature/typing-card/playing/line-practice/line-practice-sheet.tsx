@@ -2,7 +2,6 @@
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { atom } from "jotai";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession, useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
@@ -10,6 +9,7 @@ import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { Table, TableBody } from "@/ui/table/table";
+import { toast } from "@/ui/toast";
 import type { TypingLineResult } from "@/validator/result/result";
 import {
   setInitialLineResults,
