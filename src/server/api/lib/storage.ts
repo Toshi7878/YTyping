@@ -1,4 +1,4 @@
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 import { downloadPublicFromR2, upsertPublicToR2 } from "@/server/api/lib/r2-storage";
 import { downloadPublicFromSupabase, upsertPublicToSupabase } from "./supabase";
 
@@ -11,7 +11,7 @@ export interface FileUploadParams {
 }
 
 export const uploadPublicFile = async (params: FileUploadParams): Promise<void> => {
-  if (ENV.R2_ACCOUNT_ID) {
+  if (env.R2_ACCOUNT_ID) {
     return upsertPublicToR2(params);
   }
 
@@ -19,7 +19,7 @@ export const uploadPublicFile = async (params: FileUploadParams): Promise<void> 
 };
 
 export const downloadPublicFile = async (key: string): Promise<Uint8Array | undefined> => {
-  if (ENV.R2_ACCOUNT_ID) {
+  if (env.R2_ACCOUNT_ID) {
     return downloadPublicFromR2({ key });
   }
 

@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { ENV } from "varlock/env";
 import { getSession } from "@/auth/server";
+import { env } from "@/env";
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
   const redirect = (path: string) => NextResponse.redirect(new URL(path, nextUrl));
 
   // メンテナンスモードは最優先（ログイン状態に関わらず）
-  const isMaintenanceMode = ENV.NEXT_PUBLIC_MAINTENANCE_MODE;
+  const isMaintenanceMode = env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
   if (isMaintenanceMode) {
     if (pathname !== "/maintenance") return redirect("/maintenance");
     return NextResponse.next();

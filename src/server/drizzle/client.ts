@@ -1,11 +1,11 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 import { relations } from "./relations";
 
 const globalForDb = globalThis as unknown as { client: postgres.Sql | undefined };
 
-const client = globalForDb.client ?? postgres(ENV.DATABASE_URL, { prepare: false });
+const client = globalForDb.client ?? postgres(env.DATABASE_URL, { prepare: false });
 globalForDb.client = client;
 
 export const db = drizzle({ relations, client });

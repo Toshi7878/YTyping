@@ -1,9 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 import { SUPABASE_PUBLIC_BUCKET } from "@/server/drizzle/const";
 import type { FileUploadParams } from "./storage";
 
-const supabase = createClient(ENV.NEXT_PUBLIC_SUPABASE_URL, ENV.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 export const upsertPublicToSupabase = async ({
   key,

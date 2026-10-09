@@ -1,10 +1,10 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 import type { YouTubeInfo } from "./youtube";
 
 export const generateMapInfoWithGemini = async (youtubeInfo: YouTubeInfo) => {
-  const google = createGoogleGenerativeAI({ apiKey: ENV.GCP_AUTH_KEY });
+  const google = createGoogleGenerativeAI({ apiKey: env.GCP_AUTH_KEY });
 
   const { text } = await generateText({
     model: google("gemini-flash-lite-latest"),

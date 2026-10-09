@@ -1,11 +1,11 @@
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 import { JST_OFFSET } from "@/utils/date";
 import { getActiveDeployment } from "../lib/vercel";
 import { publicProcedure } from "../orpc";
 
 export const vercelRouter = {
   getActiveBuildingAt: publicProcedure.handler(async () => {
-    if (!ENV.VERCEL) return;
+    if (!env.VERCEL) return;
 
     const { buildingAt } = await getActiveDeployment();
     if (!buildingAt) return;

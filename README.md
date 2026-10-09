@@ -44,10 +44,6 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=""
 SUPABASE_SECRET_KEY=""
 ```
 
-環境変数は [varlock](https://varlock.dev) で管理しています。変数の型・必須条件は `.env.schema`（値は含まない）で宣言し、値は `.env` に書きます。不足や型の誤りは起動時・ビルド時に検出されます。
-
-`AUTH_SECRET`（better-authの署名用シークレット）はローカルでは未設定でも動作します。本番（Vercel）では必須です。`openssl rand -base64 32` などで生成してください。
-
 ## Docker Desktopをインストール
 
 <https://docs.docker.com/desktop/#next-steps>

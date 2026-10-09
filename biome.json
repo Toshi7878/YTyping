@@ -5,9 +5,6 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
-  "files": {
-    "includes": ["**", "!env.d.ts"]
-  },
   "formatter": {
     "indentStyle": "space",
     "lineWidth": 120,

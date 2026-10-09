@@ -1,9 +1,9 @@
 import { ORPCError } from "@orpc/server";
 import { google } from "googleapis";
-import { ENV } from "varlock/env";
+import { env } from "@/env";
 
 export const getYouTubeInfo = async (videoId: string) => {
-  const apiKey = ENV.GCP_AUTH_KEY;
+  const apiKey = env.GCP_AUTH_KEY;
   if (!apiKey) {
     throw new ORPCError("INTERNAL_SERVER_ERROR", { message: "YouTube情報の取得に失敗しました" });
   }
