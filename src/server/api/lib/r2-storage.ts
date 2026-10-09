@@ -1,15 +1,15 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { env } from "@/env";
+import { ENV } from "varlock/env";
 import type { FileUploadParams } from "./storage";
 
 const R2 =
-  env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_BUCKET_NAME
+  ENV.R2_ACCOUNT_ID && ENV.R2_ACCESS_KEY_ID && ENV.R2_SECRET_ACCESS_KEY && ENV.R2_BUCKET_NAME
     ? new S3Client({
         region: "auto",
-        endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        endpoint: `https://${ENV.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
         credentials: {
-          accessKeyId: env.R2_ACCESS_KEY_ID,
-          secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+          accessKeyId: ENV.R2_ACCESS_KEY_ID,
+          secretAccessKey: ENV.R2_SECRET_ACCESS_KEY,
         },
       })
     : null;
@@ -20,7 +20,7 @@ export const upsertPublicToR2 = async ({ key, body, contentType }: FileUploadPar
   }
 
   const command = new PutObjectCommand({
-    Bucket: env.R2_BUCKET_NAME,
+    Bucket: ENV.R2_BUCKET_NAME,
     Key: key,
     Body: body,
     ContentType: contentType,
@@ -35,7 +35,7 @@ export const downloadPublicFromR2 = async ({ key }: { key: string }): Promise<Ui
   }
 
   const command = new GetObjectCommand({
-    Bucket: env.R2_BUCKET_NAME,
+    Bucket: ENV.R2_BUCKET_NAME,
     Key: key,
   });
 

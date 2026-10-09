@@ -1,7 +1,7 @@
-import { env } from "@/env";
+import { ENV } from "varlock/env";
 
 export const getBaseUrl = () => {
   if (typeof window !== "undefined") return window.location.origin;
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
-  return `http://localhost:${env.PORT ?? 3000}`;
+  if (ENV.VERCEL_URL) return `https://${ENV.VERCEL_URL}`;
+  return `http://localhost:${ENV.PORT ?? 3000}`;
 };

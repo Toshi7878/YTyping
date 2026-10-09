@@ -1,21 +1,21 @@
 import { ORPCError } from "@orpc/server";
 import { desc, eq, sql } from "drizzle-orm";
+import { ENV } from "varlock/env";
 import z from "zod";
-import { env } from "@/env";
 import { fixWordEditLogs, readingConversionDict } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../orpc";
 
 export const morphRouter = {
   tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).handler(async ({ input }) => {
-    if (env.SUDACHI_API_KEY && env.SUDACHI_API_URL) {
+    if (ENV.SUDACHI_API_KEY && ENV.SUDACHI_API_URL) {
       return tokenizeSentenceWithSudachi({
         sentence: input.sentence,
-        apiUrl: env.SUDACHI_API_URL,
-        apiKey: env.SUDACHI_API_KEY,
+        apiUrl: ENV.SUDACHI_API_URL,
+        apiKey: ENV.SUDACHI_API_KEY,
       });
     }
 
-    if (env.YAHOO_APP_ID) {
+    if (ENV.YAHOO_APP_ID) {
       return tokenizeSentenceWithYahoo(input.sentence);
     }
 
@@ -85,7 +85,7 @@ async function tokenizeSentenceWithSudachi({
 }
 
 async function tokenizeSentenceWithYahoo(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
-  const apiKey = env.YAHOO_APP_ID;
+  const apiKey = ENV.YAHOO_APP_ID;
   const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
 
   const response = await fetch(apiUrl, {

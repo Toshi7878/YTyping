@@ -1,11 +1,11 @@
 import { ORPCError } from "@orpc/server";
+import { ENV } from "varlock/env";
 import z from "zod";
-import { env } from "@/env";
 import { generateMapInfoWithGemini } from "../lib/google-ai";
 import { getYouTubeInfo } from "../lib/youtube";
 import { protectedProcedure } from "../orpc";
 
-const apiKey = env.GCP_AUTH_KEY;
+const apiKey = ENV.GCP_AUTH_KEY;
 
 export const aiRouter = {
   generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).handler(async ({ input }) => {

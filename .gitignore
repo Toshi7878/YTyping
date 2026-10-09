@@ -19,6 +19,9 @@
 /dist
 
 .env*
+# スキーマ（変数の宣言のみ、値は含まない）はコミットする
+!.env.schema
+!.env.example
 # vercel
 .vercel
 
