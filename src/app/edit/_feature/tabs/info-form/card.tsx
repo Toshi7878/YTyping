@@ -401,7 +401,13 @@ const UpsertButton = withForm({
     if (!hasUploadPermission) return null;
 
     return (
-      <Button size="xl" loading={isSubmitting} disabled={(!isDirty && !canUpload) || isSubmitting} className="w-52">
+      <Button
+        type="submit"
+        size="xl"
+        loading={isSubmitting}
+        disabled={(!isDirty && !canUpload) || isSubmitting}
+        className="w-52"
+      >
         保存
       </Button>
     );
