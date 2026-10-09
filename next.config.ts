@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   compiler: { removeConsole: process.env.NODE_ENV === "production" },
   images: {
-    minimumCacheTTL: 2678400, // 31 days
+    minimumCacheTTL: 2678400, // 31 day
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
       { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi_webp/**" },
