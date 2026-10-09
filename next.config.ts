@@ -10,8 +10,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
   reactCompiler: true,
-  // 巨大なSDK(googleapis など)はバンドルせず node_modules から読み込む（ビルド時のメモリ削減）
-  serverExternalPackages: ["googleapis", "@vercel/sdk"],
   compiler: { removeConsole: process.env.NODE_ENV === "production" },
   images: {
     minimumCacheTTL: 2678400, // 31 day
