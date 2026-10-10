@@ -28,12 +28,19 @@ export const buildUserMenuLinkItems = (session: Session) => {
     { title: "ユーザー設定", href: "/user/settings" },
   ];
 
-  if (session.user.role === "ADMIN") {
-    menus.push({ title: "管理者メニュー", href: "/admin/reports" });
-    menus.push({ title: "重要なお知らせ管理", href: "/admin/important-notices" });
-    menus.push({ title: "BANした記録一覧", href: "/admin/invalid-results" });
-    menus.push({ title: "お問い合わせ管理", href: "/admin/contacts" });
-  }
+  return menus;
+};
+
+/** 管理者のみ。ユーザーメニューでは区切り線を挟んで表示する */
+export const buildAdminMenuLinkItems = (session: Session) => {
+  if (session.user.role !== "ADMIN") return [];
+
+  const menus: HeaderMenu[] = [
+    { title: "通報管理", href: "/admin/reports" },
+    { title: "重要なお知らせ管理", href: "/admin/important-notices" },
+    { title: "BANした記録一覧", href: "/admin/invalid-results" },
+    { title: "お問い合わせ管理", href: "/admin/contacts" },
+  ];
 
   return menus;
 };

@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { cn } from "@/utils/cn";
-import { buildUserMenuLinkItems, CONTACT_MENU_ITEM } from "../menu-items";
+import { buildAdminMenuLinkItems, buildUserMenuLinkItems, CONTACT_MENU_ITEM } from "../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -26,6 +26,7 @@ interface UserMenuProps {
 export const UserMenu = ({ session, className }: UserMenuProps) => {
   const { data: ppRank } = useSuspenseQuery(orpc.ranking.pp.getRankByUserId.queryOptions({ input: session.user.id }));
   const userMenuLinkItems = buildUserMenuLinkItems(session);
+  const adminMenuLinkItems = buildAdminMenuLinkItems(session);
 
   return (
     <DropdownMenu modal={false}>
@@ -48,6 +49,17 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
         ))}
+        {adminMenuLinkItems.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            {adminMenuLinkItems.map((item) => (
+              <Link href={item.href} key={item.title}>
+                <DropdownMenuItem>{item.title}</DropdownMenuItem>
+              </Link>
+            ))}
+            <DropdownMenuSeparator />
+          </>
+        )}
         <ThemeDropdownSubmenu />
         <Link href={CONTACT_MENU_ITEM.href}>
           <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>

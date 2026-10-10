@@ -13,7 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
-import { buildUserMenuLinkItems, CONTACT_MENU_ITEM, LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
+import {
+  buildAdminMenuLinkItems,
+  buildUserMenuLinkItems,
+  CONTACT_MENU_ITEM,
+  LEFT_LINKS,
+  LEFT_MENU_LINK_ITEMS,
+} from "../menu-items";
 import { LogOutDropdownItem, SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -82,6 +88,7 @@ const MenuDropdownItems = () => {
 
 const UserMenuDropdownItems = ({ session }: { session: Session }) => {
   const userMenuLinkItems = buildUserMenuLinkItems(session);
+  const adminMenuLinkItems = buildAdminMenuLinkItems(session);
   return (
     <>
       {userMenuLinkItems.map((item) => (
@@ -89,6 +96,17 @@ const UserMenuDropdownItems = ({ session }: { session: Session }) => {
           <DropdownMenuItem>{item.title}</DropdownMenuItem>
         </Link>
       ))}
+      {adminMenuLinkItems.length > 0 && (
+        <>
+          <DropdownMenuSeparator />
+          {adminMenuLinkItems.map((item) => (
+            <Link href={item.href} key={item.title}>
+              <DropdownMenuItem>{item.title}</DropdownMenuItem>
+            </Link>
+          ))}
+          <DropdownMenuSeparator />
+        </>
+      )}
       <Link href={CONTACT_MENU_ITEM.href}>
         <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
       </Link>

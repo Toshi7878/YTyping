@@ -2,13 +2,14 @@ import { ORPCError } from "@orpc/server";
 import { and, desc, eq, exists, gt, ilike, inArray, isNotNull, isNull, notExists, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
+import type { TXType } from "@/server/drizzle/client";
 import {
   importantNoticeAcknowledgements,
   importantNotices,
   importantNoticeTargets,
   users,
 } from "@/server/drizzle/schema";
-import { importantNoticeCreateApiSchema } from "@/validator/important-notice";
+import { importantNoticeCreateApiSchema, importantNoticeUpdateApiSchema } from "@/validator/important-notice";
 import { adminProcedure, type ORPCContext, protectedProcedure } from "../orpc";
 
 /** 全ユーザー向け、またはユーザーが宛先に指定されているお知らせ */
@@ -31,6 +32,23 @@ const buildDeliveredToUserCondition = (db: ORPCContext["db"], userId: number) =>
     or(isNull(importantNotices.expiresAt), gt(importantNotices.expiresAt, new Date())),
     buildAudienceCondition(db, userId),
   );
+
+/** 宛先ユーザー（SPECIFIC のときのみ）を保存する。既存の宛先は呼び出し側で削除しておく */
+const replaceTargets = async (
+  tx: TXType,
+  { noticeId, audience, targetUserIds }: { noticeId: string; audience: "ALL" | "SPECIFIC"; targetUserIds: number[] },
+) => {
+  if (audience !== "SPECIFIC") return;
+
+  const uniqueTargetUserIds = [...new Set(targetUserIds)];
+
+  const foundUsers = await tx.select({ id: users.id }).from(users).where(inArray(users.id, uniqueTargetUserIds));
+  if (foundUsers.length !== uniqueTargetUserIds.length) {
+    throw new ORPCError("NOT_FOUND", { message: "存在しないユーザーが含まれています" });
+  }
+
+  await tx.insert(importantNoticeTargets).values(uniqueTargetUserIds.map((userId) => ({ noticeId, userId })));
+};
 
 export const importantNoticeRouter = {
   /** ログイン中のユーザー宛てで、期限内かつ未確認のお知らせ */
@@ -162,17 +180,36 @@ export const importantNoticeRouter = {
         expiresAt: expiresAt ?? null,
       });
 
-      if (audience === "SPECIFIC") {
-        const uniqueTargetUserIds = [...new Set(targetUserIds)];
+      await replaceTargets(tx, { noticeId, audience, targetUserIds });
+    });
+  }),
 
-        const foundUsers = await tx.select({ id: users.id }).from(users).where(inArray(users.id, uniqueTargetUserIds));
+  update: adminProcedure.input(importantNoticeUpdateApiSchema).handler(async ({ input, context }) => {
+    const { db } = context;
+    const { noticeId, body, audience, level, expiresAt, targetUserIds, linkUrl, linkLabel } = input;
 
-        if (foundUsers.length !== uniqueTargetUserIds.length) {
-          throw new ORPCError("NOT_FOUND", { message: "存在しないユーザーが含まれています" });
-        }
+    if (audience === "SPECIFIC" && targetUserIds.length === 0) {
+      throw new ORPCError("BAD_REQUEST", { message: "送信対象のユーザーを1人以上指定してください" });
+    }
 
-        await tx.insert(importantNoticeTargets).values(uniqueTargetUserIds.map((userId) => ({ noticeId, userId })));
-      }
+    await db.transaction(async (tx) => {
+      const updated = await tx
+        .update(importantNotices)
+        .set({
+          body,
+          audience,
+          level,
+          linkUrl: linkUrl ?? null,
+          linkLabel: linkUrl ? linkLabel || null : null,
+          expiresAt: expiresAt ?? null,
+          updatedAt: new Date(),
+        })
+        .where(eq(importantNotices.id, noticeId))
+        .returning({ id: importantNotices.id });
+      if (updated.length === 0) throw new ORPCError("NOT_FOUND", { message: "お知らせが見つかりません" });
+
+      await tx.delete(importantNoticeTargets).where(eq(importantNoticeTargets.noticeId, noticeId));
+      await replaceTargets(tx, { noticeId, audience, targetUserIds });
     });
   }),
 

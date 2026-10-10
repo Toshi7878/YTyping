@@ -1,18 +1,16 @@
 "use client";
 
 import type { Cell, CellData, ColumnDef, RowData, TableFeatures } from "@tanstack/react-table";
-import { columnSizingFeature, tableFeatures, useTable } from "@tanstack/react-table";
+import { useTable } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";
 import { Spinner } from "../spinner";
+import { type DataTableFeatures, dataTableFeatures } from "./data-table-features";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
-// 使用する機能のみ登録(ソート・フィルタ等は未登録)
-const features = tableFeatures({ columnSizingFeature });
-
-export type DataTableColumnDef<TData extends RowData> = ColumnDef<typeof features, TData>;
+type DataTableColumnDef<TData extends RowData> = ColumnDef<DataTableFeatures, TData>;
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<
@@ -51,7 +49,7 @@ export function DataTable<TData extends RowData>({
   rowWrapper,
   loading,
 }: DataTableProps<TData>) {
-  const table = useTable({ features, columns, data });
+  const table = useTable({ features: dataTableFeatures, columns, data });
 
   return (
     <div className={cn("overflow-hidden rounded-md border", className)}>

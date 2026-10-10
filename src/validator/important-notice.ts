@@ -39,3 +39,5 @@ export const importantNoticeCreateApiSchema = z.object({
   linkUrl: z.string().trim().max(1024).refine(isAllowedNoticeLinkUrl).optional(),
   linkLabel: z.string().trim().max(100).optional(),
 });
+
+export const importantNoticeUpdateApiSchema = importantNoticeCreateApiSchema.extend({ noticeId: z.string() });

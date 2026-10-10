@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -12,7 +13,8 @@ import { InputModeText } from "@/shared/result/input-mode-text";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
 import { RelativeTime } from "@/ui/relative-time";
-import { DataTable, type DataTableColumnDef } from "@/ui/table/data-table";
+import { DataTable } from "@/ui/table/data-table";
+import type { DataTableFeatures } from "@/ui/table/data-table-features";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 import { useSceneGroupState } from "../../typing-card/typing-card";
@@ -20,6 +22,8 @@ import { setTypingStatus } from "../typing-status/status-cell";
 import { RankingPopoverContent } from "./ranking-menu";
 
 type RankingResult = RouterOutputs["result"]["ranking"]["get"][number];
+
+const columnHelper = createColumnHelper<DataTableFeatures, RankingResult>();
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
@@ -56,10 +60,10 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
   const { id: mapId } = useParams();
   const toggleClap = useToggleClapMutation();
 
-  const columns: DataTableColumnDef<RankingResult>[] = [
-    {
+  const columns = columnHelper.columns([
+    columnHelper.display({
       id: "rank",
-      header: () => "順位",
+      header: "順位",
       size: 10,
 
       cell: ({ row }) => {
@@ -82,16 +86,15 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
           </>
         );
       },
-    },
-    {
-      id: "score",
-      header: () => "Score",
+    }),
+    columnHelper.accessor("score", {
+      header: "Score",
       size: 35,
-      cell: ({ row }) => row.original.score,
-    },
-    {
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.display({
       id: "clearRate",
-      header: () => "クリア率",
+      header: "クリア率",
       size: 40,
       cell: ({ row }) => {
         const { otherStatus } = row.original;
@@ -100,42 +103,42 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
           <ClearRateText clearRate={otherStatus.clearRate} isPerfect={isPerfect} className="pointer-events-none" />
         );
       },
-    },
-    {
+    }),
+    columnHelper.display({
       id: "name",
-      header: () => "名前",
+      header: "名前",
       size: 90,
       cell: ({ row }) => {
         const { name } = row.original.player;
         return <span className="pointer-events-none truncate">{name}</span>;
       },
-    },
-    {
+    }),
+    columnHelper.accessor((row) => row.typeSpeed.kpm, {
       id: "kpm",
-      header: () => "kpm",
+      header: "kpm",
       size: 30,
-      cell: ({ row }) => row.original.typeSpeed.kpm,
-    },
-    {
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.display({
       id: "mode",
-      header: () => "モード",
+      header: "モード",
       size: 55,
       cell: ({ row }) => {
         const { typeCounts } = row.original;
         return <InputModeText typeCounts={typeCounts} />;
       },
-    },
-    {
+    }),
+    columnHelper.display({
       id: "time",
-      header: () => "時間",
+      header: "時間",
       size: 40,
       cell: ({ row }) => <RelativeTime date={row.original.updatedAt} className="pointer-events-none" />,
       meta: {
         cellClassName: () => "hidden sm:table-cell",
         headerClassName: "hidden sm:table-cell",
       },
-    },
-    {
+    }),
+    columnHelper.display({
       id: "clap",
       header: () => <FaHandsClapping size={16} className="size-10 md:size-4" />,
       size: 15,
@@ -163,8 +166,8 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
           toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
         },
       },
-    },
-  ];
+    }),
+  ]);
 
   return (
     <DataTable

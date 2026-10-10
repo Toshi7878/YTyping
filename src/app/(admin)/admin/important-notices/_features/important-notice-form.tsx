@@ -1,9 +1,11 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { useState } from "react";
 import type z from "zod/v4";
 import { orpc } from "@/orpc/provider";
+import type { RouterOutputs } from "@/server/api/root";
 import { IMPORTANT_NOTICE_LEVEL_LABELS } from "@/shared/important-notice/level";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
@@ -14,7 +16,9 @@ import { UserMultiSelectFormField } from "./user-multi-select";
 
 type FormValues = z.infer<typeof importantNoticeFormSchema>;
 
-const defaultValues: FormValues = {
+type ImportantNotice = RouterOutputs["importantNotice"]["list"][number];
+
+const emptyValues: FormValues = {
   body: "",
   audience: "ALL",
   level: "INFO",
@@ -24,15 +28,39 @@ const defaultValues: FormValues = {
   expiresAt: "",
 };
 
-export const ImportantNoticeForm = () => {
+const buildFormValues = (notice?: ImportantNotice): FormValues => {
+  if (!notice) return emptyValues;
+
+  return {
+    body: notice.body,
+    audience: notice.audience,
+    level: notice.level,
+    linkUrl: notice.linkUrl ?? "",
+    linkLabel: notice.linkLabel ?? "",
+    targetUsers: notice.targets.map((target) => ({
+      id: target.userId,
+      name: target.user?.name ?? `ID: ${target.userId}`,
+    })),
+    // datetime-local はローカル時刻の "yyyy-MM-ddTHH:mm" 形式
+    expiresAt: notice.expiresAt ? format(notice.expiresAt, "yyyy-MM-dd'T'HH:mm") : "",
+  };
+};
+
+interface ImportantNoticeFormProps {
+  /** 指定すると編集用になる。未指定なら新規作成 */
+  notice?: ImportantNotice;
+}
+
+export const ImportantNoticeForm = ({ notice }: ImportantNoticeFormProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const isEdit = !!notice;
 
   const form = useAppForm({
     validators: { onChange: importantNoticeFormSchema },
-    defaultValues,
+    defaultValues: buildFormValues(notice),
     onSubmit: ({ value }) => {
-      create.mutate({
+      const payload = {
         body: value.body,
         audience: value.audience,
         level: value.level,
@@ -40,7 +68,10 @@ export const ImportantNoticeForm = () => {
         linkLabel: value.linkLabel || undefined,
         targetUserIds: value.audience === "SPECIFIC" ? value.targetUsers.map((u) => u.id) : [],
         expiresAt: value.expiresAt ? new Date(value.expiresAt) : undefined,
-      });
+      };
+
+      if (notice) update.mutate({ noticeId: notice.id, ...payload });
+      else create.mutate(payload);
     },
   });
 
@@ -56,17 +87,39 @@ export const ImportantNoticeForm = () => {
     }),
   );
 
+  const update = useMutation(
+    orpc.importantNotice.update.mutationOptions({
+      onSuccess: async () => {
+        toast.success("重要なお知らせを更新しました");
+        await queryClient.invalidateQueries({ queryKey: orpc.importantNotice.key() });
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
+
   const handleOpenChange = (next: boolean) => {
-    if (!next) form.reset();
+    // 開くたびに、最新のお知らせの内容（新規作成なら空）に戻す
+    form.reset(buildFormValues(notice));
     setOpen(next);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger render={<Button>新規作成</Button>} />
-      <DialogContent className="max-w-lg">
+      <DialogTrigger
+        render={
+          isEdit ? (
+            <Button size="sm" variant="outline">
+              編集
+            </Button>
+          ) : (
+            <Button>新規作成</Button>
+          )
+        }
+      />
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>重要なお知らせを作成</DialogTitle>
+          <DialogTitle>{isEdit ? "重要なお知らせを編集" : "重要なお知らせを作成"}</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -143,8 +196,8 @@ export const ImportantNoticeForm = () => {
             <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
               キャンセル
             </Button>
-            <Button type="submit" disabled={create.isPending}>
-              作成する
+            <Button type="submit" disabled={create.isPending || update.isPending}>
+              {isEdit ? "更新する" : "作成する"}
             </Button>
           </DialogFooter>
         </form>

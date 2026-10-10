@@ -26,7 +26,7 @@ export const ImportantNoticeHistoryDialog = ({ userId }: ImportantNoticeHistoryD
       <TooltipWrapper label="重要なお知らせ履歴を表示 (この表示は他のユーザーには表示されません)" asChild>
         <DialogTrigger render={<ImportantNoticeIconButton />} />
       </TooltipWrapper>
-      <DialogContent className="max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>重要なお知らせ履歴</DialogTitle>
         </DialogHeader>
@@ -56,7 +56,7 @@ export const ImportantNoticeHistoryDialog = ({ userId }: ImportantNoticeHistoryD
                     <Badge variant="default">未確認</Badge>
                   )}
                 </div>
-                <p className="whitespace-pre-wrap break-words">{notice.body}</p>
+                <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{notice.body}</p>
                 <ImportantNoticeLinkButton linkUrl={notice.linkUrl} linkLabel={notice.linkLabel} className="mt-1" />
               </div>
             );
