@@ -6,6 +6,13 @@ export const KPM_LIMIT = { min: 0, max: 1200 };
 export const CLEAR_RATE_LIMIT = { min: 0, max: 100 };
 export const PLAY_SPEED_LIMIT = { min: 1, max: 2 };
 
+export const RESULT_SORT_OPTIONS = ["updatedAt", "type-count", "max-combo", "clap-count", "pp"] as const;
+
+export const resultSortSchema = z.object({
+  type: z.enum(RESULT_SORT_OPTIONS).nullish(),
+  isDesc: z.boolean().nullish(),
+});
+
 export const ResultListFilterSchema = z.object({
   mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullish(),
   minKpm: z.number().nullish(),
@@ -22,5 +29,5 @@ export const ResultListFilterSchema = z.object({
 });
 
 export const SelectResultListApiSchema = z
-  .object({ cursor: z.number().optional() })
+  .object({ cursor: z.number().optional(), sort: resultSortSchema.nullish() })
   .extend(ResultListFilterSchema.shape);

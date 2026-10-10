@@ -10,7 +10,7 @@ import { ResultCard } from "@/shared/result/list/card/card";
 import { ScrollSpinner } from "@/ui/spinner";
 import { cn } from "@/utils/cn";
 import { usePageCounter } from "@/utils/hooks/intersection";
-import type { ResultListFilterSchema } from "@/validator/result/list";
+import type { ResultListFilterSchema, resultSortSchema } from "@/validator/result/list";
 
 const pageAtom = atom<number>(0);
 const isSearchingAtom = atom<boolean>(false);
@@ -18,16 +18,17 @@ export const useIsSearching = () => useAtomValue(isSearchingAtom);
 
 interface ResultListProps {
   filterParams?: z.input<typeof ResultListFilterSchema>;
+  sort?: z.input<typeof resultSortSchema>;
   atomStore?: Store;
 }
 
-export const ResultList = ({ filterParams = {}, atomStore = getDefaultStore() }: ResultListProps) => {
+export const ResultList = ({ filterParams = {}, sort, atomStore = getDefaultStore() }: ResultListProps) => {
   const [isInitialPageRendered, setIsInitialPageRendered] = useState(false);
   const [currentPage, setCurrentPage] = useAtom(pageAtom, { store: atomStore });
 
   const { data, isFetchedAfterMount, isPlaceholderData, fetchNextPage, hasNextPage } = useInfiniteQuery(
     orpc.result.list.get.infiniteOptions({
-      input: (pageParam) => ({ ...filterParams, cursor: pageParam }),
+      input: (pageParam) => ({ ...filterParams, sort, cursor: pageParam }),
       initialPageParam: undefined as number | undefined,
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,

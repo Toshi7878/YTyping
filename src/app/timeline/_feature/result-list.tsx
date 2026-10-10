@@ -1,8 +1,9 @@
 "use client";
 import { ResultList } from "@/shared/result/list/list";
-import { useResultListFilterQueryStates } from "./search-params";
+import { useResultListFilterQueryStates, useResultListSortQueryState } from "./search-params";
 
 export const TimelineResultList = () => {
   const [filterParams] = useResultListFilterQueryStates();
-  return <ResultList filterParams={filterParams} />;
+  const [sort] = useResultListSortQueryState();
+  return <ResultList filterParams={filterParams} sort={sort} />;
 };

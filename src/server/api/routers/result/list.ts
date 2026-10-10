@@ -1,6 +1,6 @@
 import { ORPCError } from "@orpc/server";
 import type { SQL } from "drizzle-orm";
-import { and, count, desc, eq, gt, gte, ilike, isNotNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, gte, ilike, isNotNull, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import type z from "zod";
@@ -11,7 +11,8 @@ import {
   KPM_LIMIT,
   PLAY_SPEED_LIMIT,
   type RESULT_INPUT_METHOD_TYPES,
-  type ResultListFilterSchema,
+  ResultListFilterSchema,
+  type resultSortSchema,
   SelectResultListApiSchema,
 } from "@/validator/result/list";
 import { type ORPCContext, publicProcedure } from "../../orpc";
@@ -31,7 +32,7 @@ const PAGE_SIZE = 25;
 
 export const resultListRouter = {
   get: publicProcedure.input(SelectResultListApiSchema).handler(async ({ input, context }) => {
-    const { cursor, ...searchInput } = input ?? {};
+    const { cursor, sort, ...searchInput } = input ?? {};
     const { db, session } = context;
 
     const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
@@ -42,27 +43,48 @@ export const resultListRouter = {
       session,
       searchInput,
     )
-      .orderBy(desc(results.updatedAt))
+      .orderBy(...resultOrderBy(sort))
       .limit(limit)
       .offset(offset);
 
     return buildPageResult(formatMapListItem(items));
   }),
 
-  getCount: publicProcedure.input(SelectResultListApiSchema).handler(async ({ input, context }) => {
-    const { cursor, ...searchInput } = input ?? {};
+  getCount: publicProcedure.input(ResultListFilterSchema).handler(async ({ input, context }) => {
     const { db, session } = context;
 
     const baseQuery = buildResultWithMapBaseQuery(
       db.select({ count: count() }).from(results).$dynamic(),
       session,
-      searchInput,
+      input,
     );
 
     const total = await baseQuery.limit(1);
 
     return total[0]?.count ?? 0;
   }),
+};
+
+const resultOrderBy = (sort?: z.output<typeof resultSortSchema> | null) => {
+  const order = (sort?.isDesc ?? true) ? desc : asc;
+
+  switch (sort?.type) {
+    case "type-count":
+      return [
+        order(
+          sql`(${resultStatuses.romaType} + ${resultStatuses.kanaType} + ${resultStatuses.flickType} + ${resultStatuses.englishType} + ${resultStatuses.numType} + ${resultStatuses.spaceType} + ${resultStatuses.symbolType})`,
+        ),
+        order(results.id),
+      ];
+    case "max-combo":
+      return [order(resultStatuses.maxCombo), order(results.id)];
+    case "clap-count":
+      return [order(results.clapCount), order(results.id)];
+    case "pp":
+      return [order(resultStatuses.pp), order(results.id)];
+    default:
+      return [order(results.updatedAt), order(results.id)];
+  }
 };
 
 const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
