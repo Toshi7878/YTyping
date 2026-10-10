@@ -52,11 +52,7 @@ export const changelog = [
   },
   {
     date: "2026-4-29",
-    descriptions: ["難易度カラーの彩度を調整"],
-  },
-  {
-    date: "2026-4-29",
-    descriptions: ["ツールページにYTYping PP Counterを追加"],
+    descriptions: ["難易度カラーの彩度を調整", "ツールページにYTYping PP Counterを追加"],
   },
   {
     date: "2026-4-25",
@@ -323,11 +319,8 @@ export const changelog = [
       "次の歌詞の文字サイズを10%拡大、NEXT kpm文字サイズを10%縮小",
       "エディターで変更ボタンが有効にならないときがある問題を修正",
       "変換辞書が正しく適用されていない問題を修正。unidic辞書を適用",
+      "エディター読み仮名変換辞書をmecab-ipadic-neologdに変更(読み変換精度向上)",
     ],
-  },
-  {
-    date: "2025-4-9",
-    descriptions: ["エディター読み仮名変換辞書をmecab-ipadic-neologdに変更(読み変換精度向上)"],
   },
   {
     date: "2025-4-6",
