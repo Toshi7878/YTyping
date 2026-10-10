@@ -20,10 +20,14 @@ function TooltipContent({
   side,
   align,
   alignOffset,
+  collisionAvoidance,
   children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Popup> &
-  Pick<React.ComponentProps<typeof TooltipPrimitive.Positioner>, "side" | "align" | "alignOffset" | "sideOffset">) {
+  Pick<
+    React.ComponentProps<typeof TooltipPrimitive.Positioner>,
+    "side" | "align" | "alignOffset" | "sideOffset" | "collisionAvoidance"
+  >) {
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Positioner
@@ -32,6 +36,7 @@ function TooltipContent({
         align={align}
         sideOffset={sideOffset}
         alignOffset={alignOffset}
+        collisionAvoidance={collisionAvoidance}
       >
         <TooltipPrimitive.Popup
           data-slot="tooltip-content"

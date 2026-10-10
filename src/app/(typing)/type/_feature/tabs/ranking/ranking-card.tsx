@@ -208,6 +208,8 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
             }
             side="bottom"
             align="end"
+            // 行が表示領域からはみ出すと align が start に反転して左端に出るため、反転せず右端に寄せる
+            collisionAvoidance={{ side: "flip", align: "shift" }}
             sideOffset={-12}
             delayDuration={0}
             disableOutsidePressDismiss
