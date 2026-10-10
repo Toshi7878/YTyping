@@ -39,13 +39,13 @@ export const ImportantNotices = () => {
           )}
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-start gap-2">
               {notice.level === "WARNING" ? (
                 <TriangleAlert className="size-5 shrink-0 text-warning" aria-hidden="true" />
               ) : (
                 <Info className="size-5 shrink-0 text-info" aria-hidden="true" />
               )}
-              <h2 className="truncate font-bold">{notice.title}</h2>
+              <p className="whitespace-pre-wrap break-words text-sm">{notice.body}</p>
             </div>
             <Button
               size="sm"
@@ -57,7 +57,6 @@ export const ImportantNotices = () => {
               確認しました
             </Button>
           </div>
-          <p className="whitespace-pre-wrap break-words text-sm">{notice.body}</p>
           <ImportantNoticeLinkButton linkUrl={notice.linkUrl} linkLabel={notice.linkLabel} />
           {notice.expiresAt ? (
             <p className="text-muted-foreground text-xs">表示期限: {formatDate(notice.expiresAt)}</p>

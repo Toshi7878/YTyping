@@ -41,7 +41,6 @@ export const importantNoticeRouter = {
     return db
       .select({
         id: importantNotices.id,
-        title: importantNotices.title,
         body: importantNotices.body,
         level: importantNotices.level,
         linkUrl: importantNotices.linkUrl,
@@ -80,7 +79,6 @@ export const importantNoticeRouter = {
     return db
       .select({
         id: importantNotices.id,
-        title: importantNotices.title,
         body: importantNotices.body,
         level: importantNotices.level,
         linkUrl: importantNotices.linkUrl,
@@ -144,7 +142,7 @@ export const importantNoticeRouter = {
 
   create: adminProcedure.input(importantNoticeCreateApiSchema).handler(async ({ input, context }) => {
     const { db, session } = context;
-    const { title, body, audience, level, expiresAt, targetUserIds, linkUrl, linkLabel } = input;
+    const { body, audience, level, expiresAt, targetUserIds, linkUrl, linkLabel } = input;
 
     if (audience === "SPECIFIC" && targetUserIds.length === 0) {
       throw new ORPCError("BAD_REQUEST", { message: "送信対象のユーザーを1人以上指定してください" });
@@ -155,7 +153,6 @@ export const importantNoticeRouter = {
     await db.transaction(async (tx) => {
       await tx.insert(importantNotices).values({
         id: noticeId,
-        title,
         body,
         audience,
         level,

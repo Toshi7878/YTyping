@@ -11,7 +11,6 @@ export const importantNoticeLevel = pgEnum("important_notice_level", IMPORTANT_N
 
 export const importantNotices = pgTable.withRLS("important_notices", {
   id: varchar().primaryKey(),
-  title: varchar({ length: 255 }).notNull(),
   body: text().notNull(),
   // ALL: 全ユーザー向け。SPECIFIC: importantNoticeTargets に列挙したユーザーのみ。
   audience: importantNoticeAudience().notNull(),

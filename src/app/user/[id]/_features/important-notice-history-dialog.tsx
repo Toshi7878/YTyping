@@ -41,11 +41,12 @@ export const ImportantNoticeHistoryDialog = ({ userId }: ImportantNoticeHistoryD
             return (
               <div key={notice.id} className="flex flex-col gap-1 rounded-md border p-3 text-sm">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="flex items-center gap-1.5 font-bold">
+                  <p className="flex items-center gap-1.5 text-muted-foreground text-xs">
                     {notice.level === "WARNING" ? (
                       <TriangleAlert className="size-4 shrink-0 text-warning" aria-label="警告" />
                     ) : null}
-                    {notice.title}
+                    {formatDate(notice.createdAt)}
+                    {notice.acknowledgedAt ? ` / 確認: ${formatDate(notice.acknowledgedAt)}` : ""}
                   </p>
                   {notice.acknowledgedAt ? (
                     <Badge variant="secondary">確認済み</Badge>
@@ -55,10 +56,6 @@ export const ImportantNoticeHistoryDialog = ({ userId }: ImportantNoticeHistoryD
                     <Badge variant="default">未確認</Badge>
                   )}
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  {formatDate(notice.createdAt)}
-                  {notice.acknowledgedAt ? ` / 確認: ${formatDate(notice.acknowledgedAt)}` : ""}
-                </p>
                 <p className="whitespace-pre-wrap break-words">{notice.body}</p>
                 <ImportantNoticeLinkButton linkUrl={notice.linkUrl} linkLabel={notice.linkLabel} className="mt-1" />
               </div>

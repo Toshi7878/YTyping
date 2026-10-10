@@ -13,7 +13,6 @@ export const importantNoticeTargetUserSchema = z.object({
 
 export const importantNoticeFormSchema = z
   .object({
-    title: z.string().trim().min(1, "タイトルを入力してください").max(255),
     body: z.string().trim().min(1, "本文を入力してください").max(2000),
     audience: z.enum(IMPORTANT_NOTICE_AUDIENCE_TYPES),
     level: z.enum(IMPORTANT_NOTICE_LEVELS),
@@ -32,7 +31,6 @@ export const importantNoticeFormSchema = z
   });
 
 export const importantNoticeCreateApiSchema = z.object({
-  title: z.string().trim().min(1).max(255),
   body: z.string().trim().min(1).max(2000),
   audience: z.enum(IMPORTANT_NOTICE_AUDIENCE_TYPES),
   level: z.enum(IMPORTANT_NOTICE_LEVELS),

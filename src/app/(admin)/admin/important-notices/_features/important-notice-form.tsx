@@ -15,7 +15,6 @@ import { UserMultiSelectFormField } from "./user-multi-select";
 type FormValues = z.infer<typeof importantNoticeFormSchema>;
 
 const defaultValues: FormValues = {
-  title: "",
   body: "",
   audience: "ALL",
   level: "INFO",
@@ -34,7 +33,6 @@ export const ImportantNoticeForm = () => {
     defaultValues,
     onSubmit: ({ value }) => {
       create.mutate({
-        title: value.title,
         body: value.body,
         audience: value.audience,
         level: value.level,
@@ -78,9 +76,6 @@ export const ImportantNoticeForm = () => {
           }}
           className="flex flex-col gap-3"
         >
-          <form.AppField name="title">
-            {(field) => <field.InputFormField label="タイトル" maxLength={255} required />}
-          </form.AppField>
           <form.AppField name="body">
             {(field) => <field.TextareaFormField label="本文" rows={5} maxLength={2000} required />}
           </form.AppField>

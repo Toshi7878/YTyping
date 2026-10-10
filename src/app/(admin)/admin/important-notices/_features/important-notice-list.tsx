@@ -40,10 +40,10 @@ export const ImportantNoticeList = () => {
     }),
   );
 
-  const handleDelete = async (noticeId: string, title: string) => {
+  const handleDelete = async (noticeId: string, body: string) => {
     const confirmed = await confirmDialog.danger({
       title: "このお知らせを削除しますか？",
-      description: `「${title}」を削除します。この操作は取り消せません。`,
+      description: `「${body.length > 30 ? `${body.slice(0, 30)}…` : body}」を削除します。この操作は取り消せません。`,
       confirmLabel: "削除する",
     });
     if (confirmed) deleteNotice.mutate({ noticeId });
@@ -63,7 +63,7 @@ export const ImportantNoticeList = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>状態</TableHead>
-                <TableHead>タイトル</TableHead>
+                <TableHead>内容</TableHead>
                 <TableHead>対象</TableHead>
                 <TableHead>作成者</TableHead>
                 <TableHead>期限</TableHead>
@@ -93,7 +93,7 @@ export const ImportantNoticeList = () => {
                               {IMPORTANT_NOTICE_LEVEL_LABELS.WARNING}
                             </Badge>
                           ) : null}
-                          <span className="block truncate font-medium">{notice.title}</span>
+                          <span className="block truncate font-medium">{notice.body}</span>
                         </span>
                       </TooltipWrapper>
                     </TableCell>
@@ -136,7 +136,7 @@ export const ImportantNoticeList = () => {
                         <Button
                           size="sm"
                           variant="outline-destructive"
-                          onClick={() => handleDelete(notice.id, notice.title)}
+                          onClick={() => handleDelete(notice.id, notice.body)}
                           disabled={deleteNotice.isPending}
                         >
                           削除
