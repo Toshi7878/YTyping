@@ -10,7 +10,17 @@ interface SliderProps extends SliderPrimitive.Root.Props<number[]> {
   thumbLabel?: (value: number | undefined) => React.ReactNode;
 }
 
-function Slider({ className, defaultValue, thumbLabel, value, min = 0, max = 100, ...props }: SliderProps) {
+function Slider({
+  className,
+  defaultValue,
+  thumbLabel,
+  value,
+  min = 0,
+  max = 100,
+  onValueChange,
+  onValueCommitted,
+  ...props
+}: SliderProps) {
   const _values = Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max];
 
   return (
@@ -20,6 +30,8 @@ function Slider({ className, defaultValue, thumbLabel, value, min = 0, max = 100
       value={value}
       min={min}
       max={max}
+      onValueChange={(next, eventDetails) => onValueChange?.(toArray(next), eventDetails)}
+      onValueCommitted={(next, eventDetails) => onValueCommitted?.(toArray(next), eventDetails)}
       thumbAlignment="edge"
       className={cn("w-full data-disabled:opacity-50", className)}
       {...props}
@@ -61,5 +73,7 @@ function Slider({ className, defaultValue, thumbLabel, value, min = 0, max = 100
     </SliderPrimitive.Root>
   );
 }
+
+const toArray = (value: number | readonly number[]): number[] => (typeof value === "number" ? [value] : [...value]);
 
 export { Slider };
