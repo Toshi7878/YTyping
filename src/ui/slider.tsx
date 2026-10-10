@@ -21,7 +21,7 @@ function Slider({ className, defaultValue, thumbLabel, value, min = 0, max = 100
       min={min}
       max={max}
       thumbAlignment="edge"
-      className={cn("data-disabled:opacity-50", className)}
+      className={cn("w-full data-disabled:opacity-50", className)}
       {...props}
     >
       <SliderPrimitive.Control
