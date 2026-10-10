@@ -10,7 +10,9 @@ import {
   userReports,
   users,
 } from "@/server/drizzle/schema";
+import { REPORT_REASON_LABELS } from "@/shared/user/report";
 import { userReportApiSchema, userReportWarningApiSchema } from "@/validator/user/report";
+import { notifyAdmins } from "../../lib/discord";
 import { adminProcedure, protectedProcedure } from "../../orpc";
 import { recalculateRanksForMap } from "../../utils/result-ranking";
 import { generateNotificationId } from "../notification";
@@ -25,7 +27,7 @@ export const userReportRouter = {
     }
 
     const target = await db.query.users.findFirst({
-      columns: { id: true },
+      columns: { id: true, name: true },
       where: { id: reportedUserId },
     });
 
@@ -47,6 +49,17 @@ export const userReportRouter = {
       reportedUserId,
       reason,
       reasonDetail,
+    });
+
+    notifyAdmins({
+      title: "ユーザーが通報されました",
+      description: reasonDetail || "（詳細なし）",
+      adminPath: "/admin/reports",
+      fields: [
+        { name: "通報先", value: target.name ?? `ID: ${target.id}` },
+        { name: "通報者", value: session.user.name ?? `ID: ${session.user.id}` },
+        { name: "理由", value: REPORT_REASON_LABELS[reason] },
+      ],
     });
   }),
 

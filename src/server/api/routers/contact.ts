@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import z from "zod";
 import { contacts, users } from "@/server/drizzle/schema";
 import { contactCreateSchema, contactReplySchema } from "@/validator/contact";
+import { notifyAdmins } from "../lib/discord";
 import { adminProcedure, protectedProcedure } from "../orpc";
 
 /** 短時間の連続送信を防ぐ: この時間内に送れる件数 */
@@ -28,6 +29,13 @@ export const contactRouter = {
 
     const id = nanoid(10);
     await db.insert(contacts).values({ id, userId, body: input.body });
+
+    notifyAdmins({
+      title: "お問い合わせが届きました",
+      description: input.body,
+      adminPath: "/admin/contacts",
+      fields: [{ name: "ユーザー", value: session.user.name ?? `ID: ${userId}` }],
+    });
 
     return { id };
   }),
