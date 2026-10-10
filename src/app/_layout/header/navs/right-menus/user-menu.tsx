@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { cn } from "@/utils/cn";
-import { buildUserMenuLinkItems } from "../menu-items";
+import { buildUserMenuLinkItems, CONTACT_MENU_ITEM } from "../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -49,6 +49,9 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
           </Link>
         ))}
         <ThemeDropdownSubmenu />
+        <Link href={CONTACT_MENU_ITEM.href}>
+          <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+        </Link>
 
         <DropdownMenuSeparator />
 

@@ -1,12 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Info } from "lucide-react";
+import { Info, TriangleAlert } from "lucide-react";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
+import { ImportantNoticeLinkButton } from "@/shared/important-notice/link-button";
 import { Button } from "@/ui/button";
 import { Card } from "@/ui/card";
 import { toast } from "@/ui/toast";
+import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
 
 /** ログイン中のユーザー宛ての、期限内で未確認の重要なお知らせ */
@@ -29,10 +31,20 @@ export const ImportantNotices = () => {
   return (
     <section className="flex flex-col gap-3" aria-label="重要なお知らせ">
       {notices.map((notice) => (
-        <Card key={notice.id} className="flex flex-col gap-2 border-info bg-info/10 px-4 py-3">
+        <Card
+          key={notice.id}
+          className={cn(
+            "flex flex-col gap-2 px-4 py-3",
+            notice.level === "WARNING" ? "border-warning bg-warning/10" : "border-info bg-info/10",
+          )}
+        >
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
-              <Info className="size-5 shrink-0 text-info" aria-hidden="true" />
+              {notice.level === "WARNING" ? (
+                <TriangleAlert className="size-5 shrink-0 text-warning" aria-hidden="true" />
+              ) : (
+                <Info className="size-5 shrink-0 text-info" aria-hidden="true" />
+              )}
               <h2 className="truncate font-bold">{notice.title}</h2>
             </div>
             <Button
@@ -46,6 +58,7 @@ export const ImportantNotices = () => {
             </Button>
           </div>
           <p className="whitespace-pre-wrap break-words text-sm">{notice.body}</p>
+          <ImportantNoticeLinkButton linkUrl={notice.linkUrl} linkLabel={notice.linkLabel} />
           {notice.expiresAt ? (
             <p className="text-muted-foreground text-xs">表示期限: {formatDate(notice.expiresAt)}</p>
           ) : null}

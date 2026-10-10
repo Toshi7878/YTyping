@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { H2, LinkText } from "@/ui/typography";
+import { ImportantNoticeHistoryDialog } from "./important-notice-history-dialog";
 import { ReportDialog } from "./report-dialog";
 import { WarningDialog } from "./warning-dialog";
 
@@ -92,6 +93,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         </DataList>
         <div className="absolute right-0 bottom-0 flex items-center gap-1">
           {canSeeWarnings && <WarningDialog userId={Number(userId)} warningCount={userProfile?.warningCount ?? 0} />}
+          {canSeeWarnings && <ImportantNoticeHistoryDialog userId={Number(userId)} />}
           {session &&
             (isMyProfilePage ? (
               <TooltipWrapper label="プロフィール編集ページに移動" asChild>

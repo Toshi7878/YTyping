@@ -1,6 +1,7 @@
 import type { InferRouterInputs, InferRouterOutputs } from "@orpc/server";
 import { aiRouter } from "./routers/ai";
 import { authRouter } from "./routers/auth";
+import { contactRouter } from "./routers/contact";
 import { importantNoticeRouter } from "./routers/important-notice";
 import { mapRouter } from "./routers/map/map";
 import { mapOpenApiRouter } from "./routers/map/open-api/open-api";
@@ -36,6 +37,7 @@ export const appRouter = {
   morph: morphRouter,
   ai: aiRouter,
   auth: authRouter,
+  contact: contactRouter,
   vercel: vercelRouter,
 };
 

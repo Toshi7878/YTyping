@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type z from "zod/v4";
 import { orpc } from "@/orpc/provider";
+import { IMPORTANT_NOTICE_LEVEL_LABELS } from "@/shared/important-notice/level";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
@@ -17,6 +18,9 @@ const defaultValues: FormValues = {
   title: "",
   body: "",
   audience: "ALL",
+  level: "INFO",
+  linkUrl: "",
+  linkLabel: "",
   targetUsers: [],
   expiresAt: "",
 };
@@ -33,6 +37,9 @@ export const ImportantNoticeForm = () => {
         title: value.title,
         body: value.body,
         audience: value.audience,
+        level: value.level,
+        linkUrl: value.linkUrl || undefined,
+        linkLabel: value.linkLabel || undefined,
         targetUserIds: value.audience === "SPECIFIC" ? value.targetUsers.map((u) => u.id) : [],
         expiresAt: value.expiresAt ? new Date(value.expiresAt) : undefined,
       });
@@ -76,6 +83,32 @@ export const ImportantNoticeForm = () => {
           </form.AppField>
           <form.AppField name="body">
             {(field) => <field.TextareaFormField label="本文" rows={5} maxLength={2000} required />}
+          </form.AppField>
+          <form.AppField name="level">
+            {(field) => (
+              <field.SelectFormField
+                label="種類"
+                options={[
+                  { value: "INFO", label: IMPORTANT_NOTICE_LEVEL_LABELS.INFO },
+                  { value: "WARNING", label: `${IMPORTANT_NOTICE_LEVEL_LABELS.WARNING}（目立つ色で表示）` },
+                ]}
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="linkUrl">
+            {(field) => (
+              <field.InputFormField
+                label="リンク先（任意）"
+                maxLength={1024}
+                placeholder="/contact または https://..."
+                description="サイト内のパスか https:// から始まる URL。お知らせカードにリンクボタンが表示されます"
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="linkLabel">
+            {(field) => (
+              <field.InputFormField label="ボタンの文言（任意）" maxLength={100} placeholder="詳細はこちら" />
+            )}
           </form.AppField>
           <form.AppField name="audience">
             {(field) => (

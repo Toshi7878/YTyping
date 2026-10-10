@@ -11,21 +11,25 @@ import {
 import { importantNoticeCreateApiSchema } from "@/validator/important-notice";
 import { adminProcedure, type ORPCContext, protectedProcedure } from "../orpc";
 
+/** 全ユーザー向け、またはユーザーが宛先に指定されているお知らせ */
+const buildAudienceCondition = (db: ORPCContext["db"], userId: number) =>
+  or(
+    eq(importantNotices.audience, "ALL"),
+    exists(
+      db
+        .select({ one: sql`1` })
+        .from(importantNoticeTargets)
+        .where(
+          and(eq(importantNoticeTargets.noticeId, importantNotices.id), eq(importantNoticeTargets.userId, userId)),
+        ),
+    ),
+  );
+
 /** ユーザー宛て（全ユーザー向け、または宛先に指定されている）で、期限内のお知らせ */
 const buildDeliveredToUserCondition = (db: ORPCContext["db"], userId: number) =>
   and(
     or(isNull(importantNotices.expiresAt), gt(importantNotices.expiresAt, new Date())),
-    or(
-      eq(importantNotices.audience, "ALL"),
-      exists(
-        db
-          .select({ one: sql`1` })
-          .from(importantNoticeTargets)
-          .where(
-            and(eq(importantNoticeTargets.noticeId, importantNotices.id), eq(importantNoticeTargets.userId, userId)),
-          ),
-      ),
-    ),
+    buildAudienceCondition(db, userId),
   );
 
 export const importantNoticeRouter = {
@@ -39,6 +43,9 @@ export const importantNoticeRouter = {
         id: importantNotices.id,
         title: importantNotices.title,
         body: importantNotices.body,
+        level: importantNotices.level,
+        linkUrl: importantNotices.linkUrl,
+        linkLabel: importantNotices.linkLabel,
         createdAt: importantNotices.createdAt,
         expiresAt: importantNotices.expiresAt,
       })
@@ -59,6 +66,38 @@ export const importantNoticeRouter = {
           ),
         ),
       )
+      .orderBy(desc(importantNotices.createdAt));
+  }),
+
+  /** ユーザー宛てだったお知らせの履歴（期限切れ・確認済みを含む）。本人と管理者のみ */
+  getHistory: protectedProcedure.input(z.object({ userId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
+
+    if (session.user.id !== input.userId && session.user.role !== "ADMIN") {
+      throw new ORPCError("FORBIDDEN");
+    }
+
+    return db
+      .select({
+        id: importantNotices.id,
+        title: importantNotices.title,
+        body: importantNotices.body,
+        level: importantNotices.level,
+        linkUrl: importantNotices.linkUrl,
+        linkLabel: importantNotices.linkLabel,
+        createdAt: importantNotices.createdAt,
+        expiresAt: importantNotices.expiresAt,
+        acknowledgedAt: importantNoticeAcknowledgements.acknowledgedAt,
+      })
+      .from(importantNotices)
+      .leftJoin(
+        importantNoticeAcknowledgements,
+        and(
+          eq(importantNoticeAcknowledgements.noticeId, importantNotices.id),
+          eq(importantNoticeAcknowledgements.userId, input.userId),
+        ),
+      )
+      .where(buildAudienceCondition(db, input.userId))
       .orderBy(desc(importantNotices.createdAt));
   }),
 
@@ -105,7 +144,7 @@ export const importantNoticeRouter = {
 
   create: adminProcedure.input(importantNoticeCreateApiSchema).handler(async ({ input, context }) => {
     const { db, session } = context;
-    const { title, body, audience, expiresAt, targetUserIds } = input;
+    const { title, body, audience, level, expiresAt, targetUserIds, linkUrl, linkLabel } = input;
 
     if (audience === "SPECIFIC" && targetUserIds.length === 0) {
       throw new ORPCError("BAD_REQUEST", { message: "送信対象のユーザーを1人以上指定してください" });
@@ -119,6 +158,9 @@ export const importantNoticeRouter = {
         title,
         body,
         audience,
+        level,
+        linkUrl: linkUrl ?? null,
+        linkLabel: linkUrl ? linkLabel || null : null,
         createdBy: session.user.id,
         expiresAt: expiresAt ?? null,
       });

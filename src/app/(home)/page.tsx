@@ -19,6 +19,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     ),
     session ? prefetchAsync(orpc.map.bookmark.lists.getForSession.queryOptions()) : Promise.resolve(),
     session ? prefetchAsync(orpc.importantNotice.getActive.queryOptions()) : Promise.resolve(),
+    session ? prefetchAsync(orpc.contact.getUnacknowledgedReplies.queryOptions()) : Promise.resolve(),
   ]);
 
   return (

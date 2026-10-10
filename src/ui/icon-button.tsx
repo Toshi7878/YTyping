@@ -1,4 +1,4 @@
-import { Bookmark, Flag, type LucideProps, TriangleAlert } from "lucide-react";
+import { Bookmark, Flag, type LucideProps, Megaphone, TriangleAlert } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import type { ComponentProps } from "react";
@@ -101,6 +101,14 @@ export const WarningIconButton = (props: IconButtonProps) => {
   return (
     <Button type="button" variant="unstyled" size="icon" {...props}>
       <TriangleAlert className="size-4 text-warning" />
+    </Button>
+  );
+};
+
+export const ImportantNoticeIconButton = (props: IconButtonProps) => {
+  return (
+    <Button type="button" variant="unstyled" size="icon" {...props}>
+      <Megaphone className="size-4 text-info" />
     </Button>
   );
 };

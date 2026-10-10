@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { orpc } from "@/orpc/provider";
+import { IMPORTANT_NOTICE_LEVEL_LABELS } from "@/shared/important-notice/level";
 import { UserNameLinkText } from "@/shared/user/user-name-link";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
@@ -86,7 +87,14 @@ export const ImportantNoticeList = () => {
                         align="start"
                         delayDuration={300}
                       >
-                        <span className="block truncate font-medium">{notice.title}</span>
+                        <span className="flex items-center gap-1.5">
+                          {notice.level === "WARNING" ? (
+                            <Badge variant="outline" size="xs" className="shrink-0 border-warning text-warning">
+                              {IMPORTANT_NOTICE_LEVEL_LABELS.WARNING}
+                            </Badge>
+                          ) : null}
+                          <span className="block truncate font-medium">{notice.title}</span>
+                        </span>
                       </TooltipWrapper>
                     </TableCell>
                     <TableCell className="max-w-48">

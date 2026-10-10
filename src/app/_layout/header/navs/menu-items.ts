@@ -14,6 +14,9 @@ export const LEFT_MENU_LINK_ITEMS: HeaderMenu[] = [
   { title: "API Docs", href: "/api-docs" },
 ];
 
+/** ログイン中のユーザーメニューで、ログアウトの直前に表示する */
+export const CONTACT_MENU_ITEM: HeaderMenu = { title: "お問い合わせ", href: "/contact" };
+
 export const LEFT_LINKS: HeaderMenu[] = [
   { title: "タイムライン", href: "/timeline" },
   { title: "ランキング", href: "/rankings/performance" },
@@ -29,6 +32,7 @@ export const buildUserMenuLinkItems = (session: Session) => {
     menus.push({ title: "管理者メニュー", href: "/admin/reports" });
     menus.push({ title: "重要なお知らせ管理", href: "/admin/important-notices" });
     menus.push({ title: "BANした記録一覧", href: "/admin/invalid-results" });
+    menus.push({ title: "お問い合わせ管理", href: "/admin/contacts" });
   }
 
   return menus;

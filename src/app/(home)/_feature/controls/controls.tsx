@@ -4,6 +4,7 @@ import { VolumeRange } from "@/shared/volume-range";
 import { usePreviewYTPlayer } from "@/store/preview-yt-player";
 import { CardWithContent } from "@/ui/card";
 import { cn } from "@/utils/cn";
+import { ContactReplies } from "../contact-replies";
 import { ImportantNotices } from "../important-notices";
 import { DifficultyFilter } from "./difficulty-filter";
 import { KeywordInput } from "./keyword";
@@ -21,6 +22,7 @@ export const MapListControls = () => {
     <section className="flex w-full flex-col gap-3">
       <KeywordInput />
       <ImportantNotices />
+      <ContactReplies />
       <div className="flex flex-col gap-3 sm:flex-row">
         {isLogin && <MapListTagFilter />}
         <DifficultyFilter className={cn(!isLogin && "lg:max-w-1/2")} />

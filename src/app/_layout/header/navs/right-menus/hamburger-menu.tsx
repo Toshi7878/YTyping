@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
-import { buildUserMenuLinkItems, LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
+import { buildUserMenuLinkItems, CONTACT_MENU_ITEM, LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
 import { LogOutDropdownItem, SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -89,6 +89,9 @@ const UserMenuDropdownItems = ({ session }: { session: Session }) => {
           <DropdownMenuItem>{item.title}</DropdownMenuItem>
         </Link>
       ))}
+      <Link href={CONTACT_MENU_ITEM.href}>
+        <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+      </Link>
     </>
   );
 };

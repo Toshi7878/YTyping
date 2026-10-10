@@ -1,3 +1,4 @@
+export * from "./schema/contact";
 export * from "./schema/important-notice";
 export * from "./schema/map";
 export * from "./schema/morph";
