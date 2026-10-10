@@ -2,6 +2,7 @@
 
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getLineResults } from "@/app/(typing)/type/_feature/atoms/line-results";
+import { getORPCErrorCode } from "@/orpc/error";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { toast } from "@/ui/toast";
@@ -26,7 +27,11 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       setTabName("ランキング");
       toast.success("ランキング登録が完了しました");
     },
-    onError: () => {
+    onError: (error) => {
+      if (getORPCErrorCode(error) === "FORBIDDEN") {
+        toast.error("ランキング登録に失敗しました", { description: error.message });
+        return;
+      }
       toast.error("ランキング登録に失敗しました");
     },
   });

@@ -55,7 +55,7 @@ export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProp
     <div className={cn("visible flex w-full justify-around", className)}>
       <div className="mr-5 flex flex-col items-end gap-5">
         <Badge variant="result" size="lg" className={cn(result?.rank === 1 && "text-perfect outline-text")}>
-          {result && `Rank: #${result.rank}`}
+          {result && (result.invalidatedAt ? "BAN済み" : `Rank: #${result.rank}`)}
         </Badge>
         <Badge variant="result" size="lg">
           {result && <InputModeText typeCounts={result.typeCounts} />}

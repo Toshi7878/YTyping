@@ -1,12 +1,82 @@
 import { ORPCError } from "@orpc/server";
-import { and, desc, eq, ilike, inArray, isNotNull } from "drizzle-orm";
+import { and, desc, eq, exists, gt, ilike, inArray, isNotNull, isNull, notExists, or, sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
-import { importantNotices, importantNoticeTargets, users } from "@/server/drizzle/schema";
+import {
+  importantNoticeAcknowledgements,
+  importantNotices,
+  importantNoticeTargets,
+  users,
+} from "@/server/drizzle/schema";
 import { importantNoticeCreateApiSchema } from "@/validator/important-notice";
-import { adminProcedure } from "../orpc";
+import { adminProcedure, type ORPCContext, protectedProcedure } from "../orpc";
+
+/** ユーザー宛て（全ユーザー向け、または宛先に指定されている）で、期限内のお知らせ */
+const buildDeliveredToUserCondition = (db: ORPCContext["db"], userId: number) =>
+  and(
+    or(isNull(importantNotices.expiresAt), gt(importantNotices.expiresAt, new Date())),
+    or(
+      eq(importantNotices.audience, "ALL"),
+      exists(
+        db
+          .select({ one: sql`1` })
+          .from(importantNoticeTargets)
+          .where(
+            and(eq(importantNoticeTargets.noticeId, importantNotices.id), eq(importantNoticeTargets.userId, userId)),
+          ),
+      ),
+    ),
+  );
 
 export const importantNoticeRouter = {
+  /** ログイン中のユーザー宛てで、期限内かつ未確認のお知らせ */
+  getActive: protectedProcedure.handler(async ({ context }) => {
+    const { db, session } = context;
+    const userId = session.user.id;
+
+    return db
+      .select({
+        id: importantNotices.id,
+        title: importantNotices.title,
+        body: importantNotices.body,
+        createdAt: importantNotices.createdAt,
+        expiresAt: importantNotices.expiresAt,
+      })
+      .from(importantNotices)
+      .where(
+        and(
+          buildDeliveredToUserCondition(db, userId),
+          notExists(
+            db
+              .select({ one: sql`1` })
+              .from(importantNoticeAcknowledgements)
+              .where(
+                and(
+                  eq(importantNoticeAcknowledgements.noticeId, importantNotices.id),
+                  eq(importantNoticeAcknowledgements.userId, userId),
+                ),
+              ),
+          ),
+        ),
+      )
+      .orderBy(desc(importantNotices.createdAt));
+  }),
+
+  /** 「確認しました」を記録する */
+  acknowledge: protectedProcedure.input(z.object({ noticeId: z.string() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
+    const userId = session.user.id;
+
+    const [notice] = await db
+      .select({ id: importantNotices.id })
+      .from(importantNotices)
+      .where(and(eq(importantNotices.id, input.noticeId), buildDeliveredToUserCondition(db, userId)))
+      .limit(1);
+    if (!notice) throw new ORPCError("NOT_FOUND", { message: "お知らせが見つかりません" });
+
+    await db.insert(importantNoticeAcknowledgements).values({ noticeId: notice.id, userId }).onConflictDoNothing();
+  }),
+
   list: adminProcedure.handler(async ({ context }) => {
     const { db } = context;
 

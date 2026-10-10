@@ -1,19 +1,18 @@
 import { ORPCError } from "@orpc/server";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import type { TXType } from "@/server/drizzle/client";
 import {
-  maps,
   notificationReportResults,
   notifications,
   notificationWarnings,
-  resultStatuses,
   results,
   userReports,
   users,
 } from "@/server/drizzle/schema";
 import { userReportApiSchema, userReportWarningApiSchema } from "@/validator/user/report";
 import { adminProcedure, protectedProcedure } from "../../orpc";
+import { recalculateRanksForMap } from "../../utils/result-ranking";
 import { generateNotificationId } from "../notification";
 
 export const userReportRouter = {
@@ -279,21 +278,6 @@ const recalculateRanksForBannedUser = async (tx: TXType, bannedUserId: number) =
   const affectedMaps = await tx.select({ mapId: results.mapId }).from(results).where(eq(results.userId, bannedUserId));
 
   for (const { mapId } of affectedMaps) {
-    const rankedUsers = await tx
-      .select({ userId: results.userId })
-      .from(results)
-      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
-      .innerJoin(users, eq(users.id, results.userId))
-      .where(and(eq(results.mapId, mapId), eq(users.banned, false)))
-      .orderBy(desc(resultStatuses.score));
-
-    for (const [index, entry] of rankedUsers.entries()) {
-      await tx
-        .update(results)
-        .set({ rank: index + 1 })
-        .where(and(eq(results.mapId, mapId), eq(results.userId, entry.userId)));
-    }
-
-    await tx.update(maps).set({ rankingCount: rankedUsers.length }).where(eq(maps.id, mapId));
+    await recalculateRanksForMap(tx, mapId);
   }
 };

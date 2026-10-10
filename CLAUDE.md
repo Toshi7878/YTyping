@@ -74,7 +74,7 @@ Three separate route handlers with distinct purposes:
 
 **Server-side usage** (`src/orpc/server.tsx`): `caller` for direct calls in RSC (no HTTP), `orpc` + `prefetch`/`prefetchAsync` for TanStack Query prefetching, `HydrateClient` to stream dehydrated state to the client.
 
-**Client-side usage** (`src/orpc/provider.tsx`): `orpc` (TanStack Query utils: `queryOptions`, `infiniteOptions`, `mutationOptions`, `queryKey`, `key`) and `orpcClient` (plain calls) are plain module exports — no hook. `ORPCReactProvider` only wraps `QueryClientProvider`. Options take one object (`orpc.x.queryOptions({ input, ...options })`); infinite queries need `input: (pageParam) => ({ ..., cursor: pageParam })` and an `initialPageParam`. Query data is dehydrated/hydrated with SuperJSON (`src/orpc/query-client.ts`).
+**Client-side usage** (`src/orpc/provider.tsx`): `orpc` (TanStack Query utils: `queryOptions`, `infiniteOptions`, `mutationOptions`, `queryKey`, `key`) and `orpcClient` (plain calls) are plain module exports — no hook. `ORPCReactProvider` only wraps `QueryClientProvider`. Options take one object (`orpc.x.queryOptions({ input, ...options })`); infinite queries need `input: (pageParam) => ({ ..., cursor: pageParam })` and an `initialPageParam`. Dehydrated query data is passed from RSC to the client as-is (React serializes `Date`/`Map`/`Set`/`BigInt`); `superjson` is no longer used.
 
 ### Procedures (`src/server/api/orpc.ts`)
 
@@ -94,7 +94,7 @@ The typing engines come from the external packages `lyrics-typing-engine` and `l
 
 ### IME Typing Mode Userscript API
 
-`src/app/(typing)/ime/_feature/user-script.tsx` exposes `window.__ytyping_ime` for external userscript access. Functions intended for external consumption must be added to the `ytypingIme` getter object in that file. Business logic lives in the respective feature files (e.g., `result-dialog.tsx`), not in `user-script.tsx`. The standard mode has the equivalent `type/_feature/user-script.ts`. `pnpm types:build` bundles the public typings via `dts-bundle-generator`.
+`src/app/(typing)/ime/_feature/user-script.tsx` exposes `window.__ytyping_ime` for external userscript access. Functions intended for external consumption must be added to the `ytypingIme` getter object in that file. Business logic lives in the respective feature files (e.g., `result-dialog.tsx`), not in `user-script.tsx`. The standard mode has the equivalent `type/_feature/user-script.ts`. `pnpm types:build` is meant to bundle the public typings with `tsdown` (`tsdown.config.ts`); it currently fails on declaration-emit errors from the oRPC router types.
 
 ### Database (Drizzle ORM + PostgreSQL)
 

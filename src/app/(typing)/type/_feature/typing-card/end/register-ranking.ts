@@ -40,7 +40,13 @@ const createMapUpdater = (mapId: number, newState: { optimistic?: Date; server?:
   };
 };
 
-export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: () => void; onError: () => void }) => {
+export const useRegisterRankingMutation = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess: () => void;
+  onError: (error: Error) => void;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation(

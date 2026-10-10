@@ -1,8 +1,9 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { TXType } from "@/server/drizzle/client";
 import { resultStatuses, results, userStats } from "@/server/drizzle/schema";
 import { calcTotalPP } from "@/shared/result/pp/calc";
 import { classifyResultPpMode, type INPUT_PP_MODES } from "@/shared/result/pp/mode";
+import { isValidResult } from "./result-ranking";
 
 export async function recalculateUserPP(tx: TXType, userId: number) {
   const rows = await tx
@@ -18,7 +19,7 @@ export async function recalculateUserPP(tx: TXType, userId: number) {
     })
     .from(resultStatuses)
     .innerJoin(results, eq(results.id, resultStatuses.resultId))
-    .where(eq(results.userId, userId));
+    .where(and(eq(results.userId, userId), isValidResult));
 
   const buckets: Record<(typeof INPUT_PP_MODES)[number], { pp: number }[]> = {
     roma: [],

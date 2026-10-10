@@ -17,6 +17,8 @@ export const ResultListFilterSchema = z.object({
   username: z.string().nullish(),
   mapKeyword: z.string().nullish(),
   playerId: z.number().nullish(),
+  /** 管理者専用: BANされた(無効な)記録だけを取得する */
+  invalidOnly: z.boolean().nullish(),
 });
 
 export const SelectResultListApiSchema = z

@@ -1,5 +1,6 @@
+import { ORPCError } from "@orpc/server";
 import type { SQL } from "drizzle-orm";
-import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, gte, ilike, isNotNull, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import type z from "zod";
@@ -15,6 +16,7 @@ import {
 } from "@/validator/result/list";
 import { type ORPCContext, publicProcedure } from "../../orpc";
 import { createPagination } from "../../utils/pagination";
+import { isValidResult } from "../../utils/result-ranking";
 import type { MapListItem } from "../map";
 import { bookmarkedMapExists } from "../map/bookmark/list-item";
 import { filterByMapVisibility } from "../map/list";
@@ -68,6 +70,7 @@ const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
     id: results.id,
     updatedAt: results.updatedAt,
     rank: results.rank,
+    invalidatedAt: results.invalidatedAt,
     score: resultStatuses.score,
     player: { id: player.id, name: player.name },
     typeCounts: {
@@ -167,7 +170,9 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  if (!input) return baseQuery.where(eq(player.banned, false));
+  if (!input) return baseQuery.where(and(eq(player.banned, false), isValidResult));
+
+  const visibility = buildVisibilityCondition(session, input.invalidOnly);
 
   const whereConditions = [
     input.playerId ? eq(player.id, input.playerId) : undefined,
@@ -178,7 +183,18 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     filterByKeyword({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions, eq(player.banned, false)));
+  return baseQuery.where(and(filterByMapVisibility(session), ...whereConditions, visibility));
+};
+
+/**
+ * 通常は BAN されていないユーザーの有効な記録だけ。invalidOnly は管理者専用で、BAN された記録だけを返す
+ */
+const buildVisibilityCondition = (session: ORPCContext["session"], invalidOnly?: boolean | null) => {
+  if (!invalidOnly) return and(eq(player.banned, false), isValidResult);
+
+  if (session?.user.role !== "ADMIN") throw new ORPCError("FORBIDDEN");
+
+  return isNotNull(results.invalidatedAt);
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

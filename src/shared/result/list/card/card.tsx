@@ -17,6 +17,7 @@ import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { ResultClapButton } from "./clap-button";
+import { RestoreInvalidResultButton } from "./restore-invalid-button";
 import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 
 interface ResultCardProps {
@@ -47,12 +48,15 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
             </>
           )}
         </div>
-        <ResultClapButton
-          resultId={result.id}
-          clapCount={result.clap.count}
-          hasClapped={result.clap?.hasClapped ?? false}
-          className={cn(!shouldRender && "invisible")}
-        />
+        <div className="flex items-center gap-2">
+          {result.invalidatedAt ? <RestoreInvalidResultButton resultId={result.id} /> : null}
+          <ResultClapButton
+            resultId={result.id}
+            clapCount={result.clap.count}
+            hasClapped={result.clap?.hasClapped ?? false}
+            className={cn(!shouldRender && "invisible")}
+          />
+        </div>
       </CardHeader>
       <CardContentWithThumbnail src={shouldRender ? src : undefined} className="relative mx-auto max-w-[95%]">
         <div className="flex w-full items-center gap-4 py-6">
@@ -62,7 +66,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               className={cn("hidden font-bold md:flex", result?.rank === 1 && "text-perfect outline-text")}
               size="lg"
             >
-              Rank: #{result.rank}
+              {result.invalidatedAt ? "BAN済み" : `Rank: #${result.rank}`}
             </Badge>
           )}
 

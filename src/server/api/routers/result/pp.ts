@@ -7,6 +7,7 @@ import { SelectResultPpListApiSchema } from "@/validator/result/pp";
 import { TOTAL_PP_TOP_N } from "../../../../shared/result/pp/calc";
 import { type ORPCContext, protectedProcedure, publicProcedure } from "../../orpc";
 import { createPagination } from "../../utils/pagination";
+import { isValidResult } from "../../utils/result-ranking";
 import type { MapListItem } from "../map";
 import { bookmarkedMapExists } from "../map/bookmark/list-item";
 
@@ -83,6 +84,7 @@ const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
     id: results.id,
     updatedAt: results.updatedAt,
     rank: results.rank,
+    invalidatedAt: results.invalidatedAt,
     score: resultStatuses.score,
     player: { id: player.id, name: player.name },
     typeCounts: {
@@ -176,7 +178,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(db: T, session: ORPCCon
       .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)));
   }
 
-  return baseQuery.where(and(eq(player.id, playerId), eq(player.banned, false)));
+  return baseQuery.where(and(eq(player.id, playerId), eq(player.banned, false), isValidResult));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {

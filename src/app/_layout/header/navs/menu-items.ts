@@ -28,6 +28,7 @@ export const buildUserMenuLinkItems = (session: Session) => {
   if (session.user.role === "ADMIN") {
     menus.push({ title: "管理者メニュー", href: "/admin/reports" });
     menus.push({ title: "重要なお知らせ管理", href: "/admin/important-notices" });
+    menus.push({ title: "BANした記録一覧", href: "/admin/invalid-results" });
   }
 
   return menus;

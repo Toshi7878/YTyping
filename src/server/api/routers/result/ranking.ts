@@ -19,6 +19,7 @@ import { CreateResultSchema } from "@/validator/result/result";
 import { protectedProcedure, publicProcedure } from "../../orpc";
 import { gzipCompress } from "../../utils/gzip";
 import { recalculateUserPP } from "../../utils/recalculate-user-pp";
+import { isValidResult } from "../../utils/result-ranking";
 import { generateNotificationId } from "../notification";
 
 const player = alias(users, "player");
@@ -74,7 +75,7 @@ export const resultRankingRouter = {
           ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
           : eq(myClap.resultId, results.id),
       )
-      .where(and(eq(results.mapId, mapId), eq(player.banned, false)))
+      .where(and(eq(results.mapId, mapId), eq(player.banned, false), isValidResult))
       .orderBy(desc(resultStatuses.score));
   }),
 
@@ -90,7 +91,14 @@ export const resultRankingRouter = {
     const pp = calcRawPP(resultToRawPPInput(status), map.rating);
     const statusWithPp = { ...status, pp, starRatingSnapshot: map.rating };
 
-    const existingResult = await db.query.results.findFirst({ where: { userId, mapId }, columns: { id: true } });
+    const existingResult = await db.query.results.findFirst({
+      where: { userId, mapId },
+      columns: { id: true, invalidatedAt: true },
+    });
+    // 運営に無効とされた記録がある譜面には、再登録できない
+    if (existingResult?.invalidatedAt) {
+      throw new ORPCError("FORBIDDEN", { message: "この譜面の記録は無効とされているため、ランキングに登録できません" });
+    }
     const result = await db.transaction(async (tx) => {
       let resultId: number | undefined;
 
@@ -128,7 +136,7 @@ export const resultRankingRouter = {
         .from(results)
         .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
         .innerJoin(users, eq(users.id, results.userId))
-        .where(and(eq(results.mapId, mapId), eq(users.banned, false)))
+        .where(and(eq(results.mapId, mapId), eq(users.banned, false), isValidResult))
         .orderBy(desc(resultStatuses.score));
 
       await removeStaleOvertakeNotifications({ tx, mapId, userId, rankedUsers });
@@ -174,7 +182,7 @@ const removeStaleOvertakeNotifications = async ({
   tx: TXType;
   mapId: number;
   userId: number;
-  rankedUsers: { userId: number; rank: number; score: number }[];
+  rankedUsers: { userId: number; rank: number | null; score: number }[];
 }) => {
   const myResult = rankedUsers.find((record) => record.userId === userId);
   if (!myResult) return;
@@ -218,11 +226,12 @@ const sendOvertakeNotifications = async (
     mapId,
     submitterId,
     rankedUsers,
-  }: { mapId: number; submitterId: number; rankedUsers: { userId: number; rank: number }[] },
+  }: { mapId: number; submitterId: number; rankedUsers: { userId: number; rank: number | null }[] },
 ) => {
   for (const [index, entry] of rankedUsers.entries()) {
     const newRank = index + 1;
     const oldRank = entry.rank;
+    if (oldRank === null) continue;
     const wasDisplacedInTop5 = entry.userId !== submitterId && oldRank <= 5 && oldRank !== newRank;
     if (!wasDisplacedInTop5) continue;
 

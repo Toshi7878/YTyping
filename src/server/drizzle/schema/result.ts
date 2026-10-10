@@ -15,7 +15,11 @@ export const results = pgTable.withRLS(
       .references(() => users.id, { onDelete: "cascade" }),
     updatedAt: timestamp("updated_at").default(sql`now()`).notNull(),
     clapCount: integer("clap_count").default(0).notNull(),
-    rank: integer().default(1).notNull(),
+    // 無効な記録(invalidatedAt あり)は順位を持たないため null
+    rank: integer().default(1),
+    // 運営が無効な記録としてマークした日時。null なら有効
+    invalidatedAt: timestamp("invalidated_at"),
+    invalidatedBy: integer("invalidated_by").references(() => users.id, { onDelete: "set null" }),
   },
   (table) => [
     uniqueIndex("uq_results_user_id_map_id").using(
