@@ -13,24 +13,7 @@ export const resultInvalidationRouter = {
   /** 記録を無効としてマークする。順位を外し、譜面のランキングとユーザーのPPを計算し直す */
   invalidate: adminProcedure.input(resultIdSchema).handler(async ({ input, context }) => {
     const { db, session } = context;
-
-    const result = await db.query.results.findFirst({
-      columns: { id: true, mapId: true, userId: true, invalidatedAt: true },
-      where: { id: input.resultId },
-    });
-    if (!result) throw new ORPCError("NOT_FOUND", { message: "記録が見つかりません" });
-    if (result.invalidatedAt) throw new ORPCError("PRECONDITION_FAILED", { message: "既に無効な記録です" });
-
-    await db.transaction(async (tx) => {
-      await tx
-        .update(results)
-        .set({ invalidatedAt: new Date(), invalidatedBy: session.user.id, rank: null })
-        .where(eq(results.id, result.id));
-
-      await recalculateRanksForMap(tx, result.mapId);
-      await recalculateUserPP(tx, result.userId);
-      await deleteOvertakeNotificationsByVisitor(tx, { visitorId: result.userId, mapId: result.mapId });
-    });
+    await db.transaction((tx) => invalidateResult(tx, { resultId: input.resultId, invalidatedBy: session.user.id }));
   }),
 
   /** 無効のマークを解除する（異議申し立て対応用）。順位とPPを計算し直す */
@@ -51,6 +34,27 @@ export const resultInvalidationRouter = {
       await recalculateUserPP(tx, result.userId);
     });
   }),
+};
+
+export const invalidateResult = async (
+  tx: TXType,
+  { resultId, invalidatedBy }: { resultId: number; invalidatedBy: number },
+) => {
+  const result = await tx.query.results.findFirst({
+    columns: { id: true, mapId: true, userId: true, invalidatedAt: true },
+    where: { id: resultId },
+  });
+  if (!result) throw new ORPCError("NOT_FOUND", { message: "記録が見つかりません" });
+  if (result.invalidatedAt) throw new ORPCError("PRECONDITION_FAILED", { message: "既に無効な記録です" });
+
+  await tx
+    .update(results)
+    .set({ invalidatedAt: new Date(), invalidatedBy, rank: null })
+    .where(eq(results.id, result.id));
+
+  await recalculateRanksForMap(tx, result.mapId);
+  await recalculateUserPP(tx, result.userId);
+  await deleteOvertakeNotificationsByVisitor(tx, { visitorId: result.userId, mapId: result.mapId });
 };
 
 /** 無効にした記録が原因で届いていた「抜かれた」通知を削除する（その譜面分のみ） */

@@ -59,6 +59,11 @@ export const relations = defineRelations(schema, (r) => ({
       to: r.userReports.reportedUserId,
       alias: "user_reports_reported_user_id_users_id",
     }),
+    resultReportsAsReporter: r.many.resultReports({
+      from: r.users.id,
+      to: r.resultReports.reporterId,
+      alias: "result_reports_reporter_id_users_id",
+    }),
     importantNoticesCreated: r.many.importantNotices({
       from: r.users.id,
       to: r.importantNotices.createdBy,
@@ -254,6 +259,10 @@ export const relations = defineRelations(schema, (r) => ({
       from: r.notifications.id,
       to: r.notificationWarnings.notificationId,
     }),
+    message: r.one.notificationMessages({
+      from: r.notifications.id,
+      to: r.notificationMessages.notificationId,
+    }),
     notificationClaps: r.many.notificationClaps({
       from: r.notifications.id,
       to: r.notificationClaps.notificationId,
@@ -402,6 +411,13 @@ export const relations = defineRelations(schema, (r) => ({
       optional: false,
     }),
   },
+  notificationMessages: {
+    notification: r.one.notifications({
+      from: r.notificationMessages.notificationId,
+      to: r.notifications.id,
+      optional: false,
+    }),
+  },
   notificationWarnings: {
     notification: r.one.notifications({
       from: r.notificationWarnings.notificationId,
@@ -482,6 +498,19 @@ export const relations = defineRelations(schema, (r) => ({
     notificationWarning: r.one.notificationWarnings({
       from: r.userReports.id,
       to: r.notificationWarnings.reportId,
+    }),
+  },
+  resultReports: {
+    reporter: r.one.users({
+      from: r.resultReports.reporterId,
+      to: r.users.id,
+      alias: "result_reports_reporter_id_users_id",
+      optional: false,
+    }),
+    result: r.one.results({
+      from: r.resultReports.resultId,
+      to: r.results.id,
+      optional: false,
     }),
   },
   userStats: {

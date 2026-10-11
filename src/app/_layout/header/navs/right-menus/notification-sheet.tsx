@@ -2,6 +2,7 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { useRef } from "react";
 import { buildUserBookmarkListUrl } from "@/app/user/[id]/_features/search-params";
@@ -89,6 +90,7 @@ const NotificationContent = () => {
                       <ReportResultNotificationCard notification={notification} />
                     )}
                     {notification.type === "WARNING" && <WarningNotificationCard notification={notification} />}
+                    {notification.type === "MESSAGE" && <MessageNotificationCard notification={notification} />}
                     <RelativeTime date={notification.updatedAt} className="flex justify-end text-muted-foreground" />
                   </div>
                 );
@@ -199,6 +201,27 @@ const ReportResultNotificationCard = ({ notification }: { notification: ReportRe
             <p className="text-muted-foreground text-xs">管理者コメント</p>
             <p className="whitespace-pre-wrap text-foreground leading-relaxed">{report.adminNote}</p>
           </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+type MessageNotification = Extract<Notification, { type: "MESSAGE" }>;
+const MessageNotificationCard = ({ notification }: { notification: MessageNotification }) => {
+  const { title, body, href } = notification.message;
+
+  return (
+    <Card className="gap-3 rounded-md border py-3 shadow-none">
+      <CardHeader className="px-3">
+        <CardTitle className="text-sm">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2 px-3 text-sm">
+        <p className="whitespace-pre-wrap text-foreground leading-relaxed">{body}</p>
+        {href && (
+          <Link href={href as Route} className="text-primary text-xs underline">
+            開く
+          </Link>
         )}
       </CardContent>
     </Card>

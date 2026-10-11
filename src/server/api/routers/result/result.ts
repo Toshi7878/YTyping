@@ -9,6 +9,7 @@ import { resultInvalidationRouter } from "./invalidation";
 import { resultListRouter } from "./list";
 import { resultPpRouter } from "./pp";
 import { resultRankingRouter } from "./ranking";
+import { resultReportRouter } from "./report";
 
 export const resultRouter = {
   getJsonById: publicProcedure
@@ -40,4 +41,5 @@ export const resultRouter = {
   pp: resultPpRouter,
   clap: resultClapRouter,
   invalidation: resultInvalidationRouter,
+  report: resultReportRouter,
 };

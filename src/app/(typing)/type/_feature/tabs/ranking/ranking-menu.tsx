@@ -9,6 +9,8 @@ import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { overlay } from "@/ui/overlay";
 import { PopoverContent } from "@/ui/popover";
+import { promptDialog } from "@/ui/prompt-dialog";
+import { Separator } from "@/ui/separator";
 import { toast } from "@/ui/toast";
 import { cn } from "@/utils/cn";
 import { setInitialLineResults } from "../../atoms/line-results";
@@ -53,6 +55,28 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
       onError: (error) => toast.error(`BANに失敗しました: ${error.message}`),
     }),
   );
+
+  const submitReport = useMutation(
+    orpc.result.report.submit.mutationOptions({
+      onSuccess: () => toast.success("報告を送信しました"),
+      onError: (error) => toast.error(`報告に失敗しました: ${error.message}`),
+    }),
+  );
+
+  const handleReportClick = async () => {
+    const detail = await promptDialog({
+      title: "この記録を報告しますか？",
+      description: "不正な記録の可能性がある場合、理由を入力してください。管理者が確認します。",
+      placeholder: "報告理由を入力してください。",
+      confirmLabel: "報告する",
+      maxLength: 400,
+    });
+    if (!detail) return;
+    submitReport.mutate({
+      resultId,
+      reasonDetail: detail,
+    });
+  };
 
   const handleInvalidateClick = async () => {
     const confirmed = await confirmDialog.danger({
@@ -129,6 +153,22 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
         >
           {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>
+      ) : null}
+      {session && session.user.id !== userId ? (
+        <>
+          <Separator className="my-2" />
+          <Button
+            variant="ghost"
+            type="button"
+            disabled={submitReport.isPending}
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleReportClick();
+            }}
+          >
+            記録を報告
+          </Button>
+        </>
       ) : null}
       {session?.user.role === "ADMIN" ? (
         <Button

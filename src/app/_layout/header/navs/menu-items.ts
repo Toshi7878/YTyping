@@ -37,6 +37,7 @@ export const buildAdminMenuLinkItems = (session: Session) => {
 
   const menus: HeaderMenu[] = [
     { title: "通報管理", href: "/admin/reports" },
+    { title: "記録通報管理", href: "/admin/result-reports" },
     { title: "重要なお知らせ管理", href: "/admin/important-notices" },
     { title: "BANした記録一覧", href: "/admin/invalid-results" },
     { title: "お問い合わせ管理", href: "/admin/contacts" },

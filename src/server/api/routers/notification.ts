@@ -136,6 +136,9 @@ export const notificationRouter = {
               },
             },
           },
+          message: {
+            columns: { title: true, body: true, href: true },
+          },
           warning: {
             columns: { comment: true },
             with: {
@@ -263,6 +266,17 @@ export const notificationRouter = {
               type: notification.type,
               updatedAt: notification.updatedAt,
               report,
+            };
+          }
+
+          if (notification.type === "MESSAGE" && notification.message) {
+            const { message } = notification;
+
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              message,
             };
           }
 

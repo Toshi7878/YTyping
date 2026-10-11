@@ -11,6 +11,7 @@ import { caller } from "@/orpc/server";
 import { THEME_LIST } from "@/theme/const";
 import { ConfirmDialogHost } from "@/ui/confirm-dialog";
 import { OverlayHost } from "@/ui/overlay";
+import { PromptDialogHost } from "@/ui/prompt-dialog";
 import { Toaster } from "@/ui/toast";
 import { TooltipProvider } from "@/ui/tooltip";
 import { ClearSelectionOnNavigate } from "@/utils/hooks/clear-selection-on-navigate";
@@ -70,6 +71,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </NuqsAdapter>
         <Toaster />
         <ConfirmDialogHost />
+        <PromptDialogHost />
         <OverlayHost />
         <ClearSelectionOnNavigate />
         <UserScriptInit />

@@ -4,7 +4,15 @@ import { mapBookmarkLists, maps } from "./map";
 import { results } from "./result";
 import { userReports, users } from "./user/user";
 
-export const type = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE", "MAP_BOOKMARK", "REPORT_RESULT", "WARNING"]);
+export const type = pgEnum("type", [
+  "LIKE",
+  "CLAP",
+  "OVER_TAKE",
+  "MAP_BOOKMARK",
+  "REPORT_RESULT",
+  "WARNING",
+  "MESSAGE",
+]);
 
 export const notificationClaps = pgTable.withRLS(
   "notification_claps",
@@ -127,6 +135,17 @@ export const notificationWarnings = pgTable.withRLS(
   },
   (table) => [uniqueIndex("uq_notification_warnings_report_id").using("btree", table.reportId.asc().nullsLast())],
 );
+
+/** 運営などから特定のユーザーへ送る汎用メッセージ通知 */
+export const notificationMessages = pgTable.withRLS("notification_messages", {
+  notificationId: varchar("notification_id")
+    .primaryKey()
+    .references(() => notifications.id, { onDelete: "cascade" }),
+  title: varchar({ length: 100 }).notNull(),
+  body: text().notNull(),
+  // 遷移先のパス（例: /type/123）。なければリンクなし
+  href: varchar({ length: 256 }),
+});
 
 export const notifications = pgTable.withRLS("notifications", {
   id: varchar().primaryKey(),

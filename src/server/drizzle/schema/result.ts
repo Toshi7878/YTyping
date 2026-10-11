@@ -1,7 +1,20 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, integer, pgTable, primaryKey, real, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  real,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { maps } from "./map";
-import { users } from "./user/user";
+import { reportStatus, users } from "./user/user";
 
 export const results = pgTable.withRLS(
   "results",
@@ -91,3 +104,24 @@ export const imeResults = pgTable.withRLS("ime_results", {
   typeCount: integer("type_count").default(0).notNull(),
   score: integer().default(0).notNull(),
 });
+
+export const resultReports = pgTable.withRLS(
+  "result_reports",
+  {
+    id: serial().primaryKey(),
+    reporterId: integer("reporter_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    resultId: integer("result_id")
+      .notNull()
+      .references(() => results.id, { onDelete: "cascade" }),
+    reasonDetail: varchar("reason_detail", { length: 500 }).notNull(),
+    // RESOLVED: 記録を無効化(BAN)した / DISMISSED: 対処不要
+    status: reportStatus().default("PENDING").notNull(),
+    adminNote: text("admin_note"),
+    resolvedBy: integer("resolved_by").references(() => users.id, { onDelete: "set null" }),
+    resolvedAt: timestamp("resolved_at"),
+    createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+  },
+  (table) => [index("idx_result_reports_result_id").using("btree", table.resultId.asc().nullsLast())],
+);
