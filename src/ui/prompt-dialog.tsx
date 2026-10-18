@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/ui/alert-dialog";
 import { Button } from "@/ui/button";
+import { Input } from "@/ui/input/input";
 import { Textarea } from "@/ui/textarea";
 
 interface PromptDialogOptions {
@@ -19,6 +20,8 @@ interface PromptDialogOptions {
   placeholder?: string;
   confirmLabel: string;
   maxLength?: number;
+  /** 1行の入力欄(Input)にする。デフォルトは複数行(Textarea) */
+  singleLine?: boolean;
 }
 
 // --- Store ---
@@ -76,14 +79,27 @@ const PromptDialogContent = ({ state: { options, resolvePromise } }: { state: St
           <AlertDialogTitle>{options.title}</AlertDialogTitle>
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
-        <Textarea
-          autoFocus
-          value={value}
-          placeholder={options.placeholder}
-          maxLength={options.maxLength}
-          className="min-h-30"
-          onChange={(e) => setValue(e.target.value)}
-        />
+        {options.singleLine ? (
+          <Input
+            autoFocus
+            value={value}
+            placeholder={options.placeholder}
+            maxLength={options.maxLength}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.nativeEvent.isComposing && value.trim()) close(value.trim());
+            }}
+          />
+        ) : (
+          <Textarea
+            autoFocus
+            value={value}
+            placeholder={options.placeholder}
+            maxLength={options.maxLength}
+            className="min-h-30"
+            onChange={(e) => setValue(e.target.value)}
+          />
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => close(null)}>キャンセル</AlertDialogCancel>
           <Button variant="destructive" disabled={!value.trim()} onClick={() => close(value.trim())}>

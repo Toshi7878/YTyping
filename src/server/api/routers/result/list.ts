@@ -93,6 +93,7 @@ const buildBaseSelect = (db: DBType, session: ORPCContext["session"]) =>
     updatedAt: results.updatedAt,
     rank: results.rank,
     invalidatedAt: results.invalidatedAt,
+    playVideo: { platform: results.playVideoPlatform, videoId: results.playVideoId },
     score: resultStatuses.score,
     player: { id: player.id, name: player.name },
     typeCounts: {

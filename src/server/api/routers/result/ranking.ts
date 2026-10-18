@@ -35,6 +35,7 @@ export const resultRankingRouter = {
         id: results.id,
         updatedAt: results.updatedAt,
         rank: results.rank,
+        playVideo: { platform: results.playVideoPlatform, videoId: results.playVideoId },
         score: resultStatuses.score,
         player: { id: player.id, name: player.name },
         typeCounts: {

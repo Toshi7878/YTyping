@@ -17,8 +17,33 @@ export function extractYouTubeId(url: string) {
     return shortsMatch;
   }
 
+  // ライブ配信のアーカイブ (youtube.com/live/xxx) と埋め込み (youtube.com/embed/xxx)
+  const liveOrEmbedMatch = url.match(/youtube\.com\/(?:live|embed)\/([^?&/]+)/)?.[1];
+  if (liveOrEmbedMatch?.length === 11) {
+    return liveOrEmbedMatch;
+  }
+
   return;
 }
+
+const YOUTUBE_VIDEO_ID_PATTERN = /^[\w-]{11}$/;
+const YOUTUBE_HOSTS = new Set(["youtu.be", "youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"]);
+
+/** YouTubeの動画URLから動画IDを取り出す。YouTube以外のURLや動画IDとして不正な値なら undefined */
+export const parseYouTubeUrl = (input: string) => {
+  let url: URL;
+  try {
+    url = new URL(input.trim());
+  } catch {
+    return;
+  }
+  if (!YOUTUBE_HOSTS.has(url.hostname)) return;
+
+  const videoId = extractYouTubeId(url.href);
+  return videoId && YOUTUBE_VIDEO_ID_PATTERN.test(videoId) ? videoId : undefined;
+};
+
+export const buildYouTubeWatchUrl = (videoId: string) => `https://www.youtube.com/watch?v=${videoId}`;
 
 export const getYouTubeThumbnailUrl = (videoId: string, quality: "mqdefault" | "maxresdefault") => {
   switch (quality) {

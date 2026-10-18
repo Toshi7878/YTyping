@@ -7,6 +7,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { MapListActionButtons } from "@/shared/map/action-buttons";
 import { RatingBadge } from "@/shared/map/rating/badge";
 import { MapThumbnailImage } from "@/shared/map/thumbnail-image";
+import { PlayVideoLink } from "@/shared/result/play-video-link";
 import { useTypingLinkMode } from "@/store/typing-link-mode";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/ui/card";
@@ -49,6 +50,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
           )}
         </div>
         <div className="flex items-center gap-2">
+          {shouldRender && <PlayVideoLink playVideo={result.playVideo} />}
           {result.invalidatedAt ? <RestoreInvalidResultButton resultId={result.id} /> : null}
           <ResultClapButton
             resultId={result.id}

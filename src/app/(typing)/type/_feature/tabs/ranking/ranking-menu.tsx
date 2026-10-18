@@ -5,6 +5,7 @@ import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { useToggleClapMutation } from "@/shared/result/clap";
+import type { PlayVideo } from "@/shared/result/play-video-link";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { overlay } from "@/ui/overlay";
@@ -13,6 +14,7 @@ import { promptDialog } from "@/ui/prompt-dialog";
 import { Separator } from "@/ui/separator";
 import { toast } from "@/ui/toast";
 import { cn } from "@/utils/cn";
+import { parsePlayVideoUrl } from "@/utils/play-video";
 import { setInitialLineResults } from "../../atoms/line-results";
 import { setReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
@@ -29,9 +31,16 @@ interface RankingMenuProps {
   userId: number;
   resultUpdatedAt: Date;
   hasClapped: boolean;
+  playVideo: PlayVideo;
 }
 
-export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasClapped }: RankingMenuProps) => {
+export const RankingPopoverContent = ({
+  resultId,
+  userId,
+  resultUpdatedAt,
+  hasClapped,
+  playVideo,
+}: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const queryClient = useQueryClient();
@@ -55,6 +64,63 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
       onError: (error) => toast.error(`BANに失敗しました: ${error.message}`),
     }),
   );
+
+  const invalidateRankingAndList = () =>
+    Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: orpc.result.ranking.get.queryKey({ input: { mapId: Number(mapId) } }),
+      }),
+      queryClient.invalidateQueries({ queryKey: orpc.result.list.key() }),
+    ]);
+
+  const setPlayVideo = useMutation(
+    orpc.result.video.set.mutationOptions({
+      onSuccess: async () => {
+        toast.success("プレイ動画を登録しました");
+        await invalidateRankingAndList();
+      },
+      onError: (error) => toast.error(`プレイ動画の登録に失敗しました: ${error.message}`),
+    }),
+  );
+
+  const removePlayVideo = useMutation(
+    orpc.result.video.remove.mutationOptions({
+      onSuccess: async () => {
+        toast.success("プレイ動画の登録を解除しました");
+        await invalidateRankingAndList();
+      },
+      onError: (error) => toast.error(`プレイ動画の登録解除に失敗しました: ${error.message}`),
+    }),
+  );
+
+  const hasPlayVideo = !!playVideo.platform && !!playVideo.videoId;
+  const canEditPlayVideo = !!session && (session.user.id === userId || session.user.role === "ADMIN");
+
+  const handlePlayVideoClick = async () => {
+    const url = await promptDialog({
+      title: hasPlayVideo ? "プレイ動画を変更" : "プレイ動画を登録",
+      description: "この記録のプレイ動画のURLを入力してください。(YouTube、TikTokの動画ページのURLに対応しています)",
+      placeholder: "https://www.youtube.com/watch?v=... / https://www.tiktok.com/@ユーザー名/video/...",
+      confirmLabel: "登録する",
+      maxLength: 500,
+      singleLine: true,
+    });
+    if (!url) return;
+    if (!parsePlayVideoUrl(url)) {
+      toast.error("対応していない動画のURLです");
+      return;
+    }
+    setPlayVideo.mutate({ resultId, url });
+  };
+
+  const handleRemovePlayVideoClick = async () => {
+    const confirmed = await confirmDialog.danger({
+      title: "プレイ動画の登録を解除しますか？",
+      description: "この記録に登録したプレイ動画を解除します。",
+      confirmLabel: "解除する",
+    });
+    if (confirmed) removePlayVideo.mutate({ resultId });
+  };
 
   const submitReport = useMutation(
     orpc.result.report.submit.mutationOptions({
@@ -153,6 +219,34 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
         >
           {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>
+      ) : null}
+      {canEditPlayVideo ? (
+        <>
+          <Button
+            variant="ghost"
+            type="button"
+            disabled={setPlayVideo.isPending}
+            onClick={(e) => {
+              e.stopPropagation();
+              void handlePlayVideoClick();
+            }}
+          >
+            {hasPlayVideo ? "プレイ動画を変更" : "プレイ動画を登録"}
+          </Button>
+          {hasPlayVideo ? (
+            <Button
+              variant="ghost"
+              type="button"
+              disabled={removePlayVideo.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                void handleRemovePlayVideoClick();
+              }}
+            >
+              プレイ動画の登録を解除
+            </Button>
+          ) : null}
+        </>
       ) : null}
       {session && session.user.id !== userId ? (
         <>
