@@ -9,7 +9,7 @@ import type { RouterOutputs } from "@/server/api/root";
 import { useToggleClapMutation } from "@/shared/result/clap";
 import { ClearRateText } from "@/shared/result/clear-rate-text";
 import { InputModeText } from "@/shared/result/input-mode-text";
-import { PlayVideoLink } from "@/shared/result/play-video-link";
+import { PlayVideoIcon } from "@/shared/result/play-video-link";
 import { ResultToolTipText } from "@/shared/result/result-tooltip-text";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
@@ -115,7 +115,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
         return (
           <div className="flex items-center gap-1.5">
             <span className="pointer-events-none truncate">{player.name}</span>
-            <PlayVideoLink playVideo={playVideo} />
+            <PlayVideoIcon playVideo={playVideo} className="pointer-events-none" />
           </div>
         );
       },

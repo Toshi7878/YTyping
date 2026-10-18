@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
@@ -6,7 +7,7 @@ import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { useToggleClapMutation } from "@/shared/result/clap";
 import type { PlayVideo } from "@/shared/result/play-video-link";
-import { Button } from "@/ui/button";
+import { Button, buttonVariants } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { overlay } from "@/ui/overlay";
 import { PopoverContent } from "@/ui/popover";
@@ -14,7 +15,8 @@ import { promptDialog } from "@/ui/prompt-dialog";
 import { Separator } from "@/ui/separator";
 import { toast } from "@/ui/toast";
 import { cn } from "@/utils/cn";
-import { parsePlayVideoUrl } from "@/utils/play-video";
+import { buildPlayVideoUrl, PLAY_VIDEO_PLATFORM_LABELS, parsePlayVideoUrl } from "@/utils/play-video";
+import { getYouTubeThumbnailUrl } from "@/utils/youtube";
 import { setInitialLineResults } from "../../atoms/line-results";
 import { setReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
@@ -95,6 +97,9 @@ export const RankingPopoverContent = ({
 
   const hasPlayVideo = !!playVideo.platform && !!playVideo.videoId;
   const canEditPlayVideo = !!session && (session.user.id === userId || session.user.role === "ADMIN");
+
+  const playVideoUrl =
+    playVideo.platform && playVideo.videoId ? buildPlayVideoUrl(playVideo.platform, playVideo.videoId) : null;
 
   const handlePlayVideoClick = async () => {
     const url = await promptDialog({
@@ -219,6 +224,25 @@ export const RankingPopoverContent = ({
         >
           {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>
+      ) : null}
+      {playVideo.platform && playVideoUrl ? (
+        <a
+          href={playVideoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(buttonVariants({ variant: "ghost" }), "h-auto w-full flex-col gap-1 py-2")}
+        >
+          {playVideo.platform === "YOUTUBE" && playVideo.videoId ? (
+            <Image
+              src={getYouTubeThumbnailUrl(playVideo.videoId, "mqdefault")}
+              alt=""
+              width={96}
+              height={54}
+              className="rounded-sm"
+            />
+          ) : null}
+          <span>{PLAY_VIDEO_PLATFORM_LABELS[playVideo.platform]}でプレイ動画を見る</span>
+        </a>
       ) : null}
       {canEditPlayVideo ? (
         <>

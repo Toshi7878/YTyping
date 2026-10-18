@@ -9,13 +9,21 @@ export interface PlayVideo {
   videoId: string | null;
 }
 
-interface PlayVideoLinkProps {
-  playVideo: PlayVideo;
-  className?: string;
-}
+/** プレイ動画が登録されていることを示す目印。登録がなければ何も表示しない */
+export const PlayVideoIcon = ({ playVideo, className }: { playVideo: PlayVideo; className?: string }) => {
+  if (!playVideo.platform || !playVideo.videoId) return null;
+
+  return (
+    <TooltipWrapper label="プレイ動画あり" asChild>
+      <span className={cn("inline-flex items-center text-secondary", className)}>
+        <Video className="size-4" />
+      </span>
+    </TooltipWrapper>
+  );
+};
 
 /** 記録に登録されたプレイ動画への外部リンク。登録がなければ何も表示しない */
-export const PlayVideoLink = ({ playVideo, className }: PlayVideoLinkProps) => {
+export const PlayVideoLink = ({ playVideo, className }: { playVideo: PlayVideo; className?: string }) => {
   const { platform, videoId } = playVideo;
   if (!platform || !videoId) return null;
 
@@ -31,7 +39,6 @@ export const PlayVideoLink = ({ playVideo, className }: PlayVideoLinkProps) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={label}
-        onClick={(e) => e.stopPropagation()}
         className={cn("inline-flex items-center text-secondary hover:opacity-70", className)}
       >
         <Video className="size-4" />
