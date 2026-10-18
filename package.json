@@ -7,7 +7,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "tsx scripts/dev-qr.ts && next dev",
     "build": "next build",
     "start": "next start",
     "check": "biome check --diagnostic-level=warn --reporter=summary",
@@ -93,6 +93,7 @@
     "@better-auth/cli": "^1.4.20",
     "@biomejs/biome": "2.5.15",
     "@types/node": "24.19.1",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/youtube": "^0.3.0",
@@ -100,6 +101,7 @@
     "csv-parse": "^7.0.3",
     "drizzle-kit": "1.0.0-rc.4",
     "husky": "^9.1.7",
+    "qrcode": "^1.5.4",
     "supabase": "2.120.0",
     "tsdown": "^0.23.0",
     "tsx": "^4.22.4",

@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
   compiler: { removeConsole: process.env.NODE_ENV === "production" },
+  allowedDevOrigins: ["192.168.11.2"],
   images: {
     minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [

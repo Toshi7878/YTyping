@@ -6,6 +6,7 @@ import { useState } from "react";
 import { orpc } from "@/orpc/provider";
 import type { LINE_COMPLETED_DISPLAY_TYPES, NEXT_DISPLAY_TYPES } from "@/server/drizzle/schema";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
+import { useReadyInputMode } from "@/store/ready-input-mode";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { SettingIconButton } from "@/ui/icon-button";
@@ -19,6 +20,7 @@ import { cn } from "@/utils/cn";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { store } from "../../atoms/store";
 import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
+import { FlickHighlightCheckbox } from "./options/flick-highlight-checkbox";
 import { HotKeySelectFields } from "./options/hot-key-select-fields";
 import { SoundEffectFields } from "./options/sound-effect-fields";
 import { TimeOffsetCounter } from "./options/time-offset-conter";
@@ -46,6 +48,7 @@ export const SettingPopover = () => {
   const updateTypingOptions = useMutation(orpc.user.typingOption.upsert.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
+  const isFlickMode = useReadyInputMode() === "flick";
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -75,6 +78,12 @@ export const SettingPopover = () => {
       label: "表示設定",
       content: (
         <>
+          {isFlickMode && (
+            <>
+              <FlickHighlightCheckbox />
+              <Separator className="my-4 bg-foreground/20" />
+            </>
+          )}
           <NextDisplayRadioGroup />
           <Separator className="my-4 bg-foreground/20" />
           <LineCompletedRadioGroup />
