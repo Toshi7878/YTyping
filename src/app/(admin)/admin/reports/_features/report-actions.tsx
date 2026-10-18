@@ -14,6 +14,7 @@ interface ReportActionsProps {
   warningCount: number;
   showReviewActions?: boolean;
   showUnbanAction?: boolean;
+  showRevokeWarningAction?: boolean;
 }
 
 const WARNING_BAN_THRESHOLD = 3;
@@ -50,6 +51,7 @@ export const ReportActions = ({
   warningCount,
   showReviewActions = false,
   showUnbanAction = false,
+  showRevokeWarningAction = false,
 }: ReportActionsProps) => {
   return (
     <div className="flex gap-2">
@@ -61,6 +63,7 @@ export const ReportActions = ({
         </>
       )}
       {showUnbanAction && <UnbanDialog reportId={reportId} />}
+      {showRevokeWarningAction && <RevokeWarningDialog reportId={reportId} />}
     </div>
   );
 };
@@ -84,7 +87,7 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
     orpc.user.report.ban.mutationOptions({
       onSuccess: () => {
         toast.success("通報をBAN済みにしました");
-        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        void queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
         form.reset();
         setOpen(false);
       },
@@ -114,7 +117,7 @@ const BanDialog = ({ reportId }: { reportId: number }) => {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-3"
         >
@@ -161,7 +164,7 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
     orpc.user.report.warn.mutationOptions({
       onSuccess: () => {
         toast.success("対象ユーザーに警告しました");
-        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        void queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
         form.reset({ warningComment: defaultWarningComment, adminNote: "" });
         setOpen(false);
       },
@@ -191,7 +194,7 @@ const WarnDialog = ({ reportId, warningCount }: { reportId: number; warningCount
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-3"
         >
@@ -244,7 +247,7 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
     orpc.user.report.dismiss.mutationOptions({
       onSuccess: () => {
         toast.success("通報を対処不要にしました");
-        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        void queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
         form.reset();
         setOpen(false);
       },
@@ -274,7 +277,7 @@ const NoBanDialog = ({ reportId }: { reportId: number }) => {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-3"
         >
@@ -309,7 +312,7 @@ const UnbanDialog = ({ reportId }: { reportId: number }) => {
     orpc.user.report.unban.mutationOptions({
       onSuccess: () => {
         toast.success("BANを解除しました");
-        queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        void queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
         setOpen(false);
       },
       onError: (e) => toast.error(e.message),
@@ -336,6 +339,54 @@ const UnbanDialog = ({ reportId }: { reportId: number }) => {
           </Button>
           <Button variant="destructive" onClick={() => unban.mutate({ reportId })} disabled={unban.isPending}>
             BAN解除
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const RevokeWarningDialog = ({ reportId }: { reportId: number }) => {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const revokeWarning = useMutation(
+    orpc.user.report.revokeWarning.mutationOptions({
+      onSuccess: () => {
+        toast.success("警告を解除しました");
+        void queryClient.invalidateQueries(orpc.user.report.list.queryOptions());
+        setOpen(false);
+      },
+      onError: (e) => toast.error(e.message),
+    }),
+  );
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="outline">
+            警告解除
+          </Button>
+        }
+      />
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>警告を解除する</DialogTitle>
+        </DialogHeader>
+        <p className="text-muted-foreground text-sm">
+          この通報による警告を解除し、対象ユーザーの警告回数を1回減らします。通報の履歴は「警告解除済み」として残ります。
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            キャンセル
+          </Button>
+          <Button
+            variant="warning"
+            onClick={() => revokeWarning.mutate({ reportId })}
+            disabled={revokeWarning.isPending}
+          >
+            警告を解除する
           </Button>
         </DialogFooter>
       </DialogContent>

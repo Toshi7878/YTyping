@@ -188,6 +188,34 @@ export const userReportRouter = {
     });
   }),
 
+  revokeWarning: adminProcedure.input(z.object({ reportId: z.number() })).handler(async ({ input, context }) => {
+    const { db } = context;
+    const { reportId } = input;
+
+    const report = await db.query.userReports.findFirst({
+      columns: { id: true, reportedUserId: true, status: true },
+      where: { id: reportId },
+    });
+
+    if (!report) {
+      throw new ORPCError("NOT_FOUND", { message: "通報が見つかりません" });
+    }
+
+    if (report.status !== "WARNED") {
+      throw new ORPCError("PRECONDITION_FAILED", { message: "警告済みの通報ではありません" });
+    }
+
+    // 警告を行った担当者・日時(resolvedBy/resolvedAt)は経緯として残す
+    await db.transaction(async (tx) => {
+      await tx.update(userReports).set({ status: "WARNING_REVOKED" }).where(eq(userReports.id, reportId));
+
+      await tx
+        .update(users)
+        .set({ warningCount: sql`greatest(${users.warningCount} - 1, 0)` })
+        .where(eq(users.id, report.reportedUserId));
+    });
+  }),
+
   unban: adminProcedure.input(z.object({ reportId: z.number() })).handler(async ({ input, context }) => {
     const { db } = context;
     const { reportId } = input;
