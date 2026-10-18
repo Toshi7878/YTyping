@@ -49,7 +49,8 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
         <DropdownMenuContent align="end" className="w-56">
           <MenuDropdownItems />
 
-          <ThemeDropdownSubmenu />
+          {/* ログイン中はユーザーメニュー内に表示する */}
+          {!session?.user?.name && <ThemeDropdownSubmenu />}
           <DropdownMenuSeparator />
 
           {session?.user?.name ? <UserMenuDropdownItems session={session} /> : !session && <SignInDropdownItems />}
@@ -96,6 +97,10 @@ const UserMenuDropdownItems = ({ session }: { session: Session }) => {
           <DropdownMenuItem>{item.title}</DropdownMenuItem>
         </Link>
       ))}
+      <ThemeDropdownSubmenu />
+      <Link href={CONTACT_MENU_ITEM.href}>
+        <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+      </Link>
       {adminMenuLinkItems.length > 0 && (
         <>
           <DropdownMenuSeparator />
@@ -104,12 +109,8 @@ const UserMenuDropdownItems = ({ session }: { session: Session }) => {
               <DropdownMenuItem>{item.title}</DropdownMenuItem>
             </Link>
           ))}
-          <DropdownMenuSeparator />
         </>
       )}
-      <Link href={CONTACT_MENU_ITEM.href}>
-        <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
-      </Link>
     </>
   );
 };

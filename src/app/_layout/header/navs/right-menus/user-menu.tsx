@@ -49,6 +49,10 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
         ))}
+        <ThemeDropdownSubmenu />
+        <Link href={CONTACT_MENU_ITEM.href}>
+          <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+        </Link>
         {adminMenuLinkItems.length > 0 && (
           <>
             <DropdownMenuSeparator />
@@ -57,13 +61,8 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
                 <DropdownMenuItem>{item.title}</DropdownMenuItem>
               </Link>
             ))}
-            <DropdownMenuSeparator />
           </>
         )}
-        <ThemeDropdownSubmenu />
-        <Link href={CONTACT_MENU_ITEM.href}>
-          <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
-        </Link>
 
         <DropdownMenuSeparator />
 
