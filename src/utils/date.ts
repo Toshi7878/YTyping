@@ -1,9 +1,13 @@
 type LocaleString = "ja-JP";
 export const JST_OFFSET = 9 * 60 * 60 * 1000;
 
+/**
+ * サーバーとブラウザで同じ文字列になるよう、ロケールとタイムゾーンはデフォルトで日本(ja-JP / Asia/Tokyo)に固定する。
+ * 未指定だとサーバー(en-US/UTC など)とブラウザの設定が食い違い、ハイドレーションエラーになる
+ */
 export const formatDate = (
   date: Date | string | number,
-  locale?: LocaleString,
+  locale: LocaleString = "ja-JP",
   options: Intl.DateTimeFormatOptions = {
     dateStyle: "short",
     timeStyle: "medium",
@@ -14,6 +18,7 @@ export const formatDate = (
 
   return new Intl.DateTimeFormat(locale, {
     hour12: false,
+    timeZone: "Asia/Tokyo",
     ...options,
   }).format(d);
 };
