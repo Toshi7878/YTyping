@@ -17,6 +17,8 @@ import {
   getFlickPendingModConversion,
   getPlayingInputMode,
   getTypingWord,
+  isDakutenMark,
+  isVoicedKana,
   setFlickPendingModConversion,
   setTypingWord,
 } from "../../atoms/typing-word";
@@ -285,11 +287,15 @@ export const handleFlickInput = (e: FlickEvent) => {
 
   const pending = getFlickPendingModConversion();
 
-  // modキーの操作(タップ/フリックいずれも): 変換待ち中の文字を確定してエンジンへ送信する
+  // modキーの操作(タップ/フリックいずれも)
   if ((e.type === "tap" && e.key.type === "mod") || e.type === "modConfirm") {
     if (pending) {
+      // 変換待ち中の文字(小書き文字など)を確定してエンジンへ送信する
       applyTypingInput(pending.target, typingWord);
       setFlickPendingModConversion(null);
+    } else if (isDakutenMark(nextKana)) {
+      // 濁音・半濁音はベース文字入力後に゛/゜が次の文字として表示されるため、かな入力モードと同様に送信する
+      applyTypingInput(nextKana, typingWord);
     }
     return;
   }
@@ -309,9 +315,10 @@ export const handleFlickInput = (e: FlickEvent) => {
   }
 
   // 入力した文字がmod変換のベースであり、期待される次のかなが変換候補に含まれる場合は、
-  // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)
+  // 即入力せずmod変換待ち状態にする(そのままエンジンに渡すと不一致でミスになるため)。
+  // 濁音・半濁音はエンジンがベース文字を受け付けて゛/゜を次の文字として表示するため、そのままエンジンに渡す
   const candidates = MOD_CYCLE[baseChar];
-  if (candidates && nextKana !== baseChar && candidates.includes(nextKana)) {
+  if (candidates && nextKana !== baseChar && candidates.includes(nextKana) && !isVoicedKana(nextKana)) {
     triggerTypeSound();
     setFlickPendingModConversion({ target: nextKana });
     return;

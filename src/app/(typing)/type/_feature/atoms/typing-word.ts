@@ -44,6 +44,15 @@ export const getFlickPendingModConversion = () => store.get(flickPendingModConve
 export const setFlickPendingModConversion = (value: FlickPendingModConversion | null) =>
   store.set(flickPendingModConversionAtom, value);
 
+// 濁点・半濁点(゛゜)。かな入力モードと同様、濁音・半濁音はベース文字の入力後に次の文字として表示される
+export const isDakutenMark = (char: string | undefined) => char === "゛" || char === "゜";
+
+// 濁音・半濁音かどうか(例: が → true, か → false)
+export const isVoicedKana = (char: string) => /[\u3099\u309A]/.test(char.normalize("NFD"));
+
+const flickIsModMarkNextAtom = atom((get) => isDakutenMark(get(typingWordAtom).nextChunk.kana[0]));
+export const useFlickIsModMarkNext = () => useAtomValue(flickIsModMarkNextAtom);
+
 // 次に入力すべき文字を含む配列(かな/数字記号/英語)に応じて表示するフリックキーボードを切り替える。
 // 行が完了して次に入力すべき文字が存在しない場合は、次の行の最初の文字を基準に切り替える。
 // 次の行も空行の場合は現在の配列を維持する

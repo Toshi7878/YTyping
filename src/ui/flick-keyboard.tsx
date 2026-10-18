@@ -342,7 +342,8 @@ function collectChars(keys: FlickKey[]): Set<string> {
   return chars;
 }
 
-const KANA_CHARS = new Set<string>([...collectChars(FLICK_KEYS), ...Object.values(MOD_CYCLE).flat()]);
+// 濁点・半濁点は、ベース文字入力後に次の文字として表示されるため、かな配列として扱う
+const KANA_CHARS = new Set<string>([...collectChars(FLICK_KEYS), ...Object.values(MOD_CYCLE).flat(), "゛", "゜"]);
 const NUMBER_CHARS = collectChars(NUMBER_KEYS);
 const ENGLISH_CHARS = new Set<string>(
   [...collectChars(ENGLISH_KEYS)].flatMap((ch) => [ch.toLowerCase(), ch.toUpperCase()]),
