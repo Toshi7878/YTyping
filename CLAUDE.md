@@ -28,7 +28,7 @@ pnpm pp:recalculate   # Recalculate every user's PP
 pnpm tags:normalize
 ```
 
-First-time setup is in `README.md` (copy `.env.example` → `.env`, `pnpm db:start`, fill the Supabase keys, `pnpm db:push && pnpm db:seed`).
+First-time setup is in `README.md` (create `.env`, `pnpm db:start`, fill the Supabase keys, `pnpm db:push && pnpm db:seed`).
 
 Tests are sparse (currently one file under `src/app/(typing)/type/_feature/`). CI (`.github/workflows/ci.yml`) runs Biome and the type check on PRs to `main`/`dev`; it does not run vitest.
 

@@ -31,18 +31,17 @@ pnpm install
 ## 環境変数ファイルを作成 (`.env` ファイルをプロジェクトのルートに作成)
 
 ```bash
-cp .env.example .env
+touch .env
 ```
 
-.envファイルの中身に以下の環境変数があることを確認
+`.env` には、`pnpm db:status` で表示される Supabase のキーを記述します。
 
 ```code
-NEXT_PUBLIC_SUPABASE_URL="http://localhost:54321"
-DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
-
 NEXT_PUBLIC_SUPABASE_ANON_KEY=""
 SUPABASE_SECRET_KEY=""
 ```
+
+`NEXT_PUBLIC_SUPABASE_URL` と `DATABASE_URL` はローカル用の値が `.env.schema` に既定値として入っているため、ローカルでは記述不要です。
 
 環境変数は [varlock](https://varlock.dev) で管理しています。変数の型・必須条件は `.env.schema`（値は含まない）で宣言し、値は `.env` に書きます。不足や型の誤りは起動時・ビルド時に検出されます。
 
