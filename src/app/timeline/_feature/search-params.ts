@@ -2,6 +2,7 @@ import { type inferParserType, useQueryState, useQueryStates } from "nuqs";
 import {
   createLoader,
   createParser,
+  parseAsBoolean,
   parseAsInteger,
   parseAsNumberLiteral,
   parseAsString,
@@ -66,6 +67,7 @@ const resultListSearchParams = {
   maxPlaySpeed: parseAsNumberLiteral(RESULT_PLAY_SPEEDS).withDefault(PLAY_SPEED_LIMIT.max),
   username: parseAsString.withDefault(""),
   mapKeyword: parseAsString.withDefault(""),
+  hasPlayVideo: parseAsBoolean.withDefault(false),
 };
 
 export const useResultListFilterQueryStates = () => useQueryStates(resultListSearchParams);

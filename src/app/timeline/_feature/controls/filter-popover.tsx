@@ -2,6 +2,7 @@
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/ui/button";
+import { CheckboxCardGroup } from "@/ui/checkbox/checkbox";
 import { DualRangeSlider } from "@/ui/dual-range-slider";
 import { Label } from "@/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
@@ -42,6 +43,16 @@ export const FilterFieldsPopover = () => {
           step={0.25}
           value={[filterParams.minPlaySpeed, filterParams.maxPlaySpeed]}
           onRangeChange={(min, max) => void setFilterParams({ minPlaySpeed: min, maxPlaySpeed: max })}
+        />
+        <CheckboxCardGroup
+          items={[
+            {
+              label: "プレイ動画ありの記録のみ",
+              checked: filterParams.hasPlayVideo,
+              defaultChecked: false,
+              onCheckedChange: (checked) => void setFilterParams({ hasPlayVideo: checked }),
+            },
+          ]}
         />
       </PopoverContent>
     </Popover>

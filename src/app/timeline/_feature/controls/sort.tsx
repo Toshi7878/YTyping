@@ -5,8 +5,8 @@ import { type ResultListSortSearchParams, useResultListSortQueryState } from "..
 const SORT_OPTIONS: { label: string; value: (typeof RESULT_SORT_OPTIONS)[number] }[] = [
   { label: "更新日", value: "updatedAt" },
   { label: "打鍵数", value: "type-count" },
-  { label: "最大コンボ", value: "max-combo" },
-  { label: "拍手数", value: "clap-count" },
+  { label: "最大ｺﾝﾎﾞ", value: "max-combo" },
+  { label: "拍手", value: "clap-count" },
   { label: "pp", value: "pp" },
 ];
 

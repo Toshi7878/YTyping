@@ -199,6 +199,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
 
   const whereConditions = [
     input.playerId ? eq(player.id, input.playerId) : undefined,
+    input.hasPlayVideo ? isNotNull(results.playVideoId) : undefined,
     filterByInputMode({ mode: input.mode }),
     filterByKpm({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
     filterByClearRate({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),

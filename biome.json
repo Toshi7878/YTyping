@@ -36,7 +36,11 @@
         "useExhaustiveSwitchCases": "error"
       },
       "correctness": {
-        "useExhaustiveDependencies": "info"
+        "useExhaustiveDependencies": "info",
+        "noUnusedImports": {
+          "level": "warn",
+          "fix": "safe"
+        }
       },
       "suspicious": {
         "noUnknownAtRules": "info",

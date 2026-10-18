@@ -46,11 +46,11 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               </Link>
               {" - "}
               <RelativeTime date={result.updatedAt} />
+              <PlayVideoLink playVideo={result.playVideo} />
             </>
           )}
         </div>
         <div className="flex items-center gap-2">
-          {shouldRender && <PlayVideoLink playVideo={result.playVideo} />}
           {result.invalidatedAt ? <RestoreInvalidResultButton resultId={result.id} /> : null}
           <ResultClapButton
             resultId={result.id}
