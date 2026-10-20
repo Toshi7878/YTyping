@@ -48,12 +48,14 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
   const removeMapFromList = useRemoveBookmarkListItemMutation();
 
   const toggleMap = (listId: number, hasMap: boolean) => {
+    const options = { onSuccess: () => setIsOpen(false) };
+
     if (hasMap) {
-      removeMapFromList.mutate({ listId, mapId });
+      removeMapFromList.mutate({ listId, mapId }, options);
       return;
     }
 
-    addMapToList.mutate({ listId, mapId });
+    addMapToList.mutate({ listId, mapId }, options);
   };
 
   return (
@@ -141,7 +143,7 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
     orpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries(
+        void queryClient.invalidateQueries(
           orpc.map.bookmark.lists.getByUserId.queryOptions({
             input: {
               userId: session?.user?.id ?? 0,
@@ -176,7 +178,7 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-4"
         >
