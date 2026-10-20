@@ -39,6 +39,13 @@ export default function TermsOfServicePage() {
       </CardWithContent>
 
       <CardWithContent>
+        <H2>タイピング記録の確認</H2>
+        <P>
+          運営は、本サービスに登録されたタイピングの記録が正規の入力によるものか判断できない場合、登録したユーザーに対し、確認を求めることがあります。
+        </P>
+      </CardWithContent>
+
+      <CardWithContent>
         <H2>免責事項</H2>
         <P>
           本サービスの利用によって生じた損害について、運営は一切の責任を負いません。本サービスは予告なく変更・停止する場合があります。
