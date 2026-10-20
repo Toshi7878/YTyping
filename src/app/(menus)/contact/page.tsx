@@ -25,7 +25,11 @@ export default async function Page() {
     <HydrateClient>
       <div className="mx-auto max-w-3xl space-y-6">
         <H1>お問い合わせ</H1>
-        <CardWithContent>
+        <CardWithContent className={{ cardContent: "space-y-4" }}>
+          <P className="text-muted-foreground text-sm">
+            開発者が確認のうえ返信します。返信はオンライン状態に関わらず問い合わせ箱に保管されます。
+            すべてのお問い合わせに返信しておりますので、返信がない場合は見落としている可能性があります。お手数ですが再度お問い合わせください。
+          </P>
           <ContactForm />
         </CardWithContent>
         <H2>お問い合わせ履歴</H2>
