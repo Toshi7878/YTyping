@@ -42,6 +42,15 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     setTypingStatus((prev) => ({ ...prev, rank: scores.length + 1 }));
   }, [data, sceneGroup]);
 
+  const { data: session } = useSession();
+  const { data: invalidData } = useQuery(
+    orpc.result.ranking.getInvalid.queryOptions({
+      input: { mapId: mapId ? Number(mapId) : 0 },
+      enabled: !!session,
+      gcTime: Infinity,
+    }),
+  );
+
   return (
     <CardWithContent
       id="tab-ranking-card"
@@ -51,11 +60,27 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       }}
     >
       <RankingTable data={data ?? []} loading={isPending} />
+      {invalidData && invalidData.length > 0 && (
+        <section className="pb-4">
+          <p className="py-2 text-muted-foreground text-sm">
+            確認中の記録 (本人のみ表示されます。ランキングの集計には含まれません)
+          </p>
+          <RankingTable data={invalidData} loading={false} invalid />
+        </section>
+      )}
     </CardWithContent>
   );
 };
 
-const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boolean }) => {
+const RankingTable = ({
+  data,
+  loading,
+  invalid = false,
+}: {
+  data: RankingResult[];
+  loading: boolean;
+  invalid?: boolean;
+}) => {
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
   const { data: session } = useSession();
   const { id: mapId } = useParams();
@@ -74,7 +99,9 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
 
         return (
           <>
-            <span className={cn("pointer-events-none ml-1", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
+            <span className={cn("pointer-events-none ml-1", !invalid && rank === 1 && "text-perfect outline-text")}>
+              {invalid ? "-" : `#${rank}`}
+            </span>
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
               <PopoverAnchor />
               <RankingPopoverContent
@@ -83,6 +110,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
                 resultUpdatedAt={result.updatedAt}
                 hasClapped={result.clap.hasClapped ?? false}
                 playVideo={result.playVideo}
+                invalid={invalid}
               />
             </Popover>
           </>
@@ -167,7 +195,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
           );
         },
         onClick: (event, row) => {
-          if (!session?.user?.id || toggleClap.isPending || !mapId) return;
+          if (invalid || !session?.user?.id || toggleClap.isPending || !mapId) return;
           event.preventDefault();
           event.stopPropagation();
           toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
@@ -184,16 +212,17 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
       onRowClick={(_, __, index) => {
         setOpenPopoverIndex((prev) => (prev === index ? null : index));
       }}
-      className={cn("ranking-table overflow-visible rounded-none border-0")}
+      className={cn(!invalid && "ranking-table", "overflow-visible rounded-none border-0")}
       rowClassName={(index) =>
         cn(
           "border-accent-foreground cursor-pointer text-4xl font-bold md:text-base h-20 md:h-auto",
-          session?.user.id === data?.[index]?.player.id && "my-result text-secondary",
+          invalid && "text-muted-foreground",
+          !invalid && session?.user.id === data?.[index]?.player.id && "my-result text-secondary",
           openPopoverIndex === index && "bg-accent/50",
         )
       }
       headerRowClassName="text-3xl font-bold md:text-base h-20 md:h-auto"
-      tbodyId="ranking-tbody"
+      tbodyId={invalid ? undefined : "ranking-tbody"}
       rowWrapper={({ row, index, children }) => {
         const { otherStatus, typeCounts, typeSpeed } = row;
         const { kanaType, flickType } = typeCounts;
@@ -217,7 +246,6 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
             align="end"
             // 行が表示領域からはみ出すと align が start に反転して左端に出るため、反転せず右端に寄せる
             collisionAvoidance={{ side: "flip", align: "shift" }}
-            sideOffset={-12}
             delayDuration={0}
             disableOutsidePressDismiss
             open={openPopoverIndex === null ? undefined : openPopoverIndex === index}

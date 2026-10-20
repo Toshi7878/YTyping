@@ -6,6 +6,7 @@ import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { useToggleClapMutation } from "@/shared/result/clap";
+import { RestoreInvalidResultButton } from "@/shared/result/list/card/restore-invalid-button";
 import type { PlayVideo } from "@/shared/result/play-video-link";
 import { Button, buttonVariants } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
@@ -34,6 +35,8 @@ interface RankingMenuProps {
   resultUpdatedAt: Date;
   hasClapped: boolean;
   playVideo: PlayVideo;
+  /** 確認中（無効）の記録。拍手・報告・BANは出さず、管理者には解除を出す */
+  invalid?: boolean;
 }
 
 export const RankingPopoverContent = ({
@@ -42,6 +45,7 @@ export const RankingPopoverContent = ({
   resultUpdatedAt,
   hasClapped,
   playVideo,
+  invalid = false,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
@@ -71,6 +75,9 @@ export const RankingPopoverContent = ({
     Promise.all([
       queryClient.invalidateQueries({
         queryKey: orpc.result.ranking.get.queryKey({ input: { mapId: Number(mapId) } }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: orpc.result.ranking.getInvalid.queryKey({ input: { mapId: Number(mapId) } }),
       }),
       queryClient.invalidateQueries({ queryKey: orpc.result.list.key() }),
     ]);
@@ -212,7 +219,7 @@ export const RankingPopoverContent = ({
       <Button variant="ghost" onClick={handleReplayClick} disabled={sceneGroup === "Playing"}>
         リプレイ再生
       </Button>
-      {session ? (
+      {session && !invalid ? (
         <Button
           variant="ghost"
           type="button"
@@ -272,7 +279,7 @@ export const RankingPopoverContent = ({
           ) : null}
         </>
       ) : null}
-      {session && session.user.id !== userId ? (
+      {session && session.user.id !== userId && !invalid ? (
         <>
           <Separator className="my-2" />
           <Button
@@ -288,7 +295,8 @@ export const RankingPopoverContent = ({
           </Button>
         </>
       ) : null}
-      {session?.user.role === "ADMIN" ? (
+      {invalid ? <RestoreInvalidResultButton resultId={resultId} className="mx-2" /> : null}
+      {session?.user.role === "ADMIN" && !invalid ? (
         <Button
           variant="ghost"
           type="button"

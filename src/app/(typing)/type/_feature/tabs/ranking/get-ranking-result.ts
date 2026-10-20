@@ -15,8 +15,10 @@ export const getRankingResultByResultId = ({ mapId, resultId }: { mapId: number;
   const queryClient = getQueryClient();
 
   const rankingData = queryClient.getQueryData(orpc.result.ranking.get.queryOptions({ input: { mapId } }).queryKey);
-  if (!rankingData) return null;
-  const playerResult = rankingData.find((result) => result.id === resultId);
+  const invalidData = queryClient.getQueryData(
+    orpc.result.ranking.getInvalid.queryOptions({ input: { mapId } }).queryKey,
+  );
+  const playerResult = [...(rankingData ?? []), ...(invalidData ?? [])].find((result) => result.id === resultId);
   return playerResult ?? null;
 };
 

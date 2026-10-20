@@ -2,13 +2,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { orpc } from "@/orpc/provider";
 import { MapList } from "@/shared/map/list/list";
-import { ResultList } from "@/shared/result/list/list";
 import { Badge } from "@/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { UserBookmarkLists } from "./bookmark-lists/list";
 import { UserPlaySummary } from "./play-summary/summary";
 import { UserTopPpList } from "./play-summary/top-pp-list";
 import { ResultSummary } from "./result-list/result-summary";
+import { UserResultList } from "./result-list/user-result-list";
 import { type TABS, useTabQueryState } from "./search-params";
 
 const TAB_OPTIONS = [
@@ -53,7 +53,7 @@ export const UserTabs = ({ id }: { id: string }) => {
       </TabsContent>
       <TabsContent value="results" className="space-y-2">
         <ResultSummary userId={id} />
-        <ResultList filterParams={{ playerId: Number(id) }} />
+        <UserResultList userId={id} />
       </TabsContent>
       <TabsContent value="liked">
         <MapList filterParams={{ likerId: Number(id) }} sortParams={{ type: "like", isDesc: true }} />

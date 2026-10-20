@@ -28,7 +28,8 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       toast.success("ランキング登録が完了しました");
     },
     onError: (error) => {
-      if (getORPCErrorCode(error) === "FORBIDDEN") {
+      const errorCode = getORPCErrorCode(error);
+      if (errorCode === "FORBIDDEN" || errorCode === "CONFLICT") {
         toast.error("ランキング登録に失敗しました", { description: error.message });
         return;
       }
@@ -38,7 +39,8 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
 
   const handleClick = async () => {
     const mapId = getMapId();
-    if (!mapId) return;
+    const builtMap = getBuiltMap();
+    if (!mapId || !builtMap) return;
 
     const isConfirmed = isScoreUpdated
       ? true
@@ -52,11 +54,11 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       const typingSubStatus = getTypingSubstatus();
       const lineResults = getLineResults();
       const typingStatus = getTypingStatus();
-      const builtMap = getBuiltMap();
       const typingOptions = getTypingOptions();
 
       registerRanking.mutate({
         mapId,
+        mapUpdatedAt: builtMap.updatedAt,
         status: buildResultData(typingSubStatus, lineResults, typingStatus, builtMap, typingOptions),
         lineResults,
       });

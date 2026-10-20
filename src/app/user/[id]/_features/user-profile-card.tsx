@@ -16,6 +16,8 @@ import { TooltipWrapper } from "@/ui/tooltip";
 import { H2, LinkText } from "@/ui/typography";
 import { ImportantNoticeHistoryDialog } from "./important-notice-history-dialog";
 import { ReportDialog } from "./report-dialog";
+import { useInvalidResultCount } from "./result-list/use-invalid-result-count";
+import { buildUserInvalidResultsUrl } from "./search-params";
 import { WarningDialog } from "./warning-dialog";
 
 interface UserProfileCardProps {
@@ -29,6 +31,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const isMyProfilePage = session?.user.id === Number(userId);
   const isAdmin = session?.user.role === "ADMIN";
   const canSeeWarnings = isMyProfilePage || isAdmin;
+  const invalidResultCount = useInvalidResultCount(userId);
 
   const profile = [
     {
@@ -94,6 +97,14 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         <div className="absolute right-0 bottom-0 flex items-center gap-1">
           {canSeeWarnings && <WarningDialog userId={Number(userId)} warningCount={userProfile?.warningCount ?? 0} />}
           {canSeeWarnings && <ImportantNoticeHistoryDialog userId={Number(userId)} />}
+          {invalidResultCount > 0 && (
+            <Link
+              href={buildUserInvalidResultsUrl(userId)}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              確認が必要な記録
+            </Link>
+          )}
           {session &&
             (isMyProfilePage ? (
               <TooltipWrapper label="プロフィール編集ページに移動" asChild>

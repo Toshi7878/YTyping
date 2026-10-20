@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { orpc } from "@/orpc/provider";
+import { orpc, orpcClient } from "@/orpc/provider";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -57,12 +57,26 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     },
     { enableOnFormTags: false, preventDefault: true },
   );
-  const { data: rawMapLines, isLoading } = useQuery(
-    orpc.map.getJsonById.queryOptions({ input: { mapId }, staleTime: Infinity, gcTime: Infinity }),
+  // 譜面データより先に更新日時を取得する。間に編集が入っても、登録時の照合で弾かれる側に倒れる
+  const { data: mapUpdatedAt } = useQuery({
+    queryKey: ["typing-map-updated-at", mapId],
+    queryFn: async () => (await orpcClient.map.getById({ mapId })).updatedAt,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
+  const { data: rawMapLines, isLoading: isJsonLoading } = useQuery(
+    orpc.map.getJsonById.queryOptions({
+      input: { mapId },
+      enabled: mapUpdatedAt !== undefined,
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
+  const isLoading = isJsonLoading || mapUpdatedAt === undefined;
+
   useEffect(() => {
-    if (rawMapLines) {
+    if (rawMapLines && mapUpdatedAt) {
       const builtMapLines = buildTypingMap({ rawMapLines, charPoint: CHAR_POINT });
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
@@ -82,6 +96,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         duration: calculateDuration(builtMapLines),
         hasAlphabet: hasAlphabetChunk(builtMapLines),
         isCaseSensitive: builtMapLines[0]?.options?.isCaseSensitive ?? false,
+        updatedAt: mapUpdatedAt,
       };
       setBuiltMap(builtMap);
       setInitialLineResults(builtMap.initialLineResults);
@@ -90,7 +105,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       resetTypingStatus();
       setTotalProgressMax(builtMap.duration);
     }
-  }, [rawMapLines]);
+  }, [rawMapLines, mapUpdatedAt]);
 
   return (
     <>

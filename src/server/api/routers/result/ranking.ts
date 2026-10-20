@@ -1,6 +1,6 @@
 import { ORPCError } from "@orpc/server";
-import { and, desc, eq, inArray, lte, max, sql } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { and, desc, eq, inArray, isNotNull, lte, max, sql } from "drizzle-orm";
+import { alias, type SelectedFields } from "drizzle-orm/pg-core";
 import { ENV } from "varlock/env";
 import z from "zod/v4";
 import { uploadPublicFile } from "@/server/api/lib/storage";
@@ -16,7 +16,7 @@ import {
 } from "@/server/drizzle/schema";
 import { calcRawPP, resultToRawPPInput } from "@/shared/result/pp/calc";
 import { CreateResultSchema } from "@/validator/result/result";
-import { protectedProcedure, publicProcedure } from "../../orpc";
+import { type ORPCContext, protectedProcedure, publicProcedure } from "../../orpc";
 import { gzipCompress } from "../../utils/gzip";
 import { recalculateUserPP } from "../../utils/recalculate-user-pp";
 import { isValidResult } from "../../utils/result-ranking";
@@ -25,48 +25,51 @@ import { generateNotificationId } from "../notification";
 const player = alias(users, "player");
 const myClap = alias(resultClaps, "my_clap");
 
+const buildRankingSelect = (session: ORPCContext["session"]) =>
+  ({
+    id: results.id,
+    updatedAt: results.updatedAt,
+    rank: results.rank,
+    playVideo: { platform: results.playVideoPlatform, videoId: results.playVideoId },
+    score: resultStatuses.score,
+    player: { id: player.id, name: player.name },
+    typeCounts: {
+      romaType: resultStatuses.romaType,
+      kanaType: resultStatuses.kanaType,
+      flickType: resultStatuses.flickType,
+      englishType: resultStatuses.englishType,
+      symbolType: resultStatuses.symbolType,
+      spaceType: resultStatuses.spaceType,
+      numType: resultStatuses.numType,
+    },
+    otherStatus: {
+      playSpeed: resultStatuses.minPlaySpeed,
+      miss: resultStatuses.miss,
+      lost: resultStatuses.lost,
+      maxCombo: resultStatuses.maxCombo,
+      clearRate: resultStatuses.clearRate,
+      isCaseSensitive: resultStatuses.isCaseSensitive,
+      pp: resultStatuses.pp,
+    },
+    typeSpeed: {
+      kpm: resultStatuses.kpm,
+      rkpm: resultStatuses.rkpm,
+      kanaToRomaKpm: resultStatuses.kanaToRomaKpm,
+      kanaToRomaRkpm: resultStatuses.kanaToRomaRkpm,
+    },
+    clap: {
+      count: results.clapCount,
+      hasClapped: session ? sql`COALESCE(${myClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+    },
+  }) satisfies SelectedFields;
+
 export const resultRankingRouter = {
   get: publicProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
     const { db, session } = context;
     const { mapId } = input;
 
     return db
-      .select({
-        id: results.id,
-        updatedAt: results.updatedAt,
-        rank: results.rank,
-        playVideo: { platform: results.playVideoPlatform, videoId: results.playVideoId },
-        score: resultStatuses.score,
-        player: { id: player.id, name: player.name },
-        typeCounts: {
-          romaType: resultStatuses.romaType,
-          kanaType: resultStatuses.kanaType,
-          flickType: resultStatuses.flickType,
-          englishType: resultStatuses.englishType,
-          symbolType: resultStatuses.symbolType,
-          spaceType: resultStatuses.spaceType,
-          numType: resultStatuses.numType,
-        },
-        otherStatus: {
-          playSpeed: resultStatuses.minPlaySpeed,
-          miss: resultStatuses.miss,
-          lost: resultStatuses.lost,
-          maxCombo: resultStatuses.maxCombo,
-          clearRate: resultStatuses.clearRate,
-          isCaseSensitive: resultStatuses.isCaseSensitive,
-          pp: resultStatuses.pp,
-        },
-        typeSpeed: {
-          kpm: resultStatuses.kpm,
-          rkpm: resultStatuses.rkpm,
-          kanaToRomaKpm: resultStatuses.kanaToRomaKpm,
-          kanaToRomaRkpm: resultStatuses.kanaToRomaRkpm,
-        },
-        clap: {
-          count: results.clapCount,
-          hasClapped: session ? sql`COALESCE(${myClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
-        },
-      })
+      .select(buildRankingSelect(session))
       .from(results)
       .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
       .innerJoin(player, eq(player.id, results.userId))
@@ -80,14 +83,48 @@ export const resultRankingRouter = {
       .orderBy(desc(resultStatuses.score));
   }),
 
+  /** 確認中（無効）の記録。本人は自分の記録、管理者は譜面の全記録が見える。それ以外は空 */
+  getInvalid: publicProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
+    const { db, session } = context;
+    const { mapId } = input;
+
+    if (!session) return [];
+    const isAdmin = session.user.role === "ADMIN";
+
+    return db
+      .select(buildRankingSelect(session))
+      .from(results)
+      .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
+      .innerJoin(player, eq(player.id, results.userId))
+      .leftJoin(myClap, and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)))
+      .where(
+        and(
+          eq(results.mapId, mapId),
+          isNotNull(results.invalidatedAt),
+          isAdmin ? undefined : eq(results.userId, session.user.id),
+        ),
+      )
+      .orderBy(desc(resultStatuses.score));
+  }),
+
   register: protectedProcedure.input(CreateResultSchema).handler(async ({ input, context }) => {
     if (ENV.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
     const { db, session } = context;
     const { id: userId } = session.user;
-    const { mapId, lineResults, status } = input;
+    const { mapId, mapUpdatedAt, lineResults, status } = input;
 
     const map = await db.query.mapDifficulties.findFirst({ columns: { rating: true }, where: { mapId } });
     if (!map) throw new ORPCError("NOT_FOUND");
+
+    // プレイ後に譜面が編集されていると、プレイした難易度と異なる rating でPPが計算されてしまう
+    const mapRow = await db.query.maps.findFirst({ columns: { updatedAt: true }, where: { id: mapId } });
+    if (!mapRow) throw new ORPCError("NOT_FOUND");
+    if (mapRow.updatedAt.getTime() !== mapUpdatedAt.getTime()) {
+      throw new ORPCError("CONFLICT", {
+        message:
+          "プレイ後に譜面が更新されたため、ランキングに登録できません。ページを再読み込みして、もう一度プレイしてください",
+      });
+    }
 
     const pp = calcRawPP(resultToRawPPInput(status), map.rating);
     const statusWithPp = { ...status, pp, starRatingSnapshot: map.rating };

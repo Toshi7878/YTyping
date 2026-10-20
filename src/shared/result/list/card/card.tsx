@@ -68,7 +68,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               className={cn("hidden font-bold md:flex", result?.rank === 1 && "text-perfect outline-text")}
               size="lg"
             >
-              {result.invalidatedAt ? "BAN済み" : `Rank: #${result.rank}`}
+              {result.invalidatedAt ? "確認中" : `Rank: #${result.rank}`}
             </Badge>
           )}
 

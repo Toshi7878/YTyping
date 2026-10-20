@@ -26,7 +26,7 @@ export const ResultListFilterSchema = z.object({
   playerId: z.number().nullish(),
   /** プレイ動画が登録されている記録だけを取得する */
   hasPlayVideo: z.boolean().nullish(),
-  /** 管理者専用: BANされた(無効な)記録だけを取得する */
+  /** BANされた(無効な)記録だけを取得する。管理者、または playerId が自分自身の場合のみ指定できる */
   invalidOnly: z.boolean().nullish(),
 });
 

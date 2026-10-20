@@ -195,7 +195,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
 
   if (!input) return baseQuery.where(and(eq(player.banned, false), isValidResult));
 
-  const visibility = buildVisibilityCondition(session, input.invalidOnly);
+  const visibility = buildVisibilityCondition(session, input);
 
   const whereConditions = [
     input.playerId ? eq(player.id, input.playerId) : undefined,
@@ -211,12 +211,17 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
 };
 
 /**
- * 通常は BAN されていないユーザーの有効な記録だけ。invalidOnly は管理者専用で、BAN された記録だけを返す
+ * 通常は BAN されていないユーザーの有効な記録だけ。invalidOnly は BAN された記録だけを返し、管理者と記録の持ち主（playerId 指定）のみ使える
  */
-const buildVisibilityCondition = (session: ORPCContext["session"], invalidOnly?: boolean | null) => {
+const buildVisibilityCondition = (
+  session: ORPCContext["session"],
+  { invalidOnly, playerId }: z.output<typeof ResultListFilterSchema>,
+) => {
   if (!invalidOnly) return and(eq(player.banned, false), isValidResult);
 
-  if (session?.user.role !== "ADMIN") throw new ORPCError("FORBIDDEN");
+  const isAdmin = session?.user.role === "ADMIN";
+  const isOwner = session != null && playerId != null && session.user.id === playerId;
+  if (!isAdmin && !isOwner) throw new ORPCError("FORBIDDEN");
 
   return isNotNull(results.invalidatedAt);
 };

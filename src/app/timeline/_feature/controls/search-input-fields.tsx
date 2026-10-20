@@ -5,7 +5,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input/input";
 import { useResultListFilterQueryStates } from "../search-params";
 
-export const SearchInputs = () => {
+export const SearchInputs = ({ showUsername = true }: { showUsername?: boolean }) => {
   const isSearching = useIsSearching();
   const [filterParams, setFilterParams] = useResultListFilterQueryStates();
   const [keywords, setKeywords] = useState({
@@ -32,13 +32,15 @@ export const SearchInputs = () => {
         onChange={(e) => setKeywords((prev) => ({ ...prev, mapKeyword: e.target.value }))}
         onKeyDown={onKeyDown}
       />
-      <Input
-        value={keywords.username}
-        placeholder="ユーザーネームで絞り込み"
-        type="search"
-        onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
-        onKeyDown={onKeyDown}
-      />
+      {showUsername && (
+        <Input
+          value={keywords.username}
+          placeholder="ユーザーネームで絞り込み"
+          type="search"
+          onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
+          onKeyDown={onKeyDown}
+        />
+      )}
       <Button className="w-[30%]" onClick={applyKeywords} disabled={isSearching} loading={isSearching}>
         検索
       </Button>
