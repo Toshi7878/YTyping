@@ -73,12 +73,7 @@ export const resultRankingRouter = {
       .from(results)
       .innerJoin(resultStatuses, eq(resultStatuses.resultId, results.id))
       .innerJoin(player, eq(player.id, results.userId))
-      .leftJoin(
-        myClap,
-        session
-          ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id))
-          : eq(myClap.resultId, results.id),
-      )
+      .leftJoin(myClap, session ? and(eq(myClap.resultId, results.id), eq(myClap.userId, session.user.id)) : sql`false`)
       .where(and(eq(results.mapId, mapId), eq(player.banned, false), isValidResult))
       .orderBy(desc(resultStatuses.score));
   }),
