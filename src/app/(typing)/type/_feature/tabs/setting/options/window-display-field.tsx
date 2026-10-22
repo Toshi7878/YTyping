@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { MdRestartAlt } from "react-icons/md";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
 import { Button } from "@/ui/button";
@@ -7,6 +8,7 @@ import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const WindowDisplayField = () => {
+  const t = useTranslations("typing.settings");
   const { windowScaleWidth } = useTypingOptionsState();
 
   const resetToDefaults = () => {
@@ -15,7 +17,7 @@ export const WindowDisplayField = () => {
 
   return (
     <section className="flex flex-col gap-4">
-      <H4>画面幅調整</H4>
+      <H4>{t("windowTitle")}</H4>
 
       <div className="flex items-center gap-6">
         <CounterInput
@@ -25,15 +27,15 @@ export const WindowDisplayField = () => {
           min={1000}
           valueDigits={0}
           value={windowScaleWidth}
-          label="画面幅"
-          incrementTooltip="画面の幅を広くします。(1400pxまで)"
-          decrementTooltip="画面の幅を狭くします。(1000pxまで)"
+          label={t("windowWidth")}
+          incrementTooltip={t("windowWider")}
+          decrementTooltip={t("windowNarrower")}
           size="lg"
           unit="px"
         />
         <Button size="sm" variant="outline" onClick={resetToDefaults}>
           <MdRestartAlt className="mr-2" />
-          リセット
+          {t("reset")}
         </Button>
       </div>
     </section>

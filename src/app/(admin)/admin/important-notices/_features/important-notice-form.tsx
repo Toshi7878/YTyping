@@ -79,7 +79,7 @@ export const ImportantNoticeForm = ({ notice }: ImportantNoticeFormProps) => {
     orpc.importantNotice.create.mutationOptions({
       onSuccess: () => {
         toast.success("重要なお知らせを作成しました");
-        queryClient.invalidateQueries(orpc.importantNotice.list.queryOptions());
+        void queryClient.invalidateQueries(orpc.importantNotice.list.queryOptions());
         form.reset();
         setOpen(false);
       },
@@ -125,7 +125,7 @@ export const ImportantNoticeForm = ({ notice }: ImportantNoticeFormProps) => {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-3"
         >

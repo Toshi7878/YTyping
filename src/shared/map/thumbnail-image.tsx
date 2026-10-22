@@ -1,5 +1,6 @@
 import type { VariantProps } from "class-variance-authority";
 import { Palette } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import { useIsPreviewEnabled } from "@/app/_layout/preview-youtube";
@@ -65,8 +66,10 @@ const DurationBadge = ({ duration }: { duration: number }) => {
 };
 
 const StyledMapBadge = () => {
+  const t = useTranslations("common");
+
   return (
-    <TooltipWrapper label="装飾譜面" asChild>
+    <TooltipWrapper label={t("styledMap")} asChild>
       <div className="absolute top-2 left-2 z-10 inline-flex">
         <Palette className="size-5 rounded-full bg-black/70 p-1" />
       </div>

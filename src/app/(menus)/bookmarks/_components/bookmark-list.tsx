@@ -2,6 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
 import { Card, CardContent } from "@/ui/card";
@@ -24,6 +25,7 @@ export const BookmarkListView = () => {
 };
 
 const BookmarkListCard = ({ list }: { list: PublicBookmarkList }) => {
+  const t = useTranslations("bookmarks");
   return (
     <Card className="hover-card-shadow-primary relative cursor-pointer py-0 transition-shadow">
       <Link href={`/bookmarks/${list.id}`} className="absolute z-1 size-full" />
@@ -35,7 +37,7 @@ const BookmarkListCard = ({ list }: { list: PublicBookmarkList }) => {
         />
         <div className="flex flex-col gap-1">
           <div className="truncate font-medium text-sm">{list.title}</div>
-          <Small className="text-muted-foreground">{list.count}件</Small>
+          <Small className="text-muted-foreground">{t("count", { count: list.count })}</Small>
           <Link
             href={`/user/${list.userId}`}
             className="z-10 text-muted-foreground text-xs hover:underline"

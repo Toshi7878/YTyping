@@ -1,21 +1,22 @@
+import { useTranslations } from "next-intl";
 import { type SortIconState, SortToggleButton } from "@/ui/sort-toggle-button";
 import type { RESULT_SORT_OPTIONS } from "@/validator/result/list";
 import { type ResultListSortSearchParams, useResultListSortQueryState } from "../search-params";
 
-const SORT_OPTIONS: { label: string; value: (typeof RESULT_SORT_OPTIONS)[number] }[] = [
-  { label: "更新日", value: "updatedAt" },
-  { label: "打鍵数", value: "type-count" },
-  { label: "最大ｺﾝﾎﾞ", value: "max-combo" },
-  { label: "拍手", value: "clap-count" },
-  { label: "pp", value: "pp" },
-];
-
 export const SortControls = () => {
+  const t = useTranslations("timeline.sort");
+  const sortOptions: { label: string; value: (typeof RESULT_SORT_OPTIONS)[number] }[] = [
+    { label: t("updatedAt"), value: "updatedAt" },
+    { label: t("typeCount"), value: "type-count" },
+    { label: t("maxCombo"), value: "max-combo" },
+    { label: t("clap"), value: "clap-count" },
+    { label: t("pp"), value: "pp" },
+  ];
   const [currentSort, setSortParam] = useResultListSortQueryState();
 
   return (
     <div className="flex select-none flex-wrap items-center gap-0.5">
-      {SORT_OPTIONS.map(({ label, value }) => (
+      {sortOptions.map(({ label, value }) => (
         <SortToggleButton
           key={value}
           label={label}

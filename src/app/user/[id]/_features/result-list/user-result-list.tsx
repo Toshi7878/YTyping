@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { FilterFieldsPopover } from "@/app/timeline/_feature/controls/filter-popover";
 import { SearchInputs } from "@/app/timeline/_feature/controls/search-input-fields";
 import { SortControls } from "@/app/timeline/_feature/controls/sort";
@@ -12,6 +13,7 @@ import { useInvalidResultsQueryState } from "../search-params";
 import { useInvalidResultCount } from "./use-invalid-result-count";
 
 export const UserResultList = ({ userId }: { userId: string }) => {
+  const t = useTranslations("user.resultList");
   const [filterParams] = useResultListFilterQueryStates();
   const [sort] = useResultListSortQueryState();
   const [showInvalid, setShowInvalid] = useInvalidResultsQueryState();
@@ -29,17 +31,13 @@ export const UserResultList = ({ userId }: { userId: string }) => {
               variant={invalidOnly ? "default" : "outline"}
               onClick={() => void setShowInvalid(invalidOnly ? null : true)}
             >
-              確認が必要な記録 ({invalidResultCount})
+              {t("reviewRecords", { count: invalidResultCount })}
             </Button>
           )}
           <FilterFieldsPopover />
         </div>
       </CardWithContent>
-      {invalidOnly && (
-        <P className="text-muted-foreground text-sm">
-          このリザルトは本人のみ閲覧できます。確認中の記録はランキングとPPの集計から除外されています。
-        </P>
-      )}
+      {invalidOnly && <P className="text-muted-foreground text-sm">{t("reviewNote")}</P>}
       <ResultList filterParams={{ ...filterParams, playerId: Number(userId), invalidOnly }} sort={sort} />
     </div>
   );

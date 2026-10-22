@@ -7,6 +7,7 @@ import {
   getTotalNotes,
 } from "lyrics-ime-typing-engine";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 import { orpc } from "@/orpc/provider";
@@ -31,6 +32,7 @@ interface SettingPopoverProps {
 }
 
 export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
+  const t = useTranslations("ime.settings");
   const updateImeTypingOptions = useMutation(orpc.user.imeTypingOption.upsert.mutationOptions());
   const queryClient = useQueryClient();
   const { id: mapId } = useParams<{ id: string }>();
@@ -63,7 +65,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
 
   const tabData = [
     {
-      label: "メイン設定",
+      label: t("main"),
       content: <MainSettingTab />,
     },
   ] as const;
@@ -118,6 +120,7 @@ const LYRICS_FONT_SCALE_CONFIG = {
 };
 
 const MainSettingTab = () => {
+  const t = useTranslations("ime.settings");
   const imeOptions = useImeOptionsState();
 
   return (
@@ -126,7 +129,7 @@ const MainSettingTab = () => {
         <LabeledInput
           label={
             <LabeledCheckbox
-              label="判定文字追加を有効化"
+              label={t("includeRegex")}
               defaultChecked={imeOptions.enableIncludeRegex}
               onCheckedChange={(value: boolean) => {
                 setImeOptions({ enableIncludeRegex: value });
@@ -142,14 +145,14 @@ const MainSettingTab = () => {
       </div>
       <div className="flex">
         <LabeledCheckbox
-          label="英語スペースを有効化"
+          label={t("englishSpaces")}
           defaultChecked={imeOptions.insertEnglishSpaces}
           onCheckedChange={(value: boolean) => {
             setImeOptions({ insertEnglishSpaces: value });
           }}
         />
         <LabeledCheckbox
-          label="英語大文字判定を有効化"
+          label={t("caseSensitive")}
           defaultChecked={imeOptions.isCaseSensitive}
           onCheckedChange={(value: boolean) => {
             setImeOptions({ isCaseSensitive: value });
@@ -161,18 +164,18 @@ const MainSettingTab = () => {
 
       <div className="flex flex-col gap-4">
         <CounterInput
-          label="歌詞文字サイズ"
+          label={t("fontSize")}
           value={imeOptions.lyricsFontScale}
           step={LYRICS_FONT_SCALE_CONFIG.step}
           max={LYRICS_FONT_SCALE_CONFIG.max}
           min={LYRICS_FONT_SCALE_CONFIG.min}
           unit="%"
-          incrementTooltip="歌詞の文字サイズを大きくします。"
-          decrementTooltip="歌詞の文字サイズを小さくします。"
+          incrementTooltip={t("fontBigger")}
+          decrementTooltip={t("fontSmaller")}
           onChange={(value) => setImeOptions({ lyricsFontScale: value })}
         />
         <LabeledCheckbox
-          label="次の歌詞を表示"
+          label={t("nextLyrics")}
           defaultChecked={imeOptions.enableNextLyrics}
           onCheckedChange={(value: boolean) => {
             setImeOptions({ enableNextLyrics: value });

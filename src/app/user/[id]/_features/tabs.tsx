@@ -1,5 +1,6 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { MapList } from "@/shared/map/list/list";
 import { Badge } from "@/ui/badge";
@@ -11,32 +12,27 @@ import { ResultSummary } from "./result-list/result-summary";
 import { UserResultList } from "./result-list/user-result-list";
 import { type TABS, useTabQueryState } from "./search-params";
 
-const TAB_OPTIONS = [
-  { label: "タイピング統計情報", value: "stats" },
-  { label: "制作譜面", value: "maps" },
-  { label: "ランキング履歴", value: "results" },
-  { label: "いいねした譜面", value: "liked" },
-  { label: "ブックマークリスト", value: "bookmarks" },
-] satisfies { label: string; value: (typeof TABS)[number] }[];
+const TAB_VALUES = ["stats", "maps", "results", "liked", "bookmarks"] satisfies (typeof TABS)[number][];
 
 export const UserTabs = ({ id }: { id: string }) => {
+  const t = useTranslations("user.tabs");
   const [tab, setTab] = useTabQueryState();
 
   return (
     <Tabs value={tab} onValueChange={(value) => setTab(value as (typeof TABS)[number])}>
       <TabsList variant="underline" className="flex h-fit w-full flex-wrap">
-        {TAB_OPTIONS.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} variant="underline">
-            {tab.value === "maps" ? (
+        {TAB_VALUES.map((value) => (
+          <TabsTrigger key={value} value={value} variant="underline">
+            {value === "maps" ? (
               <MapTabLabelWithCount id={id} />
-            ) : tab.value === "liked" ? (
+            ) : value === "liked" ? (
               <LikedMapTabLabelWithCount id={id} />
-            ) : tab.value === "results" ? (
+            ) : value === "results" ? (
               <ResultTabLabelWithCount id={id} />
-            ) : tab.value === "bookmarks" ? (
+            ) : value === "bookmarks" ? (
               <BookmarkTabLabelWithCount id={id} />
             ) : (
-              tab.label
+              t(value)
             )}
           </TabsTrigger>
         ))}
@@ -63,30 +59,34 @@ export const UserTabs = ({ id }: { id: string }) => {
 };
 
 const MapTabLabelWithCount = ({ id }: { id: string }) => {
+  const t = useTranslations("user.tabs");
   const { data: mapCount } = useSuspenseQuery(
     orpc.map.list.getCount.queryOptions({ input: { creatorId: Number(id) } }),
   );
-  return <LabelWithCount label="制作譜面" count={mapCount} />;
+  return <LabelWithCount label={t("maps")} count={mapCount} />;
 };
 
 const LikedMapTabLabelWithCount = ({ id }: { id: string }) => {
+  const t = useTranslations("user.tabs");
   const { data: mapCount } = useSuspenseQuery(orpc.map.list.getCount.queryOptions({ input: { likerId: Number(id) } }));
-  return <LabelWithCount label="いいねした譜面" count={mapCount} />;
+  return <LabelWithCount label={t("liked")} count={mapCount} />;
 };
 
 const ResultTabLabelWithCount = ({ id }: { id: string }) => {
+  const t = useTranslations("user.tabs");
   const { data: resultCount } = useSuspenseQuery(
     orpc.result.list.getCount.queryOptions({ input: { playerId: Number(id) } }),
   );
 
-  return <LabelWithCount label="ランキング履歴" count={resultCount} />;
+  return <LabelWithCount label={t("results")} count={resultCount} />;
 };
 
 const BookmarkTabLabelWithCount = ({ id }: { id: string }) => {
+  const t = useTranslations("user.tabs");
   const { data: bookmarkCount } = useSuspenseQuery(
     orpc.map.bookmark.lists.getCount.queryOptions({ input: { userId: Number(id) } }),
   );
-  return <LabelWithCount label="ブックマークリスト" count={bookmarkCount} />;
+  return <LabelWithCount label={t("bookmarks")} count={bookmarkCount} />;
 };
 
 const LabelWithCount = ({ label, count }: { label: string; count: number }) => {

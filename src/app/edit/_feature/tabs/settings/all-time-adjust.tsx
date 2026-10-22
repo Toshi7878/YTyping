@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { getRawMap, setRawMapAction } from "@/app/edit/_feature/map-table/map-reducer";
 import { timeValidate } from "@/app/edit/_feature/tabs/editor/time-validate";
@@ -11,6 +12,7 @@ import { dispatchEditHistory } from "../../map-table/history";
 import { setCanUpload } from "../info-form/card";
 
 export const AllTimeAdjust = () => {
+  const t = useTranslations("editorSettings.timeAdjust");
   const [totalAdjustValue, setTotalAdjustValue] = useState("0");
 
   const allTimeAdjust = () => {
@@ -43,15 +45,15 @@ export const AllTimeAdjust = () => {
       });
     }
 
-    toast.success("タイムを調整しました", {
-      description: `全体のタイムが ${totalAdjustValue} 秒調整されました。Ctrl + Zで前のタイムに戻ることができます。`,
+    toast.success(t("done"), {
+      description: t("doneDescription", { value: totalAdjustValue }),
     });
   };
 
   return (
-    <TooltipWrapper label="数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します" asChild>
+    <TooltipWrapper label={t("tooltip")} asChild>
       <form className="flex w-fit items-baseline gap-2">
-        <Label className="text-sm">全体タイム調整</Label>
+        <Label className="text-sm">{t("label")}</Label>
         <Input
           type="number"
           step="0.05"
@@ -69,7 +71,7 @@ export const AllTimeAdjust = () => {
         />
 
         <Button variant="outline-warning" type="button" onClick={allTimeAdjust} className="font-bold">
-          実行
+          {t("run")}
         </Button>
       </form>
     </TooltipWrapper>

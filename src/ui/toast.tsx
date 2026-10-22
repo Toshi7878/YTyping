@@ -115,7 +115,7 @@ function ToastClose({ className, children, ...props }: ToastPrimitive.Close.Prop
   return (
     <ToastPrimitive.Close
       data-slot="toast-close"
-      aria-label="閉じる"
+      aria-label="Close"
       render={<Button variant="ghost" size="icon" />}
       className={cn("size-7 shrink-0 text-current opacity-70 hover:opacity-100", className)}
       {...props}

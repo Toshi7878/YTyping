@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { restartPlay } from "@/app/(typing)/type/_feature/lib/play-restart";
@@ -15,6 +16,7 @@ interface EndButtonContainerProps {
 }
 
 export const EndButtonContainer = ({ bestScore, status }: EndButtonContainerProps) => {
+  const t = useTranslations("typing.end");
   const { data: session } = useSession();
   const scene = useSceneState();
   const [isSubmitRankingButtonDisabled, setIsSubmitRankingButtonDisabled] = useState(false);
@@ -34,7 +36,7 @@ export const EndButtonContainer = ({ bestScore, status }: EndButtonContainerProp
         <EndResultLineSheet
           trigger={
             <Button size="4xl" variant="primary-hover-light" className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl">
-              詳細リザルトを見る
+              {t("detail")}
             </Button>
           }
         />
@@ -73,6 +75,7 @@ interface RetryButtonProps {
 }
 
 const RetryButton = ({ showAlert }: RetryButtonProps) => {
+  const t = useTranslations("typing.end");
   const scene = useSceneState();
   const buttonRef = useRef<HTMLButtonElement>(null);
   useHotkeys("F4", () => buttonRef.current?.click(), { enableOnFormTags: false, preventDefault: true });
@@ -92,9 +95,9 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
     }
 
     const isConfirmed = await confirmDialog.warning({
-      title: "リトライ確認",
-      description: "リトライすると今回の記録は失われますが、リトライしますか？",
-      confirmLabel: "リトライ",
+      title: t("retryTitle"),
+      description: t("retryDescription"),
+      confirmLabel: t("retry"),
     });
 
     if (isConfirmed) {
@@ -103,9 +106,9 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
   };
 
   const buttonTextMap: Record<string, string> = {
-    practice_end: "もう一度練習",
-    replay_end: "もう一度リプレイ",
-    play_end: "もう一度プレイ",
+    practice_end: t("againPractice"),
+    replay_end: t("againReplay"),
+    play_end: t("againPlay"),
   };
 
   return (
@@ -115,7 +118,7 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
       className="h-auto px-20 py-6 text-2xl max-sm:h-32 max-sm:w-md max-sm:text-5xl"
       onClick={handleRetry}
     >
-      {buttonTextMap[scene] ?? "もう一度プレイ"}
+      {buttonTextMap[scene] ?? t("againPlay")}
     </Button>
   );
 };
@@ -125,6 +128,7 @@ interface ModeChangeButtonProps {
 }
 
 const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
+  const t = useTranslations("typing.end");
   const scene = useSceneState();
   const buttonRef = useRef<HTMLButtonElement>(null);
   useHotkeys("F7", () => buttonRef.current?.click(), { enableOnFormTags: false, preventDefault: true });
@@ -137,9 +141,9 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
     }
 
     const isConfirmed = await confirmDialog.warning({
-      title: "リトライ確認",
-      description: "リトライすると今回の記録は失われますが、リトライしますか？",
-      confirmLabel: "リトライ",
+      title: t("retryTitle"),
+      description: t("retryDescription"),
+      confirmLabel: t("retry"),
     });
 
     if (isConfirmed) {
@@ -154,7 +158,7 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
       className="h-auto px-20 py-6 text-2xl max-sm:h-32 max-sm:w-md max-sm:text-5xl"
       onClick={handleModeChange}
     >
-      {scene === "play_end" ? "練習モードへ" : "本番モードへ"}
+      {scene === "play_end" ? t("toPractice") : t("toPlay")}
     </Button>
   );
 };

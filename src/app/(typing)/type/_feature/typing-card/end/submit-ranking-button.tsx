@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { type BuiltMap, getBuiltMap } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getLineResults } from "@/app/(typing)/type/_feature/atoms/line-results";
@@ -21,19 +22,20 @@ interface RegisterRankingButtonProps {
 }
 
 export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
+  const t = useTranslations("typing.end");
   const registerRanking = useRegisterRankingMutation({
     onSuccess: async () => {
       onSuccess();
-      setTabName("ランキング");
-      toast.success("ランキング登録が完了しました");
+      setTabName("ranking");
+      toast.success(t("registered"));
     },
     onError: (error) => {
       const errorCode = getORPCErrorCode(error);
       if (errorCode === "FORBIDDEN" || errorCode === "CONFLICT") {
-        toast.error("ランキング登録に失敗しました", { description: error.message });
+        toast.error(t("registerFailed"), { description: error.message });
         return;
       }
-      toast.error("ランキング登録に失敗しました");
+      toast.error(t("registerFailed"));
     },
   });
 
@@ -45,9 +47,9 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     const isConfirmed = isScoreUpdated
       ? true
       : await confirmDialog.warning({
-          title: "スコア未更新",
-          description: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
-          confirmLabel: "ランキングに登録",
+          title: t("notUpdated"),
+          description: t("notUpdatedDescription"),
+          confirmLabel: t("registerLabel"),
         });
 
     if (isConfirmed) {
@@ -74,7 +76,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       loading={registerRanking.isPending}
       onClick={handleClick}
     >
-      {disabled ? "ランキング登録完了" : "ランキング登録"}
+      {disabled ? t("registerDone") : t("register")}
     </Button>
   );
 };

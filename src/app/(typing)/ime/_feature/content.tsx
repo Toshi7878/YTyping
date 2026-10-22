@@ -8,6 +8,7 @@ import {
   getTotalNotes,
 } from "lyrics-ime-typing-engine";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
@@ -34,6 +35,7 @@ interface ContentProps {
 }
 
 export const Content = ({ mapInfo, mapId }: ContentProps) => {
+  const t = useTranslations("ime.loading");
   const {
     media: { videoId },
   } = mapInfo;
@@ -42,7 +44,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     orpc.map.getJsonById.queryOptions({ input: { mapId }, enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const loadMap = async (mapData: RawMapLine[]) => {
-    overlay.loading("ひらがな判定生成中...");
+    overlay.loading(t("hiragana"));
 
     try {
       const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = getImeOptions();
@@ -58,8 +60,8 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     } catch {
       overlay.message(
         <div className="flex h-full flex-col items-center justify-center gap-2">
-          ワード生成に失敗しました。
-          <Button onClick={() => loadMap(mapData)}>再試行</Button>
+          {t("failed")}
+          <Button onClick={() => loadMap(mapData)}>{t("retry")}</Button>
         </div>,
       );
     }
@@ -70,7 +72,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     if (mapJson) {
       void loadMap(mapJson);
     } else {
-      overlay.loading("譜面読み込み中...");
+      overlay.loading(t("map"));
     }
   }, [mapJson]);
 

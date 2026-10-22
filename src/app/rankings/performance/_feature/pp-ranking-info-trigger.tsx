@@ -1,22 +1,18 @@
 "use client";
 
 import { CircleHelp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { TooltipWrapper } from "@/ui/tooltip";
 import { cn } from "@/utils/cn";
 
-const ppExplanationBody = [
-  "PPはプレイ実力を表すポイントです。 難易度が高い譜面で高い正確率とクリア率を出すほど、より多くのPPを獲得できます。合計PPは、獲得PPの高い譜面上位200件をもとに加重方式で計算されます。",
-] as const;
-
-const ppExplanation = (
-  <div className="space-y-2 text-left leading-relaxed">
-    {ppExplanationBody.map((text) => (
-      <p key={text}>{text}</p>
-    ))}
-  </div>
-);
-
 export function PPRankingInfoTrigger({ className }: { className?: string }) {
+  const t = useTranslations("rankings.performance");
+  const ppExplanation = (
+    <div className="space-y-2 text-left leading-relaxed">
+      <p>{t("info")}</p>
+    </div>
+  );
+
   return (
     <TooltipWrapper
       label={ppExplanation}
@@ -34,7 +30,7 @@ export function PPRankingInfoTrigger({ className }: { className?: string }) {
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           className,
         )}
-        aria-label="パフォーマンスポイント（PP）について"
+        aria-label="About Performance Points (PP)"
       >
         <CircleHelp className="size-5" aria-hidden />
       </button>

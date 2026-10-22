@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { ClearRateText } from "@/shared/result/clear-rate-text";
 import { InputModeText } from "@/shared/result/input-mode-text";
@@ -12,6 +13,7 @@ interface ResultStatusBadgesProps {
 }
 
 export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProps) => {
+  const t = useTranslations("result");
   const isPerfect = result.otherStatus.miss === 0 && result.otherStatus.lost === 0;
 
   const { typeCounts, otherStatus, typeSpeed } = result;
@@ -54,7 +56,7 @@ export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProp
           <Badge variant="result" size="lg">
             {result.otherStatus.playSpeed.toFixed(2)}
             <span className="ml-1" style={{ letterSpacing: "2px" }}>
-              倍速
+              {t("speed")}
             </span>
           </Badge>
           <Badge variant="result" size="lg">
@@ -75,13 +77,14 @@ interface ResultBadgesMobileProps {
 }
 
 export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProps) => {
+  const t = useTranslations("result");
   const isPerfect = result?.otherStatus.miss === 0 && result?.otherStatus.lost === 0;
 
   return (
     <div className={cn("visible flex w-full justify-around", className)}>
       <div className="mr-5 flex flex-col items-end gap-5">
         <Badge variant="result" size="lg" className={cn(result?.rank === 1 && "text-perfect outline-text")}>
-          {result && (result.invalidatedAt ? "確認中" : `Rank: #${result.rank}`)}
+          {result && (result.invalidatedAt ? t("underReview") : `Rank: #${result.rank}`)}
         </Badge>
         <Badge variant="result" size="lg">
           {result && <InputModeText typeCounts={result.typeCounts} />}
@@ -111,7 +114,7 @@ export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProp
             <>
               {result.otherStatus.playSpeed.toFixed(2)}
               <span className="ml-1" style={{ letterSpacing: "2px" }}>
-                倍速
+                {t("speed")}
               </span>
             </>
           )}

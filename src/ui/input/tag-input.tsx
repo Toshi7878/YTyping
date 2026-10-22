@@ -2,6 +2,7 @@
 
 import type { VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import type { KeyboardEvent } from "react";
 import { useState } from "react";
@@ -30,7 +31,7 @@ export const TagInput = ({
   onTagRemove,
   maxTags,
   disabled = false,
-  label = "タグ",
+  label,
   enableDragDrop = true,
   className,
   tagVariant = "secondary",
@@ -38,6 +39,7 @@ export const TagInput = ({
   ref,
   ...props
 }: TagInputProps & { ref?: React.Ref<React.ComponentRef<"input">> }) => {
+  const t = useTranslations("common");
   const [inputValue, setInputValue] = useState("");
 
   const handleAddition = (tagText: string) => {
@@ -109,7 +111,7 @@ export const TagInput = ({
           value={inputValue}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          label={label}
+          label={label ?? t("tag")}
           className="min-w-[120px] flex-1 rounded-xs border px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           disabled={disabled}
           {...props}

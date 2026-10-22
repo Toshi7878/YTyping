@@ -3,12 +3,13 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { MdOutlineEdit } from "react-icons/md";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
 import { PAGE_SIZE } from "@/server/api/routers/ranking/pp/const";
-import { INPUT_PP_MODES, PP_MODE_LABELS } from "@/shared/result/pp/mode";
+import { INPUT_PP_MODES } from "@/shared/result/pp/mode";
 import { buttonVariants } from "@/ui/button";
 import { Card, CardContent } from "@/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/ui/data-list";
@@ -25,6 +26,8 @@ interface UserProfileCardProps {
 }
 
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
+  const tMode = useTranslations("pp.modes");
+  const t = useTranslations("user.profile");
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const { data: ppRanks } = useSuspenseQuery(orpc.ranking.pp.getRanksByUserId.queryOptions({ input: Number(userId) }));
@@ -35,19 +38,19 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
   const profile = [
     {
-      label: "運指表",
+      label: t("fingerChart"),
       value: userProfile?.fingerChartUrl ? (
-        <LinkText href={userProfile.fingerChartUrl as Route}>運指表を見る</LinkText>
+        <LinkText href={userProfile.fingerChartUrl as Route}>{t("viewFingerChart")}</LinkText>
       ) : (
-        <span className="text-muted-foreground">運指表は未設定です</span>
+        <span className="text-muted-foreground">{t("fingerChartUnset")}</span>
       ),
     },
     {
-      label: "使用キーボード",
+      label: t("keyboard"),
       value: userProfile?.keyboard ? (
         <span>{userProfile.keyboard}</span>
       ) : (
-        <span className="text-muted-foreground">使用キーボードは未設定です</span>
+        <span className="text-muted-foreground">{t("keyboardUnset")}</span>
       ),
     },
   ];
@@ -58,7 +61,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         <H2>{userProfile?.name ?? ""}</H2>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <DataListItem className="flex items-center gap-2 font-bold text-2xl">
-            <DataListLabel>実力ランク:</DataListLabel>
+            <DataListLabel>{t("rank")}</DataListLabel>
             <DataListValue>
               {ppRanks.total ? (
                 <Link
@@ -74,7 +77,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
           </DataListItem>
           {INPUT_PP_MODES.filter((m) => ppRanks[m]).map((m) => (
             <DataListItem key={m} className="flex items-center gap-2">
-              <DataListLabel>{PP_MODE_LABELS[m]}:</DataListLabel>
+              <DataListLabel>{tMode(m)}:</DataListLabel>
               <DataListValue>
                 <Link
                   href={`/rankings/performance?mode=${m}&page=${Math.ceil((ppRanks[m] as number) / PAGE_SIZE)}`}
@@ -102,15 +105,15 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
               href={buildUserInvalidResultsUrl(userId)}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              確認が必要な記録
+              {t("reviewRecords")}
             </Link>
           )}
           {session &&
             (isMyProfilePage ? (
-              <TooltipWrapper label="プロフィール編集ページに移動" asChild>
+              <TooltipWrapper label={t("editTooltip")} asChild>
                 <Link href="/user/settings" className={buttonVariants({ variant: "outline", size: "icon" })}>
                   <MdOutlineEdit className="size-4" />
-                  <span className="sr-only">編集</span>
+                  <span className="sr-only">Edit</span>
                 </Link>
               </TooltipWrapper>
             ) : (

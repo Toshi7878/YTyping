@@ -7,6 +7,7 @@ import { atom, useAtomValue } from "jotai";
 import { selectAtom } from "jotai/utils";
 import { Play } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
@@ -219,7 +220,7 @@ const MapTableRow = ({
       )}
       onClick={(event) => {
         selectLine(event, index);
-        setTabName("エディター");
+        setTabName("editor");
       }}
     >
       <TableCell
@@ -258,6 +259,7 @@ const OptionCell = ({
   index: number;
   onOpenChange: Dispatch<SetStateAction<number | null>>;
 }) => {
+  const t = useTranslations("editor");
   const endLineIndex = useEndLineIndex();
 
   const isOptionEdited = Boolean(
@@ -276,16 +278,17 @@ const OptionCell = ({
         }
       }}
     >
-      {isOptionEdited ? "設定有" : "未設定"}
+      {isOptionEdited ? t("optionSet") : t("optionUnset")}
     </Button>
   );
 };
 
 const DirectTimeInput = ({ time }: { time: string }) => {
+  const t = useTranslations("editor");
   const [editTime, setEditTime] = useState(time);
 
   return (
-    <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"} asChild>
+    <TooltipWrapper label={t("timeHint")} asChild>
       <Input
         className="h-8 px-1 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         type="number"
@@ -319,11 +322,12 @@ const DirectTimeInput = ({ time }: { time: string }) => {
 };
 
 const DirectLyricsInput = () => {
+  const t = useTranslations("editor");
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
 
   return (
-    <TooltipWrapper label="Enterキーを押すとRubyタグを挿入できます。" open={isLineLyricsSelected} asChild>
+    <TooltipWrapper label={t("rubyHint")} open={isLineLyricsSelected} asChild>
       <Input
         className="h-8"
         autoComplete="off"
@@ -343,11 +347,12 @@ const DirectLyricsInput = () => {
 };
 
 const DirectWordInput = () => {
+  const t = useTranslations("editor");
   const selectWord = useWordState();
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <WordConvertButton className="h-8 w-[8%] hover:bg-secondary/40" label="変換" variant="outline" />
+      <WordConvertButton className="h-8 w-[8%] hover:bg-secondary/40" label={t("convert")} variant="outline" />
       <Input className="h-8 w-[91%]" autoComplete="off" value={selectWord} onChange={(e) => setWord(e.target.value)} />
     </div>
   );

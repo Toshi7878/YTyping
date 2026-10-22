@@ -1,6 +1,7 @@
 "use client";
 
 import { atom, type SetStateAction, useAtomValue } from "jotai";
+import { useTranslations } from "next-intl";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { mutatePlayCountStats } from "@/shared/map/play-count";
 import { getReadyInputMode } from "@/store/ready-input-mode";
@@ -58,12 +59,13 @@ interface YouTubePlayerProps {
 }
 
 export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
+  const t = useTranslations("typing.youtube");
   const isMobile = useIsMobileDeviceState();
 
   return (
     <LoadingOverlayProvider
       isLoading={isMapLoading}
-      description="譜面読み込み中..."
+      description={t("loadingMap")}
       overlayClassName="bg-overlay-background/50"
     >
       {isMobile && <MobileCover />}
@@ -127,7 +129,7 @@ const handleStart = (player: YT.Player) => {
   if (mapId) {
     mutatePlayCountStats({ mapId });
   }
-  setTabName("ステータス");
+  setTabName("status");
   setYTStarted(true);
   player.seekTo(0, true);
   if (scene === "replay") return;

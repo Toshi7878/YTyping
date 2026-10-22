@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useSession } from "@/auth/client";
@@ -29,6 +30,7 @@ import { moveNextLine, movePrevLine } from "../playing/move-line";
 import { getScene, useSceneGroupState, useSceneState } from "../typing-card";
 
 export const TypingCardFooter = () => {
+  const t = useTranslations("typing.footer");
   const isYTStarted = useYTStartedState();
   const scene = useSceneState();
   const sceneGroup = useSceneGroupState();
@@ -47,13 +49,13 @@ export const TypingCardFooter = () => {
           <DifficultyInfo />
           <LabeledCheckbox
             containerClassName={!isStyledMap ? "invisible" : ""}
-            label="譜面の装飾を無効化"
+            label={t("disableStyle")}
             checked={isDisabledCSSChange}
             onCheckedChange={setIsDisabledMapStyled}
           />
           <Link href={`/ime/${mapId}`} className={!session ? "invisible" : ""} replace>
             <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
-              変換有りタイピング
+              {t("ime")}
             </Button>
           </Link>
         </div>
@@ -84,6 +86,7 @@ export const TypingCardFooter = () => {
 };
 
 const SpeedButton = () => {
+  const t = useTranslations("typing.footer");
   const scene = useSceneState();
   const playSpeed = useMediaSpeedState();
   const isPaused = useIsPausedState();
@@ -91,7 +94,7 @@ const SpeedButton = () => {
   if (scene === "practice") {
     return (
       <ButtonWithDoubleKbd
-        buttonLabel={`${playSpeed.toFixed(2)}倍速`}
+        buttonLabel={t("speed", { speed: playSpeed.toFixed(2) })}
         prevKbdLabel="F9-"
         nextKbdLabel="+F10"
         onClick={() => {}}
@@ -104,7 +107,7 @@ const SpeedButton = () => {
 
   return (
     <ButtonWithKbd
-      buttonLabel={`${playSpeed.toFixed(2)}倍速`}
+      buttonLabel={t("speed", { speed: playSpeed.toFixed(2) })}
       kbdLabel="F10"
       onClick={() => {
         const minMediaSpeed = getMinMediaSpeed();
@@ -116,10 +119,11 @@ const SpeedButton = () => {
 };
 
 const RetryButton = () => {
+  const t = useTranslations("typing.footer");
   const isPaused = useIsPausedState();
   return (
     <ButtonWithKbd
-      buttonLabel="やり直し"
+      buttonLabel={t("retry")}
       kbdLabel="F4"
       onClick={() => {
         const scene = getScene();
@@ -134,9 +138,10 @@ const RetryButton = () => {
 };
 
 const LineMoveButton = () => {
+  const t = useTranslations("typing.footer");
   return (
     <ButtonWithDoubleKbd
-      buttonLabel="移動"
+      buttonLabel={t("move")}
       prevKbdLabel="←"
       nextKbdLabel="→"
       onClick={() => {}}
@@ -147,6 +152,7 @@ const LineMoveButton = () => {
 };
 
 const ResultListButton = () => {
+  const t = useTranslations("typing.footer");
   const { inputModeToggleKey } = useTypingOptionsState();
   const [open, setOpen] = useState(false);
 
@@ -158,7 +164,7 @@ const ResultListButton = () => {
   return (
     <>
       <ButtonWithKbd
-        buttonLabel="リスト"
+        buttonLabel={t("list")}
         kbdLabel={inputModeToggleKey === "TAB" ? "F1" : "Tab"}
         onClickCapture={(event) => {
           event.stopPropagation();
@@ -171,6 +177,7 @@ const ResultListButton = () => {
 };
 
 const DifficultyInfo = () => {
+  const t = useTranslations("typing.footer");
   const { id: mapId } = useParams();
   const { data: mapInfo } = useQuery(orpc.map.getById.queryOptions({ input: { mapId: Number(mapId) } }));
   const inputMode = useReadyInputMode();
@@ -184,7 +191,7 @@ const DifficultyInfo = () => {
 
   return (
     <Badge variant="accent-light" size="md" className="text-lg">
-      最大kpm: {maxKpm}
+      {t("maxKpm", { kpm: maxKpm })}
     </Badge>
   );
 };

@@ -1,14 +1,16 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
+import { useTranslations } from "next-intl";
 import { setReadyInputMode, useReadyInputMode } from "@/store/ready-input-mode";
 import { RadioCard, RadioGroup } from "@/ui/radio-group/radio-group";
 import { cn } from "@/utils/cn";
 
 export const ReadyInputModeRadioCards = () => {
+  const t = useTranslations("typing.ready");
   const options: { value: InputMode; label: string }[] = [
-    { value: "roma", label: "ローマ字入力" },
-    { value: "kana", label: "かな入力" },
-    { value: "flick", label: "フリック入力" },
+    { value: "roma", label: t("modeRoma") },
+    { value: "kana", label: t("modeKana") },
+    { value: "flick", label: t("modeFlick") },
   ];
 
   const readyInputMode = useReadyInputMode();

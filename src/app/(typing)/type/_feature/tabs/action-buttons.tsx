@@ -1,7 +1,7 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { BookmarkListPopover } from "@/shared/map/bookmark/lists-popover";
@@ -36,16 +36,18 @@ export const MapActionIconButtons = ({ className }: { className: string }) => {
 };
 
 const BookmarkListButton = ({ id, hasBookmarked }: { id: number; hasBookmarked: boolean }) => {
+  const t = useTranslations("typing.action");
   return (
     <BookmarkListPopover
       mapId={id}
       trigger={<BookmarkListIconButton bookmarked={hasBookmarked} />}
-      tooltipLabel="ブックマーク"
+      tooltipLabel={t("bookmark")}
     />
   );
 };
 
 const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
+  const t = useTranslations("typing.action");
   const toggleMapLike = useToggleMapLikeMutation();
 
   const handleClick = () => {
@@ -54,15 +56,16 @@ const MapLikeButton = ({ id, hasLiked }: { id: number; hasLiked: boolean }) => {
   };
 
   return (
-    <TooltipWrapper label="いいね" asChild>
+    <TooltipWrapper label={t("like")} asChild>
       <LikeToggleButton onClick={handleClick} liked={hasLiked} />
     </TooltipWrapper>
   );
 };
 
 const MapEditLinkButton = ({ id }: { id: number }) => {
+  const t = useTranslations("typing.action");
   return (
-    <TooltipWrapper label="編集" asChild>
+    <TooltipWrapper label={t("edit")} asChild>
       <EditIconLinkButton href={`/edit/${id}`} replace />
     </TooltipWrapper>
   );

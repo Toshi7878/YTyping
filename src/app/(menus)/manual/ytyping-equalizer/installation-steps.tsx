@@ -1,7 +1,12 @@
 "use client";
+import type { Route } from "next";
 import Image from "next/image";
 import { Separator } from "@/ui/separator";
 import { H3, LinkText, OList, P } from "@/ui/typography";
+
+const TAMPERMONKEY_URL =
+  "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" as Route;
+const SCRIPT_URL = "https://greasyfork.org/en/scripts/573777-ytyping-equalizer" as Route;
 
 export function InstallationSteps() {
   const steps = [
@@ -9,15 +14,11 @@ export function InstallationSteps() {
       title: "YTyping Equalizerをインストールする",
       content: (
         <P>
-          <LinkText href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja">
-            Tampermonkey - Chrome ウェブストア
-          </LinkText>
+          <LinkText href={TAMPERMONKEY_URL}>Tampermonkey - Chrome ウェブストア</LinkText>
           からTampermonkeyをインストールします。
           <br />
-          <LinkText href="https://greasyfork.org/en/scripts/573777-ytyping-equalizer">
-            GreasyFork - YTyping Equalizer
-          </LinkText>
-          からスクリプトをインストールします。 ヘッダーにEQアイコンが追加され、音質を調整することができます。
+          <LinkText href={SCRIPT_URL}>GreasyFork - YTyping Equalizer</LinkText>からスクリプトをインストールします。{" "}
+          ヘッダーにEQアイコンが追加され、音質を調整することができます。
         </P>
       ),
       images: (

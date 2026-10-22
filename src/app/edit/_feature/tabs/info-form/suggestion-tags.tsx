@@ -1,4 +1,5 @@
 import type { VariantProps } from "class-variance-authority";
+import { useTranslations } from "next-intl";
 import type { badgeVariants } from "@/ui/badge";
 import { Badge } from "@/ui/badge";
 import { Skeleton } from "@/ui/skeleton";
@@ -123,6 +124,7 @@ interface TagBadgeProps extends TagListProps {
 }
 
 const SuggestionTagBadge = ({ label, tags, onTagsChange, variant }: TagBadgeProps) => {
+  const t = useTranslations("editorInfo");
   return (
     <Badge
       className={cn(
@@ -134,7 +136,7 @@ const SuggestionTagBadge = ({ label, tags, onTagsChange, variant }: TagBadgeProp
         if (tags.length < TAG_MAX_LENGTH) {
           onTagsChange([...tags, label]);
         } else {
-          toast.warning("タグは最大10個まで追加できます");
+          toast.warning(t("tagLimit"));
         }
       }}
     >

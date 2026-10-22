@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState, useSyncExternalStore } from "react";
 import {
   AlertDialog,
@@ -65,6 +66,7 @@ export const PromptDialogHost = () => {
 };
 
 const PromptDialogContent = ({ state: { options, resolvePromise } }: { state: State }) => {
+  const t = useTranslations("common");
   const [value, setValue] = useState("");
 
   const close = (result: string | null) => {
@@ -101,7 +103,7 @@ const PromptDialogContent = ({ state: { options, resolvePromise } }: { state: St
           />
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => close(null)}>キャンセル</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => close(null)}>{t("cancel")}</AlertDialogCancel>
           <Button variant="destructive" disabled={!value.trim()} onClick={() => close(value.trim())}>
             {options.confirmLabel}
           </Button>

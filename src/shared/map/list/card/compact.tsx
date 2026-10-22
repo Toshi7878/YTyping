@@ -1,6 +1,7 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useSession } from "@/auth/client";
 import type { RouterOutputs } from "@/server/api/root";
@@ -135,6 +136,7 @@ interface MapCreatorInfoProps {
 }
 
 const MapCreatorInfo = ({ creator, updatedAt, isUnlisted, className }: MapCreatorInfoProps) => {
+  const tCommon = useTranslations("common");
   return (
     <div className={cn("truncate text-[0.6rem]", className)}>
       <UserNameLinkText userId={creator.id} userName={creator.name} />
@@ -143,7 +145,7 @@ const MapCreatorInfo = ({ creator, updatedAt, isUnlisted, className }: MapCreato
       </span>
       {isUnlisted ? (
         <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">
-          限定公開
+          {tCommon("unlisted")}
         </Badge>
       ) : null}
     </div>
@@ -168,6 +170,7 @@ const MapBadges = ({ map, href }: MapBadgesProps) => {
 type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
+  const t = useTranslations("map.card");
   const inputMode = useReadyInputMode();
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
@@ -175,33 +178,33 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   return (
     <div className="flex flex-wrap items-center gap-x-2">
       <Badge variant={kanaRatio === 0 ? "english" : inputMode === "roma" ? "roma" : "kana"} size="xs">
-        {kanaRatio === 0 ? "英語" : inputMode === "roma" ? "ローマ字" : "かな"}
+        {kanaRatio === 0 ? t("english") : inputMode === "roma" ? t("roma") : t("kana")}
       </Badge>
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">最大</span>
+        <span className="text-muted-foreground">{t("max")}</span>
         <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">打鍵数</span>
-        <span className="font-semibold tabular-nums">{totalNotes}打</span>
+        <span className="text-muted-foreground">{t("keystrokes")}</span>
+        <span className="font-semibold tabular-nums">{t("keystrokeCount", { count: totalNotes })}</span>
       </div>
 
       <div className="mt-2 flex w-full flex-wrap items-center gap-2">
         {kanaRatio > 0 && (
           <>
-            <span className="text-muted-foreground">ひらがな</span>
+            <span className="text-muted-foreground">{t("hiragana")}</span>
             <span className="font-semibold tabular-nums">{Math.round(kanaRatio * 100)}%</span>
           </>
         )}
         {alphabetRatio > 0 && (
           <>
-            <span className="text-muted-foreground">英字</span>
+            <span className="text-muted-foreground">{t("letters")}</span>
             <span className="font-semibold tabular-nums">{Math.round(alphabetRatio * 100)}%</span>
           </>
         )}
         {otherRatio > 0 && (
           <>
-            <span className="text-muted-foreground">記号</span>
+            <span className="text-muted-foreground">{t("symbols")}</span>
             <span className="font-semibold tabular-nums">{Math.round(otherRatio * 100)}%</span>
           </>
         )}

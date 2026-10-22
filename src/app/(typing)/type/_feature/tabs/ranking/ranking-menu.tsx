@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { setTabName } from "@/app/(typing)/type/_feature/tabs/tabs";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
@@ -47,6 +48,7 @@ export const RankingPopoverContent = ({
   playVideo,
   invalid = false,
 }: RankingMenuProps) => {
+  const t = useTranslations("typing.rankingMenu");
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const queryClient = useQueryClient();
@@ -58,7 +60,7 @@ export const RankingPopoverContent = ({
   const invalidateResult = useMutation(
     orpc.result.invalidation.invalidate.mutationOptions({
       onSuccess: async () => {
-        toast.success("この記録をBANしました");
+        toast.success(t("banned"));
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: orpc.result.ranking.get.queryKey({ input: { mapId: Number(mapId) } }),
@@ -67,7 +69,7 @@ export const RankingPopoverContent = ({
           queryClient.invalidateQueries({ queryKey: orpc.map.list.key() }),
         ]);
       },
-      onError: (error) => toast.error(`BANに失敗しました: ${error.message}`),
+      onError: (error) => toast.error(t("banFailed", { message: error.message })),
     }),
   );
 
@@ -85,20 +87,20 @@ export const RankingPopoverContent = ({
   const setPlayVideo = useMutation(
     orpc.result.video.set.mutationOptions({
       onSuccess: async () => {
-        toast.success("プレイ動画を登録しました");
+        toast.success(t("videoSet"));
         await invalidateRankingAndList();
       },
-      onError: (error) => toast.error(`プレイ動画の登録に失敗しました: ${error.message}`),
+      onError: (error) => toast.error(t("videoSetFailed", { message: error.message })),
     }),
   );
 
   const removePlayVideo = useMutation(
     orpc.result.video.remove.mutationOptions({
       onSuccess: async () => {
-        toast.success("プレイ動画の登録を解除しました");
+        toast.success(t("videoRemoved"));
         await invalidateRankingAndList();
       },
-      onError: (error) => toast.error(`プレイ動画の登録解除に失敗しました: ${error.message}`),
+      onError: (error) => toast.error(t("videoRemoveFailed", { message: error.message })),
     }),
   );
 
@@ -110,16 +112,16 @@ export const RankingPopoverContent = ({
 
   const handlePlayVideoClick = async () => {
     const url = await promptDialog({
-      title: hasPlayVideo ? "プレイ動画を変更" : "プレイ動画を登録",
-      description: "この記録のプレイ動画のURLを入力してください。(YouTube、TikTokの動画ページのURLに対応しています)",
-      placeholder: "https://www.youtube.com/watch?v=... / https://www.tiktok.com/@ユーザー名/video/...",
-      confirmLabel: "登録する",
+      title: hasPlayVideo ? t("videoChangeTitle") : t("videoSetTitle"),
+      description: t("videoPrompt"),
+      placeholder: t("videoPlaceholder"),
+      confirmLabel: t("register"),
       maxLength: 500,
       singleLine: true,
     });
     if (!url) return;
     if (!parsePlayVideoUrl(url)) {
-      toast.error("対応していない動画のURLです");
+      toast.error(t("unsupportedUrl"));
       return;
     }
     setPlayVideo.mutate({ resultId, url });
@@ -127,26 +129,26 @@ export const RankingPopoverContent = ({
 
   const handleRemovePlayVideoClick = async () => {
     const confirmed = await confirmDialog.danger({
-      title: "プレイ動画の登録を解除しますか？",
-      description: "この記録に登録したプレイ動画を解除します。",
-      confirmLabel: "解除する",
+      title: t("removeTitle"),
+      description: t("removeDescription"),
+      confirmLabel: t("remove"),
     });
     if (confirmed) removePlayVideo.mutate({ resultId });
   };
 
   const submitReport = useMutation(
     orpc.result.report.submit.mutationOptions({
-      onSuccess: () => toast.success("報告を送信しました"),
-      onError: (error) => toast.error(`報告に失敗しました: ${error.message}`),
+      onSuccess: () => toast.success(t("reportSent")),
+      onError: (error) => toast.error(t("reportFailed", { message: error.message })),
     }),
   );
 
   const handleReportClick = async () => {
     const detail = await promptDialog({
-      title: "この記録を報告しますか？",
-      description: "不正な記録の可能性がある場合、理由を入力してください。管理者が確認します。",
-      placeholder: "報告理由を入力してください。",
-      confirmLabel: "報告する",
+      title: t("reportTitle"),
+      description: t("reportDescription"),
+      placeholder: t("reportPlaceholder"),
+      confirmLabel: t("report"),
       maxLength: 400,
     });
     if (!detail) return;
@@ -158,10 +160,9 @@ export const RankingPopoverContent = ({
 
   const handleInvalidateClick = async () => {
     const confirmed = await confirmDialog.danger({
-      title: "この記録をBANしますか？",
-      description:
-        "この記録を無効な記録としてマークします。ランキングと他のユーザーの記録一覧に表示されなくなり、PPにも反映されません。ユーザー自身のBANではありません。",
-      confirmLabel: "BANする",
+      title: t("banTitle"),
+      description: t("banDescription"),
+      confirmLabel: t("ban"),
     });
     if (confirmed) invalidateResult.mutate({ resultId });
   };
@@ -169,7 +170,7 @@ export const RankingPopoverContent = ({
   const handleReplayClick = async () => {
     iosActiveSound();
     primeYTPlayerForMobilePlayback();
-    overlay.loading("リザルトデータを読込中...");
+    overlay.loading(t("loadingResult"));
     setScene("replay");
     try {
       const resultData = await queryClient.ensureQueryData(
@@ -181,7 +182,7 @@ export const RankingPopoverContent = ({
       dispatchTypeEvent("change-input-mode", { newInputMode: mode });
       playYTPlayer();
     } catch {
-      toast.error("リザルトデータの読み込みに失敗しました");
+      toast.error(t("loadFailed"));
     } finally {
       overlay.hide();
     }
@@ -190,12 +191,12 @@ export const RankingPopoverContent = ({
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
 
     if (mapUpdatedAt && mapUpdatedAt > resultUpdatedAtDate) {
-      toast.warning("リプレイ登録時より後に譜面が更新されています", {
-        description: "正常に再生できない可能性があります",
+      toast.warning(t("mapUpdated"), {
+        description: t("mapUpdatedDescription"),
       });
     }
 
-    setTabName("ステータス");
+    setTabName("status");
 
     const mapId = getMapId();
     const replayRankingResult = mapId ? getRankingResultByResultId({ mapId, resultId }) : null;
@@ -213,11 +214,11 @@ export const RankingPopoverContent = ({
       className="flex w-fit flex-col items-center px-0 py-2 sm:w-fit [&>button]:w-full"
     >
       <Button variant="ghost">
-        <Link href={`/user/${userId}`}>ユーザーページへ </Link>
+        <Link href={`/user/${userId}`}>{t("userPage")}</Link>
       </Button>
 
       <Button variant="ghost" onClick={handleReplayClick} disabled={sceneGroup === "Playing"}>
-        リプレイ再生
+        {t("replay")}
       </Button>
       {session && !invalid ? (
         <Button
@@ -229,7 +230,7 @@ export const RankingPopoverContent = ({
             toggleClap.mutate({ resultId, newState: !hasClapped });
           }}
         >
-          {hasClapped ? "拍手済み" : "記録に拍手"}
+          {hasClapped ? t("clapped") : t("clapAction")}
         </Button>
       ) : null}
       {playVideo.platform && playVideoUrl ? (
@@ -248,7 +249,7 @@ export const RankingPopoverContent = ({
               className="rounded-sm"
             />
           ) : null}
-          <span>{PLAY_VIDEO_PLATFORM_LABELS[playVideo.platform]}でプレイ動画を見る</span>
+          <span>{t("watchVideo", { platform: PLAY_VIDEO_PLATFORM_LABELS[playVideo.platform] })}</span>
         </a>
       ) : null}
       {canEditPlayVideo ? (
@@ -262,7 +263,7 @@ export const RankingPopoverContent = ({
               void handlePlayVideoClick();
             }}
           >
-            {hasPlayVideo ? "プレイ動画を変更" : "プレイ動画を登録"}
+            {hasPlayVideo ? t("videoChangeTitle") : t("videoSetTitle")}
           </Button>
           {hasPlayVideo ? (
             <Button
@@ -274,7 +275,7 @@ export const RankingPopoverContent = ({
                 void handleRemovePlayVideoClick();
               }}
             >
-              プレイ動画の登録を解除
+              {t("removeVideo")}
             </Button>
           ) : null}
         </>
@@ -291,7 +292,7 @@ export const RankingPopoverContent = ({
               void handleReportClick();
             }}
           >
-            記録を報告
+            {t("reportAction")}
           </Button>
         </>
       ) : null}
@@ -307,7 +308,7 @@ export const RankingPopoverContent = ({
             void handleInvalidateClick();
           }}
         >
-          この記録をBAN
+          {t("banAction")}
         </Button>
       ) : null}
     </PopoverContent>

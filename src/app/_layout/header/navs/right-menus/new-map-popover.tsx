@@ -2,6 +2,7 @@
 import { useRouter } from "@bprogress/next";
 import { useSelector } from "@tanstack/react-form";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Dispatch, SetStateAction } from "react";
 import { useRef, useState } from "react";
 import { RiAddBoxFill } from "react-icons/ri";
@@ -21,6 +22,8 @@ const formSchema = z.object({
 });
 
 export const NewMapPopover = () => {
+  const t = useTranslations("layout.newMap");
+  const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
   const backupMapInfo = idb.backup.useLiveQuery();
   const router = useRouter();
@@ -36,9 +39,7 @@ export const NewMapPopover = () => {
       if (!videoId) return;
 
       if (backupMapInfo) {
-        const result = confirm(
-          "新規作成バックアップデータが存在します。\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
-        );
+        const result = confirm(t("confirmOverwrite"));
         if (!result) return;
       }
 
@@ -54,7 +55,7 @@ export const NewMapPopover = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="譜面新規作成" className="relative bottom-3" asChild>
+      <TooltipWrapper label={t("label")} className="relative bottom-3" asChild>
         <PopoverTrigger
           render={
             <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
@@ -68,16 +69,16 @@ export const NewMapPopover = () => {
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="space-y-4 px-6 py-4"
         >
-          <H3>譜面新規作成</H3>
+          <H3>{t("label")}</H3>
           <form.AppField name="videoId">
             {(field) => (
               <field.InputFormField
-                label="譜面を作成したいYouTube動画のURLを入力"
-                placeholder="YouTube URLを入力"
+                label={t("urlLabel")}
+                placeholder={t("urlPlaceholder")}
                 autoComplete="off"
                 ref={inputRef}
               />
@@ -86,7 +87,7 @@ export const NewMapPopover = () => {
           <div className="flex flex-wrap-reverse items-center justify-end gap-4 sm:justify-between">
             <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
             <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
-              作成
+              {tCommon("create")}
             </Button>
           </div>
         </form>
@@ -107,11 +108,13 @@ interface CreateMapBackUpButtonProps {
 }
 
 function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
+  const t = useTranslations("layout.newMap");
+
   return (
     <TooltipWrapper
       label={
         <div>
-          <div>タイトル: {props.backupData?.title}</div>
+          <div>{t("backupTitle", { title: props.backupData?.title ?? "" })}</div>
           <div>YouTubeId: {props.backupData?.videoId}</div>
         </div>
       }
@@ -126,7 +129,7 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
           className: cn(!props.backupData?.videoId && "invisible"),
         })}
       >
-        前回のバックアップデータが存在します。
+        {t("backupExists")}
       </Link>
     </TooltipWrapper>
   );

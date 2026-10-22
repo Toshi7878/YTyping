@@ -1,8 +1,10 @@
 import { Ticker } from "@pixi/ticker";
 import { evaluateImeInput, type WordResult } from "lyrics-ime-typing-engine";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { getSession } from "@/auth/client";
+import { translate } from "@/i18n/translate";
 import { Textarea } from "@/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
@@ -22,6 +24,7 @@ import { getImeOptions } from "./provider";
 const TICK_STOP_TIME = 1000;
 
 export const InputTextarea = () => {
+  const t = useTranslations("ime.placeholder");
   const textareaPlaceholderType = useTextareaPlaceholderTypeState();
   const scene = useSceneState();
 
@@ -42,7 +45,7 @@ export const InputTextarea = () => {
         wordResults: userResult?.wordResults,
       });
 
-      const userName = session?.user.name || "ゲスト";
+      const userName = session?.user.name || translate("ime.guest");
       updateUserResult(userId, { name: userName, ...result });
       updateImeTypeCountStats((prev) => prev + typeCountStatsDelta);
       if (appendNotifications.length > 0) {
@@ -102,7 +105,7 @@ export const InputTextarea = () => {
         ref={lyricsTextareaRef}
         className="h-[130px] resize-none rounded-md px-4 font-bold text-2xl tracking-widest xl:text-3xl"
         autoComplete="off"
-        placeholder={textareaPlaceholder({ scene, textareaPlaceholderType })}
+        placeholder={textareaPlaceholder({ scene, textareaPlaceholderType, t })}
         onKeyDown={handleSubmit}
         onInput={handleInput}
       />
@@ -158,27 +161,29 @@ export const handleImeInput = ({
 const textareaPlaceholder = ({
   scene,
   textareaPlaceholderType,
+  t,
 }: {
   scene: SceneType;
   textareaPlaceholderType: PlaceholderType;
+  t: ReturnType<typeof useTranslations<"ime.placeholder">>;
 }) => {
   if (scene === "ready") {
-    return "動画クリック / Enterでスタート";
+    return t("ready");
   }
 
   if (textareaPlaceholderType === "skip") {
-    return "ワードを入力（Enterで送信）\nskipを入力してスキップ";
+    return t("skip");
   }
 
   if (textareaPlaceholderType === "end") {
-    return "ワードを入力（Enterで送信）\nendを入力して終了";
+    return t("end");
   }
 
   if (scene === "end") {
-    return "お疲れさまでした \nresultを入力すると結果を確認できます";
+    return t("finished");
   }
 
-  return "ワードを入力（Enterで送信）";
+  return t("default");
 };
 
 const useTypingTimeTimer = () => {

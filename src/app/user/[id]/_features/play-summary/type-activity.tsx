@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cloneElement, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
 import { orpc } from "@/orpc/provider";
@@ -14,6 +15,7 @@ import { getTimezone, getYearsDesc } from "@/utils/date";
 import { useTargetYearQueryState } from "../search-params";
 
 export const TypeActivity = () => {
+  const t = useTranslations("user.activity");
   const { id: userId } = useParams<{ id: string }>();
   const [targetYear] = useTargetYearQueryState();
 
@@ -39,9 +41,10 @@ export const TypeActivity = () => {
     <ActivityCalendar
       data={typeActivities ?? []}
       labels={{
-        months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-        weekdays: ["日", "月", "火", "水", "木", "金", "土"],
-        totalCount: "{{count}} 打鍵",
+        months: [...Array(12).keys()].map((i) => t(`months.${i}`)),
+        weekdays: [...Array(7).keys()].map((i) => t(`weekdays.${i}`)),
+        // react-activity-calendar が埋め込む {{count}} をそのまま使うため、ICU として解釈しない raw を使う
+        totalCount: String(t.raw("totalCount")),
       }}
       theme={{ dark: blockColors }}
       colorScheme="dark"
@@ -69,7 +72,7 @@ export const TypeActivity = () => {
       }}
       renderColorLegend={(_block, level) => {
         const color = blockColors[level] ?? "";
-        const label = getLevelLabel(level);
+        const label = getLevelLabel(level, t);
 
         return (
           <TooltipWrapper key={level} delayDuration={0} label={label} asChild>
@@ -153,12 +156,13 @@ const getOpacity = (level: number) => {
 };
 
 const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
+  const t = useTranslations("user.activity");
   const { data } = activity as RouterOutputs["user"]["stats"]["getYearlyTypingActivity"][number];
   const sortedTypeData = [
-    { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
-    { label: "かな", count: data?.kanaTypeCount ?? 0 },
-    { label: "英数字記号", count: (data?.englishTypeCount ?? 0) + (data?.otherTypeCount ?? 0) },
-    { label: "変換有りタイプ数", count: data?.imeTypeCount ?? 0 },
+    { label: t("roma"), count: data?.romaTypeCount ?? 0 },
+    { label: t("kana"), count: data?.kanaTypeCount ?? 0 },
+    { label: t("other"), count: (data?.englishTypeCount ?? 0) + (data?.otherTypeCount ?? 0) },
+    { label: t("ime"), count: data?.imeTypeCount ?? 0 },
   ].sort((a, b) => b.count - a.count);
 
   const sortedTypeDataString = sortedTypeData.map((item) => {
@@ -173,19 +177,19 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
     <div className="flex flex-col gap-2">
       {sortedTypeDataString}
       <Separator />
-      <div>合計打鍵数: {activity.count}</div>
-      <div>日付: {activity.date}</div>
+      <div>{t("total", { count: activity.count })}</div>
+      <div>{t("date", { date: activity.date })}</div>
     </div>
   );
 };
 
 // コンポーネント定義の外に配置
-const getLevelLabel = (level: number) => {
+const getLevelLabel = (level: number, t: ReturnType<typeof useTranslations<"user.activity">>) => {
   const levelLabel = level % 3 === 0 ? 3 : level % 3;
 
-  if (level === 0) return "活動なし";
-  if (level <= 3) return `ローマ字 level: ${levelLabel}`;
-  if (level <= 6) return `かな level: ${levelLabel}`;
-  if (level <= 9) return `英数字記号 level: ${levelLabel}`;
-  return `変換有りタイプ数 level: ${levelLabel}`;
+  if (level === 0) return t("none");
+  if (level <= 3) return t("level", { label: t("roma"), level: levelLabel });
+  if (level <= 6) return t("level", { label: t("kana"), level: levelLabel });
+  if (level <= 9) return t("level", { label: t("other"), level: levelLabel });
+  return t("level", { label: t("ime"), level: levelLabel });
 };

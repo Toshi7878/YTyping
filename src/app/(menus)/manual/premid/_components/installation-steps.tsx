@@ -5,32 +5,26 @@ import { useBrowserTypeState } from "@/store/user-agent";
 import { Separator } from "@/ui/separator";
 import { H3, LinkText, OList, P } from "@/ui/typography";
 
-const browserLinks: Record<"Chrome" | "Firefox" | "Edge" | "Safari", { url: Route; text: string }> = {
-  Chrome: {
-    url: "https://chromewebstore.google.com/detail/premid/agjnjboanicjcpenljmaaigopkgdnihi",
-    text: "PreMiD - Chrome ウェブストア",
-  },
-  Firefox: {
-    url: "https://premid.app/downloads",
-    text: "PreMiD Downloads",
-  },
-  Edge: {
-    url: "https://microsoftedge.microsoft.com/addons/detail/premid/hkchpjlnddoppadcbefbpgmgaeidkkkm",
-    text: "PreMiD - Microsoft Edge アドオン",
-  },
-  Safari: {
-    url: "https://premid.app/downloads",
-    text: "PreMiD Downloads",
-  },
-};
+const DOWNLOADS_URL = "https://premid.app/downloads" as Route;
 
 const useBrowserLink = () => {
   const browserType = useBrowserTypeState();
-  if (browserType === "Chrome") return browserLinks.Chrome;
-  if (browserType === "Firefox") return browserLinks.Firefox;
-  if (browserType === "Edge") return browserLinks.Edge;
-  if (browserType === "Safari") return browserLinks.Safari;
-  return browserLinks.Chrome;
+
+  switch (browserType) {
+    case "Firefox":
+    case "Safari":
+      return { url: DOWNLOADS_URL, text: "PreMiD Downloads" };
+    case "Edge":
+      return {
+        url: "https://microsoftedge.microsoft.com/addons/detail/premid/hkchpjlnddoppadcbefbpgmgaeidkkkm" as Route,
+        text: "PreMiD - Microsoft Edge アドオン",
+      };
+    default:
+      return {
+        url: "https://chromewebstore.google.com/detail/premid/agjnjboanicjcpenljmaaigopkgdnihi" as Route,
+        text: "PreMiD - Chrome ウェブストア",
+      };
+  }
 };
 
 export function InstallationSteps() {
@@ -41,8 +35,7 @@ export function InstallationSteps() {
       title: "PreMiDブラウザ拡張機能をインストールする",
       content: (
         <P>
-          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>
-          から拡張機能をインストールします。
+          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>から拡張機能をインストールします。
         </P>
       ),
     },
@@ -50,12 +43,11 @@ export function InstallationSteps() {
       title: "YTypingのプレゼンス設定をPreMiD Storeからインストールする",
       content: (
         <P>
-          <LinkText href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</LinkText>
+          <LinkText href={"https://premid.app/store/presences/YTyping" as Route}>YTyping - PreMiD Store</LinkText>
           からYTypingのプレゼンス設定を追加します。
         </P>
       ),
     },
-
     {
       title: "PreMiD拡張機能を開いてDiscordアカウントとリンクします。",
       content: <P>PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、表示したいDiscordアカウントとリンクする</P>,
@@ -87,7 +79,7 @@ export function InstallationSteps() {
 function PreMidLinkImage() {
   return (
     <Image
-      alt="PreMID拡張機能を開いてDiscordアカウントとリンクします。"
+      alt="PreMiD拡張機能を開いてDiscordアカウントとリンクします。"
       src="/images/manual/premid/premid-link.png"
       width={250}
       height={0}

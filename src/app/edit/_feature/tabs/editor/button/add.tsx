@@ -1,4 +1,5 @@
 import { atom, useAtomValue } from "jotai";
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/ui/button";
 import { isDialogOpen } from "@/utils/is-dialog-option";
@@ -23,6 +24,7 @@ const isAddButtonDisabledAtom = atom((get) => {
 });
 
 export const AddLineButton = () => {
+  const t = useTranslations("editorTab");
   const isAddButtonDisabled = useAtomValue(isAddButtonDisabledAtom);
   useHotkeys(
     ["shift+s", "s"],
@@ -40,7 +42,8 @@ export const AddLineButton = () => {
       className="w-20 font-bold xl:w-28"
       onClick={(event) => addLineAction(event.shiftKey)}
     >
-      追加<small className="hidden sm:inline">(S)</small>
+      {t("add")}
+      <small className="hidden sm:inline">(S)</small>
     </Button>
   );
 };

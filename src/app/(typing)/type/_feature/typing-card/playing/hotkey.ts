@@ -1,3 +1,4 @@
+import { translate } from "@/i18n/translate";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { getBuiltMap } from "../../atoms/built-map";
 import { getSelectLineIndex } from "../../atoms/line-results";
@@ -61,7 +62,9 @@ export const playHotkey = (event: KeyboardEvent) => {
         setTimeOffset((prev) => Math.round((prev + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100);
 
         const timeOffset = getTimeOffset();
-        setNotify(Symbol(`時間調整: ${(timeOffset + typingOptions.timeOffset).toFixed(2)}`));
+        setNotify(
+          Symbol(translate("typing.hotkey.timeOffset", { value: (timeOffset + typingOptions.timeOffset).toFixed(2) })),
+        );
       } else if (scene === "replay" || scene === "practice") {
         moveNextLine();
       }
@@ -71,7 +74,9 @@ export const playHotkey = (event: KeyboardEvent) => {
       if (isCtrlLeftRight || isCtrlAltLeftRight) {
         setTimeOffset((prev) => Math.round((prev - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100);
         const timeOffset = getTimeOffset();
-        setNotify(Symbol(`時間調整: ${(timeOffset + typingOptions.timeOffset).toFixed(2)}`));
+        setNotify(
+          Symbol(translate("typing.hotkey.timeOffset", { value: (timeOffset + typingOptions.timeOffset).toFixed(2) })),
+        );
       } else if (scene === "replay" || scene === "practice") {
         movePrevLine();
       }

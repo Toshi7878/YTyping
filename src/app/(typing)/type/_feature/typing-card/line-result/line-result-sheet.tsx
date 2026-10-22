@@ -1,5 +1,6 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
+import { useTranslations } from "next-intl";
 import { type RefObject, useRef, useState } from "react";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
@@ -9,6 +10,7 @@ import { moveSetLine } from "../playing/move-line";
 import { OptimizedResultCard } from "./card/line-card";
 
 export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
+  const t = useTranslations("typing.lineResult");
   const map = useBuiltMapState();
   const handleCardClick = (lineIndex: number) => {
     if (!map) return;
@@ -22,7 +24,7 @@ export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpe
     <Sheet modal={false} open={open} onOpenChange={setOpen}>
       <SheetContent keepMounted side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
-          <SheetTitle>詳細リザルト</SheetTitle>
+          <SheetTitle>{t("detailTitle")}</SheetTitle>
         </SheetHeader>
         <ResultLineList onCardClick={handleCardClick} />
       </SheetContent>
@@ -31,6 +33,7 @@ export const ReplayResultLineSheet = ({ open, setOpen }: { open: boolean; setOpe
 };
 
 export const EndResultLineSheet = ({ trigger }: { trigger: React.ReactNode }) => {
+  const t = useTranslations("typing.lineResult");
   const [isOpen, setIsOpen] = useState(false);
   const handleCardClick = (lineIndex: number, itemsRef: RefObject<HTMLDivElement[]>) => {
     let nextTypedCount = 0;
@@ -80,7 +83,7 @@ export const EndResultLineSheet = ({ trigger }: { trigger: React.ReactNode }) =>
       <SheetTrigger render={trigger as React.ReactElement} />
       <SheetContent keepMounted side="right" className="w-xs bg-accent/90" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
-          <SheetTitle>詳細リザルト</SheetTitle>
+          <SheetTitle>{t("detailTitle")}</SheetTitle>
         </SheetHeader>
         {isOpen && <ResultLineList onCardClick={handleCardClick} />}
       </SheetContent>

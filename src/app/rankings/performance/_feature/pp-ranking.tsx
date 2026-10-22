@@ -2,9 +2,10 @@
 
 import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
-import { PP_MODE_DESCRIPTIONS, PP_MODE_LABELS, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
+import { NEUTRAL_ENGLISH_TYPE_RATE, PP_MODES, type PpMode } from "@/shared/result/pp/mode";
 import { PageNavigation } from "@/ui/page-navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/ui/tabs";
 import { cn } from "@/utils/cn";
@@ -23,6 +24,9 @@ const MODE_TAB_COLORS: Partial<Record<PpMode, string>> = {
 };
 
 export const PPRanking = () => {
+  const t = useTranslations("rankings.performance");
+  const tMode = useTranslations("pp.modes");
+  const tDescription = useTranslations("pp.modeDescription");
   const [{ page, mode }, setQuery] = usePpRankingQueryStates();
 
   const { data, isPlaceholderData } = useQuery(
@@ -38,21 +42,23 @@ export const PPRanking = () => {
         <TabsList className="flex h-fit w-full flex-wrap gap-1">
           {PP_MODES.map((m) => (
             <TabsTrigger key={m} value={m} className={cn("data-active:text-foreground", MODE_TAB_COLORS[m])}>
-              {PP_MODE_LABELS[m]}
+              {tMode(m)}
             </TabsTrigger>
           ))}
         </TabsList>
       </Tabs>
-      {PP_MODE_DESCRIPTIONS[mode] && <p className="text-muted-foreground text-sm">{PP_MODE_DESCRIPTIONS[mode]}</p>}
+      {mode !== "total" && mode !== "flick" && (
+        <p className="text-muted-foreground text-sm">{tDescription(mode, { rate: NEUTRAL_ENGLISH_TYPE_RATE * 100 })}</p>
+      )}
 
       <PageNavigation page={page} pageCount={pageCount} onPageChange={(p) => setQuery({ page: p })} size="sm" />
       <div className={cn("border-border/30 border-b pb-2 text-muted-foreground text-sm", rowGrid)}>
-        <div>順位</div>
-        <div>プレイヤー</div>
-        <div className="text-right sm:text-left">合計 PP</div>
+        <div>{t("rank")}</div>
+        <div>{t("player")}</div>
+        <div className="text-right sm:text-left">{t("totalPp")}</div>
       </div>
 
-      <ul className={cn("space-y-2", isPlaceholderData && "opacity-50")} aria-label="PP ランキング">
+      <ul className={cn("space-y-2", isPlaceholderData && "opacity-50")} aria-label="PP ranking">
         {rows.map((row) => (
           <li
             key={`${row.userId}`}

@@ -2,6 +2,7 @@ import { atom, useAtomValue } from "jotai";
 import { hasMapUploadPermission } from "@/app/edit/_feature/permission/has-permission";
 import { store, useCreatorId } from "@/app/edit/_feature/provider";
 import { useSession } from "@/auth/client";
+import { translate } from "@/i18n/translate";
 import { getQueryClient, orpc } from "@/orpc/provider";
 import { replaceReadingWithCustomDict } from "@/shared/morph/replace-reading-with-custom-dict";
 import { Button } from "@/ui/button";
@@ -35,7 +36,7 @@ export const WordConvertButton = ({
 
   const handleClick = async () => {
     if (!hasUploadPermission) {
-      toast.warning("読み変換機能は編集保存権限が有効な場合に使用できます");
+      toast.warning(translate("editorTab.convertNoPermission"));
       return;
     }
 
@@ -89,7 +90,7 @@ const fetchReading = async (sentence: string) => {
     return result.readings.join("");
   } catch {
     const message = undefined;
-    toast.error("読み変換に失敗しました", { description: message });
+    toast.error(translate("editorTab.convertFailed"), { description: message });
     return "";
   } finally {
     setIsWordConverting(false);

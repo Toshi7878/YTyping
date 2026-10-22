@@ -1,6 +1,8 @@
 "use client";
+
 import type { Route } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { HTMLAttributes } from "react";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { RatingBadge } from "@/shared/map/rating/badge";
@@ -44,6 +46,8 @@ interface MapInfoProps {
 }
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
+  const t = useTranslations("result");
+  const tCommon = useTranslations("common");
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   const linkMode = useTypingLinkMode();
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
@@ -61,13 +65,13 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
       <RatingBadge rating={map.difficulty.rating} />
 
       <div className="truncate text-xs">
-        制作者:{" "}
+        {t("creator")}{" "}
         <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
           {map.creator.name}
         </Link>
         {map.info.visibility === "UNLISTED" ? (
           <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">
-            限定公開
+            {tCommon("unlisted")}
           </Badge>
         ) : null}
       </div>

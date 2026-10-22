@@ -4,6 +4,7 @@ import { queryOptions, useMutation, useQuery, useSuspenseQuery } from "@tanstack
 import { atom, useAtomValue } from "jotai";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
 import z from "zod";
@@ -21,6 +22,7 @@ import {
 } from "@/app/edit/_feature/provider";
 import { useIsBuckupQueryState } from "@/app/edit/_feature/search-params";
 import { useSession } from "@/auth/client";
+import { translate } from "@/i18n/translate";
 import { getORPCErrorCode } from "@/orpc/error";
 import { orpc } from "@/orpc/provider";
 import {
@@ -72,7 +74,7 @@ const mapInfoFormShape: MapInfoFormValues = {
 // MapInfoFormSchema は previewTime が z.coerce.number() で input型が number と一致しないため、
 // フォームのライブ検証専用に previewTime を plain number にしたスキーマを使う
 const mapInfoFormValidationSchema = MapInfoFormSchema.extend({
-  previewTime: z.number({ error: "プレビュータイムは数値である必要があります" }),
+  previewTime: z.number({ error: () => translate("editorInfo.previewTimeNumber") }),
 });
 
 interface SyncableFormField {
@@ -104,6 +106,7 @@ const useSyncNonDirtyValues = (form: SyncableForm, values: MapInfoFormValues) =>
 };
 
 export const EditMapInfoFormCard = () => {
+  const t = useTranslations("editorInfo");
   const mapId = useMapId();
 
   const { data: mapInfo } = useSuspenseQuery(
@@ -157,7 +160,7 @@ export const EditMapInfoFormCard = () => {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
         className="flex w-full flex-col items-baseline gap-4"
       >
@@ -167,27 +170,25 @@ export const EditMapInfoFormCard = () => {
         </div>
         <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
           <form.AppField name="title">
-            {(field) => <field.FloatingLabelInputFormField label="曲名" required />}
+            {(field) => <field.FloatingLabelInputFormField label={t("title")} required />}
           </form.AppField>
           <form.AppField name="artistName">
-            {(field) => <field.FloatingLabelInputFormField label="アーティスト名" required />}
+            {(field) => <field.FloatingLabelInputFormField label={t("artist")} required />}
           </form.AppField>
         </div>
         <div className="grid w-full grid-cols-1 items-center gap-4 sm:grid-cols-2">
           <form.AppField name="musicSource">
-            {(field) => <field.FloatingLabelInputFormField label="ソース" />}
+            {(field) => <field.FloatingLabelInputFormField label={t("source")} />}
           </form.AppField>
           <form.AppField name="creatorComment">
-            {(field) => <field.FloatingLabelInputFormField label="コメント" />}
+            {(field) => <field.FloatingLabelInputFormField label={t("comment")} />}
           </form.AppField>
         </div>
         <form.AppField name="tags">
           {(field) => (
             <field.TagInputFormField
               maxTags={TAG_MAX_LENGTH}
-              label={
-                tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LENGTH}`
-              }
+              label={tags.length <= 1 ? t("tagsMin") : t("tagsAdd", { count: tags.length, max: TAG_MAX_LENGTH })}
               maxLength={100}
             />
           )}
@@ -208,6 +209,7 @@ export const EditMapInfoFormCard = () => {
 };
 
 export const AddMapInfoFormCard = () => {
+  const t = useTranslations("editorInfo");
   const [isBackup] = useIsBuckupQueryState();
   const { data: session } = useSession();
   const creatorId = useCreatorId();
@@ -319,7 +321,7 @@ export const AddMapInfoFormCard = () => {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
         className="flex w-full flex-col items-baseline gap-4"
       >
@@ -333,7 +335,7 @@ export const AddMapInfoFormCard = () => {
             {(field) => (
               <field.FloatingLabelInputFormField
                 disabled={isAIFetching}
-                label={isAIFetching ? "曲名を生成中..." : "曲名"}
+                label={isAIFetching ? t("titleGenerating") : t("title")}
                 required
               />
             )}
@@ -342,7 +344,7 @@ export const AddMapInfoFormCard = () => {
             {(field) => (
               <field.FloatingLabelInputFormField
                 disabled={isAIFetching}
-                label={isAIFetching ? "アーティスト名を生成中..." : "アーティスト名"}
+                label={isAIFetching ? t("artistGenerating") : t("artist")}
                 required
               />
             )}
@@ -353,21 +355,19 @@ export const AddMapInfoFormCard = () => {
             {(field) => (
               <field.FloatingLabelInputFormField
                 disabled={isAIFetching}
-                label={isAIFetching ? "ソースを生成中..." : "ソース"}
+                label={isAIFetching ? t("sourceGenerating") : t("source")}
               />
             )}
           </form.AppField>
           <form.AppField name="creatorComment">
-            {(field) => <field.FloatingLabelInputFormField label="コメント" />}
+            {(field) => <field.FloatingLabelInputFormField label={t("comment")} />}
           </form.AppField>
         </div>
         <form.AppField name="tags">
           {(field) => (
             <field.TagInputFormField
               maxTags={TAG_MAX_LENGTH}
-              label={
-                tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LENGTH}`
-              }
+              label={tags.length <= 1 ? t("tagsMin") : t("tagsAdd", { count: tags.length, max: TAG_MAX_LENGTH })}
               maxLength={100}
             />
           )}
@@ -390,6 +390,7 @@ export const AddMapInfoFormCard = () => {
 const UpsertButton = withForm({
   defaultValues: mapInfoFormShape,
   render: ({ form }) => {
+    const t = useTranslations("editorInfo");
     const isDirty = useSelector(form.store, (state) => state.isDirty);
     const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
     const canUpload = useCanUpload();
@@ -408,7 +409,7 @@ const UpsertButton = withForm({
         disabled={(!isDirty && !canUpload) || isSubmitting}
         className="w-52"
       >
-        保存
+        {t("save")}
       </Button>
     );
   },
@@ -418,17 +419,18 @@ const VideoIdInput = withForm({
   defaultValues: mapInfoFormShape,
   props: {} as { readOnly?: boolean },
   render: ({ form, readOnly = false }) => {
+    const t = useTranslations("editorInfo");
     const formVideoId = useSelector(form.store, (state) => state.values.videoId);
     const isVideoIdDirty = useSelector(form.store, (state) => state.fieldMeta.videoId?.isDirty ?? false);
 
     return (
       <div className="flex items-center gap-4">
-        <TooltipWrapper label={!readOnly && "動画URLを貼付するとIDが自動入力されます"} asChild>
+        <TooltipWrapper label={!readOnly && t("videoPasteHint")} asChild>
           <form.AppField name="videoId">
             {(field) => (
               <field.FloatingLabelInputFormField
                 className="w-32"
-                label="動画ID"
+                label={t("videoId")}
                 readOnly={readOnly}
                 maxLength={11}
                 onPaste={(e) => {
@@ -468,7 +470,7 @@ const VideoIdInput = withForm({
             setCanUpload(true);
           }}
         >
-          動画切り替え
+          {t("switchVideo")}
         </Button>
       </div>
     );
@@ -478,15 +480,16 @@ const VideoIdInput = withForm({
 const VisibilitySelect = withForm({
   defaultValues: mapInfoFormShape,
   render: ({ form }) => {
+    const t = useTranslations("editorInfo");
     const options = [
-      { value: "PUBLIC", label: "公開", description: "譜面一覧に表示されます" },
-      { value: "UNLISTED", label: "限定公開", description: "譜面URLを知っているユーザーのみアクセスできます" },
+      { value: "PUBLIC", label: t("public"), description: t("publicDescription") },
+      { value: "UNLISTED", label: t("unlisted"), description: t("unlistedDescription") },
     ] satisfies { value: MapInfoFormValues["visibility"]; label: string; description: string }[];
 
     return (
       <form.AppField name="visibility">
         {(field) => (
-          <field.FloatingLabelSelectFormField label="公開範囲" options={options} triggerClassName="min-w-28" />
+          <field.FloatingLabelSelectFormField label={t("visibility")} options={options} triggerClassName="min-w-28" />
         )}
       </form.AppField>
     );
@@ -496,6 +499,7 @@ const VisibilitySelect = withForm({
 const PreviewTimeInput = withForm({
   defaultValues: mapInfoFormShape,
   render: ({ form }) => {
+    const t = useTranslations("editorInfo");
     const handlePreviewClick = () => {
       YTPlayer.play();
       YTPlayer.seek(Number(form.getFieldValue("previewTime")));
@@ -506,11 +510,9 @@ const PreviewTimeInput = withForm({
       <TooltipWrapper
         label={
           <>
-            <div>
-              譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)
-            </div>
-            <div>※ 小さい数値を指定すると最初のタイピングワードが存在するタイムが設定されます。</div>
-            <div>↑↓キー: 0.05ずつ調整, Enter:再生</div>
+            <div>{t("previewTip1")}</div>
+            <div>{t("previewTip2")}</div>
+            <div>{t("previewTip3")}</div>
           </>
         }
         asChild
@@ -519,7 +521,7 @@ const PreviewTimeInput = withForm({
           <form.AppField name="previewTime">
             {(field) => (
               <field.FloatingLabelInputFormField
-                label="プレビュータイム"
+                label={t("previewTime")}
                 className="w-36"
                 type="number"
                 min="0"
@@ -559,16 +561,18 @@ const PreviewTimeInput = withForm({
 });
 
 const TypeLinkButton = ({ mapId }: { mapId: number }) => {
+  const t = useTranslations("editorInfo");
   return (
     <Link href={`/type/${mapId}`}>
       <Button size="default" variant="outline">
-        タイピングページに移動
+        {t("toTyping")}
       </Button>
     </Link>
   );
 };
 
 const useUpsertMapMutation = () => {
+  const t = useTranslations("editorInfo");
   return useMutation(
     orpc.map.upsert.mutationOptions({
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
@@ -584,10 +588,10 @@ const useUpsertMapMutation = () => {
           void idb.backup.delete();
           setMapId(id);
           setCreatorId(creatorId);
-          toast.success("アップロード完了");
+          toast.success(t("uploaded"));
           await context.client.resetQueries({ queryKey: orpc.map.list.get.key() });
         } else {
-          toast.success("アップデート完了");
+          toast.success(t("updated"));
           await context.client.invalidateQueries({ queryKey: orpc.map.list.get.key() });
         }
         setCanUpload(false);
@@ -595,10 +599,10 @@ const useUpsertMapMutation = () => {
       onError: (error) => {
         switch (getORPCErrorCode(error)) {
           case "FORBIDDEN":
-            toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
+            toast.error(t("saveFailed"), { description: t("noEditPermission") });
             return;
           default:
-            toast.error("保存に失敗しました", { description: error.message });
+            toast.error(t("saveFailed"), { description: error.message });
         }
       },
     }),

@@ -1,8 +1,12 @@
 import z from "zod";
-import { ja } from "zod/locales";
+import { en, ja } from "zod/locales";
+import { getCurrentLocale, translate } from "@/i18n/translate";
 import { STRING_SHORT_LENGTH } from "@/server/drizzle/const";
 
-z.config(ja());
+// zod の既定メッセージは、その時点の表示言語に合わせる
+const jaLocaleError = ja().localeError;
+const enLocaleError = en().localeError;
+z.config({ localeError: (issue) => (getCurrentLocale() === "en" ? enLocaleError(issue) : jaLocaleError(issue)) });
 
 export const UserNameSchema = z.object({
   newName: z
@@ -10,16 +14,16 @@ export const UserNameSchema = z.object({
     .min(1)
     .max(15)
     .refine((val) => !/^[\s\u200B\u3000\t]+|[\s\u200B\u3000\t]+$/.test(val), {
-      error: "文字列の両端にスペースを含めることはできません",
+      error: () => translate("validation.userNameSpaces"),
     })
-    .refine((val) => !/[\u200B]/.test(val), { error: "ゼロ幅スペースを含めることはできません" }),
+    .refine((val) => !/[\u200B]/.test(val), { error: () => translate("validation.userNameZeroWidth") }),
 });
 
 const FingerChartUrlBaseSchema = z
   .string()
   .max(100)
   .refine((val) => val === "" || /^http?:\/\/unsi\.nonip\.net\/user\/[0-9]+$/.test(val), {
-    error: "URLは「http://unsi.nonip.net/user/{id}」形式のURLである必要があります。",
+    error: () => translate("validation.fingerChartUrl"),
   });
 export const FingerChartUrlFormSchema = z.object({ url: FingerChartUrlBaseSchema });
 export const FingerChartUrlApiSchema = FingerChartUrlBaseSchema;

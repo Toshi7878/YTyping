@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { WarningIconButton } from "@/ui/icon-button";
@@ -13,18 +14,19 @@ interface WarningDialogProps {
 }
 
 export const WarningDialog = ({ userId, warningCount }: WarningDialogProps) => {
+  const t = useTranslations("user.warning");
   const { data: warnings } = useQuery(orpc.user.report.getWarnings.queryOptions({ input: { userId } }));
 
   if (warningCount === 0) return null;
 
   return (
     <Dialog>
-      <TooltipWrapper label="警告履歴を表示 (この表示は他のユーザーには表示されません)" asChild>
+      <TooltipWrapper label={t("tooltip")} asChild>
         <DialogTrigger render={<WarningIconButton />} />
       </TooltipWrapper>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>警告履歴</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-3">
           {warnings?.map((w, i) => (

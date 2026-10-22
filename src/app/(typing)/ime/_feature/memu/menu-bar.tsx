@@ -2,6 +2,7 @@ import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 import { VolumeRange } from "@/shared/volume-range";
 import { Button } from "@/ui/button";
@@ -20,6 +21,7 @@ import { SettingPopover } from "./setting-popover";
 const ICON_SIZE = "16";
 
 export const MenuBar = () => {
+  const t = useTranslations("ime.menu");
   const { id: mapId } = useParams();
   const YTPlayer = useYTPlayer();
   const scene = useSceneState();
@@ -29,18 +31,23 @@ export const MenuBar = () => {
         <div className="mx-4 flex flex-wrap justify-between">
           <div className="flex" id="left_menu">
             <VolumeRange YTPlayer={YTPlayer} size="sm" sliderClassName="w-[100px]" />
-            <MenuButton disabled={true} image={metronome} title="倍速" />
+            <MenuButton disabled={true} image={metronome} title={t("speed")} />
           </div>
           <div className="flex justify-between gap-3" id="center_menu">
-            <MenuButton image={start} disabled={scene === "play"} onClick={startPlayFlow} title="開始" />
-            <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleSceneEnd} title="終了" />
-            <MenuButton disabled={scene === "ready"} onClick={openResultDialog} image={reportPencil} title="採点結果" />
+            <MenuButton image={start} disabled={scene === "play"} onClick={startPlayFlow} title={t("start")} />
+            <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleSceneEnd} title={t("end")} />
+            <MenuButton
+              disabled={scene === "ready"}
+              onClick={openResultDialog}
+              image={reportPencil}
+              title={t("result")}
+            />
           </div>
           <nav className="flex" id="right_menu">
-            <SettingPopover triggerButton={<MenuButton image={gear} title="設定" />} />
+            <SettingPopover triggerButton={<MenuButton image={gear} title={t("settings")} />} />
             <Link href={`/type/${mapId}`} replace>
               <Button variant="outline" size="sm" className="gap-2 text-xs">
-                タイピングページに戻る
+                {t("back")}
               </Button>
             </Link>
           </nav>

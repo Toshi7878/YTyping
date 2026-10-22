@@ -1,4 +1,5 @@
 import { atom, useAtomValue } from "jotai";
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/ui/button";
 import { isDialogOpen } from "@/utils/is-dialog-option";
@@ -18,6 +19,7 @@ const isDeleteButtonDisabledAtom = atom((get) => {
 });
 
 export const DeleteLineButton = () => {
+  const t = useTranslations("editorTab");
   const isDeleteButtonDisabled = useAtomValue(isDeleteButtonDisabledAtom);
 
   useHotkeys(
@@ -37,7 +39,8 @@ export const DeleteLineButton = () => {
       className="w-20 font-bold xl:w-28"
       onClick={deleteLineAction}
     >
-      削除<small className="hidden sm:inline">(Del)</small>
+      {t("delete")}
+      <small className="hidden sm:inline">(Del)</small>
     </Button>
   );
 };

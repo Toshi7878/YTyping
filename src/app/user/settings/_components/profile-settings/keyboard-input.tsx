@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { useAppForm } from "@/ui/form-field-item";
 import { keyboardFormSchema } from "@/validator/user/profile";
@@ -10,6 +11,7 @@ interface KeyboardInputProps {
 }
 
 export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
+  const t = useTranslations("userSettings");
   const form = useAppForm({
     validators: { onChange: keyboardFormSchema },
     defaultValues: { keyboard },
@@ -21,8 +23,8 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
       {(field) => (
         <field.MutationInputFormField
           mutation={upsertKeyboard}
-          label="使用キーボード"
-          successMessage="更新しました"
+          label={t("keyboardLabel")}
+          successMessage={t("updated")}
           className="w-md"
         />
       )}

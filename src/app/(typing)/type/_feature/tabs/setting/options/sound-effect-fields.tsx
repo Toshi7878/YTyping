@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useYTPlayer } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { playSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
@@ -7,12 +8,13 @@ import { H4 } from "@/ui/typography";
 import { setTypingOptions, useTypingOptionsState } from "../popover";
 
 export const SoundEffectFields = () => {
+  const t = useTranslations("typing.settings");
   const { typeSound, missSound, completedTypeSound } = useTypingOptionsState();
   const YTPlayer = useYTPlayer();
 
   const items = [
     {
-      label: "タイプ音",
+      label: t("typeSound"),
       defaultChecked: DEFAULT_TYPING_OPTIONS.typeSound,
       checked: typeSound,
       onCheckedChange: (checked: boolean) => {
@@ -21,7 +23,7 @@ export const SoundEffectFields = () => {
       },
     },
     {
-      label: "ミス音",
+      label: t("missSound"),
       defaultChecked: DEFAULT_TYPING_OPTIONS.missSound,
       checked: missSound,
       onCheckedChange: (checked: boolean) => {
@@ -30,7 +32,7 @@ export const SoundEffectFields = () => {
       },
     },
     {
-      label: "打ち切り音",
+      label: t("completedSound"),
       defaultChecked: DEFAULT_TYPING_OPTIONS.completedTypeSound,
       checked: completedTypeSound,
       onCheckedChange: (checked: boolean) => {
@@ -42,7 +44,7 @@ export const SoundEffectFields = () => {
 
   return (
     <div className="space-y-4">
-      <H4>サウンド</H4>
+      <H4>{t("sound")}</H4>
       <VolumeRange YTPlayer={YTPlayer} />
       <CheckboxCardGroup items={items} />
     </div>

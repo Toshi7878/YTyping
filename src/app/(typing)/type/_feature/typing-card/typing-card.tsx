@@ -1,6 +1,7 @@
 "use client";
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
 import { cn } from "@/utils/cn";
 import { useBuiltMapState } from "../atoms/built-map";
@@ -90,6 +91,7 @@ export const TypingCard = ({ className }: { className?: string }) => {
 };
 
 const GameCardHeader = ({ className }: { className?: string }) => {
+  const t = useTranslations("typing.card");
   const sceneGroup = useSceneGroupState();
   const isYTStarted = useYTStartedState();
   const isPlayed = isYTStarted && sceneGroup === "Playing";
@@ -108,8 +110,9 @@ const GameCardHeader = ({ className }: { className?: string }) => {
           <LineKpm />
           <span className="ml-1 tracking-widest">kpm</span>
           <span className="mx-3">-</span>
-          残り
-          <LineRemainTime className="mr-1" />秒
+          {t("remain")}
+          <LineRemainTime className="mr-1" />
+          {t("seconds")}
         </div>
       </section>
       <LineTimeProgress id="line_progress" />

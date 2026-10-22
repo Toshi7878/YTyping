@@ -1,60 +1,55 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { CardWithContent } from "@/ui/card";
 import { H1, H2, P } from "@/ui/typography";
 
-export const metadata: Metadata = {
-  title: "利用規約 - YTyping",
-  description: "YTypingの利用規約",
+export const generateMetadata = async (): Promise<Metadata> => {
+  const t = await getTranslations("terms");
+  return { title: t("metaTitle"), description: t("metaDescription") };
 };
 
-export default function TermsOfServicePage() {
+export default async function TermsOfServicePage() {
+  const t = await getTranslations("terms");
+  const tLegal = await getTranslations("legal");
+
   return (
     <div className="mx-auto max-w-7xl space-y-4">
-      <H1>利用規約</H1>
+      <H1>{t("title")}</H1>
+      {tLegal("translationNotice") && <P className="text-muted-foreground text-sm">{tLegal("translationNotice")}</P>}
 
       <CardWithContent>
-        <H2>はじめに</H2>
-        <P>
-          本規約は、YTyping（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用の方は、本規約に同意したものとみなします。
-        </P>
+        <H2>{t("introTitle")}</H2>
+        <P>{t("intro")}</P>
       </CardWithContent>
 
       <CardWithContent>
-        <H2>禁止事項</H2>
-        <P>本サービスにおいて、以下の行為を禁止します。</P>
+        <H2>{t("prohibitedTitle")}</H2>
+        <P>{t("prohibitedIntro")}</P>
         <ul className="my-4 list-disc space-y-2 pl-6">
-          <li>他のユーザーへの誹謗中傷、嫌がらせ、差別的な発言</li>
-          <li>スパム行為や不正なアカウント操作</li>
-          <li>本サービスの運営を妨害する行為</li>
-          <li>法令または公序良俗に違反する行為</li>
-          <li>その他、運営が不適切と判断する行為</li>
+          {(t.raw("prohibited") as string[]).map((item) => (
+            <li key={item}>{item}</li>
+          ))}
         </ul>
       </CardWithContent>
 
       <CardWithContent>
-        <H2>アカウントの停止</H2>
-        <P>
-          禁止事項に違反した場合、警告を行ったうえでアカウントを停止（BAN）する場合があります。悪質な場合は警告なしに停止することがあります。
-        </P>
+        <H2>{t("suspensionTitle")}</H2>
+        <P>{t("suspension")}</P>
       </CardWithContent>
 
       <CardWithContent>
-        <H2>タイピング記録の確認</H2>
-        <P>
-          運営は、本サービスに登録されたタイピングの記録が正規の入力によるものか判断できない場合、登録したユーザーに対し、確認を求めることがあります。
-        </P>
+        <H2>{t("recordsTitle")}</H2>
+        <P>{t("records")}</P>
       </CardWithContent>
 
       <CardWithContent>
-        <H2>免責事項</H2>
-        <P>
-          本サービスの利用によって生じた損害について、運営は一切の責任を負いません。本サービスは予告なく変更・停止する場合があります。
-        </P>
+        <H2>{t("disclaimerTitle")}</H2>
+        <P>{t("disclaimer")}</P>
       </CardWithContent>
 
       <CardWithContent>
-        <H2>お問い合わせ</H2>
-        <P>本規約に関するお問い合わせは、GitHubのIssueまたはDiscussionsよりご連絡ください。</P>
+        <H2>{t("contactTitle")}</H2>
+        <P>{t("contact")}</P>
       </CardWithContent>
     </div>
   );

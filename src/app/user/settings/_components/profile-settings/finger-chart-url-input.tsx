@@ -3,6 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { useAppForm } from "@/ui/form-field-item";
 import { FingerChartUrlFormSchema } from "@/validator/user/profile";
@@ -12,6 +13,7 @@ interface FingerChartUrlInputProps {
 }
 
 export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
+  const t = useTranslations("userSettings");
   const form = useAppForm({
     validators: { onChange: FingerChartUrlFormSchema },
     defaultValues: { url },
@@ -24,9 +26,9 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
         {(field) => (
           <field.MutationInputFormField
             className="w-md"
-            label="みんなの運指表URL"
-            placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
-            successMessage="URLを更新しました"
+            label={t("fingerChartLabel")}
+            placeholder={t("fingerChartPlaceholder")}
+            successMessage={t("fingerChartUpdated")}
             mutation={update}
           />
         )}
@@ -37,13 +39,15 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
 };
 
 const UnsiLink = () => {
+  const t = useTranslations("userSettings");
+
   return (
     <Link
       href="http://unsi.nonip.net"
       target="_blank"
       className="flex w-fit items-center gap-1 text-muted-foreground text-xs opacity-70 transition-opacity hover:opacity-100"
     >
-      運指表作成はこちら
+      {t("fingerChartCreate")}
       <ExternalLink className="h-3 w-3" />
     </Link>
   );

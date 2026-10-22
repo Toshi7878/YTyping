@@ -1,5 +1,6 @@
 import { atom, useAtomValue } from "jotai";
 import type { UserResult, WordResult } from "lyrics-ime-typing-engine";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog";
 import { RadioButton, RadioGroup } from "@/ui/radio-group/radio-group";
@@ -75,6 +76,7 @@ export const openResultDialog = () => store.set(resultDialogAtom, true);
 const closeResultDialog = () => store.set(resultDialogAtom, false);
 
 export const ResultDialog = () => {
+  const t = useTranslations("ime.result");
   const isOpen = useIsOpen();
   const resultRanking = useResultRanking();
   const [selectedResultIndex, setSelectedResultIndex] = useState<number>(0);
@@ -84,7 +86,7 @@ export const ResultDialog = () => {
     <Dialog open={isOpen} onOpenChange={closeResultDialog}>
       <DialogContent className="max-h-[85vh] w-full min-w-screen xl:min-w-5xl">
         <DialogHeader>
-          <DialogTitle>採点結果</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
         <div className="flex gap-4">
           <ResultRanking
@@ -124,6 +126,7 @@ const ResultRanking = ({
   selectedResultIndex: number;
   onSelect: (index: number) => void;
 }) => {
+  const t = useTranslations("ime.result");
   return (
     <RadioGroup
       value={String(selectedResultIndex)}
@@ -167,7 +170,7 @@ const ResultRanking = ({
                     isPerfect ? "text-perfect/85" : "text-muted-foreground",
                   )}
                 >
-                  点
+                  {t("point")}
                 </span>
               </span>
             </div>
@@ -179,13 +182,14 @@ const ResultRanking = ({
 };
 
 const ResultStatus = ({ score, typeCount }: { score: number; typeCount: number }) => {
+  const t = useTranslations("ime.result");
   const map = useBuiltMapState();
   const isPerfect = score === 1000;
 
   return (
     <div className="mb-2.5 flex items-center gap-[18px] rounded-lg border border-border/25 px-3.5 py-2.5">
       <div className="flex items-baseline gap-1.5">
-        <span className="font-medium text-[11px] text-muted-foreground">スコア</span>
+        <span className="font-medium text-[11px] text-muted-foreground">{t("score")}</span>
         <span
           className={cn(
             "font-bold font-mono text-[22px] tabular-nums leading-none",
@@ -197,7 +201,7 @@ const ResultStatus = ({ score, typeCount }: { score: number; typeCount: number }
         </span>
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span className="font-medium text-[11px] text-muted-foreground">タイプ数</span>
+        <span className="font-medium text-[11px] text-muted-foreground">{t("typeCount")}</span>
         <span
           className={cn(
             "font-bold font-mono text-[22px] tabular-nums leading-none",
@@ -213,6 +217,7 @@ const ResultStatus = ({ score, typeCount }: { score: number; typeCount: number }
 };
 
 const ResultWordsTable = ({ wordResults, currentWordIndex }: Pick<UserResult, "wordResults" | "currentWordIndex">) => {
+  const t = useTranslations("ime.result");
   const map = useBuiltMapState();
 
   return (
@@ -220,9 +225,11 @@ const ResultWordsTable = ({ wordResults, currentWordIndex }: Pick<UserResult, "w
       <Table className="table-fixed text-xs">
         <TableHeader className="sticky top-0 z-10 bg-background">
           <TableRow>
-            <TableHead className="w-16 px-2.5 py-1.5 text-center text-[11px] uppercase tracking-wider">判定</TableHead>
-            <TableHead className="w-1/2 px-2.5 py-1.5 text-[11px] uppercase tracking-wider">入力</TableHead>
-            <TableHead className="w-1/2 px-2.5 py-1.5 text-[11px] uppercase tracking-wider">歌詞</TableHead>
+            <TableHead className="w-16 px-2.5 py-1.5 text-center text-[11px] uppercase tracking-wider">
+              {t("judge")}
+            </TableHead>
+            <TableHead className="w-1/2 px-2.5 py-1.5 text-[11px] uppercase tracking-wider">{t("input")}</TableHead>
+            <TableHead className="w-1/2 px-2.5 py-1.5 text-[11px] uppercase tracking-wider">{t("lyrics")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

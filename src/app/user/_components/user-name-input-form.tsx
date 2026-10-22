@@ -3,6 +3,7 @@
 import { useSelector } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useSession } from "@/auth/client";
 import { getORPCErrorCode } from "@/orpc/error";
@@ -16,7 +17,8 @@ interface UserNameInputFormProps {
   placeholder?: string;
 }
 
-export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameInputFormProps) => {
+export const UserNameInputForm = ({ placeholder }: UserNameInputFormProps) => {
+  const t = useTranslations("userSettings");
   const { data: session, refetch: refetchSession } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +44,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
       onSuccess: async (_data, variables) => {
         setCurrentName(variables.name);
         form.reset({ newName: variables.name });
-        toast.success("名前を更新しました");
+        toast.success(t("nameUpdated"));
 
         // disableCookieCacheを指定しないと、session cookie cache(5分)が有効な間はDBを見ずに
         // 古いnameのままのセッションが返ってきてしまう(name更新直後は特に古い値が返りやすい)
@@ -72,7 +74,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
       className="flex flex-col gap-4"
     >
@@ -80,9 +82,9 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         <form.AppField name="newName">
           {(field) => (
             <field.MutationInputFormField
-              label="名前"
-              placeholder={placeholder}
-              successMessage="この名前は使用可能です"
+              label={t("nameLabel")}
+              placeholder={placeholder ?? t("namePlaceholder")}
+              successMessage={t("nameAvailable")}
               debounceDelay={1000}
               mutation={checkNameAvailability}
             />
@@ -96,7 +98,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         disabled={!checkNameAvailability.isSuccess || !isDirty}
         className="w-full"
       >
-        {updateUserName.isPending ? "更新中..." : "名前を決定"}
+        {updateUserName.isPending ? t("updating") : t("submitName")}
       </Button>
     </form>
   );

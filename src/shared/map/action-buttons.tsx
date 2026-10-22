@@ -1,4 +1,5 @@
 import { useProgress } from "@bprogress/next";
+import { useTranslations } from "next-intl";
 import { type Session, useSession } from "@/auth/client";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useToggleMapLikeMutation } from "@/shared/map/like";
@@ -97,6 +98,7 @@ const RankingCountButton = ({
   rankingCount: number;
   myRankUpdatedAt: Date | null;
 }) => {
+  const t = useTranslations("map");
   const { data: session } = useSession();
 
   const buildColorClass = (myRank: number | null, session: Session | null) => {
@@ -112,7 +114,11 @@ const RankingCountButton = ({
       label={
         myRankUpdatedAt ? (
           <p>
-            自分の順位: <span className="font-bold">{myRank}位</span> ({formatDate(myRankUpdatedAt)})
+            {t.rich("myRank", {
+              rank: myRank ?? 0,
+              date: formatDate(myRankUpdatedAt),
+              b: (chunks) => <span className="font-bold">{chunks}</span>,
+            })}
           </p>
         ) : null
       }

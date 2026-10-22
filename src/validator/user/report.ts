@@ -1,10 +1,11 @@
 import { createInsertSchema } from "drizzle-orm/zod";
 import z from "zod/v4";
+import { translate } from "@/i18n/translate";
 import { REPORT_REASON_TYPES, userReports } from "@/server/drizzle/schema";
 
 export const userReportFormSchema = z.object({
   reason: z.enum(REPORT_REASON_TYPES),
-  reasonDetail: z.string().max(500, "500文字以内で入力してください"),
+  reasonDetail: z.string().max(500, { error: () => translate("validation.maxChars500") }),
 });
 
 export const userReportApiSchema = createInsertSchema(userReports).pick({

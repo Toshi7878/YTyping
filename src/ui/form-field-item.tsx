@@ -4,6 +4,7 @@ import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import type { ComponentProps, ComponentPropsWithRef, ReactNode } from "react";
 import { useId } from "react";
@@ -336,12 +337,13 @@ interface SelectFormFieldProps {
 
 const SelectFormField = ({
   label,
-  placeholder = "選択してください",
+  placeholder,
   description,
   options,
   onValueChange,
   ...props
 }: SelectFormFieldProps & Omit<ComponentProps<typeof Select<string>>, "value" | "defaultValue" | "onValueChange">) => {
+  const t = useTranslations("common");
   const field = useFieldContext<string>();
   const id = useId();
   const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
@@ -360,7 +362,7 @@ const SelectFormField = ({
         }}
       >
         <SelectTrigger id={id} aria-invalid={errors.length > 0} onBlur={field.handleBlur}>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder ?? t("selectPlaceholder")} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
@@ -386,7 +388,7 @@ interface FloatingLabelSelectFormFieldProps {
 
 const FloatingLabelSelectFormField = ({
   label,
-  placeholder = "選択してください",
+  placeholder,
   description,
   options,
   className,
@@ -396,6 +398,7 @@ const FloatingLabelSelectFormField = ({
     ComponentProps<typeof FloatingLabelSelect>,
     "value" | "defaultValue" | "onValueChange" | "label" | "options"
   >) => {
+  const t = useTranslations("common");
   const field = useFieldContext<string>();
   const errors = field.state.meta.isTouched ? field.state.meta.errors : [];
 
@@ -408,7 +411,7 @@ const FloatingLabelSelectFormField = ({
         value={field.state.value}
         label={label}
         options={options}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("selectPlaceholder")}
         {...props}
       />
       {description && <FieldDescription>{description}</FieldDescription>}

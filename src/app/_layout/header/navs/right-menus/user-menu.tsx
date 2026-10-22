@@ -3,6 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Session } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
@@ -16,6 +17,7 @@ import {
 import { cn } from "@/utils/cn";
 import { buildAdminMenuLinkItems, buildUserMenuLinkItems, CONTACT_MENU_ITEM } from "../menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
+import { LanguageDropdownSubmenu } from "./language-dropdown-sub-menu";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface UserMenuProps {
@@ -24,6 +26,7 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ session, className }: UserMenuProps) => {
+  const t = useTranslations("header.menu");
   const { data: ppRank } = useSuspenseQuery(orpc.ranking.pp.getRankByUserId.queryOptions({ input: session.user.id }));
   const userMenuLinkItems = buildUserMenuLinkItems(session);
   const adminMenuLinkItems = buildAdminMenuLinkItems(session);
@@ -45,20 +48,21 @@ export const UserMenu = ({ session, className }: UserMenuProps) => {
       />
       <DropdownMenuContent align="end" className="min-w-fit">
         {userMenuLinkItems.map((item) => (
-          <Link href={item.href} key={item.title}>
-            <DropdownMenuItem>{item.title}</DropdownMenuItem>
+          <Link href={item.href} key={item.labelKey}>
+            <DropdownMenuItem>{t(item.labelKey)}</DropdownMenuItem>
           </Link>
         ))}
         <ThemeDropdownSubmenu />
+        <LanguageDropdownSubmenu />
         <Link href={CONTACT_MENU_ITEM.href}>
-          <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+          <DropdownMenuItem>{t(CONTACT_MENU_ITEM.labelKey)}</DropdownMenuItem>
         </Link>
         {adminMenuLinkItems.length > 0 && (
           <>
             <DropdownMenuSeparator />
             {adminMenuLinkItems.map((item) => (
-              <Link href={item.href} key={item.title}>
-                <DropdownMenuItem>{item.title}</DropdownMenuItem>
+              <Link href={item.href} key={item.labelKey}>
+                <DropdownMenuItem>{t(item.labelKey)}</DropdownMenuItem>
               </Link>
             ))}
           </>

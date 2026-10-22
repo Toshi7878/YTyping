@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useSession } from "@/auth/client";
 import { toast } from "@/ui/toast";
@@ -8,6 +9,7 @@ import { hasMapUploadPermission } from "./has-permission";
 const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
 
 export const PermissionToast = () => {
+  const t = useTranslations("editor");
   const { data: session } = useSession();
   const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
@@ -15,7 +17,7 @@ export const PermissionToast = () => {
   useEffect(() => {
     if (!hasUploadPermission) {
       requestAnimationFrame(() => {
-        toast.warning("編集保存権限がないため譜面の更新はできません", {
+        toast.warning(t("noPermission"), {
           id: NOT_EDIT_PERMISSION_TOAST_ID,
           duration: Infinity,
         });
@@ -25,7 +27,7 @@ export const PermissionToast = () => {
     return () => {
       toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     };
-  }, [hasUploadPermission]);
+  }, [hasUploadPermission, t]);
 
   return null;
 };

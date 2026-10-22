@@ -2,6 +2,7 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { Session } from "@/auth/client";
 import { useSession } from "@/auth/client";
 import { useIsDesktopDeviceState } from "@/store/user-agent";
@@ -21,6 +22,7 @@ import {
   LEFT_MENU_LINK_ITEMS,
 } from "../menu-items";
 import { LogOutDropdownItem, SignInDropdownItems } from "./auth/auth-dropdown-items";
+import { LanguageDropdownSubmenu } from "./language-dropdown-sub-menu";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface HamburgerMenuProps {
@@ -41,7 +43,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
               className="border border-header-foreground border-solid p-2 hover:bg-accent/50"
             >
               <Menu className="size-4 text-header-foreground" />
-              <span className="sr-only">メニューを開く</span>
+              <span className="sr-only">Open menu</span>
             </Button>
           }
         />
@@ -51,6 +53,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
 
           {/* ログイン中はユーザーメニュー内に表示する */}
           {!session?.user?.name && <ThemeDropdownSubmenu />}
+          {!session?.user?.name && <LanguageDropdownSubmenu />}
           <DropdownMenuSeparator />
 
           {session?.user?.name ? <UserMenuDropdownItems session={session} /> : !session && <SignInDropdownItems />}
@@ -67,6 +70,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
 };
 
 const MenuDropdownItems = () => {
+  const t = useTranslations("header.menu");
   const isDesktop = useIsDesktopDeviceState();
   const menus = [...LEFT_LINKS, ...LEFT_MENU_LINK_ITEMS];
 
@@ -76,8 +80,8 @@ const MenuDropdownItems = () => {
         const isDesktopMenuItem = menuItem.device === "PC";
         if ((isDesktopMenuItem && isDesktop) || !isDesktopMenuItem) {
           return (
-            <Link href={menuItem.href} key={menuItem.title}>
-              <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
+            <Link href={menuItem.href} key={menuItem.labelKey}>
+              <DropdownMenuItem>{t(menuItem.labelKey)}</DropdownMenuItem>
             </Link>
           );
         }
@@ -88,25 +92,27 @@ const MenuDropdownItems = () => {
 };
 
 const UserMenuDropdownItems = ({ session }: { session: Session }) => {
+  const t = useTranslations("header.menu");
   const userMenuLinkItems = buildUserMenuLinkItems(session);
   const adminMenuLinkItems = buildAdminMenuLinkItems(session);
   return (
     <>
       {userMenuLinkItems.map((item) => (
-        <Link href={item.href} key={item.title}>
-          <DropdownMenuItem>{item.title}</DropdownMenuItem>
+        <Link href={item.href} key={item.labelKey}>
+          <DropdownMenuItem>{t(item.labelKey)}</DropdownMenuItem>
         </Link>
       ))}
       <ThemeDropdownSubmenu />
+      <LanguageDropdownSubmenu />
       <Link href={CONTACT_MENU_ITEM.href}>
-        <DropdownMenuItem>{CONTACT_MENU_ITEM.title}</DropdownMenuItem>
+        <DropdownMenuItem>{t(CONTACT_MENU_ITEM.labelKey)}</DropdownMenuItem>
       </Link>
       {adminMenuLinkItems.length > 0 && (
         <>
           <DropdownMenuSeparator />
           {adminMenuLinkItems.map((item) => (
-            <Link href={item.href} key={item.title}>
-              <DropdownMenuItem>{item.title}</DropdownMenuItem>
+            <Link href={item.href} key={item.labelKey}>
+              <DropdownMenuItem>{t(item.labelKey)}</DropdownMenuItem>
             </Link>
           ))}
         </>

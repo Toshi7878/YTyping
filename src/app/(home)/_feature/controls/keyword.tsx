@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { orpc } from "@/orpc/provider";
 import { useIsSearching } from "@/shared/map/list/list";
@@ -28,6 +29,8 @@ const DEFAULT_TAG_SUGGESTIONS = [
 ] as const;
 
 export const KeywordInput = () => {
+  const t = useTranslations("home.keyword");
+  const tCommon = useTranslations("common");
   const [params, setFilterParams] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
@@ -136,9 +139,9 @@ export const KeywordInput = () => {
         <PopoverAnchor asChild>
           <Input
             value={keyword}
-            placeholder="キーワードを入力"
+            placeholder={t("placeholder")}
             type="search"
-            aria-label="検索キーワード"
+            aria-label="Search keywords"
             onChange={(e) => handleChange(e.target.value)}
             onFocus={() => setOpen(true)}
             onKeyDown={handleKeyDown}
@@ -152,7 +155,7 @@ export const KeywordInput = () => {
             selectedIndex={selectedIndex}
           />
           <SuggestionSection
-            label="譜面"
+            label={t("maps")}
             items={
               displaySuggestions?.titles.map(({ id, title, artistName }) => ({
                 value: title,
@@ -167,8 +170,8 @@ export const KeywordInput = () => {
         </PopoverContent>
       </Popover>
 
-      <Button className="w-20 md:w-60" loading={isSearching} type="submit" aria-label="検索を実行">
-        {isSearching ? "検索中" : "検索"}
+      <Button className="w-20 md:w-60" loading={isSearching} type="submit" aria-label="Run search">
+        {isSearching ? tCommon("searching") : tCommon("search")}
       </Button>
     </form>
   );

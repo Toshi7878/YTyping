@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { VolumeRange } from "@/shared/volume-range";
 import { CardWithContent } from "@/ui/card";
 import { useYTPlayer } from "../../youtube-player";
@@ -23,34 +24,33 @@ export const SettingsCard = () => {
 };
 
 const SHORTCUT_KEY_LIST = [
-  { keys: ["←", "→"], description: "3秒スキップ" },
-  { keys: ["↑", "↓"], description: "選択行の移動" },
-  { keys: ["S"], description: "追加" },
-  { keys: ["Shift+S"], description: "空行を追加" },
-  { keys: ["U"], description: "変更" },
-  { keys: ["Delete"], description: "削除" },
-  { keys: ["Esc"], description: "再生・停止" },
-  { keys: ["D"], description: "選択行の解除" },
-  { keys: ["Tab"], description: "歌詞追加テキストエリアフォーカス切り替え" },
-  { keys: ["Ctrl+Shift+F"], description: "全体よみ置換" },
-  { keys: ["Ctrl+Z"], description: "元に戻す" },
-  { keys: ["Ctrl+Y"], description: "繰り返し" },
-  {
-    keys: ["Enter"],
-    description: "歌詞テキストボックスの選択した文字にRubyタグを挿入",
-  },
-  { keys: ["Ctrl+登録済み歌詞クリック"], description: "直接編集モード" },
-];
+  { keys: ["←", "→"], descriptionKey: "skip" },
+  { keys: ["↑", "↓"], descriptionKey: "moveLine" },
+  { keys: ["S"], descriptionKey: "add" },
+  { keys: ["Shift+S"], descriptionKey: "addEmpty" },
+  { keys: ["U"], descriptionKey: "update" },
+  { keys: ["Delete"], descriptionKey: "delete" },
+  { keys: ["Esc"], descriptionKey: "play" },
+  { keys: ["D"], descriptionKey: "deselect" },
+  { keys: ["Tab"], descriptionKey: "focus" },
+  { keys: ["Ctrl+Shift+F"], descriptionKey: "replaceAll" },
+  { keys: ["Ctrl+Z"], descriptionKey: "undo" },
+  { keys: ["Ctrl+Y"], descriptionKey: "redo" },
+  { keys: ["Enter"], descriptionKey: "ruby" },
+  { keys: [], descriptionKey: "directEdit" },
+] as const;
 
 const ShortCutKeyList = () => {
+  const t = useTranslations("editorSettings.shortcuts");
+
   return (
     <section className="mt-2">
-      <h3 className="mb-3 font-semibold text-base sm:mb-4 sm:text-lg">ショートカットキー 一覧</h3>
+      <h3 className="mb-3 font-semibold text-base sm:mb-4 sm:text-lg">{t("title")}</h3>
       <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4 sm:text-base lg:grid-cols-3">
         {SHORTCUT_KEY_LIST.map((shortcut) => (
-          <div key={shortcut.description} className="flex flex-wrap items-center gap-1">
+          <div key={shortcut.descriptionKey} className="flex flex-wrap items-center gap-1">
             <div className="flex flex-wrap gap-1">
-              {shortcut.keys.map((key) => (
+              {(shortcut.descriptionKey === "directEdit" ? [t("directEditKey")] : shortcut.keys).map((key) => (
                 <kbd
                   key={key}
                   className="rounded border border-border/50 bg-background px-1.5 py-0.5 font-bold text-foreground text-xs sm:px-2 sm:py-1 sm:text-sm"
@@ -60,7 +60,7 @@ const ShortCutKeyList = () => {
               ))}
             </div>
             <span className="text-muted-foreground">:</span>
-            <span className="wrap-break-word">{shortcut.description}</span>
+            <span className="wrap-break-word">{t(shortcut.descriptionKey)}</span>
           </div>
         ))}
       </div>

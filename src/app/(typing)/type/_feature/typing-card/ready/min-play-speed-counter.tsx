@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -13,6 +14,7 @@ const hotKeyOptions = {
 };
 
 export const ReadyPlaySpeed = () => {
+  const t = useTranslations("typing.ready");
   const playSpeed = useMediaSpeedState();
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
@@ -36,20 +38,13 @@ export const ReadyPlaySpeed = () => {
   );
 
   return (
-    <TooltipWrapper
-      label="1.00倍速未満の場合は練習モードになります。"
-      side="top"
-      delayDuration={0}
-      open={playSpeed < 1}
-      sideOffset={-20}
-      asChild
-    >
+    <TooltipWrapper label={t("speedHint")} side="top" delayDuration={0} open={playSpeed < 1} sideOffset={-20} asChild>
       <div className="flex items-center rounded-lg border border-border border-solid px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} direction="down" />
 
         <div className="mx-8 select-none font-bold text-3xl md:text-4xl">
           <span id="speed">{playSpeed.toFixed(2)}</span>
-          倍速
+          {t("speed")}
         </div>
 
         <SpeedChangeButton buttonRef={speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} direction="up" />

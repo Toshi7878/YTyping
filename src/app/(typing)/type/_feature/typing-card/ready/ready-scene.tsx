@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { H2 } from "@/ui/typography";
@@ -13,6 +14,7 @@ interface ReadyProps {
 }
 
 export const ReadyScene = ({ className }: ReadyProps) => {
+  const t = useTranslations("typing.ready");
   const map = useBuiltMapState();
 
   useHotkeys(
@@ -26,7 +28,7 @@ export const ReadyScene = ({ className }: ReadyProps) => {
 
   return (
     <div className={cn("flex select-none flex-col justify-between", className)}>
-      <H2 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H2>
+      <H2 className="text-4xl md:text-2xl">{t("start")}</H2>
       <ReadyInputModeRadioCards />
       <div className="flex justify-between text-center">
         <ReadyPlaySpeed />

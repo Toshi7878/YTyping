@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import type { ComponentProps } from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/ui/button";
@@ -12,11 +13,12 @@ import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD
 import { useResultListFilterQueryStates } from "../search-params";
 
 export const FilterFieldsPopover = () => {
+  const t = useTranslations("timeline.filter");
   const [filterParams, setFilterParams] = useResultListFilterQueryStates();
 
   return (
     <Popover>
-      <PopoverTrigger render={<Button variant="outline">詳細フィルター</Button>} />
+      <PopoverTrigger render={<Button variant="outline">{t("detail")}</Button>} />
       <PopoverContent className="w-screen sm:w-fit" align="start">
         <SearchModeRadioCardGroup mode={filterParams.mode} onModeChange={(mode) => void setFilterParams({ mode })} />
         <SearchRange
@@ -29,7 +31,7 @@ export const FilterFieldsPopover = () => {
           onRangeChange={(min, max) => void setFilterParams({ minKpm: min, maxKpm: max })}
         />
         <SearchRange
-          label="% (クリア率)"
+          label={t("clearRate")}
           min={CLEAR_RATE_LIMIT.min}
           max={CLEAR_RATE_LIMIT.max}
           step={1}
@@ -37,7 +39,7 @@ export const FilterFieldsPopover = () => {
           onRangeChange={(min, max) => void setFilterParams({ minClearRate: min, maxClearRate: max })}
         />
         <SearchRange
-          label="倍速"
+          label={t("playSpeed")}
           min={PLAY_SPEED_LIMIT.min}
           max={PLAY_SPEED_LIMIT.max}
           step={0.25}
@@ -47,7 +49,7 @@ export const FilterFieldsPopover = () => {
         <CheckboxCardGroup
           items={[
             {
-              label: "プレイ動画ありの記録のみ",
+              label: t("onlyWithVideo"),
               checked: filterParams.hasPlayVideo,
               defaultChecked: false,
               onCheckedChange: (checked) => void setFilterParams({ hasPlayVideo: checked }),
@@ -65,12 +67,13 @@ interface SearchModeRadioCardGroupProps {
 }
 
 const SearchModeRadioCardGroup = ({ mode, onModeChange }: SearchModeRadioCardGroupProps) => {
+  const t = useTranslations("timeline.filter");
   const MODE_RADIO_CARDS: { label: string; value: (typeof RESULT_INPUT_METHOD_TYPES)[number] | "all" }[] = [
-    { label: "全て", value: "all" },
-    { label: "ローマ字", value: "roma" },
-    { label: "かな", value: "kana" },
-    { label: "ローマ字&かな", value: "romakana" },
-    { label: "英語", value: "english" },
+    { label: t("modeAll"), value: "all" },
+    { label: t("modeRoma"), value: "roma" },
+    { label: t("modeKana"), value: "kana" },
+    { label: t("modeRomaKana"), value: "romakana" },
+    { label: t("modeEnglish"), value: "english" },
   ];
 
   return (
@@ -117,6 +120,7 @@ const SearchRange = ({
   onRangeChange,
   isMaxLabel = false,
 }: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label" | "onValueChange">) => {
+  const tCommon = useTranslations("common");
   const { debounce } = useDebounce(500);
   const [pendingMin, setPendingMin] = useState(value[0]);
   const [pendingMax, setPendingMax] = useState(value[1]);
@@ -126,7 +130,7 @@ const SearchRange = ({
     setPendingMax(value[1]);
   }, [value[0], value[1]]);
 
-  const maxLabel = isMaxLabel && pendingMax === max ? "最大" : pendingMax;
+  const maxLabel = isMaxLabel && pendingMax === max ? tCommon("max") : pendingMax;
 
   return (
     <div className="space-y-3 py-4">
@@ -141,7 +145,7 @@ const SearchRange = ({
           setPendingMax(newMax ?? 0);
           debounce(() => void onRangeChange(newMin ?? 0, newMax ?? 0));
         }}
-        aria-label={`${label}の範囲を設定`}
+        aria-label={`Set the range of ${label}`}
       />
     </div>
   );

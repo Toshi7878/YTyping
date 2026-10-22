@@ -1,4 +1,4 @@
-type LocaleString = "ja-JP";
+type LocaleString = "ja-JP" | "en-US";
 export const JST_OFFSET = 9 * 60 * 60 * 1000;
 
 /**

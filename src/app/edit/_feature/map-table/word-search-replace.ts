@@ -1,19 +1,20 @@
+import { translate } from "@/i18n/translate";
 import { setCanUpload, setIsMapEdited } from "../tabs/info-form/card";
 import { dispatchEditHistory } from "./history";
 import { getRawMap, setRawMapAction } from "./map-reducer";
 
 export const wordSearchReplace = async () => {
-  const searchText = escapeRegExp(prompt("置き換えしたい読みを入力してください。") ?? "");
+  const searchText = escapeRegExp(prompt(translate("editor.replace.searchPrompt")) ?? "");
   if (!searchText) return;
 
   let matchLength = getKanaSearchLength(new RegExp(searchText, "g"));
-  const replace = prompt("置き換えする文字を入力してください。");
+  const replace = prompt(translate("editor.replace.replacePrompt"));
   if (!replace) return;
 
   const searchReg = new RegExp(`${replace ? `(?!${replace})` : ""}${searchText}`, "g");
 
   if (searchText && replace.match(searchText)) {
-    alert("sorry...置き換えする文字に検索する文字が含まれないようにしてください。");
+    alert(translate("editor.replace.containsError"));
     return;
   }
   const map = getRawMap();
@@ -103,7 +104,7 @@ const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLengt
       const line = map[i];
       if (!line) return resolve(0);
       const { time, lyrics, word } = line;
-      if (confirm(`残り${matchLength}件\n${word}\n置き換えますか？`)) {
+      if (confirm(translate("editor.replace.confirm", { count: matchLength, word }))) {
         let n = 0;
 
         const newWord = word.replace(searchReg, (match) => {

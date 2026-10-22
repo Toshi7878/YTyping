@@ -42,7 +42,7 @@ export const VolumeRange = ({
         size === "md" && "px-4 py-2",
         className,
       )}
-      aria-label="音量調整"
+      aria-label="Volume"
       {...props}
     >
       <VolumeIcon volume={volume} />
@@ -52,7 +52,7 @@ export const VolumeRange = ({
         max={100}
         min={0}
         className={cn("w-[200px]", sliderClassName)}
-        aria-label={`音量: ${volume}%`}
+        aria-label={`Volume: ${volume}%`}
       />
     </fieldset>
   );
@@ -60,10 +60,10 @@ export const VolumeRange = ({
 
 const VolumeIcon = ({ volume }: { volume: number }) => {
   if (volume === 0) {
-    return <IoMdVolumeMute size={24} aria-label="ミュート" />;
+    return <IoMdVolumeMute size={24} aria-label="Muted" />;
   }
   if (volume < 50) {
-    return <IoMdVolumeLow size={24} aria-label="音量低" />;
+    return <IoMdVolumeLow size={24} aria-label="Low volume" />;
   }
-  return <IoMdVolumeHigh size={24} aria-label="音量高" />;
+  return <IoMdVolumeHigh size={24} aria-label="High volume" />;
 };

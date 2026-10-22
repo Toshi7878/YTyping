@@ -85,13 +85,13 @@ export default function Page() {
       <H1>ツール</H1>
       <CardWithContent className={{ cardContent: "space-y-8" }}>
         <P>YTypingで使用できる外部ツール一覧です。</P>
-        {SECTIONS.map((section) => {
-          const tools = TOOLS.filter((tool) => tool.category === section.category);
+        {SECTIONS.map(({ category, title }) => {
+          const tools = TOOLS.filter((tool) => tool.category === category);
           if (tools.length === 0) return null;
 
           return (
-            <section key={section.category} className="space-y-2">
-              <H2>{section.title}</H2>
+            <section key={category} className="space-y-2">
+              <H2>{title}</H2>
               <ToolsTable tools={tools} />
             </section>
           );

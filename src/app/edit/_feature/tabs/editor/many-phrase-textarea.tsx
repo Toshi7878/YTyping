@@ -1,5 +1,6 @@
 import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -28,6 +29,7 @@ export const setManyPhraseText = (value: ExtractAtomValue<typeof manyPhraseTextA
   store.set(manyPhraseTextAtom, value);
 
 export const ManyPhraseTextarea = () => {
+  const t = useTranslations("editorTab");
   const manyPhrase = useAtomValue(manyPhraseTextAtom, { store });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
@@ -94,9 +96,7 @@ export const ManyPhraseTextarea = () => {
   return (
     <div className="relative flex items-center">
       <Textarea
-        placeholder={`ここから歌詞をまとめて追加できます。
-Sキー: 歌詞を追加
-Ctrl+Zキー: 歌詞追加のやり直し`}
+        placeholder={t("manyPlaceholder")}
         id="many_phrase_textarea"
         className="h-[110px]"
         value={manyPhrase}
@@ -114,12 +114,12 @@ interface FilterSymbolButtonProps {
 }
 
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
+  const t = useTranslations("editorTab");
   const handleConfirm = async () => {
     const isConfirmed = await confirmDialog.warning({
-      title: "記号を削除",
-      description:
-        "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",
-      confirmLabel: "削除する",
+      title: t("removeSymbolsTitle"),
+      description: t("removeSymbolsDescription"),
+      confirmLabel: t("removeSymbolsConfirm"),
     });
 
     if (!isConfirmed) return;
@@ -140,8 +140,8 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
     const topPhrase = cleanedText.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
-    toast.success("歌詞追加テキストエリアの記号を削除しました", {
-      description: "読み変換で変換されない記号を削除しました",
+    toast.success(t("removeSymbolsDone"), {
+      description: t("removeSymbolsDoneDescription"),
     });
   };
 
@@ -149,8 +149,8 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
     <TooltipWrapper
       label={
         <>
-          <div>読み変換で変換されない記号を削除します。</div>
-          <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
+          <div>{t("removeSymbolsTooltip1")}</div>
+          <div>{t("removeSymbolsTooltip2")}</div>
         </>
       }
       asChild

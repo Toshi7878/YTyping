@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { useSession } from "@/auth/client";
@@ -27,6 +28,7 @@ type RankingResult = RouterOutputs["result"]["ranking"]["get"][number];
 const columnHelper = createColumnHelper<DataTableFeatures, RankingResult>();
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
+  const t = useTranslations("typing.ranking");
   const sceneGroup = useSceneGroupState();
   const { id: mapId } = useParams();
   const { data, isPending } = useQuery(
@@ -62,9 +64,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       <RankingTable data={data ?? []} loading={isPending} />
       {invalidData && invalidData.length > 0 && (
         <section className="pb-4">
-          <p className="py-2 text-muted-foreground text-sm">
-            確認中の記録 (本人のみ表示されます。ランキングの集計には含まれません)
-          </p>
+          <p className="py-2 text-muted-foreground text-sm">{t("underReview")}</p>
           <RankingTable data={invalidData} loading={false} invalid />
         </section>
       )}
@@ -81,6 +81,7 @@ const RankingTable = ({
   loading: boolean;
   invalid?: boolean;
 }) => {
+  const t = useTranslations("typing.ranking");
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
   const { data: session } = useSession();
   const { id: mapId } = useParams();
@@ -89,7 +90,7 @@ const RankingTable = ({
   const columns = columnHelper.columns([
     columnHelper.display({
       id: "rank",
-      header: "順位",
+      header: t("rank"),
       size: 10,
 
       cell: ({ row }) => {
@@ -124,7 +125,7 @@ const RankingTable = ({
     }),
     columnHelper.display({
       id: "clearRate",
-      header: "クリア率",
+      header: t("clearRate"),
       size: 40,
       cell: ({ row }) => {
         const { otherStatus } = row.original;
@@ -136,7 +137,7 @@ const RankingTable = ({
     }),
     columnHelper.display({
       id: "name",
-      header: "名前",
+      header: t("name"),
       size: 90,
       cell: ({ row }) => {
         const { player, playVideo } = row.original;
@@ -156,7 +157,7 @@ const RankingTable = ({
     }),
     columnHelper.display({
       id: "mode",
-      header: "モード",
+      header: t("mode"),
       size: 55,
       cell: ({ row }) => {
         const { typeCounts } = row.original;
@@ -165,7 +166,7 @@ const RankingTable = ({
     }),
     columnHelper.display({
       id: "time",
-      header: "時間",
+      header: t("time"),
       size: 40,
       cell: ({ row }) => <RelativeTime date={row.original.updatedAt} className="pointer-events-none" />,
       meta: {
@@ -182,7 +183,7 @@ const RankingTable = ({
         const hasClapped = !!(clap.hasClapped && session);
 
         return (
-          <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
+          <div className="ml-1" title={clap.hasClapped ? t("clapCancel") : t("clap")}>
             <span className={cn(hasClapped && "text-yellow-500 outline-text")}>{clap.count}</span>
           </div>
         );

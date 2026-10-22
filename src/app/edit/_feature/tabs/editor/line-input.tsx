@@ -1,6 +1,7 @@
 import { atom, type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET, selectAtom } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { handleEnterAddRuby } from "@/app/edit/_feature/tabs/editor/enter-add-ruby";
 import { FloatingLabelInput } from "@/ui/input/floating-label-input";
@@ -73,13 +74,14 @@ export const isSelectEndLineAtom = atom((get) => {
 });
 
 export const LyricsInput = () => {
+  const t = useTranslations("editorTab");
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
 
   return (
-    <TooltipWrapper label="Enterキーを押すとRubyタグを挿入できます。" open={isLineLyricsSelected} asChild>
+    <TooltipWrapper label={t("rubyHint")} open={isLineLyricsSelected} asChild>
       <FloatingLabelInput
-        label="歌詞"
+        label={t("lyrics")}
         className="h-8"
         autoComplete="off"
         value={lyrics}
@@ -98,11 +100,12 @@ export const LyricsInput = () => {
 };
 
 export const WordInput = () => {
+  const t = useTranslations("editorTab");
   const word = useWordState();
 
   return (
     <FloatingLabelInput
-      label="ワード"
+      label={t("word")}
       className="h-8"
       autoComplete="off"
       value={word}

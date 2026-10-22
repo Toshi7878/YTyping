@@ -3,6 +3,7 @@
 import type { ExtractAtomValue } from "jotai";
 import { useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { useTranslations } from "next-intl";
 import { store } from "@/app/edit/_feature/provider";
 import { CounterInput } from "@/ui/counter";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -19,6 +20,7 @@ const MIN_TIME_OFFSET = -0.4;
 const TIME_OFFSET_STEP = 0.01;
 
 export const AddTimeAdjust = () => {
+  const t = useTranslations("editorTab.timeAdjust");
   const timeOffset = useAtomValue(timeOffsetAtom, { store });
 
   return (
@@ -27,21 +29,19 @@ export const AddTimeAdjust = () => {
       label={
         <div>
           <div>
-            <strong>推奨設定：補正値 -0.2～-0.25秒</strong>
+            <strong>{t("recommended")}</strong>
             <div className="mt-2 space-y-2">
               <div>
-                <span className="font-medium">機能：</span>
-                YouTube再生中に行を追加・変更する際、設定値分だけタイムを自動補正して記録します
+                <span className="font-medium">{t("featureLabel")}</span>
+                {t("feature")}
               </div>
               <div>
-                <span className="font-medium">効果：</span>
-                歌詞1行の歌いだしの瞬間に追加ボタンを押すと、タイミング良く記録することができます。
+                <span className="font-medium">{t("effectLabel")}</span>
+                {t("effect")}
               </div>
             </div>
 
-            <div className="mt-2">
-              Bluetoothキーボードや無線イヤホン使用時は、遅延に合わせて補正値を調整してください
-            </div>
+            <div className="mt-2">{t("bluetooth")}</div>
           </div>
         </div>
       }
@@ -55,7 +55,7 @@ export const AddTimeAdjust = () => {
           max={MAX_TIME_OFFSET}
           min={MIN_TIME_OFFSET}
           valueDigits={2}
-          label="追加タイム補正"
+          label={t("label")}
           size="sm"
         />
       </div>

@@ -66,7 +66,7 @@ export const restartPlay = (newPlayMode: PlayingSceneType) => {
     case "play_end":
     case "practice_end":
     case "replay_end": {
-      setTabName("ステータス");
+      setTabName("status");
 
       if (mapId && (newPlayMode === "play" || newPlayMode === "practice")) {
         mutatePlayCountStats({ mapId });

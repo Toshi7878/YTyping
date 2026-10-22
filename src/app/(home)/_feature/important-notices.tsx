@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Info, TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { ImportantNoticeLinkButton } from "@/shared/important-notice/link-button";
@@ -13,6 +14,8 @@ import { formatDate } from "@/utils/date";
 
 /** ログイン中のユーザー宛ての、期限内で未確認の重要なお知らせ */
 export const ImportantNotices = () => {
+  const t = useTranslations("home.notices");
+  const tCommon = useTranslations("common");
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const isLogin = !!session?.user?.id;
@@ -22,14 +25,14 @@ export const ImportantNotices = () => {
   const acknowledge = useMutation(
     orpc.importantNotice.acknowledge.mutationOptions({
       onSuccess: () => queryClient.invalidateQueries({ queryKey: orpc.importantNotice.getActive.key() }),
-      onError: (error) => toast.error(`確認の記録に失敗しました: ${error.message}`),
+      onError: (error) => toast.error(tCommon("acknowledgeFailed", { message: error.message })),
     }),
   );
 
   if (!isLogin || !notices || notices.length === 0) return null;
 
   return (
-    <section className="flex flex-col gap-3" aria-label="重要なお知らせ">
+    <section className="flex flex-col gap-3" aria-label="Important notices">
       {notices.map((notice) => (
         <Card
           key={notice.id}
@@ -54,12 +57,12 @@ export const ImportantNotices = () => {
               disabled={acknowledge.isPending}
               onClick={() => acknowledge.mutate({ noticeId: notice.id })}
             >
-              確認しました
+              {tCommon("acknowledge")}
             </Button>
           </div>
           <ImportantNoticeLinkButton linkUrl={notice.linkUrl} linkLabel={notice.linkLabel} />
           {notice.expiresAt ? (
-            <p className="text-muted-foreground text-xs">表示期限: {formatDate(notice.expiresAt)}</p>
+            <p className="text-muted-foreground text-xs">{t("expiresAt", { date: formatDate(notice.expiresAt) })}</p>
           ) : null}
         </Card>
       ))}

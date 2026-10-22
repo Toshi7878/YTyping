@@ -1,16 +1,17 @@
 "use client";
 import { useAtomValue } from "jotai/react";
 import { atom } from "jotai/vanilla";
+import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { store } from "../atoms/store";
 import { MapActionIconButtons } from "./action-buttons";
 import { RankingTableCard } from "./ranking/ranking-card";
 import { StatusCard } from "./typing-status/status-card";
 
-const TAB_NAMES = ["ステータス", "ランキング"] as const;
-const tabNameAtom = atom<(typeof TAB_NAMES)[number]>("ランキング");
+const TAB_NAMES = ["status", "ranking"] as const;
+const tabNameAtom = atom<(typeof TAB_NAMES)[number]>("ranking");
 export const setTabName = (value: (typeof TAB_NAMES)[number]) => store.set(tabNameAtom, value);
-export const resetTabName = () => store.set(tabNameAtom, "ランキング");
+export const resetTabName = () => store.set(tabNameAtom, "ranking");
 
 interface TabsAreaProps {
   className?: string;
@@ -27,11 +28,11 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
       id="tabs-area"
     >
       <TabLists />
-      <TabsContent keepMounted value="ステータス" className="tab-card">
+      <TabsContent keepMounted value="status" className="tab-card">
         <StatusCard className="h-80 md:h-56" />
       </TabsContent>
 
-      <TabsContent value="ランキング" className="tab-card">
+      <TabsContent value="ranking" className="tab-card">
         <RankingTableCard className="h-80 md:h-56" />
       </TabsContent>
     </Tabs>
@@ -39,6 +40,7 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
 };
 
 const TabLists = () => {
+  const t = useTranslations("typing.tabs");
   return (
     <TabsList variant="underline" className="h-28 w-full select-none bg-transparent pl-8 md:h-9">
       {TAB_NAMES.map((name) => (
@@ -49,7 +51,7 @@ const TabLists = () => {
           value={name}
           onFocus={(e) => e.target.blur()}
         >
-          {name}
+          {t(name)}
         </TabsTrigger>
       ))}
 

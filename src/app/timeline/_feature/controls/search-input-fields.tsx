@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useIsSearching } from "@/shared/result/list/list";
 import { Button } from "@/ui/button";
@@ -6,6 +7,8 @@ import { Input } from "@/ui/input/input";
 import { useResultListFilterQueryStates } from "../search-params";
 
 export const SearchInputs = ({ showUsername = true }: { showUsername?: boolean }) => {
+  const t = useTranslations("timeline.search");
+  const tCommon = useTranslations("common");
   const isSearching = useIsSearching();
   const [filterParams, setFilterParams] = useResultListFilterQueryStates();
   const [keywords, setKeywords] = useState({
@@ -28,21 +31,21 @@ export const SearchInputs = ({ showUsername = true }: { showUsername?: boolean }
       <Input
         value={keywords.mapKeyword}
         type="search"
-        placeholder="譜面キーワードで絞り込み"
+        placeholder={t("mapKeyword")}
         onChange={(e) => setKeywords((prev) => ({ ...prev, mapKeyword: e.target.value }))}
         onKeyDown={onKeyDown}
       />
       {showUsername && (
         <Input
           value={keywords.username}
-          placeholder="ユーザーネームで絞り込み"
+          placeholder={t("username")}
           type="search"
           onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
           onKeyDown={onKeyDown}
         />
       )}
       <Button className="w-[30%]" onClick={applyKeywords} disabled={isSearching} loading={isSearching}>
-        検索
+        {tCommon("search")}
       </Button>
     </div>
   );

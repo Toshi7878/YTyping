@@ -1,11 +1,13 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { MapList } from "@/shared/map/list/list";
 import { buttonVariants } from "@/ui/button";
 
 export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
   const { id } = await params;
+  const t = await getTranslations("bookmarks");
   await prefetchAsync(
     orpc.map.list.get.infiniteOptions({
       input: (pageParam) => ({
@@ -26,7 +28,7 @@ export default async function Page({ params }: PageProps<"/bookmarks/[id]">) {
           className={buttonVariants({ variant: "ghost", size: "sm", className: "flex items-center gap-2" })}
         >
           <ArrowLeft className="size-4" />
-          ブックマーク一覧に戻る
+          {t("back")}
         </Link>
         <MapList filterParams={{ bookmarkListId: Number(id) }} />
       </div>

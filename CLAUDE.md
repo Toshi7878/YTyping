@@ -104,6 +104,10 @@ The typing engines come from the external packages `lyrics-typing-engine` and `l
 
 Configured in `src/auth/server.ts`. OAuth via Google and Discord. Emails are stored as MD5 hashes. Users set their own name after registration — providers do not supply it. Session is accessed via `getSession()` (cached per request) in server contexts, or via the procedure `context.session`. The signing secret is `env.AUTH_SECRET`, passed explicitly to `betterAuth` (required on Vercel, defaults locally).
 
+### i18n (next-intl, no locale in the URL)
+
+`ja` / `en`, chosen by the `NEXT_LOCALE` cookie → `Accept-Language` → `ja` (`src/i18n/request.ts`). Messages live in `src/i18n/messages/{ja,en}.json` (`ja.json` is the source and types the keys; missing `en` keys fall back to `ja`). Use `useTranslations` in components and `getTranslations` in async server components. Outside React (hotkey handlers, zod messages) use `translate` from `src/i18n/translate.ts` (`error: () => translate("validation.x")` for zod; it returns the `ja` text on the server). Admin pages, server-side `ORPCError` messages and the changelog are Japanese only. Keep `ja.json` and `en.json` in step, and note that arrays in messages are read with `t.raw`.
+
 ### UI
 
 - Components in `src/ui/` are shadcn-style wrappers over **Base UI** (`@base-ui/react`); Radix was removed. Use `render` (not `asChild`) and `data-open` / `data-closed` / `data-checked` style selectors. Do not render links through `Button`; apply `buttonVariants()` to the `<Link>`. `.migration/*.md` records the per-component decisions and pitfalls (e.g. `Select` needs an `items` prop to show labels).

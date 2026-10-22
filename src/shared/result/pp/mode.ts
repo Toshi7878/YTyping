@@ -4,21 +4,7 @@ export type PpMode = (typeof PP_MODES)[number];
 export const INPUT_PP_MODES = ["roma", "kana", "english", "flick"] as const;
 export type InputPpMode = (typeof INPUT_PP_MODES)[number];
 
-export const PP_MODE_LABELS: Record<PpMode, string> = {
-  total: "総合",
-  roma: "ローマ字",
-  kana: "かな入力",
-  flick: "フリック",
-  english: "英語",
-};
-
-const NEUTRAL_ENGLISH_TYPE_RATE = 0.1;
-
-export const PP_MODE_DESCRIPTIONS: Partial<Record<PpMode, string>> = {
-  roma: `ローマ字入力のみで、英語入力の比率が${NEUTRAL_ENGLISH_TYPE_RATE * 100}%以下のリザルトが集計対象です`,
-  kana: `かな入力のみで、英語入力の比率が${NEUTRAL_ENGLISH_TYPE_RATE * 100}%以下のリザルトが集計対象です`,
-  english: "英語入力のみのリザルトが集計対象です",
-};
+export const NEUTRAL_ENGLISH_TYPE_RATE = 0.1;
 
 type PpModeTypeCounts = {
   romaType: number;

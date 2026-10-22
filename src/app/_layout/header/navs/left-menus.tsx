@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button, buttonVariants } from "@/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
 import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "./menu-items";
@@ -24,12 +25,14 @@ export const SiteLogo = () => {
 };
 
 export const LeftMenus = () => {
+  const t = useTranslations("header.menu");
+
   return (
     <nav className="hidden select-none items-center text-header-foreground/80 md:flex">
       <LinksDropdownMenu />
       {LEFT_LINKS.map((link) => (
         <Link
-          key={link.title}
+          key={link.labelKey}
           href={link.href}
           className={buttonVariants({
             variant: "unstyled",
@@ -37,7 +40,7 @@ export const LeftMenus = () => {
             className: "text-sm hover:text-header-foreground",
           })}
         >
-          {link.title}
+          {t(link.labelKey)}
         </Link>
       ))}
     </nav>
@@ -45,6 +48,8 @@ export const LeftMenus = () => {
 };
 
 const LinksDropdownMenu = () => {
+  const t = useTranslations("header.menu");
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
@@ -56,8 +61,8 @@ const LinksDropdownMenu = () => {
       />
       <DropdownMenuContent align="start" className="min-w-fit">
         {LEFT_MENU_LINK_ITEMS.map((menuItem) => (
-          <Link href={menuItem.href} key={menuItem.title}>
-            <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
+          <Link href={menuItem.href} key={menuItem.labelKey}>
+            <DropdownMenuItem>{t(menuItem.labelKey)}</DropdownMenuItem>
           </Link>
         ))}
       </DropdownMenuContent>

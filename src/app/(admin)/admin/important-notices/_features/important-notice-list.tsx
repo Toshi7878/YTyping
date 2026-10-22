@@ -34,7 +34,7 @@ export const ImportantNoticeList = () => {
     orpc.importantNotice.expireNow.mutationOptions({
       onSuccess: () => {
         toast.success("お知らせを終了しました");
-        invalidate();
+        void invalidate();
       },
       onError: (e) => toast.error(e.message),
     }),
@@ -44,7 +44,7 @@ export const ImportantNoticeList = () => {
     orpc.importantNotice.delete.mutationOptions({
       onSuccess: () => {
         toast.success("お知らせを削除しました");
-        invalidate();
+        void invalidate();
       },
       onError: (e) => toast.error(e.message),
     }),
