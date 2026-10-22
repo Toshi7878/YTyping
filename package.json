@@ -30,7 +30,7 @@
     "types:build": "tsdown"
   },
   "dependencies": {
-    "@ai-sdk/google": "4.0.99",
+    "@ai-sdk/google": "4.0.104",
     "@aws-sdk/client-s3": "^3.896.0",
     "@base-ui/react": "^1.8.0",
     "@bprogress/next": "^3.2.12",
