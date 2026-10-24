@@ -6,6 +6,8 @@ overrides:
   '@next/env': npm:@varlock/nextjs-integration
 
 allowBuilds:
+  '@parcel/watcher': false
+  '@swc/core': false
   '@prisma/client': false
   '@tailwindcss/oxide': true
   better-sqlite3: false
