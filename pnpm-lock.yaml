@@ -206,7 +206,7 @@ importers:
         version: 1.9.0(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@bprogress/next':
         specifier: ^3.2.12
-        version: 3.2.12(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 3.2.12(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@orpc/client':
         specifier: 1.15.5
         version: 1.15.5
@@ -245,10 +245,10 @@ importers:
         version: 9.2.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@varlock/nextjs-integration':
         specifier: ^1.2.3
-        version: 1.2.5(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)
+        version: 1.2.5(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)
       '@vercel/analytics':
         specifier: ^2.0.1
-        version: 2.0.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
+        version: 2.0.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
       '@vercel/sdk':
         specifier: ^1.18.7
         version: 1.28.46
@@ -260,7 +260,7 @@ importers:
         version: 10.6.1(postcss@8.5.30)
       better-auth:
         specifier: 1.7.10
-        version: 1.7.10(@prisma/client@5.22.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5))(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
+        version: 1.7.10(@prisma/client@5.22.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5))(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -313,17 +313,17 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
       next:
-        specifier: 16.4.0
-        version: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+        specifier: 16.4.3
+        version: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       next-intl:
         specifier: ^4.14.9
-        version: 4.14.9(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
+        version: 4.14.9(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       nuqs:
         specifier: 2.10.1
-        version: 2.10.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
+        version: 2.10.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)
       postcss:
         specifier: ^8.5.6
         version: 8.5.30
@@ -375,7 +375,7 @@ importers:
     devDependencies:
       '@better-auth/cli':
         specifier: ^1.4.20
-        version: 1.4.21(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(drizzle-kit@1.0.0-rc.4)(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5)(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(postgres@3.4.9)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
+        version: 1.4.21(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(drizzle-kit@1.0.0-rc.4)(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5)(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(postgres@3.4.9)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
       '@biomejs/biome':
         specifier: 2.5.15
         version: 2.5.15
@@ -1481,54 +1481,54 @@ packages:
     resolution: {integrity: sha512-XyroGQXcHrZdvmrGJvsA9KNeOOgGMg1Vg9OlheUsBOSKznLMDl+YChxbkboRHvtFYJEMRYmlV3uoo/njCw05iw==}
     engines: {node: '>=16'}
 
-  '@next/swc-darwin-arm64@16.4.0':
-    resolution: {integrity: sha512-yyZ+9MgViAKLLb5l1gPBGjRwnq3teNLb5Zx6JEw8LzNSTjlsnp+baUHFxTgl7PpjCmKf48VQfyipG1eBflb48Q==}
+  '@next/swc-darwin-arm64@16.4.3':
+    resolution: {integrity: sha512-4yq5EXBt+VDtAZwTyfijaFp5D2C5oz3Ikw5a2kiX2K9nw72vrZX2q5UuAlkPtUMO1tQz6JTKpaKWjS7OOefTDQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@16.4.0':
-    resolution: {integrity: sha512-RePEEejEj1Auf5s9qEcG0JbcDP3ceNUS/ofNX8AhxzgIjTVlZIHMatlp16YplcSMpsVo/ZMQHJTjbMYJznjGUg==}
+  '@next/swc-darwin-x64@16.4.3':
+    resolution: {integrity: sha512-1Rvkn/LUhnEF8WxnRkOrqGhbwXui1bkWFxONKIbN+r7C+9KHDSZ+iUoj4CzymVMWUyZIyx9szcb9+kbKhD500A==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@16.4.0':
-    resolution: {integrity: sha512-HhsyCqd+NpmvDDVY/LqkAN24f+QVvXh3ie+PfcwKinWL2Mu826JymQxJXGjAIfmJ4VlHjp4Pe/nZtXtUoEMAqw==}
+  '@next/swc-linux-arm64-gnu@16.4.3':
+    resolution: {integrity: sha512-dCKpXErGg3abUM6t5JTJV/ottVBTStJB5lRJTbgdUdQaQ+jNHiK56Hsc0YAEg/rinSh42hYG3HWiYmEMdilnxg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@next/swc-linux-arm64-musl@16.4.0':
-    resolution: {integrity: sha512-sN9Pf+Zh+RpZAOmbR7d8KAA8T61CVhawtbEJ2Bk6QrRzx6Z/6haaF4UiwBzytM96GRRRWZh9/WALIEO3npMamA==}
+  '@next/swc-linux-arm64-musl@16.4.3':
+    resolution: {integrity: sha512-WwYbhWkhYBvBtib1K4W0kL8MW2snBD2A5b3SN4vPpqalZbZs5+bQ1yzAdepVoOqrFfEW3dmREy4Zs1MrWcrFbw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@next/swc-linux-x64-gnu@16.4.0':
-    resolution: {integrity: sha512-D5M5xLWQVd1CvR+L7BickM1weRfmM41x3L1NWcnKY/oyJJqr1qwaCgmu3dMAhLBOMdZwSuDCRV6DJRRpiUkbDQ==}
+  '@next/swc-linux-x64-gnu@16.4.3':
+    resolution: {integrity: sha512-QymWvfUwDEC5/lpJOsxX5VAbyoR2D13+2Jsjz4be7gT4LPqEgdpkeLIR/HFfCLgKzoMhpJbp6I/JnogyNZHcaA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@next/swc-linux-x64-musl@16.4.0':
-    resolution: {integrity: sha512-8d5WLS6a9YalqpOgXdlbvonFu+sIgjA+CO6tGzetrpPVcUL56foa7B7664h41rAlbLi5fJwK4vWji3zf4QDy+w==}
+  '@next/swc-linux-x64-musl@16.4.3':
+    resolution: {integrity: sha512-Vmjd9D7DpA4Vv3cUlr82QWgJD/BQZmns801vtC5VWHg6jCIA4a5vMKpQnfrM2pyCrp2eV0ENdUg4PlN3bAc2Yw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@next/swc-win32-arm64-msvc@16.4.0':
-    resolution: {integrity: sha512-sQuOIiW3snb48UwrBcDMvFA/u03qtw2LeuSIxFIQ9AJuW9UG/4Ddsfo+eV73PnZwBhyncMtsKVh7PrzMol2/fA==}
+  '@next/swc-win32-arm64-msvc@16.4.3':
+    resolution: {integrity: sha512-lG1pPdPLk7gTyGb00n5JIMLdBJgjb+UEhSdZvFbhUMg0DyC6z4B7RnpSKF9VCd4imkLObVbXOFA0kFCpw7yFow==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@16.4.0':
-    resolution: {integrity: sha512-6/33lCuxpdHUy27RegyGM/5uTpF7YZd3UR4D0gpkOA/tWY5YR7msbQjqPgCZmSmxrrTLGCXYA4A8vT2H5DPGTQ==}
+  '@next/swc-win32-x64-msvc@16.4.3':
+    resolution: {integrity: sha512-NmQC9RkJdnPXRaMxtkCzobB3teVjqF33oSOnwDfi+XYGWWYpt+xlGK3mtktSKLbdjwaWbJu2OkkMiRFGUUncKg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -2376,6 +2376,13 @@ packages:
     peerDependencies:
       next: '>=14'
       varlock: ^1.23.0
+
+  '@varlock/nextjs-integration@2.0.0':
+    resolution: {integrity: sha512-l9Qt29e0Fygvd/ZW0PUOkpc3riOX+q/gdnKQKEdY4LkhC9kvyAIJ5d9yTRI7RpScb3IQL4OHNvb6rp0JZMBw+A==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      next: '>=14'
+      varlock: ^1.24.0
 
   '@vercel/analytics@2.0.1':
     resolution: {integrity: sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==}
@@ -3791,8 +3798,8 @@ packages:
       react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
       react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 
-  next@16.4.0:
-    resolution: {integrity: sha512-N2C+9q89Z/oLrsepSRS4jRMtwmUZAoZuAHU0e9T6+sAB5DdhADmrnOW+zjYijlrYFmVfmQhGVGy9eMFoB7UgKg==}
+  next@16.4.3:
+    resolution: {integrity: sha512-OqxKTGi9u80FydydsMNYNjnuje9Au+kvHlt2GZ//ftdpDHm1dxKqAaENoOOTX5wKzn+9vaKUNIfZeyZUuLhCnA==}
     engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
@@ -5037,7 +5044,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@better-auth/cli@1.4.21(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(drizzle-kit@1.0.0-rc.4)(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5)(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(postgres@3.4.9)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))':
+  '@better-auth/cli@1.4.21(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(drizzle-kit@1.0.0-rc.4)(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5)(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(postgres@3.4.9)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/preset-react': 7.29.7(@babel/core@7.29.7)
@@ -5049,7 +5056,7 @@ snapshots:
       '@mrleebo/prisma-ast': 0.13.1
       '@prisma/client': 5.22.0
       '@types/pg': 8.23.1
-      better-auth: 1.4.21(@prisma/client@5.22.0)(better-sqlite3@12.11.1)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/pg@8.23.1)(better-sqlite3@12.11.1)(kysely@0.28.17)(pg@8.23.1)(postgres@3.4.9))(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
+      better-auth: 1.4.21(@prisma/client@5.22.0)(better-sqlite3@12.11.1)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/pg@8.23.1)(better-sqlite3@12.11.1)(kysely@0.28.17)(pg@8.23.1)(postgres@3.4.9))(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
       better-sqlite3: 12.11.1
       c12: 3.3.4
       chalk: 5.6.2
@@ -5226,11 +5233,11 @@ snapshots:
 
   '@bprogress/core@1.3.4': {}
 
-  '@bprogress/next@3.2.12(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@bprogress/next@3.2.12(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@bprogress/core': 1.3.4
       '@bprogress/react': 1.2.7(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
@@ -5622,28 +5629,28 @@ snapshots:
       chevrotain: 10.5.0
       lilconfig: 2.1.0
 
-  '@next/swc-darwin-arm64@16.4.0':
+  '@next/swc-darwin-arm64@16.4.3':
     optional: true
 
-  '@next/swc-darwin-x64@16.4.0':
+  '@next/swc-darwin-x64@16.4.3':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@16.4.0':
+  '@next/swc-linux-arm64-gnu@16.4.3':
     optional: true
 
-  '@next/swc-linux-arm64-musl@16.4.0':
+  '@next/swc-linux-arm64-musl@16.4.3':
     optional: true
 
-  '@next/swc-linux-x64-gnu@16.4.0':
+  '@next/swc-linux-x64-gnu@16.4.3':
     optional: true
 
-  '@next/swc-linux-x64-musl@16.4.0':
+  '@next/swc-linux-x64-musl@16.4.3':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@16.4.0':
+  '@next/swc-win32-arm64-msvc@16.4.3':
     optional: true
 
-  '@next/swc-win32-x64-msvc@16.4.0':
+  '@next/swc-win32-x64-msvc@16.4.3':
     optional: true
 
   '@noble/ciphers@1.3.0': {}
@@ -6342,14 +6349,19 @@ snapshots:
   '@varlock/native-helper-win32-x64@1.23.0':
     optional: true
 
-  '@varlock/nextjs-integration@1.2.5(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)':
+  '@varlock/nextjs-integration@1.2.5(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)':
     dependencies:
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       varlock: 1.23.0
 
-  '@vercel/analytics@2.0.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)':
+  '@varlock/nextjs-integration@2.0.0(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)':
+    dependencies:
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      varlock: 1.23.0
+
+  '@vercel/analytics@2.0.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0)':
     optionalDependencies:
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       react: 19.3.0
 
   '@vercel/oidc@3.2.0': {}
@@ -6447,7 +6459,7 @@ snapshots:
 
   baseline-browser-mapping@2.11.29: {}
 
-  better-auth@1.4.21(@prisma/client@5.22.0)(better-sqlite3@12.11.1)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/pg@8.23.1)(better-sqlite3@12.11.1)(kysely@0.28.17)(pg@8.23.1)(postgres@3.4.9))(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))):
+  better-auth@1.4.21(@prisma/client@5.22.0)(better-sqlite3@12.11.1)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/pg@8.23.1)(better-sqlite3@12.11.1)(kysely@0.28.17)(pg@8.23.1)(postgres@3.4.9))(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))):
     dependencies:
       '@better-auth/core': 1.4.21(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5)
       '@better-auth/telemetry': 1.4.21(@better-auth/core@1.4.21(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.3.7(zod@4.6.5))(jose@6.2.12)(kysely@0.28.17)(nanostores@1.5.5))
@@ -6466,13 +6478,13 @@ snapshots:
       better-sqlite3: 12.11.1
       drizzle-kit: 1.0.0-rc.4
       drizzle-orm: 0.41.0(@prisma/client@5.22.0)(@types/pg@8.23.1)(better-sqlite3@12.11.1)(kysely@0.28.17)(pg@8.23.1)(postgres@3.4.9)
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       pg: 8.23.1
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
       vitest: 5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
-  better-auth@1.7.10(@prisma/client@5.22.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5))(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))):
+  better-auth@1.7.10(@prisma/client@5.22.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5))(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(pg@8.23.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.3(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))):
     dependencies:
       '@better-auth/core': 1.7.10(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.3.7(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.5)
       '@better-auth/drizzle-adapter': 1.7.10(@better-auth/core@1.7.10(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.3.7(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.5))(@better-auth/utils@0.5.0)(drizzle-orm@1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5))
@@ -6495,7 +6507,7 @@ snapshots:
       '@prisma/client': 5.22.0
       drizzle-kit: 1.0.0-rc.4
       drizzle-orm: 1.0.0-rc.4(@types/pg@8.23.1)(better-sqlite3@12.11.1)(pg@8.23.1)(postgres@3.4.9)(zod@4.6.5)
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       pg: 8.23.1
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
@@ -7296,7 +7308,7 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.14.9: {}
 
-  next-intl@4.14.9(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0):
+  next-intl@4.14.9(@swc/helpers@0.5.23)(@types/react@19.2.17)(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0):
     dependencies:
       '@eloqnt/config': 0.1.1
       '@eloqnt/format-json': 0.1.0
@@ -7306,7 +7318,7 @@ snapshots:
       '@swc/core': 1.16.18(@swc/helpers@0.5.23)
       icu-minify: 4.14.9
       negotiator: 1.1.0
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
       next-intl-swc-plugin-extractor: 4.14.9
       react: 19.3.0
       use-intl: 4.14.9(@types/react@19.2.17)(react@19.3.0)
@@ -7320,9 +7332,9 @@ snapshots:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
-  next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0):
+  next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0):
     dependencies:
-      '@next/env': '@varlock/nextjs-integration@1.2.5(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)'
+      '@next/env': '@varlock/nextjs-integration@2.0.0(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(varlock@1.23.0)'
       '@swc/helpers': 0.5.23
       baseline-browser-mapping: 2.11.29
       caniuse-lite: 1.0.30001816
@@ -7331,14 +7343,14 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.3.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 16.4.0
-      '@next/swc-darwin-x64': 16.4.0
-      '@next/swc-linux-arm64-gnu': 16.4.0
-      '@next/swc-linux-arm64-musl': 16.4.0
-      '@next/swc-linux-x64-gnu': 16.4.0
-      '@next/swc-linux-x64-musl': 16.4.0
-      '@next/swc-win32-arm64-msvc': 16.4.0
-      '@next/swc-win32-x64-msvc': 16.4.0
+      '@next/swc-darwin-arm64': 16.4.3
+      '@next/swc-darwin-x64': 16.4.3
+      '@next/swc-linux-arm64-gnu': 16.4.3
+      '@next/swc-linux-arm64-musl': 16.4.3
+      '@next/swc-linux-x64-gnu': 16.4.3
+      '@next/swc-linux-x64-musl': 16.4.3
+      '@next/swc-win32-arm64-msvc': 16.4.3
+      '@next/swc-win32-x64-msvc': 16.4.3
       babel-plugin-react-compiler: 1.0.0
       sharp: 0.35.5(@types/node@24.19.2)
     transitivePeerDependencies:
@@ -7363,12 +7375,12 @@ snapshots:
 
   node-releases@2.0.59: {}
 
-  nuqs@2.10.1(next@16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0):
+  nuqs@2.10.1(next@16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0))(react@19.3.0):
     dependencies:
       '@standard-schema/spec': 1.1.0
       react: 19.3.0
     optionalDependencies:
-      next: 16.4.0(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
+      next: 16.4.3(@babel/core@7.29.7)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(varlock@1.23.0)
 
   object-assign@4.1.1: {}
 
