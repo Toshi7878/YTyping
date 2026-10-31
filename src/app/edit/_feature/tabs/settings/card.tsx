@@ -12,7 +12,7 @@ export const SettingsCard = () => {
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <VolumeRange YTPlayer={player} />
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div id="settings-actions" className="flex flex-col gap-2 sm:flex-row">
           <MapImportButton />
         </div>
       </div>
