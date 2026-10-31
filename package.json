@@ -87,7 +87,7 @@
     "tailwindcss": "^4.1.13",
     "tailwindcss-animate": "^1.0.7",
     "ua-parser-js": "^2.0.5",
-    "varlock": "^1.21.1",
+    "varlock": "^1.24.0",
     "zod": "4.6.5"
   },
   "devDependencies": {
