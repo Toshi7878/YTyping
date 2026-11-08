@@ -102,7 +102,7 @@ export const NewMapTable = () => {
 export const EditMapTable = () => {
   const { id: mapId } = useParams();
 
-  const { data: mapData, isLoading } = useQuery(
+  const { data: mapJson, isLoading } = useQuery(
     orpc.map.getJsonById.queryOptions({
       input: mapId ? { mapId: Number(mapId) } : skipToken,
       staleTime: Infinity,
@@ -111,10 +111,10 @@ export const EditMapTable = () => {
   );
 
   useEffect(() => {
-    if (mapData) {
-      setRawMapAction({ type: "replaceAll", payload: mapData });
+    if (mapJson) {
+      setRawMapAction({ type: "replaceAll", payload: mapJson.lines });
     }
-  }, [mapData]);
+  }, [mapJson]);
 
   return (
     <LoadingOverlayProvider isLoading={isLoading} description="Loading...">

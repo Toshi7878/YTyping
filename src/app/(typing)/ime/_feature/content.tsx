@@ -70,7 +70,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: mapJsonが変更されたら再読み込みする
   useEffect(() => {
     if (mapJson) {
-      void loadMap(mapJson);
+      void loadMap(mapJson.lines);
     } else {
       overlay.loading(t("map"));
     }

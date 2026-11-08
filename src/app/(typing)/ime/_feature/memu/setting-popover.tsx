@@ -47,7 +47,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
         updateImeTypingOptions.mutate({ ...getImeOptions() });
         const rawMapLines = queryClient.getQueryData(
           orpc.map.getJsonById.queryOptions({ input: { mapId: Number(mapId) } }).queryKey,
-        );
+        )?.lines;
 
         if (rawMapLines) {
           const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = getImeOptions();

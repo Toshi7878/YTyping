@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { orpc, orpcClient } from "@/orpc/provider";
+import { orpc } from "@/orpc/provider";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -57,26 +57,18 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     },
     { enableOnFormTags: false, preventDefault: true },
   );
-  // 譜面データより先に更新日時を取得する。間に編集が入っても、登録時の照合で弾かれる側に倒れる
-  const { data: mapUpdatedAt } = useQuery({
-    queryKey: ["typing-map-updated-at", mapId],
-    queryFn: async () => (await orpcClient.map.getById({ mapId })).updatedAt,
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-  const { data: rawMapLines, isLoading: isJsonLoading } = useQuery(
+
+  const { data: mapJson, isLoading } = useQuery(
     orpc.map.getJsonById.queryOptions({
       input: { mapId },
-      enabled: mapUpdatedAt !== undefined,
       staleTime: Infinity,
       gcTime: Infinity,
     }),
   );
 
-  const isLoading = isJsonLoading || mapUpdatedAt === undefined;
-
   useEffect(() => {
-    if (rawMapLines && mapUpdatedAt) {
+    if (mapJson) {
+      const { lines: rawMapLines, updatedAt: mapUpdatedAt } = mapJson;
       const builtMapLines = buildTypingMap({ rawMapLines, charPoint: CHAR_POINT });
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
@@ -105,7 +97,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       resetTypingStatus();
       setTotalProgressMax(builtMap.duration);
     }
-  }, [rawMapLines, mapUpdatedAt]);
+  }, [mapJson]);
 
   return (
     <>
