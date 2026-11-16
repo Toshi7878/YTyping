@@ -4,6 +4,7 @@ import {
   check,
   index,
   integer,
+  pgEnum,
   pgTable,
   primaryKey,
   real,
@@ -15,6 +16,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { maps } from "./map";
 import { reportStatus, users } from "./user/user";
+
+// 記録に登録するプレイ動画のプラットフォーム。追加するときは src/utils/play-video.ts の定義も追加する
+export const VIDEO_PLATFORM_TYPES = ["YOUTUBE", "TIKTOK"] as const;
+export const videoPlatform = pgEnum("video_platform", VIDEO_PLATFORM_TYPES);
 
 export const results = pgTable.withRLS(
   "results",
@@ -33,6 +38,10 @@ export const results = pgTable.withRLS(
     // 運営が無効な記録としてマークした日時。null なら有効
     invalidatedAt: timestamp("invalidated_at"),
     invalidatedBy: integer("invalidated_by").references(() => users.id, { onDelete: "set null" }),
+    // 記録に登録したプレイ動画。プラットフォームと動画IDは両方設定されるか、両方 null。
+    // 動画IDの形式: YouTube は動画ID、TikTok は "ユーザー名/動画ID"
+    playVideoPlatform: videoPlatform("play_video_platform"),
+    playVideoId: text("play_video_id"),
   },
   (table) => [
     uniqueIndex("uq_results_user_id_map_id").using(
@@ -40,6 +49,7 @@ export const results = pgTable.withRLS(
       table.userId.asc().nullsLast(),
       table.mapId.asc().nullsLast(),
     ),
+    check("play_video_platform_and_id_both_or_none", sql`(play_video_platform IS NULL) = (play_video_id IS NULL)`),
   ],
 );
 

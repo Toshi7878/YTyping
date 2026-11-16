@@ -21,7 +21,12 @@ import { FlickKeyboard } from "@/ui/flick-keyboard";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { setBuiltMap } from "./atoms/built-map";
 import { setInitialLineResults, setSelectLineIndex } from "./atoms/line-results";
-import { useFlickIsModMarkNext, useFlickModeState, useFlickPendingModConversion } from "./atoms/typing-word";
+import {
+  useFlickIsModMarkNext,
+  useFlickModeState,
+  useFlickNextChar,
+  useFlickPendingModConversion,
+} from "./atoms/typing-word";
 import { CHAR_POINT } from "./lib/const";
 import { useLoadSoundEffects } from "./lib/sound-effect";
 import { useTypingOptionsState } from "./tabs/setting/popover";
@@ -52,12 +57,18 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     },
     { enableOnFormTags: false, preventDefault: true },
   );
-  const { data: rawMapLines, isLoading } = useQuery(
-    orpc.map.getJsonById.queryOptions({ input: { mapId }, staleTime: Infinity, gcTime: Infinity }),
+
+  const { data: mapJson, isLoading } = useQuery(
+    orpc.map.getJsonById.queryOptions({
+      input: { mapId },
+      staleTime: Infinity,
+      gcTime: Infinity,
+    }),
   );
 
   useEffect(() => {
-    if (rawMapLines) {
+    if (mapJson) {
+      const { lines: rawMapLines, updatedAt: mapUpdatedAt } = mapJson;
       const builtMapLines = buildTypingMap({ rawMapLines, charPoint: CHAR_POINT });
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
@@ -77,6 +88,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         duration: calculateDuration(builtMapLines),
         hasAlphabet: hasAlphabetChunk(builtMapLines),
         isCaseSensitive: builtMapLines[0]?.options?.isCaseSensitive ?? false,
+        updatedAt: mapUpdatedAt,
       };
       setBuiltMap(builtMap);
       setInitialLineResults(builtMap.initialLineResults);
@@ -85,7 +97,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       resetTypingStatus();
       setTotalProgressMax(builtMap.duration);
     }
-  }, [rawMapLines]);
+  }, [mapJson]);
 
   return (
     <>
@@ -138,6 +150,8 @@ const FlickKeyboardContainer = () => {
   usePlayingSetup();
   const pendingModConversion = useFlickPendingModConversion();
   const isModMarkNext = useFlickIsModMarkNext();
+  const nextChar = useFlickNextChar();
+  const { isFlickNextKeyHighlight } = useTypingOptionsState();
   const flickMode = useFlickModeState();
   const { resolvedTheme } = useTheme();
   const flickTheme = THEME_LIST.dark.some((t) => t.class === resolvedTheme) ? "dark" : "light";
@@ -149,7 +163,8 @@ const FlickKeyboardContainer = () => {
         onEvent={handleFlickInput}
         theme={flickTheme}
         isLineStart={!pendingModConversion}
-        isModPending={!!pendingModConversion || isModMarkNext}
+        isModPending={!!pendingModConversion || (isFlickNextKeyHighlight && isModMarkNext)}
+        nextChar={isFlickNextKeyHighlight ? nextChar : undefined}
         candidateBar={
           <div
             className="relative h-22"

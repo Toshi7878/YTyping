@@ -4,6 +4,7 @@ import { useSelector } from "@tanstack/react-form";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { getSession, useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
@@ -43,13 +44,14 @@ export const UserBookmarkLists = ({ id }: { id: string }) => {
 };
 
 const BookmarkListCardList = ({ id }: { id: string }) => {
+  const t = useTranslations("user.bookmarkLists");
   const { data: session } = useSession();
   const { data: lists } = useSuspenseQuery(
     orpc.map.bookmark.lists.getByUserId.queryOptions({ input: { userId: Number(id) } }),
   );
 
   if (lists.length === 0) {
-    return <div className="py-10 text-center text-muted-foreground text-sm">ブックマークリストがありません</div>;
+    return <div className="py-10 text-center text-muted-foreground text-sm">{t("empty")}</div>;
   }
 
   return (
@@ -62,6 +64,8 @@ const BookmarkListCardList = ({ id }: { id: string }) => {
 };
 
 const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu: boolean; id: string }) => {
+  const t = useTranslations("user.bookmarkLists");
+  const tBookmark = useTranslations("bookmark");
   return (
     <Card className="hover-card-shadow-primary py-0 transition-shadow">
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
@@ -76,9 +80,9 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
             <div className="truncate font-medium text-sm">{list.title}</div>
 
             <div className="mt-1 flex items-center gap-2">
-              <Small className="text-muted-foreground">{list.count}件</Small>
+              <Small className="text-muted-foreground">{t("count", { count: list.count })}</Small>
               <Badge variant={list.isPublic ? "secondary" : "outline"} size="default">
-                {list.isPublic ? "公開" : "非公開"}
+                {list.isPublic ? tBookmark("public") : tBookmark("private")}
               </Badge>
             </div>
           </div>
@@ -91,6 +95,7 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
 };
 
 const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
+  const t = useTranslations("user.bookmarkLists");
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -98,23 +103,23 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
     orpc.map.bookmark.lists.delete.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { userId: Number(session?.user?.id) } }),
         });
         setOpen(false);
-        toast.success("リストを削除しました");
+        toast.success(t("deleted"));
       },
       onError: (error) => {
-        toast.error(`削除に失敗しました: ${error.message}`);
+        toast.error(t("deleteFailed", { message: error.message }));
       },
     }),
   );
 
   const handleDelete = async () => {
     const isConfirmed = await confirmDialog.danger({
-      title: "リストを削除",
-      description: "リストを削除してもよろしいですか？この操作は元に戻せません。",
-      confirmLabel: "削除する",
+      title: t("deleteTitle"),
+      description: t("deleteDescription"),
+      confirmLabel: t("deleteConfirm"),
     });
     if (!isConfirmed) return;
     deleteListMutation.mutate({ listId: list.id });
@@ -135,14 +140,14 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
           trigger={
             <DropdownMenuItem closeOnClick={false}>
               <Pencil className="size-4" />
-              編集
+              {t("edit")}
             </DropdownMenuItem>
           }
         />
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={handleDelete}>
           <Trash2 className="size-4" />
-          削除
+          {t("delete")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -150,6 +155,7 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
 };
 
 const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; trigger: React.ReactNode }) => {
+  const t = useTranslations("user.bookmarkLists");
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -170,14 +176,14 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
     orpc.map.bookmark.lists.update.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { userId: session?.user?.id } as never }),
         });
         setOpen(false);
-        toast.success("リストを編集しました");
+        toast.success(t("edited"));
       },
       onError: (error) => {
-        toast.error(`編集に失敗しました: ${error.message}`);
+        toast.error(t("editFailed", { message: error.message }));
       },
     }),
   );
@@ -187,19 +193,19 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
       <DialogTrigger render={trigger as React.ReactElement} nativeButton={false} />
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>リストを編集</DialogTitle>
+          <DialogTitle>{t("editTitle")}</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-4"
         >
           <BookmarkListFormFields form={form} />
           <Button type="submit" loading={updateListMutation.isPending} disabled={!isDirty}>
-            編集
+            {t("edit")}
           </Button>
         </form>
       </DialogContent>

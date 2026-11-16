@@ -1,7 +1,12 @@
 "use client";
+import type { Route } from "next";
 import Image from "next/image";
 import { Separator } from "@/ui/separator";
 import { H3, LinkText, OList, P } from "@/ui/typography";
+
+const TAMPERMONKEY_URL =
+  "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" as Route;
+const SCRIPT_URL = "https://update.greasyfork.org/scripts/576187/namaYTyping.user.js" as Route;
 
 export function InstallationSteps() {
   const steps = [
@@ -9,15 +14,10 @@ export function InstallationSteps() {
       title: "namaYTypingスクリプトをインストールする",
       content: (
         <P>
-          <LinkText href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja">
-            Tampermonkey - Chrome ウェブストア
-          </LinkText>
+          <LinkText href={TAMPERMONKEY_URL}>Tampermonkey - Chrome ウェブストア</LinkText>
           からTampermonkeyをインストールします。
           <br />
-          <LinkText href="https://update.greasyfork.org/scripts/576187/namaYTyping.user.js">
-            GreasyFork - namaYTyping
-          </LinkText>
-          からスクリプトをインストールします。
+          <LinkText href={SCRIPT_URL}>GreasyFork - namaYTyping</LinkText>からスクリプトをインストールします。
         </P>
       ),
     },

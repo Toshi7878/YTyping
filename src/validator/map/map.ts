@@ -1,5 +1,6 @@
 import { createInsertSchema } from "drizzle-orm/zod";
 import z from "zod/v4";
+import { translate } from "@/i18n/translate";
 import { STRING_LONG_LENGTH, STRING_SHORT_LENGTH } from "@/server/drizzle/const";
 import { MAP_VISIBILITY_TYPES, mapDifficulties, YOUTUBE_THUMBNAIL_QUALITIES } from "@/server/drizzle/schema";
 import { RawMapSchema } from "./raw-map-json";
@@ -39,25 +40,28 @@ const MapInfoBaseSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(1, { error: "曲名を入力してください" })
-    .max(STRING_SHORT_LENGTH, { error: `曲名は${STRING_SHORT_LENGTH}文字以下にしてください` }),
+    .min(1, { error: () => translate("validation.titleRequired") })
+    .max(STRING_SHORT_LENGTH, { error: () => translate("validation.titleMax", { max: STRING_SHORT_LENGTH }) }),
   artistName: z
     .string()
     .trim()
-    .min(1, { error: "アーティスト名を入力してください" })
-    .max(STRING_SHORT_LENGTH, { error: `アーティスト名は${STRING_SHORT_LENGTH}文字以下にしてください` }),
+    .min(1, { error: () => translate("validation.artistRequired") })
+    .max(STRING_SHORT_LENGTH, { error: () => translate("validation.artistMax", { max: STRING_SHORT_LENGTH }) }),
   musicSource: z
     .string()
     .trim()
-    .max(STRING_SHORT_LENGTH, { error: `ソースは${STRING_SHORT_LENGTH}文字以下にしてください` }),
+    .max(STRING_SHORT_LENGTH, { error: () => translate("validation.sourceMax", { max: STRING_SHORT_LENGTH }) }),
   creatorComment: z
     .string()
     .trim()
-    .max(STRING_LONG_LENGTH, { error: `コメントは${STRING_LONG_LENGTH}文字以下にしてください` }),
-  tags: z.array(z.string().max(STRING_SHORT_LENGTH)).min(2, { error: "タグは2つ以上必要です" }).max(10),
+    .max(STRING_LONG_LENGTH, { error: () => translate("validation.commentMax", { max: STRING_LONG_LENGTH }) }),
+  tags: z
+    .array(z.string().max(STRING_SHORT_LENGTH))
+    .min(2, { error: () => translate("validation.tagsMin") })
+    .max(10),
   videoId: z.string().length(11),
   previewTime: z.coerce.number({
-    error: "プレビュータイムは数値である必要があります",
+    error: () => translate("validation.previewTimeNumber"),
   }),
   visibility: z.enum(MAP_VISIBILITY_TYPES),
 });
@@ -84,9 +88,9 @@ const CreateMapDifficultySchema = createInsertSchema(mapDifficulties).pick({
 
 export const LrcSchema = z
   .string()
-  .min(1, { error: "LRCファイルが空です" })
+  .min(1, { error: () => translate("validation.lrcEmpty") })
   .refine((content) => content.split(/\r?\n/).some((line) => /\[\d{2}[:.]\d{2}[:.]\d{2}\]/.test(line)), {
-    error: "有効なLRCタイムスタンプ（[mm:ss.xx]形式）が見つかりません",
+    error: () => translate("validation.lrcInvalid"),
   });
 
 export const upsertMapItemSchema = z.object({

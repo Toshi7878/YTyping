@@ -50,6 +50,9 @@ export const isDakutenMark = (char: string | undefined) => char === "゛" || cha
 // 濁音・半濁音かどうか(例: が → true, か → false)
 export const isVoicedKana = (char: string) => /[\u3099\u309A]/.test(char.normalize("NFD"));
 
+const flickNextCharAtom = atom((get) => get(typingWordAtom).nextChunk.kana[0]);
+export const useFlickNextChar = () => useAtomValue(flickNextCharAtom);
+
 const flickIsModMarkNextAtom = atom((get) => isDakutenMark(get(typingWordAtom).nextChunk.kana[0]));
 export const useFlickIsModMarkNext = () => useAtomValue(flickIsModMarkNextAtom);
 

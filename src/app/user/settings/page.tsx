@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { getSession } from "@/auth/server";
 import { caller } from "@/orpc/server";
 import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
@@ -17,6 +18,7 @@ export default async function Page() {
 }
 
 const ProfileSettingCard = async () => {
+  const t = await getTranslations("userSettings");
   const session = await getSession();
   if (!session?.user.id) return null;
   const userProfile = await caller.user.profile.get({ userId: session?.user.id });
@@ -24,7 +26,7 @@ const ProfileSettingCard = async () => {
   return (
     <Card className="mx-8">
       <CardHeader>
-        <H2>プロフィール設定</H2>
+        <H2>{t("profileTitle")}</H2>
       </CardHeader>
       <CardContent>
         <div className="flex w-full flex-col gap-4">
@@ -39,12 +41,13 @@ const ProfileSettingCard = async () => {
 };
 
 const OptionSettingCard = async () => {
+  const t = await getTranslations("userSettings");
   const userOptions = await caller.user.option.getForSession();
 
   return (
     <Card className="mx-8">
       <CardHeader>
-        <H2 id="user-settings">ユーザー設定</H2>
+        <H2 id="user-settings">{t("optionsTitle")}</H2>
       </CardHeader>
       <CardContent className="flex w-full">
         <UserOptionsForm userOptions={userOptions} />

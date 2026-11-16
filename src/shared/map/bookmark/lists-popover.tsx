@@ -2,6 +2,7 @@
 
 import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bookmark, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type z from "zod";
 import { getSession, useSession } from "@/auth/client";
@@ -34,6 +35,7 @@ interface BookmarkListPopoverProps {
 }
 
 export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkListPopoverProps) => {
+  const t = useTranslations("bookmark");
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,12 +50,14 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
   const removeMapFromList = useRemoveBookmarkListItemMutation();
 
   const toggleMap = (listId: number, hasMap: boolean) => {
+    const options = { onSuccess: () => setIsOpen(false) };
+
     if (hasMap) {
-      removeMapFromList.mutate({ listId, mapId });
+      removeMapFromList.mutate({ listId, mapId }, options);
       return;
     }
 
-    addMapToList.mutate({ listId, mapId });
+    addMapToList.mutate({ listId, mapId }, options);
   };
 
   return (
@@ -63,7 +67,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
       </TooltipWrapper>
       <PopoverContent className="w-80 p-0" align="end">
         <H4 className="px-2 py-2 text-base">
-          ブックマークに保存 {lists?.length} / {MAX_BOOKMARK_LIST_LENGTH}件
+          {t("saveTitle", { count: lists?.length ?? 0, max: MAX_BOOKMARK_LIST_LENGTH })}
         </H4>
         <Separator />
 
@@ -75,9 +79,7 @@ export const BookmarkListPopover = ({ mapId, trigger, tooltipLabel }: BookmarkLi
               {lists?.map((list) => (
                 <BookMarkListItem key={list.id} list={list} onClick={() => toggleMap(list.id, list.hasMap)} />
               ))}
-              {lists?.length === 0 && (
-                <div className="text-center text-muted-foreground text-sm">リストがありません</div>
-              )}
+              {lists?.length === 0 && <div className="text-center text-muted-foreground text-sm">{t("noLists")}</div>}
             </li>
           )}
         </ul>
@@ -94,6 +96,7 @@ interface BookMarkListItemProps {
 }
 
 const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
+  const t = useTranslations("bookmark");
   const videoId = list.firstMapVideoId;
 
   return (
@@ -108,8 +111,8 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
         <div className="flex flex-col items-start gap-1">
           <span className="flex-1 truncate text-sm">{list.title}</span>
           <div className="flex items-center gap-1">
-            <Small className="text-muted-foreground text-xs">{list.isPublic ? "公開" : "非公開"}</Small>
-            <Small className="text-muted-foreground text-xs">{list.count}譜面</Small>
+            <Small className="text-muted-foreground text-xs">{list.isPublic ? t("public") : t("private")}</Small>
+            <Small className="text-muted-foreground text-xs">{t("mapCount", { count: list.count })}</Small>
           </div>
         </div>
       </div>
@@ -122,6 +125,8 @@ const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
 };
 
 const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
+  const t = useTranslations("bookmark");
+  const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -141,7 +146,7 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
     orpc.map.bookmark.lists.create.mutationOptions({
       onSuccess: () => {
         const session = getSession();
-        queryClient.invalidateQueries(
+        void queryClient.invalidateQueries(
           orpc.map.bookmark.lists.getByUserId.queryOptions({
             input: {
               userId: session?.user?.id ?? 0,
@@ -151,10 +156,10 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
         );
         form.reset();
         setOpen(false);
-        toast.success("リストを作成しました");
+        toast.success(t("created"));
       },
       onError: (error) => {
-        toast.error(`作成に失敗しました: ${error.message}`);
+        toast.error(t("createFailed", { message: error.message }));
       },
     }),
   );
@@ -164,24 +169,24 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
       <DialogTrigger
         render={
           <Button variant="ghost" className="w-full justify-start gap-2 py-5">
-            <Plus className="size-4" /> 新しいリストを作成
+            <Plus className="size-4" /> {t("newList")}
           </Button>
         }
       />
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>新しいリストを作成</DialogTitle>
+          <DialogTitle>{t("newList")}</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-4"
         >
           <BookmarkListFormFields form={form} />
-          <Button type="submit">作成</Button>
+          <Button type="submit">{tCommon("create")}</Button>
         </form>
       </DialogContent>
     </Dialog>
@@ -190,20 +195,23 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
 
 export const BookmarkListFormFields = withForm({
   defaultValues: bookmarkListFormDefaultValues,
-  render: ({ form }) => (
-    <>
-      <form.AppField name="title">{(field) => <field.InputFormField label="リスト名" />}</form.AppField>
-      <form.AppField name="visibility">
-        {(field) => (
-          <field.SelectFormField
-            label="公開範囲"
-            options={[
-              { value: "public", label: "公開" },
-              { value: "private", label: "非公開" },
-            ]}
-          />
-        )}
-      </form.AppField>
-    </>
-  ),
+  render: function Render({ form }) {
+    const t = useTranslations("bookmark");
+    return (
+      <>
+        <form.AppField name="title">{(field) => <field.InputFormField label={t("listName")} />}</form.AppField>
+        <form.AppField name="visibility">
+          {(field) => (
+            <field.SelectFormField
+              label={t("visibility")}
+              options={[
+                { value: "public", label: t("public") },
+                { value: "private", label: t("private") },
+              ]}
+            />
+          )}
+        </form.AppField>
+      </>
+    );
+  },
 });

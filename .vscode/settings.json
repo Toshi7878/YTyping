@@ -5,8 +5,7 @@
   },
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "always",
-    "source.removeUnusedImports": "always"
+    "source.fixAll.biome": "always"
   },
   "files.associations": {
     "*.css": "tailwindcss"

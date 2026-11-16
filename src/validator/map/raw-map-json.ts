@@ -1,4 +1,5 @@
 import z from "zod";
+import { translate } from "@/i18n/translate";
 
 export const LineOptionSchema = z.object({
   changeCSS: z.string().optional(),
@@ -80,29 +81,29 @@ const validateCSSLength = (lines: RawMapLine[]) => {
 export const RawMapSchema = z
   .array(RawMapLineSchema)
   .refine(validateNoXssTags, {
-    error: "譜面データにHTMLタグ（script/iframe/object/embed）を含めることはできません",
+    error: () => translate("validation.mapXss"),
   })
   .refine(validateNoHttpContent, {
-    error: "譜面データにはhttpから始まる文字を含めることはできません",
+    error: () => translate("validation.mapHttp"),
   })
   .refine(validateHasTypingWords, {
-    error: "タイピングワードが設定されていません",
+    error: () => translate("validation.mapNoWords"),
   })
   .refine(validateEndsWithEnd, {
-    error: "最後の歌詞は'end'である必要があります",
+    error: () => translate("validation.mapEnd"),
   })
   .refine(validateStartsWithZero, {
-    error: "最初の時間は0である必要があります",
+    error: () => translate("validation.mapStartZero"),
   })
   .refine(validateAllTimesAreNumbers, {
-    error: "timeはすべて数値である必要があります",
+    error: () => translate("validation.mapTimesNumbers"),
   })
   .refine(validateNoLinesAfterEnd, {
-    error: "endの後に無効な行があります",
+    error: () => translate("validation.mapAfterEnd"),
   })
   .refine(validateUniqueTimeValues, {
-    error: "同じタイムのラインが2つ以上存在しています。",
+    error: () => translate("validation.mapUniqueTimes"),
   })
   .refine(validateCSSLength, {
-    error: "カスタムCSSの合計文字数は100000文字以下になるようにしてください",
+    error: () => translate("validation.mapCss"),
   });

@@ -57,6 +57,8 @@ const CreateResultStatusSchema = createInsertSchema(resultStatuses)
 export const CreateResultSchema = z
   .object({
     mapId: z.number(),
+    /** プレイした譜面データの更新日時。登録時に譜面が更新されていないかの照合に使う */
+    mapUpdatedAt: z.date(),
     status: CreateResultStatusSchema,
     lineResults: CreateTypingResultJsonSchema,
   })

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { MdRestartAlt } from "react-icons/md";
 import type { WORD_DISPLAY_TYPES } from "@/server/drizzle/schema";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
@@ -27,6 +28,7 @@ const WORD_OPTIONS_CONFIG = {
 };
 
 export const WordDisplayFields = () => {
+  const t = useTranslations("typing.settings");
   const {
     mainWordFontSize,
     subWordFontSize,
@@ -52,10 +54,10 @@ export const WordDisplayFields = () => {
   return (
     <section className="flex flex-col gap-4">
       <header className="flex items-center justify-between">
-        <H4>ワード表示調整</H4>
+        <H4>{t("wordTitle")}</H4>
         <Button size="sm" variant="outline" onClick={resetToDefaults}>
           <MdRestartAlt className="mr-2" />
-          リセット
+          {t("reset")}
         </Button>
       </header>
       <div className="flex gap-6">
@@ -65,9 +67,9 @@ export const WordDisplayFields = () => {
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
           value={mainWordFontSize}
-          label="メインサイズ"
-          incrementTooltip="かな表示フォントサイズを大きくします。"
-          decrementTooltip="かな表示フォントサイズを小さくします。"
+          label={t("mainSize")}
+          incrementTooltip={t("kanaBigger")}
+          decrementTooltip={t("kanaSmaller")}
           unit="%"
         />
         <CounterInput
@@ -76,9 +78,9 @@ export const WordDisplayFields = () => {
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
           value={subWordFontSize}
-          label="サブサイズ"
-          incrementTooltip="ローマ字表示フォントサイズを大きくします。"
-          decrementTooltip="ローマ字表示フォントサイズを小さくします。"
+          label={t("subSize")}
+          incrementTooltip={t("romaBigger")}
+          decrementTooltip={t("romaSmaller")}
           unit="%"
         />
       </div>
@@ -90,9 +92,9 @@ export const WordDisplayFields = () => {
           min={WORD_OPTIONS_CONFIG.topPosition.min}
           value={mainWordTopPosition}
           valueDigits={1}
-          label="メイン位置"
-          incrementTooltip="かな表示を上に移動します。"
-          decrementTooltip="かな表示を下に移動します。"
+          label={t("mainPosition")}
+          incrementTooltip={t("kanaUp")}
+          decrementTooltip={t("kanaDown")}
           unit="px"
         />
         <CounterInput
@@ -102,9 +104,9 @@ export const WordDisplayFields = () => {
           min={WORD_OPTIONS_CONFIG.topPosition.min}
           value={subWordTopPosition}
           valueDigits={1}
-          label="サブ位置"
-          incrementTooltip="ローマ字表示を上に移動します。"
-          decrementTooltip="ローマ字表示を下に移動します。"
+          label={t("subPosition")}
+          incrementTooltip={t("romaUp")}
+          decrementTooltip={t("romaDown")}
           unit="px"
         />
       </div>
@@ -116,9 +118,9 @@ export const WordDisplayFields = () => {
           min={WORD_OPTIONS_CONFIG.spacing.min}
           value={kanaWordSpacing}
           valueDigits={2}
-          label="かな間隔"
-          incrementTooltip="かな表示の文字間隔を大きくします。"
-          decrementTooltip="かな表示の文字間隔を小さくします。"
+          label={t("kanaSpacing")}
+          incrementTooltip={t("kanaSpacingUp")}
+          decrementTooltip={t("kanaSpacingDown")}
           unit="em"
         />
         <CounterInput
@@ -128,23 +130,23 @@ export const WordDisplayFields = () => {
           min={WORD_OPTIONS_CONFIG.spacing.min}
           value={romaWordSpacing}
           valueDigits={2}
-          label="ローマ字間隔"
-          incrementTooltip="ローマ字表示の文字間隔を大きくします。"
-          decrementTooltip="ローマ字表示の文字間隔を小さくします。"
+          label={t("romaSpacing")}
+          incrementTooltip={t("romaSpacingUp")}
+          decrementTooltip={t("romaSpacingDown")}
           unit="em"
         />
       </div>
       <LabeledSelect
-        label="ワード表示方式"
+        label={t("wordDisplay")}
         options={
           [
-            { label: "↑かな↓ローマ字大文字", value: "KANA_ROMA_UPPERCASE" },
-            { label: "↑かな↓ローマ字小文字", value: "KANA_ROMA_LOWERCASE" },
-            { label: "↑ローマ字↓かな大文字", value: "ROMA_KANA_UPPERCASE" },
-            { label: "↑ローマ字↓かな小文字", value: "ROMA_KANA_LOWERCASE" },
-            { label: "かなのみ", value: "KANA_ONLY" },
-            { label: "ローマ字大文字のみ", value: "ROMA_UPPERCASE_ONLY" },
-            { label: "ローマ字小文字のみ", value: "ROMA_LOWERCASE_ONLY" },
+            { label: t("KANA_ROMA_UPPERCASE"), value: "KANA_ROMA_UPPERCASE" },
+            { label: t("KANA_ROMA_LOWERCASE"), value: "KANA_ROMA_LOWERCASE" },
+            { label: t("ROMA_KANA_UPPERCASE"), value: "ROMA_KANA_UPPERCASE" },
+            { label: t("ROMA_KANA_LOWERCASE"), value: "ROMA_KANA_LOWERCASE" },
+            { label: t("KANA_ONLY"), value: "KANA_ONLY" },
+            { label: t("ROMA_UPPERCASE_ONLY"), value: "ROMA_UPPERCASE_ONLY" },
+            { label: t("ROMA_LOWERCASE_ONLY"), value: "ROMA_LOWERCASE_ONLY" },
           ] satisfies { label: string; value: (typeof WORD_DISPLAY_TYPES)[number] }[]
         }
         onValueChange={(value) => setTypingOptions({ wordDisplay: value as (typeof WORD_DISPLAY_TYPES)[number] })}

@@ -31,7 +31,7 @@ export const userProfiles = pgTable.withRLS("user_profiles", {
   keyboard: varchar({ length: 1024 }).default("").notNull(),
 });
 
-export const REPORT_STATUS_TYPES = ["PENDING", "RESOLVED", "DISMISSED", "WARNED"] as const;
+export const REPORT_STATUS_TYPES = ["PENDING", "RESOLVED", "DISMISSED", "WARNED", "WARNING_REVOKED"] as const;
 export const reportStatus = pgEnum("report_status", REPORT_STATUS_TYPES);
 
 export const REPORT_REASON_TYPES = ["CHEATING", "HARASSMENT", "SPAM", "INAPPROPRIATE", "OTHER"] as const;

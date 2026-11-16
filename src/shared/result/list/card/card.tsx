@@ -1,12 +1,15 @@
 "use client";
+
 import type { Route } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { HTMLAttributes } from "react";
 import { useSession } from "@/auth/client";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { MapListActionButtons } from "@/shared/map/action-buttons";
 import { RatingBadge } from "@/shared/map/rating/badge";
 import { MapThumbnailImage } from "@/shared/map/thumbnail-image";
+import { PlayVideoLink } from "@/shared/result/play-video-link";
 import { useTypingLinkMode } from "@/store/typing-link-mode";
 import { Badge } from "@/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/ui/card";
@@ -27,6 +30,7 @@ interface ResultCardProps {
 }
 
 export const ResultCard = ({ result, initialInView = false, imagePriority = false }: ResultCardProps) => {
+  const t = useTranslations("result");
   const { data: session } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = getYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
@@ -45,6 +49,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               </Link>
               {" - "}
               <RelativeTime date={result.updatedAt} />
+              <PlayVideoLink playVideo={result.playVideo} />
             </>
           )}
         </div>
@@ -66,7 +71,7 @@ export const ResultCard = ({ result, initialInView = false, imagePriority = fals
               className={cn("hidden font-bold md:flex", result?.rank === 1 && "text-perfect outline-text")}
               size="lg"
             >
-              {result.invalidatedAt ? "BAN済み" : `Rank: #${result.rank}`}
+              {result.invalidatedAt ? t("underReview") : `Rank: #${result.rank}`}
             </Badge>
           )}
 
@@ -101,6 +106,8 @@ interface MapInfoProps {
 }
 
 const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
+  const t = useTranslations("result");
+  const tCommon = useTranslations("common");
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   const linkMode = useTypingLinkMode();
   const link = (linkMode === "type" ? `/type/${map.id}` : `/ime/${map.id}`) as Route;
@@ -116,13 +123,13 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
       </TooltipWrapper>
       <RatingBadge rating={map.difficulty.rating} />
       <div className="truncate text-xs">
-        制作者:{" "}
+        {t("creator")}{" "}
         <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline" prefetch={false}>
           {map.creator.name}
         </Link>
         {map.info.visibility === "UNLISTED" ? (
           <Badge variant="outline" size="xs" className="h-4 rounded-full px-1 text-[0.6rem]">
-            限定公開
+            {tCommon("unlisted")}
           </Badge>
         ) : null}
       </div>

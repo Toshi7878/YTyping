@@ -6,7 +6,7 @@ import { downloadPublicFile, uploadPublicFile } from "@/server/api/lib/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { MAP_CATEGORIES, mapDifficulties, mapLikes, maps, mapTags, tags, users } from "@/server/drizzle/schema";
 import { upsertMapItemSchema } from "@/validator/map/map";
-import { type RawMapLine, RawMapLineSchema } from "@/validator/map/raw-map-json";
+import type { RawMapLine } from "@/validator/map/raw-map-json";
 import { calcRating } from "../../../../shared/map/rating/calc";
 import { protectedProcedure, publicProcedure } from "../../orpc";
 import { bookmarkedMapExists, mapBookmarkListItemRouter } from "./bookmark/list-item";
@@ -78,26 +78,29 @@ export const mapRouter = {
     return mapInfo;
   }),
 
-  getJsonById: publicProcedure
-    .input(z.object({ mapId: z.number() }))
-    .output(z.array(RawMapLineSchema))
-    .handler(async ({ input }) => {
-      try {
-        const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
+  getJsonById: publicProcedure.input(z.object({ mapId: z.number() })).handler(async ({ input, context }) => {
+    const mapRow = await context.db.query.maps.findFirst({
+      columns: { updatedAt: true },
+      where: { id: input.mapId },
+    });
+    if (!mapRow) throw new ORPCError("NOT_FOUND", { message: "Map not found" });
 
-        if (!data) {
-          throw new ORPCError("NOT_FOUND", { message: "Map data not found" });
-        }
+    try {
+      const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 
-        const jsonString = new TextDecoder().decode(data);
-        const mapJson: RawMapLine[] = JSON.parse(jsonString);
-
-        return mapJson;
-      } catch (error) {
-        console.error("Error fetching map data from R2:", error);
-        throw new ORPCError("INTERNAL_SERVER_ERROR");
+      if (!data) {
+        throw new ORPCError("NOT_FOUND", { message: "Map data not found" });
       }
-    }),
+
+      const jsonString = new TextDecoder().decode(data);
+      const mapJson: RawMapLine[] = JSON.parse(jsonString);
+
+      return { updatedAt: mapRow.updatedAt, lines: mapJson };
+    } catch (error) {
+      console.error("Error fetching map data from R2:", error);
+      throw new ORPCError("INTERNAL_SERVER_ERROR");
+    }
+  }),
 
   upsert: protectedProcedure.input(upsertMapItemSchema).handler(async ({ input, context }) => {
     // if (env.NODE_ENV === "development") throw new ORPCError("FORBIDDEN");
@@ -121,13 +124,13 @@ export const mapRouter = {
       throw new ORPCError("FORBIDDEN", { message: "この譜面を保存する権限がありません" });
     }
 
-    const newMapId = await db.transaction(async (tx) => {
-      let newId: number | undefined;
+    const saved = await db.transaction(async (tx) => {
+      let row: { id: number; updatedAt: Date } | undefined;
 
       if (mapId === null) {
         const nextId = await getNextMapId(tx);
 
-        newId = await tx
+        row = await tx
           .insert(maps)
           .values({
             id: nextId,
@@ -137,10 +140,10 @@ export const mapRouter = {
             publishedAt: mapInfoWithoutTags.visibility === "PUBLIC" ? new Date() : undefined,
             visibility: mapInfoWithoutTags.visibility,
           })
-          .returning({ id: maps.id })
-          .then((res) => res[0]?.id);
+          .returning({ id: maps.id, updatedAt: maps.updatedAt })
+          .then((res) => res[0]);
       } else {
-        newId = await tx
+        row = await tx
           .update(maps)
           .set({
             ...mapInfoWithoutTags,
@@ -151,13 +154,14 @@ export const mapRouter = {
               : {}),
           })
           .where(eq(maps.id, mapId))
-          .returning({ id: maps.id })
-          .then((res) => res[0]?.id);
+          .returning({ id: maps.id, updatedAt: maps.updatedAt })
+          .then((res) => res[0]);
       }
 
-      if (!newId) {
+      if (!row) {
         throw new ORPCError("PRECONDITION_FAILED");
       }
+      const newId = row.id;
 
       const builtMapLines = buildTypingMap({ rawMapLines: rawMapJson, charPoint: 0 });
       const rating = calcRating(builtMapLines);
@@ -175,10 +179,10 @@ export const mapRouter = {
         contentType: "application/json",
       });
 
-      return newId;
+      return row;
     });
 
-    return { id: newMapId, creatorId: userId };
+    return { id: saved.id, creatorId: userId, updatedAt: saved.updatedAt };
   }),
 
   list: mapListRouter,

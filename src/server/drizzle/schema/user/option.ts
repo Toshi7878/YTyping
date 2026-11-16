@@ -61,6 +61,7 @@ export const DEFAULT_TYPING_OPTIONS = {
   wordDisplay: "KANA_ROMA_UPPERCASE" as (typeof mainWordDisplay.enumValues)[number],
   isCaseSensitive: false,
   windowScaleWidth: 1160,
+  isFlickNextKeyHighlight: true,
 };
 
 export const userTypingOptions = pgTable.withRLS("user_typing_options", {
@@ -93,6 +94,9 @@ export const userTypingOptions = pgTable.withRLS("user_typing_options", {
   isSmoothScroll: boolean("is_smooth_scroll").default(DEFAULT_TYPING_OPTIONS.isSmoothScroll).notNull(),
   isCaseSensitive: boolean("is_case_sensitive").default(DEFAULT_TYPING_OPTIONS.isCaseSensitive).notNull(),
   windowScaleWidth: integer("window_scale_width").default(DEFAULT_TYPING_OPTIONS.windowScaleWidth).notNull(),
+  isFlickNextKeyHighlight: boolean("is_flick_next_key_highlight")
+    .default(DEFAULT_TYPING_OPTIONS.isFlickNextKeyHighlight)
+    .notNull(),
 });
 
 export const DEFAULT_IME_OPTIONS = {

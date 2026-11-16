@@ -2,10 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { Large, Small } from "@/ui/typography";
 
 export const ResultSummary = ({ userId }: { userId: string }) => {
+  const t = useTranslations("user.resultSummary");
   const { data: stats, isPending } = useQuery(
     orpc.user.stats.getRankingSummary.queryOptions({ input: { userId: Number(userId) } }),
   );
@@ -13,9 +15,9 @@ export const ResultSummary = ({ userId }: { userId: string }) => {
   if (isPending) {
     return (
       <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <SummaryItem label="登録済み譜面数" loading />
-        <SummaryItem label="1位譜面数" loading />
-        <SummaryItem label="1位譜面率" loading />
+        <SummaryItem label={t("registered")} loading />
+        <SummaryItem label={t("firstCount")} loading />
+        <SummaryItem label={t("firstRate")} loading />
       </section>
     );
   }
@@ -26,9 +28,9 @@ export const ResultSummary = ({ userId }: { userId: string }) => {
 
   return (
     <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <SummaryItem label="登録済み譜面数" value={totalResultCount.toLocaleString()} />
-      <SummaryItem label="1位譜面数" value={firstRankCount.toLocaleString()} />
-      <SummaryItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
+      <SummaryItem label={t("registered")} value={totalResultCount.toLocaleString()} />
+      <SummaryItem label={t("firstCount")} value={firstRankCount.toLocaleString()} />
+      <SummaryItem label={t("firstRate")} value={`${rate.toFixed(1)}%`} />
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import { translate } from "@/i18n/translate";
 import { store } from "./provider";
 
 const ruleTextAtom = atomWithReset("");
@@ -15,9 +16,9 @@ interface RuleOptions {
 
 export const buildRuleText = ({ insertEnglishSpaces, isCaseSensitive, enableIncludeRegex }: RuleOptions) => {
   const rules: string[] = [];
-  if (insertEnglishSpaces) rules.push("英語スペースあり");
-  if (isCaseSensitive) rules.push("英語大文字あり");
-  if (enableIncludeRegex) rules.push("記号入力あり");
+  if (insertEnglishSpaces) rules.push(translate("ime.rules.englishSpaces"));
+  if (isCaseSensitive) rules.push(translate("ime.rules.englishCaps"));
+  if (enableIncludeRegex) rules.push(translate("ime.rules.symbols"));
   return rules.join(" / ");
 };
 

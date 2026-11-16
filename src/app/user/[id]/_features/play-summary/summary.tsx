@@ -1,9 +1,10 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
+import { enUS, ja } from "date-fns/locale";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -17,14 +18,14 @@ import { H2 } from "@/ui/typography";
 import { cn } from "@/utils/cn";
 import { ActivityYearButtons, TypeActivity } from "./type-activity";
 
-const formatTime = (totalSeconds: number) => {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`;
-};
+const splitDuration = (totalSeconds: number) => ({
+  hours: Math.floor(totalSeconds / 3600),
+  minutes: Math.floor((totalSeconds % 3600) / 60),
+  seconds: Number((totalSeconds % 60).toFixed()),
+});
 
 export const UserPlaySummary = ({ id }: { id: string }) => {
+  const t = useTranslations("user.summary");
   const { data: userStats } = useSuspenseQuery(orpc.user.stats.get.queryOptions({ input: { userId: Number(id) } }));
 
   const { data: session } = useSession();
@@ -38,7 +39,7 @@ export const UserPlaySummary = ({ id }: { id: string }) => {
     <Card>
       <CardHeader className="mx-8 flex flex-col items-center">
         <Badge variant="secondary" className="text-xs">
-          統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
+          {t("updateNote")}
         </Badge>
       </CardHeader>
       <CardContent className="mx-8">
@@ -59,40 +60,42 @@ interface SummaryContentProps {
 }
 
 const SummaryContent = ({ userStats, isMyStatsWithHide }: SummaryContentProps) => {
+  const t = useTranslations("user.summary");
+  const locale = useLocale();
   if (!userStats) {
-    return <div>データがありません</div>;
+    return <div>{t("noData")}</div>;
   }
   const { typeCounts } = userStats;
 
   const totalKeystrokes = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
 
   const keystrokeStatsData = [
-    { label: "ローマ字 打鍵数", value: typeCounts.romaTypeTotalCount },
-    { label: "かな入力 打鍵数", value: typeCounts.kanaTypeTotalCount },
-    { label: "英語 打鍵数", value: typeCounts.englishTypeTotalCount },
-    { label: "スペース 打鍵数", value: typeCounts.spaceTypeTotalCount },
-    { label: "数字 打鍵数", value: typeCounts.numTypeTotalCount },
-    { label: "記号 打鍵数", value: typeCounts.symbolTypeTotalCount },
-    { label: "フリック 打鍵数", value: typeCounts.flickTypeTotalCount },
-    { label: "変換有り 打鍵数", value: typeCounts.imeTypeTotalCount },
-    { label: "合計 打鍵数", value: totalKeystrokes },
+    { label: t("romaTypes"), value: typeCounts.romaTypeTotalCount },
+    { label: t("kanaTypes"), value: typeCounts.kanaTypeTotalCount },
+    { label: t("englishTypes"), value: typeCounts.englishTypeTotalCount },
+    { label: t("spaceTypes"), value: typeCounts.spaceTypeTotalCount },
+    { label: t("numTypes"), value: typeCounts.numTypeTotalCount },
+    { label: t("symbolTypes"), value: typeCounts.symbolTypeTotalCount },
+    { label: t("flickTypes"), value: typeCounts.flickTypeTotalCount },
+    { label: t("imeTypes"), value: typeCounts.imeTypeTotalCount },
+    { label: t("totalTypes"), value: totalKeystrokes },
   ];
 
   const generalStatsData = [
     {
-      label: "計測開始日",
+      label: t("startedAt"),
       value: (
         <div className="flex items-center gap-2">
           <span>{userStats.createdAt.toLocaleDateString()}</span>
           <span className="text-muted-foreground text-sm">
-            ({formatDistanceToNowStrict(userStats.createdAt, { addSuffix: true, locale: ja })})
+            ({formatDistanceToNowStrict(userStats.createdAt, { addSuffix: true, locale: locale === "en" ? enUS : ja })})
           </span>
         </div>
       ),
     },
-    { label: "タイピング時間", value: formatTime(userStats.totalTypingTime) },
-    { label: "プレイ回数", value: userStats.totalPlayCount },
-    { label: "最大コンボ", value: userStats.maxCombo },
+    { label: t("typingTime"), value: t("duration", splitDuration(userStats.totalTypingTime)) },
+    { label: t("playCount"), value: userStats.totalPlayCount },
+    { label: t("maxCombo"), value: userStats.maxCombo },
   ];
 
   return (
@@ -105,7 +108,7 @@ const SummaryContent = ({ userStats, isMyStatsWithHide }: SummaryContentProps) =
         ))}
       </div>
 
-      <H2>打鍵情報</H2>
+      <H2>{t("keystrokeInfo")}</H2>
 
       <div className="relative flex min-h-[200px] w-full justify-center gap-4">
         <TypeActivity />
@@ -131,40 +134,42 @@ const SummaryCard = ({ label, value }: { label: string; value: string | number |
 };
 
 const HideSummary = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
+  const t = useTranslations("user.summary");
   return (
     <div>
       {isMyStatsWithHide && <MyHideOptionInfo />}
       <div className="flex flex-col items-center justify-center gap-4">
         <GoLock size={30} />
-        <p>タイピング統計情報は非公開にしています</p>
+        <p>{t("hidden")}</p>
       </div>
     </div>
   );
 };
 
 const MyHideOptionInfo = () => {
+  const t = useTranslations("user.summary");
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
   const { id: userId } = useParams<{ id: string }>();
 
   return (
-    <InfoCard title="統計情報は非公開に設定されています" className="mb-4">
+    <InfoCard title={t("hiddenNoticeTitle")} className="mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <p>現在プロフィールは自分のみが閲覧できます</p>
+          <p>{t("onlyYouCanView")}</p>
           {!isHidePreview ? (
             <Link href="?hidePreview=true" className={buttonVariants({ size: "sm", variant: "outline" })}>
-              他の人が見ているページを見る
+              {t("viewAsOthers")}
             </Link>
           ) : (
             <Link href={`/user/${userId}`} className={buttonVariants({ size: "sm", variant: "outline" })}>
-              統計情報を表示
+              {t("showStats")}
             </Link>
           )}
         </div>
         <div className="flex justify-end">
           <Link href="/user/settings#user-settings" className={buttonVariants({ size: "sm", variant: "outline" })}>
-            設定を変更
+            {t("changeSettings")}
           </Link>
         </div>
       </div>

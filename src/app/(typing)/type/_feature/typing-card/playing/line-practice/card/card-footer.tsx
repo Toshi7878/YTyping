@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import type { HTMLAttributes } from "react";
 import { Badge } from "@/ui/badge";
@@ -26,6 +27,7 @@ export const ResultCardFooter = ({
   className,
   ...props
 }: ResultCardFooterProps) => {
+  const t = useTranslations("typing.lineResult");
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
@@ -35,7 +37,7 @@ export const ResultCardFooter = ({
           variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}
           className="px-1.5 py-0.5 text-sm"
         >
-          ミス: {miss}, ロスト: {lost}
+          {t("missLost", { miss, lost })}
         </Badge>
         <TooltipWrapper label={`rkpm: ${rkpm}`} asChild>
           <Badge variant="secondary" className="px-1.5 py-0.5 text-sm">
@@ -44,9 +46,10 @@ export const ResultCardFooter = ({
         </TooltipWrapper>
       </div>
 
-      <TooltipWrapper label={`合計ポイント: ${point + tBonus}`} asChild>
+      <TooltipWrapper label={t("totalPoint", { point: point + tBonus })} asChild>
         <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
-          ポイント: {point}
+          {t("point", { point: "" })}
+          {point}
           {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}
         </Badge>
       </TooltipWrapper>

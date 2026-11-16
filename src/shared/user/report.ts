@@ -15,6 +15,7 @@ export const getReportStatusBadgeVariant = (
   if (status === "PENDING") return "outline";
   if (status === "DISMISSED") return "secondary";
   if (status === "WARNED") return "warning";
+  if (status === "WARNING_REVOKED") return "secondary";
   return isReportedUserBanned ? "destructive" : "secondary";
 };
 
@@ -22,5 +23,6 @@ export const getReportStatusLabel = (status: (typeof REPORT_STATUS_TYPES)[number
   if (status === "PENDING") return "未処理";
   if (status === "DISMISSED") return "対処不要";
   if (status === "WARNED") return "警告済み";
+  if (status === "WARNING_REVOKED") return "警告解除済み";
   return isReportedUserBanned ? "BAN済み" : "BAN解除済み";
 };

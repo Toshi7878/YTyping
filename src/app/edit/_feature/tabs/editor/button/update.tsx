@@ -1,4 +1,5 @@
 import { atom, useAtomValue } from "jotai";
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/ui/button";
 import { isDialogOpen } from "@/utils/is-dialog-option";
@@ -31,6 +32,7 @@ const isUpdateButtonDisabledAtom = atom((get) => {
 });
 
 export const UpdateLineButton = () => {
+  const t = useTranslations("editorTab");
   const isUpdateButtonDisabled = useAtomValue(isUpdateButtonDisabledAtom);
 
   useHotkeys(
@@ -50,7 +52,8 @@ export const UpdateLineButton = () => {
       className="w-20 font-bold xl:w-28"
       onClick={updateLineAction}
     >
-      変更<small className="hidden sm:inline">(U)</small>
+      {t("update")}
+      <small className="hidden sm:inline">(U)</small>
     </Button>
   );
 };

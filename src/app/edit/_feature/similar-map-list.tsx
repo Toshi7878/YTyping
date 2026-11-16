@@ -1,5 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useSession } from "@/auth/client";
 import { orpc } from "@/orpc/provider";
 import { MapCard } from "@/shared/map/list/card/base";
@@ -11,6 +12,7 @@ interface SimilarMapListByVideoIdProps {
 }
 
 export const SimilarMapListByVideoId = ({ videoId }: SimilarMapListByVideoIdProps) => {
+  const t = useTranslations("editorLine");
   const { data: session } = useSession();
   const creatorId = useCreatorId();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
@@ -41,7 +43,7 @@ export const SimilarMapListByVideoId = ({ videoId }: SimilarMapListByVideoIdProp
 
   return (
     <div className="space-y-3">
-      <div className="font-bold text-lg">類似タイトルの譜面が{maps.length}件見つかりました</div>
+      <div className="font-bold text-lg">{t("similar", { count: maps.length })}</div>
       <div className="space-y-3">
         {maps.map((map) => (
           <MapCard key={map.id} map={map} />

@@ -1,7 +1,12 @@
 import z from "zod/v4";
+import { translate } from "@/i18n/translate";
 
 export const contactCreateSchema = z.object({
-  body: z.string().trim().min(1, "本文を入力してください").max(2000),
+  body: z
+    .string()
+    .trim()
+    .min(1, { error: () => translate("validation.contactBody") })
+    .max(2000),
 });
 
 export const contactReplySchema = z.object({

@@ -1,19 +1,8 @@
+import { useTranslations } from "next-intl";
 import { type SortIconState, SortToggleButton } from "@/ui/sort-toggle-button";
 import type { MAP_SORT_OPTIONS } from "@/validator/map/list";
 import { type MapListSortSearchParams, useMapListFilterQueryStates, useMapListSortQueryState } from "./search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./tag-filter";
-
-const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[] = [
-  { label: "公開日", value: "publishedAt" },
-  { label: "難易度", value: "difficulty" },
-  { label: "ランキング数", value: "ranking-count" },
-  { label: "いいね数", value: "like-count" },
-  { label: "曲の長さ", value: "duration" },
-  { label: "ランダム", value: "random" },
-  { label: "いいね", value: "like" },
-  { label: "記録登録日", value: "ranking-register" },
-  { label: "ブックマーク", value: "bookmark" },
-];
 
 const RANKING_STATUS_FOR_REGISTER_SORT: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
   "1st",
@@ -23,19 +12,33 @@ const RANKING_STATUS_FOR_REGISTER_SORT: (typeof RANKING_STATUS_FILTER_MENU.optio
 ];
 
 export const SortControls = () => {
+  const t = useTranslations("home.sort");
+  const sortOptions: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[] = [
+    { label: t("publishedAt"), value: "publishedAt" },
+    { label: t("difficulty"), value: "difficulty" },
+    { label: t("rankingCount"), value: "ranking-count" },
+    { label: t("likeCount"), value: "like-count" },
+    { label: t("duration"), value: "duration" },
+    { label: t("random"), value: "random" },
+    { label: t("like"), value: "like" },
+    { label: t("rankingRegister"), value: "ranking-register" },
+    { label: t("bookmark"), value: "bookmark" },
+  ];
   const [params] = useMapListFilterQueryStates();
   const [currentSort, setSortParam] = useMapListSortQueryState();
 
   return (
     <div className="flex select-none flex-wrap items-center gap-0.5">
-      {SORT_OPTIONS.filter(({ value }) => isSortOptionVisible(value, params)).map(({ label, value }) => (
-        <SortToggleButton
-          key={value}
-          label={label}
-          sortState={deriveSortIconState(value, currentSort)}
-          onClick={() => void setSortParam(deriveNextSortParam(value, currentSort))}
-        />
-      ))}
+      {sortOptions
+        .filter(({ value }) => isSortOptionVisible(value, params))
+        .map(({ label, value }) => (
+          <SortToggleButton
+            key={value}
+            label={label}
+            sortState={deriveSortIconState(value, currentSort)}
+            onClick={() => void setSortParam(deriveNextSortParam(value, currentSort))}
+          />
+        ))}
     </div>
   );
 };

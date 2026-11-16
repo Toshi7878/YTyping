@@ -1,0 +1,996 @@
+{
+  "header": {
+    "menu": {
+      "changelog": "Changelog",
+      "publicBookmarks": "Public bookmarks",
+      "bugReport": "Report a bug (GitHub)",
+      "tools": "Tools",
+      "credit": "Credits",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "apiDocs": "API Docs",
+      "contact": "Contact",
+      "timeline": "Timeline",
+      "ranking": "Ranking",
+      "userPage": "User page",
+      "userSettings": "Settings",
+      "adminReports": "User reports",
+      "adminResultReports": "Result reports",
+      "adminImportantNotices": "Important notices",
+      "adminInvalidResults": "Banned results",
+      "adminContacts": "Contacts"
+    },
+    "auth": {
+      "signInWithDiscord": "Sign in with Discord",
+      "signInWithGoogle": "Sign in with Google",
+      "signOut": "Sign out"
+    },
+    "theme": {
+      "label": "Theme",
+      "dark": "Dark themes",
+      "light": "Light themes"
+    },
+    "language": {
+      "label": "Language"
+    }
+  },
+  "common": {
+    "acknowledge": "Got it",
+    "search": "Search",
+    "searching": "Searching",
+    "create": "Create",
+    "open": "Open",
+    "clear": "Clear",
+    "all": "All",
+    "max": "Max",
+    "acknowledgeFailed": "Failed to record acknowledgement: {message}",
+    "cancel": "Cancel",
+    "selectPlaceholder": "Select an option",
+    "previous": "Previous",
+    "next": "Next",
+    "tag": "Tags",
+    "confirmLeave": "Are you sure you want to leave this page?",
+    "loginToClap": "Sign in to clap",
+    "styledMap": "Styled map",
+    "hasPlayVideo": "Has a play video",
+    "watchPlayVideo": "Watch the play video on {platform}",
+    "noticeDetails": "Learn more",
+    "unlisted": "Unlisted",
+    "public": "Public",
+    "private": "Private",
+    "creator": "Creator:",
+    "loading": "Loading…",
+    "more": "Show more"
+  },
+  "home": {
+    "notices": {
+      "expiresAt": "Shown until: {date}"
+    },
+    "contactReplies": {
+      "title": "Reply to your inquiry",
+      "body": "Your inquiry: {body}",
+      "history": "View inquiry history"
+    },
+    "controls": {
+      "mapCount": "Maps:"
+    },
+    "sort": {
+      "publishedAt": "Published",
+      "difficulty": "Difficulty",
+      "rankingCount": "Rankings",
+      "likeCount": "Likes",
+      "duration": "Length",
+      "random": "Random",
+      "like": "Liked",
+      "rankingRegister": "Record date",
+      "bookmark": "Bookmarked"
+    },
+    "filters": {
+      "user": "User",
+      "liked": "Liked",
+      "created": "Created by me",
+      "unlisted": "Unlisted",
+      "ranking": "Ranking",
+      "first": "1st place",
+      "notFirst": "2nd or lower",
+      "registered": "Registered",
+      "unregistered": "Not registered",
+      "perfect": "Perfect",
+      "none": "None",
+      "bookmark": "Bookmarks",
+      "japanese": "Japanese",
+      "english": "English",
+      "language": "language",
+      "languageRatio": "Japanese:{japanese}% | English:{english}%"
+    },
+    "keyword": {
+      "placeholder": "Enter keywords",
+      "maps": "Maps"
+    }
+  },
+  "timeline": {
+    "sort": {
+      "updatedAt": "Updated",
+      "typeCount": "Keystrokes",
+      "maxCombo": "Max combo",
+      "clap": "Claps",
+      "pp": "pp"
+    },
+    "search": {
+      "mapKeyword": "Filter by map keyword",
+      "username": "Filter by username"
+    },
+    "filter": {
+      "detail": "Advanced filters",
+      "clearRate": "% (clear rate)",
+      "playSpeed": "Speed",
+      "onlyWithVideo": "Only records with a play video",
+      "modeAll": "All",
+      "modeRoma": "Romaji",
+      "modeKana": "Kana",
+      "modeRomaKana": "Romaji & Kana",
+      "modeEnglish": "English"
+    },
+    "count": "Records:"
+  },
+  "pp": {
+    "modes": {
+      "total": "Overall",
+      "roma": "Romaji",
+      "kana": "Kana",
+      "flick": "Flick",
+      "english": "English"
+    },
+    "modeDescription": {
+      "roma": "Counts only results typed in romaji with {rate}% or less English input",
+      "kana": "Counts only results typed in kana with {rate}% or less English input",
+      "english": "Counts only results typed entirely in English"
+    }
+  },
+  "rankings": {
+    "performance": {
+      "metaTitle": "PP Ranking | YTyping",
+      "metaDescription": "Ranking by total Performance Points across all maps",
+      "title": "YTyping Skill Ranking",
+      "calcLink": "How PP is calculated",
+      "rank": "Rank",
+      "player": "Player",
+      "totalPp": "Total PP",
+      "info": "PP is a score that represents your skill. The higher the difficulty of the map and the higher your accuracy and clear rate, the more PP you earn. Total PP is calculated with a weighted sum of your top 200 maps by PP."
+    }
+  },
+  "layout": {
+    "notification": {
+      "label": "Notifications",
+      "empty": "No notifications yet",
+      "overtake": " overtook your #{rank} record by {diff} points",
+      "like": " liked a map you created",
+      "clap": " clapped for your record",
+      "bookmark": " bookmarked a map to the <list>{title}</list> list",
+      "reportResult": "Report result",
+      "reportedUser": "Reported user",
+      "adminComment": "Admin comment",
+      "open": "Open",
+      "warningTitle": "Warning",
+      "warningBadge": "Warning",
+      "warningComment": "Warning comment"
+    },
+    "activeUsers": {
+      "label": "Active users",
+      "count": "{count}",
+      "edit": "Editing a map",
+      "idle": "Idle"
+    },
+    "newMap": {
+      "label": "Create a new map",
+      "urlLabel": "Enter the URL of the YouTube video to make a map for",
+      "urlPlaceholder": "Enter a YouTube URL",
+      "confirmOverwrite": "A backup of a new map exists.\\nIf you create a new map, the backup will be deleted. Create a new map anyway?",
+      "backupTitle": "Title: {title}",
+      "backupExists": "A backup from last time exists."
+    },
+    "auth": {
+      "signIn": "Sign in",
+      "signOut": "Sign out"
+    }
+  },
+  "banned": {
+    "title": "Your account has been suspended",
+    "description": "This account was suspended for violating the Terms of Service.",
+    "reason": "Reason for suspension",
+    "signOut": "Sign out"
+  },
+  "contact": {
+    "inquiry": "Inquiry",
+    "reply": "Reply from the team"
+  },
+  "map": {
+    "card": {
+      "max": "Max",
+      "keystrokes": "Keystrokes",
+      "keystrokeCount": "{count}",
+      "english": "English",
+      "roma": "Romaji",
+      "kana": "Kana",
+      "hiragana": "Hiragana",
+      "letters": "Letters",
+      "symbols": "Symbols"
+    },
+    "myRank": "Your rank: <b>#{rank}</b> ({date})",
+    "createdVideo": {
+      "found": "Found {count, plural, one {# map} other {# maps}} for this video",
+      "notFound": "No maps were found for this video"
+    }
+  },
+  "bookmark": {
+    "saveTitle": "Save to bookmarks {count} / {max}",
+    "noLists": "No lists yet",
+    "public": "Public",
+    "private": "Private",
+    "mapCount": "{count, plural, one {# map} other {# maps}}",
+    "created": "List created",
+    "createFailed": "Failed to create: {message}",
+    "newList": "Create a new list",
+    "listName": "List name",
+    "visibility": "Visibility"
+  },
+  "result": {
+    "inputMode": {
+      "romaShort": "Roma",
+      "roma": "Romaji",
+      "kana": "Kana",
+      "flick": "Flick",
+      "english": "English",
+      "other": "Other"
+    },
+    "tooltip": {
+      "miss": "Misses",
+      "lost": "Lost",
+      "maxCombo": "Max combo",
+      "kanaToRomaKpm": "Romaji-eq. kpm",
+      "kanaToRomaRkpm": "Romaji-eq. rkpm",
+      "speed": "Speed",
+      "caseSensitive": "English capitals",
+      "enabled": "On",
+      "date": "Date",
+      "romaTypes": "Romaji",
+      "kanaTypes": "Kana",
+      "flickTypes": "Flick",
+      "otherTypes": "Alnum & symbols",
+      "totalTypes": "Total keystrokes",
+      "types": "Keystrokes"
+    },
+    "speed": "speed",
+    "creator": "Creator:",
+    "underReview": "Under review"
+  },
+  "report": {
+    "status": {
+      "PENDING": "Pending",
+      "DISMISSED": "No action needed",
+      "WARNED": "Warned",
+      "WARNING_REVOKED": "Warning revoked",
+      "BANNED": "Banned",
+      "UNBANNED": "Ban lifted"
+    },
+    "reasons": {
+      "CHEATING": "Cheating",
+      "HARASSMENT": "Harassment",
+      "SPAM": "Spam",
+      "INAPPROPRIATE": "Inappropriate content",
+      "OTHER": "Other"
+    }
+  },
+  "user": {
+    "title": "Player info",
+    "tabs": {
+      "stats": "Typing stats",
+      "maps": "Created maps",
+      "results": "Ranking history",
+      "liked": "Liked maps",
+      "bookmarks": "Bookmark lists"
+    },
+    "summary": {
+      "updateNote": "Stats are updated on retry, when you leave the page, and when results are shown",
+      "noData": "No data",
+      "romaTypes": "Romaji keystrokes",
+      "kanaTypes": "Kana keystrokes",
+      "englishTypes": "English keystrokes",
+      "spaceTypes": "Space keystrokes",
+      "numTypes": "Number keystrokes",
+      "symbolTypes": "Symbol keystrokes",
+      "flickTypes": "Flick keystrokes",
+      "imeTypes": "Keystrokes with conversion",
+      "totalTypes": "Total keystrokes",
+      "startedAt": "Tracking since",
+      "typingTime": "Typing time",
+      "playCount": "Play count",
+      "maxCombo": "Max combo",
+      "duration": "{hours}h {minutes}m {seconds}s",
+      "keystrokeInfo": "Keystrokes",
+      "hidden": "This player's typing stats are private",
+      "hiddenNoticeTitle": "Your stats are set to private",
+      "onlyYouCanView": "Only you can currently view your profile",
+      "viewAsOthers": "View the page as others see it",
+      "showStats": "Show stats",
+      "changeSettings": "Change settings"
+    },
+    "topPp": {
+      "titleWithCount": "Best performances TOP {count}",
+      "desc": "Descending",
+      "asc": "Ascending"
+    },
+    "activity": {
+      "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "totalCount": "{{count}} keystrokes",
+      "roma": "Romaji",
+      "kana": "Kana",
+      "other": "Alphanumerics & symbols",
+      "ime": "Keystrokes with conversion",
+      "total": "Total keystrokes: {count}",
+      "date": "Date: {date}",
+      "none": "No activity",
+      "level": "{label} level: {level}"
+    },
+    "warning": {
+      "tooltip": "Show warning history (not visible to other users)",
+      "title": "Warning history"
+    },
+    "noticeHistory": {
+      "tooltip": "Show important notice history (not visible to other users)",
+      "title": "Important notice history",
+      "empty": "No important notices",
+      "acknowledgedAt": " / Acknowledged: {date}",
+      "acknowledged": "Acknowledged",
+      "expired": "Expired",
+      "unacknowledged": "Not acknowledged"
+    },
+    "report": {
+      "success": "Report submitted",
+      "failed": "Failed to submit report: {message}",
+      "tooltip": "Report this user",
+      "titleNamed": "Report {name}?",
+      "titleUnnamed": "Report this user?",
+      "category": "Report category",
+      "detail": "Reason",
+      "placeholder": "Describe the reason in detail.",
+      "submit": "Submit report",
+      "submitting": "Submitting..."
+    },
+    "resultSummary": {
+      "registered": "Registered maps",
+      "firstCount": "1st-place maps",
+      "firstRate": "1st-place rate"
+    },
+    "bookmarkLists": {
+      "empty": "No bookmark lists",
+      "count": "{count, plural, one {# map} other {# maps}}",
+      "deleted": "List deleted",
+      "deleteFailed": "Failed to delete: {message}",
+      "deleteTitle": "Delete list",
+      "deleteDescription": "Are you sure you want to delete this list? This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "edit": "Edit",
+      "delete": "Delete",
+      "edited": "List updated",
+      "editFailed": "Failed to update: {message}",
+      "editTitle": "Edit list"
+    },
+    "profile": {
+      "fingerChart": "Finger chart",
+      "viewFingerChart": "View finger chart",
+      "fingerChartUnset": "No finger chart set",
+      "keyboard": "Keyboard",
+      "keyboardUnset": "No keyboard set",
+      "rank": "Skill rank:",
+      "reviewRecords": "Records under review",
+      "editTooltip": "Go to profile settings"
+    },
+    "resultList": {
+      "reviewRecords": "Records under review ({count})",
+      "reviewNote": "These results are visible only to the player. Records under review are excluded from rankings and PP."
+    }
+  },
+  "userSettings": {
+    "profileTitle": "Profile settings",
+    "optionsTitle": "User settings",
+    "presence": "Online status",
+    "presenceOnline": "Share the song I'm playing",
+    "presenceAskMe": "Hide the song I'm playing",
+    "presenceHide": "Hide online status",
+    "hideStats": "Make typing stats on my profile page private",
+    "fingerChartLabel": "Finger chart URL (Minna no Unshihyo)",
+    "fingerChartPlaceholder": "Paste a URL from http://unsi.nonip.net/user/[id]",
+    "fingerChartUpdated": "URL updated",
+    "fingerChartCreate": "Create a finger chart",
+    "keyboardLabel": "Keyboard",
+    "updated": "Updated",
+    "nameLabel": "Name",
+    "namePlaceholder": "Enter a name",
+    "namePlaceholderRegister": "Enter a name (you can change it later)",
+    "nameUpdated": "Name updated",
+    "nameAvailable": "This name is available",
+    "updating": "Updating...",
+    "submitName": "Set name"
+  },
+  "typing": {
+    "lineResult": {
+      "missLost": "Miss: {miss}, Lost: {lost}",
+      "totalPoint": "Total points: {point}",
+      "point": "Points: {point}",
+      "modeRoma": "(Romaji)",
+      "modeKana": "(Kana)",
+      "kpmTooltip": "Required speed {mode}",
+      "notesTooltip": "Required keystrokes {mode}",
+      "speed": "({speed}x)",
+      "notes": "{count}",
+      "detailTitle": "Detailed results"
+    },
+    "ready": {
+      "modeRoma": "Romaji",
+      "modeKana": "Kana",
+      "modeFlick": "Flick",
+      "loadingResult": "Loading result data...",
+      "practiceStart": "Start in practice mode",
+      "start": "Press Enter / click the video to start",
+      "speedHint": "Speeds below 1.00x start practice mode.",
+      "speed": "x",
+      "loadRecord": "Load registered record",
+      "loadFailed": "Failed to load result data"
+    },
+    "scene": {
+      "confirmPractice": "Switch to practice mode?",
+      "confirmPlay": "Switch to ranked play? If you agree, playback restarts from the beginning."
+    },
+    "hotkey": {
+      "timeOffset": "Timing offset: {value}"
+    },
+    "end": {
+      "registered": "Registered to the ranking",
+      "registerFailed": "Failed to register to the ranking",
+      "notUpdated": "Score not improved",
+      "notUpdatedDescription": "This is lower than your registered score. Register to the ranking anyway?",
+      "registerLabel": "Register",
+      "registerDone": "Registered",
+      "register": "Register to ranking",
+      "detail": "View detailed results",
+      "retryTitle": "Confirm retry",
+      "retryDescription": "If you retry, this record will be lost. Retry anyway?",
+      "retry": "Retry",
+      "againPractice": "Practice again",
+      "againReplay": "Replay again",
+      "againPlay": "Play again",
+      "toPractice": "Practice mode",
+      "toPlay": "Ranked mode",
+      "perfect": "Perfect!! ",
+      "needSpeed": "You can register to the ranking at 1.00x speed or higher.",
+      "practiceEnd": "Practice mode ended",
+      "replayEnd": "Replay ended",
+      "scoreLogin": "Your score is {score}. Sign in to register it to the ranking.",
+      "firstRecord": "Your first record! Your score is {score}.",
+      "newBest": "Congratulations! Your best score improved from {best} to {score}! ",
+      "bestInfo": "Your best score is {best}. You need {diff} more to beat it."
+    },
+    "footer": {
+      "disableStyle": "Disable map styling",
+      "ime": "Typing with conversion",
+      "speed": "{speed}x",
+      "retry": "Retry",
+      "move": "Move",
+      "list": "List",
+      "maxKpm": "Max kpm: {kpm}"
+    },
+    "card": {
+      "remain": "",
+      "seconds": "s"
+    },
+    "tabs": {
+      "status": "Status",
+      "ranking": "Ranking"
+    },
+    "action": {
+      "bookmark": "Bookmark",
+      "like": "Like",
+      "edit": "Edit"
+    },
+    "settings": {
+      "timeEarlier": "Makes the timing earlier",
+      "timeLater": "Makes the timing later",
+      "timeOffset": "Overall timing adjustment",
+      "caseSensitive": "Enable case-sensitive judgment for letters",
+      "beforeStartOnly": "Can only be changed before starting",
+      "flickHighlight": "Highlight the next key when typing with flick",
+      "typeSound": "Type sound",
+      "missSound": "Miss sound",
+      "completedSound": "Completion sound",
+      "sound": "Sound",
+      "wordScrollTitle": "Word scroll",
+      "mainStart": "Main start position",
+      "mainStartLeft": "Moves the main word scroll start position left",
+      "mainStartRight": "Moves the main word scroll start position right",
+      "subStart": "Sub start position",
+      "subStartLeft": "Moves the sub word scroll start position left",
+      "subStartRight": "Moves the sub word scroll start position right",
+      "scrollAnimOn": "Animated",
+      "scrollAnimOff": "Not animated",
+      "scrollAnimation": "Scroll animation",
+      "hotkeyTitle": "Shortcut keys",
+      "timeAdjust": "Timing adjustment",
+      "disabled": "Disabled",
+      "toggleKey": "Kana ⇔ Romaji toggle",
+      "windowTitle": "Window width",
+      "windowWidth": "Width",
+      "windowWider": "Widens the window (up to 1400px)",
+      "windowNarrower": "Narrows the window (down to 1000px)",
+      "reset": "Reset",
+      "wordTitle": "Word display",
+      "mainSize": "Main size",
+      "kanaBigger": "Increases the kana font size.",
+      "kanaSmaller": "Decreases the kana font size.",
+      "subSize": "Sub size",
+      "romaBigger": "Increases the romaji font size.",
+      "romaSmaller": "Decreases the romaji font size.",
+      "mainPosition": "Main position",
+      "kanaUp": "Moves the kana display up.",
+      "kanaDown": "Moves the kana display down.",
+      "subPosition": "Sub position",
+      "romaUp": "Moves the romaji display up.",
+      "romaDown": "Moves the romaji display down.",
+      "kanaSpacing": "Kana spacing",
+      "kanaSpacingUp": "Increases the spacing of kana.",
+      "kanaSpacingDown": "Decreases the spacing of kana.",
+      "romaSpacing": "Romaji spacing",
+      "romaSpacingUp": "Increases the spacing of romaji.",
+      "romaSpacingDown": "Decreases the spacing of romaji.",
+      "wordDisplay": "Word display style",
+      "KANA_ROMA_UPPERCASE": "↑Kana ↓Romaji (uppercase)",
+      "KANA_ROMA_LOWERCASE": "↑Kana ↓Romaji (lowercase)",
+      "ROMA_KANA_UPPERCASE": "↑Romaji ↓Kana (uppercase)",
+      "ROMA_KANA_LOWERCASE": "↑Romaji ↓Kana (lowercase)",
+      "KANA_ONLY": "Kana only",
+      "ROMA_UPPERCASE_ONLY": "Romaji only (uppercase)",
+      "ROMA_LOWERCASE_ONLY": "Romaji only (lowercase)",
+      "tabMain": "General",
+      "tabDisplay": "Display",
+      "tabKeyboard": "Keyboard",
+      "resetTitle": "Reset settings",
+      "resetDescription": "Reset all settings to their defaults?",
+      "resetConfirm": "Reset",
+      "resetDone": "Settings reset",
+      "tooltip": "Settings",
+      "highlight": "Highlight word",
+      "nextWord": "Show next word",
+      "lineCompleted": "Word display on completion",
+      "lyrics": "Lyrics",
+      "word": "Word",
+      "nextDisplay": "Next lyrics display"
+    },
+    "ranking": {
+      "underReview": "Records under review (visible only to you; not counted in the ranking)",
+      "rank": "Rank",
+      "clearRate": "Clear rate",
+      "name": "Name",
+      "mode": "Mode",
+      "time": "Time",
+      "clapCancel": "Remove clap",
+      "clap": "Clap"
+    },
+    "rankingMenu": {
+      "banned": "Record banned",
+      "banFailed": "Failed to ban: {message}",
+      "videoSet": "Play video registered",
+      "videoSetFailed": "Failed to register the play video: {message}",
+      "videoRemoved": "Play video removed",
+      "videoRemoveFailed": "Failed to remove the play video: {message}",
+      "videoChangeTitle": "Change play video",
+      "videoSetTitle": "Register play video",
+      "videoPrompt": "Enter the URL of the play video for this record. (YouTube and TikTok video page URLs are supported)",
+      "videoPlaceholder": "https://www.youtube.com/watch?v=... / https://www.tiktok.com/@username/video/...",
+      "register": "Register",
+      "unsupportedUrl": "This video URL is not supported",
+      "removeTitle": "Remove the play video?",
+      "removeDescription": "This removes the play video registered to this record.",
+      "remove": "Remove",
+      "reportSent": "Report submitted",
+      "reportFailed": "Failed to submit report: {message}",
+      "reportTitle": "Report this record?",
+      "reportDescription": "If this record may be fraudulent, please enter the reason. An admin will review it.",
+      "reportPlaceholder": "Enter the reason for your report.",
+      "report": "Report",
+      "banTitle": "Ban this record?",
+      "banDescription": "This marks the record as invalid. It will no longer appear in the ranking or other users' record lists, and it won't count toward PP. This does not ban the user.",
+      "ban": "Ban",
+      "loadingResult": "Loading result data...",
+      "loadFailed": "Failed to load result data",
+      "mapUpdated": "The map was updated after this replay was registered",
+      "mapUpdatedDescription": "It may not play back correctly",
+      "userPage": "User page ",
+      "replay": "Play replay",
+      "clapped": "Clapped",
+      "clapAction": "Clap for this record",
+      "watchVideo": "Watch the play video on {platform}",
+      "removeVideo": "Remove play video",
+      "reportAction": "Report this record",
+      "banAction": "Ban this record"
+    },
+    "youtube": {
+      "loadingMap": "Loading map..."
+    }
+  },
+  "ime": {
+    "menu": {
+      "speed": "Speed",
+      "start": "Start",
+      "end": "End",
+      "result": "Results",
+      "settings": "Settings",
+      "back": "Back to typing page"
+    },
+    "rules": {
+      "englishSpaces": "English spaces on",
+      "englishCaps": "English capitals on",
+      "symbols": "Symbol input on"
+    },
+    "ranking": "#{rank} {name}: {score} pts",
+    "guest": "Guest",
+    "placeholder": {
+      "ready": "Click the video / press Enter to start",
+      "skip": "Type the word (Enter to submit)\nType skip to skip",
+      "end": "Type the word (Enter to submit)\nType end to finish",
+      "finished": "Good work!\nType result to see your results",
+      "default": "Type the word (Enter to submit)"
+    },
+    "loading": {
+      "hiragana": "Generating hiragana judgment...",
+      "map": "Loading map...",
+      "failed": "Failed to generate words.",
+      "retry": "Retry"
+    },
+    "settings": {
+      "main": "General",
+      "includeRegex": "Add custom judged characters",
+      "englishSpaces": "Enable English spaces",
+      "caseSensitive": "Enable case-sensitive judgment",
+      "fontSize": "Lyrics font size",
+      "fontBigger": "Increases the lyrics font size.",
+      "fontSmaller": "Decreases the lyrics font size.",
+      "nextLyrics": "Show next lyrics"
+    },
+    "result": {
+      "title": "Results",
+      "point": "pts",
+      "score": "Score",
+      "typeCount": "Keystrokes",
+      "judge": "Judgment",
+      "input": "Input",
+      "lyrics": "Lyrics"
+    }
+  },
+  "legal": {
+    "translationNotice": "This is a translation provided for convenience. If there is any discrepancy, the Japanese version prevails."
+  },
+  "terms": {
+    "metaTitle": "Terms of Service - YTyping",
+    "metaDescription": "Terms of Service for YTyping",
+    "title": "Terms of Service",
+    "introTitle": "Introduction",
+    "intro": "These terms set out the conditions for using YTyping (the \"Service\"). By using the Service, you are deemed to have agreed to these terms.",
+    "prohibitedTitle": "Prohibited conduct",
+    "prohibitedIntro": "The following conduct is prohibited on the Service.",
+    "prohibited": [
+      "Defaming, harassing, or making discriminatory remarks toward other users",
+      "Spamming or improper account manipulation",
+      "Interfering with the operation of the Service",
+      "Violating laws or public order and morals",
+      "Any other conduct the operator deems inappropriate"
+    ],
+    "suspensionTitle": "Account suspension",
+    "suspension": "If you violate the prohibited conduct above, your account may be suspended (banned) after a warning. In serious cases, an account may be suspended without a warning.",
+    "recordsTitle": "Review of typing records",
+    "records": "If the operator cannot determine whether a typing record registered on the Service was made through regular input, the operator may ask the user who registered it to confirm.",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimer": "The operator is not liable for any damage arising from the use of the Service. The Service may be changed or suspended without notice.",
+    "contactTitle": "Contact",
+    "contact": "For inquiries about these terms, please contact us via GitHub Issues or Discussions."
+  },
+  "privacy": {
+    "metaTitle": "Privacy Policy - YTyping",
+    "metaDescription": "Privacy Policy for YTyping",
+    "title": "Privacy Policy",
+    "collectTitle": "Information we collect",
+    "collectIntro": "The Service collects the following information.",
+    "collect": [
+      "The email address required for authentication (stored hashed in an irreversible form)",
+      "Service usage history (typing game logs)",
+      "User settings within the Service"
+    ],
+    "authTitle": "External authentication services",
+    "authIntro": "The Service uses the following authentication providers.",
+    "auth": "We obtain the access permissions to user information that authentication requires, but the personal information the Service stores is kept to a minimum: only a value obtained by hashing your email address in an irreversible form for authentication. We do not retain any other information (such as your username or profile picture).",
+    "purposeTitle": "Purpose of use",
+    "purposeIntro": "The collected information is used for the following purposes.",
+    "purpose": [
+      "Identity verification and account management",
+      "Providing the Service and improving its quality",
+      "Analyzing usage"
+    ],
+    "thirdPartyTitle": "Disclosure to third parties",
+    "thirdParty": "Except where required by law, we will not provide personal information to third parties without the user's consent.",
+    "contactTitle": "Contact",
+    "contact": "For inquiries about this policy, please contact us via GitHub Issues or Discussions."
+  },
+  "contactPage": {
+    "title": "Contact",
+    "loginRequired": "You need to sign in to contact us. Please sign in from the menu at the top right.",
+    "note": "The developer will review and reply. Replies are kept in your inbox regardless of whether you are online. We reply to every inquiry, so if you haven't received a reply, we may have missed it — please contact us again.",
+    "history": "Inquiry history",
+    "sent": "Your inquiry was sent",
+    "body": "Message",
+    "submit": "Send",
+    "empty": "No inquiry history"
+  },
+  "bookmarks": {
+    "title": "Public bookmarks",
+    "back": "Back to bookmarks",
+    "count": "{count, plural, one {# map} other {# maps}}"
+  },
+  "changelogPage": {
+    "title": "Changelog",
+    "updated": "Last updated: {date}"
+  },
+  "manualPp": {
+    "title": "Map difficulty and PP calculation",
+    "ratingTitle": "Difficulty (Rating)",
+    "ratingDescription": "A numeric measure of each song's typing difficulty, calculated from KPM and character diversity.",
+    "caveat": "* The calculation may be revised.",
+    "source": "Source code:",
+    "ppDescription": "Points calculated from your play results. Accuracy, clear rate, speed, and difficulty are all taken into account.",
+    "ppCaveat": "* Results on maps that were updated after the first PP calculation (before 2026-4-22) have an unknown rating, so they are set to 0pp.",
+    "code": "Code",
+    "rating": {
+      "kpm": {
+        "title": "Calculating KPM",
+        "body": "Calculates the romaji KPM (Keys Per Minute) of each line. Lines above 1700 KPM are excluded as outliers.",
+        "formula": "KPM = (notes in the line ÷ line duration) × 60"
+      },
+      "diversity": {
+        "title": "Character diversity score (Diversity)",
+        "body": "Evaluates the character distribution of the words in each line with Shannon entropy and produces a diversity score from 0 to 1. Lines that repeat the same character, such as \"aaa…\", score lower.",
+        "formula": "diversity = H(character distribution) / log₂(character count)\n* All characters the same → 0, all different → close to 1"
+      },
+      "penalty": {
+        "title": "Applying the diversity penalty",
+        "body": "For lines whose diversity score is below the threshold (0.6), KPM is attenuated exponentially. This corrects the difficulty of lines with a lot of repeated characters.",
+        "formula": "diversity ≥ 0.6  →  no penalty (× 1.0)\ndiversity < 0.6  →  adjustedKPM = KPM × (diversity / 0.6)²"
+      },
+      "score": {
+        "title": "Calculating the difficulty score (difficultyScore)",
+        "body": "Combines the notes-weighted average KPM with the average of the top 2 lines by adjusted KPM (peak KPM) at a 7:3 ratio to get the difficulty score.",
+        "formula": "avgKPM  = Σ(adjustedKPM × share of notes)\npeakKPM = average adjustedKPM of the top 2 lines\ndifficultyScore = avgKPM × 0.7 + peakKPM × 0.3"
+      },
+      "notes": {
+        "title": "Note count correction",
+        "body": "Corrects on a logarithmic scale around a total of 270 notes. Songs with fewer notes are adjusted down and songs with more notes up (capped at ×1.1).",
+        "formula": "notesScaling = clamp(1.0 + log(totalNotes / 270) × 0.17,  min=0,  max=1.1)"
+      },
+      "final": {
+        "title": "Difficulty",
+        "body": "Divides the difficulty score by 100 and multiplies by the note correction to get the final difficulty.",
+        "formula": "rating = (difficultyScore / 100) × notesScaling"
+      }
+    },
+    "pp": {
+      "base": {
+        "title": "Base PP",
+        "body": "Calculates the base PP from the difficulty. rating: difficulty",
+        "formula": "basePP = rating × 100"
+      },
+      "clearRate": {
+        "title": "Clear rate correction",
+        "body1": "Starting from 100%, subtracts according to the number of misses and missed notes. Kana input is also calculated in romaji equivalents.",
+        "legend1": "totalNotes: total romaji notes, missCount: misses, lostNotes: missed notes, keyRate: 100/totalNotes, missRate: half of keyRate",
+        "formula1": "keyRate  = 100 / totalNotes\nmissRate = keyRate / 2\n\nclearRate = 100 − missCount × missRate − lostNotes × keyRate",
+        "body2": "Corrects by raising the clear rate to a power. The higher the difficulty, the smaller the exponent, so PP is easier to earn even with a low clear rate.",
+        "legend2": "clearRate: clear rate, exp: correction exponent",
+        "formula2": "exp = 1.2 + 1.0 / (1 + rating / 8)\n  rating=0  → exp≈2.2\n  rating=5  → exp≈1.7\n  rating=10 → exp≈1.53\n\ncorrection = clearRate ^ exp"
+      },
+      "accuracy": {
+        "title": "Accuracy correction",
+        "body": "Calculates accuracy as successful keystrokes ÷ (keystrokes + misses) and squares it. The lower the accuracy, the more PP drops.",
+        "legend": "accuracy: accuracy, type: keystrokes, miss: misses",
+        "formula": "accuracy = type / (type + miss)\ncorrection = accuracy²"
+      },
+      "speed": {
+        "title": "Speed correction",
+        "body": "The correction rises at playback speeds of 1.0 or higher, up to a maximum of 1.5x. (Speeds below 1.0 cannot be registered to the ranking.)",
+        "formula": "speedMultiplier = min(1 + (speed - 1) × 0.5,  max=1.5)"
+      },
+      "raw": {
+        "title": "PP of a map result",
+        "body": "Calculates the PP of each score.",
+        "formula": "rawPP = basePP × accuracy² × clearRate^exp × speedMultiplier"
+      },
+      "total": {
+        "title": "Total PP for the skill ranking",
+        "body": "Picks the top 200 scores by PP and sums them with a decay of 0.95 per rank. The best score contributes the most, and contributions shrink as the rank goes down.",
+        "formula": "totalPP = Σ pp[i] × 0.95^i   (i = 0 to 199, top 200)"
+      }
+    }
+  },
+  "editor": {
+    "tabs": {
+      "info": "Info & save",
+      "editor": "Editor",
+      "settings": "Shortcuts & settings"
+    },
+    "loadingVideo": "Loading video...",
+    "noPermission": "You don't have permission to edit and save, so the map can't be updated",
+    "optionSet": "Set",
+    "optionUnset": "Not set",
+    "timeHint": "↓↑: adjust by 0.05, Enter: play",
+    "rubyHint": "Press Enter to insert a ruby tag.",
+    "convert": "Convert",
+    "speed": "x",
+    "replace": {
+      "searchPrompt": "Enter the reading you want to replace.",
+      "replacePrompt": "Enter the replacement characters.",
+      "containsError": "Sorry... the replacement characters must not contain the characters you are searching for.",
+      "confirm": "{count} left\n{word}\nReplace?"
+    }
+  },
+  "editorSettings": {
+    "import": {
+      "readError": "Failed to read the file",
+      "empty": "The text is empty",
+      "importing": "Importing lrc...",
+      "done": "Import complete",
+      "lrcDone": "lrc import complete",
+      "lrcError": "lrc error",
+      "processError": "An error occurred while processing the file.",
+      "button": "Import lrc",
+      "fromFile": "Load from an lrc file",
+      "placeholder": "[00:00.00]Lyrics\n[00:05.00]Lyrics...",
+      "confirm": "Confirm"
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "skip": "Skip 3 seconds",
+      "moveLine": "Move the selected line",
+      "add": "Add",
+      "addEmpty": "Add an empty line",
+      "update": "Update",
+      "delete": "Delete",
+      "play": "Play / stop",
+      "deselect": "Deselect the line",
+      "focus": "Switch focus to the lyrics textarea",
+      "replaceAll": "Replace readings everywhere",
+      "undo": "Undo",
+      "redo": "Redo",
+      "ruby": "Insert a ruby tag around the selected text in the lyrics box",
+      "directEdit": "Direct edit mode",
+      "directEditKey": "Ctrl + click a registered lyric"
+    },
+    "convert": {
+      "title": "Reading",
+      "noSymbol": "No symbols",
+      "noSymbolDescription": "Converts readings without symbols in the word, except for some symbols.",
+      "someSymbol": "Some symbols",
+      "someSymbolDescription": "Converts some symbols into readings.",
+      "allSymbol": "All symbols",
+      "allSymbolDescription": "Converts every symbol that can be typed on the keyboard into readings.",
+      "symbols": "Converted symbols: {symbols}"
+    },
+    "timeAdjust": {
+      "done": "Timing adjusted",
+      "doneDescription": "All timings were adjusted by {value} seconds. Press Ctrl + Z to go back.",
+      "tooltip": "Enter a number and press Run to shift all timings by that amount",
+      "label": "Adjust all timings",
+      "run": "Run"
+    }
+  },
+  "editorTab": {
+    "add": "Add",
+    "update": "Update",
+    "delete": "Delete",
+    "convert": "Convert",
+    "convertNoPermission": "Reading conversion can be used when you have permission to edit and save",
+    "convertFailed": "Reading conversion failed",
+    "lyrics": "Lyrics",
+    "word": "Word",
+    "rubyHint": "Press Enter to insert a ruby tag.",
+    "manyPlaceholder": "You can add lyrics in bulk here.\nS key: add lyrics\nCtrl+Z: undo adding lyrics",
+    "removeSymbolsTitle": "Remove symbols",
+    "removeSymbolsDescription": "Removes symbols that reading conversion cannot convert from the lyrics textarea. This cannot be undone. Continue?",
+    "removeSymbolsConfirm": "Remove",
+    "removeSymbolsDone": "Removed the symbols in the lyrics textarea",
+    "removeSymbolsDoneDescription": "Removed the symbols that reading conversion cannot convert",
+    "removeSymbolsTooltip1": "Removes symbols that reading conversion cannot convert.",
+    "removeSymbolsTooltip2": "* Which symbols are removed depends on the reading conversion setting in the Settings tab.",
+    "timeAdjust": {
+      "recommended": "Recommended: correction -0.2 to -0.25 s",
+      "featureLabel": "Function: ",
+      "feature": "When you add or update a line while YouTube is playing, the timing is corrected automatically by this value before it is recorded.",
+      "effectLabel": "Effect: ",
+      "effect": "If you press the add button at the exact moment a lyric line starts, the timing will be recorded accurately.",
+      "bluetooth": "When using a Bluetooth keyboard or wireless earphones, adjust the correction to match the delay.",
+      "label": "Timing offset"
+    }
+  },
+  "editorInfo": {
+    "previewTimeNumber": "The preview time must be a number",
+    "title": "Title",
+    "artist": "Artist",
+    "source": "Source",
+    "comment": "Comment",
+    "titleGenerating": "Generating the title...",
+    "artistGenerating": "Generating the artist...",
+    "sourceGenerating": "Generating the source...",
+    "tagsMin": "Add at least 2 tags",
+    "tagsAdd": "Add tags {count} / {max}",
+    "save": "Save",
+    "videoPasteHint": "Paste a video URL to fill in the ID automatically",
+    "videoId": "Video ID",
+    "switchVideo": "Switch video",
+    "public": "Public",
+    "publicDescription": "Shown in the map list",
+    "unlisted": "Unlisted",
+    "unlistedDescription": "Only users who know the map URL can access it",
+    "visibility": "Visibility",
+    "previewTip1": "In the map list, the preview will play from this time. (The chorus time is recommended.)",
+    "previewTip2": "* If you specify a small number, the time of the first typing word is used.",
+    "previewTip3": "↑↓ keys: adjust by 0.05, Enter: play",
+    "previewTime": "Preview time",
+    "toTyping": "Go to the typing page",
+    "uploaded": "Upload complete",
+    "updated": "Update complete",
+    "saveFailed": "Failed to save",
+    "noEditPermission": "You don't have permission to edit this map.",
+    "tagLimit": "You can add up to 10 tags"
+  },
+  "editorLine": {
+    "confirmClose": "Your line option changes are not saved. Close without saving?",
+    "title": "Line options",
+    "selected": "Selected line: {index}",
+    "caseSensitive": "Enable case-sensitive input for this map",
+    "speedChange": "Speed change",
+    "speedDown": "Speed down",
+    "speedUp": "Speed up",
+    "speed": "Speed: ",
+    "eternalCss": "Enter CSS to apply permanently",
+    "enableChange": "Enable line switching",
+    "changeCss": "Enter CSS to apply from the selected line",
+    "save": "Save line options",
+    "similar": "Found {count, plural, one {# map} other {# maps}} with a similar title"
+  },
+  "validation": {
+    "contactBody": "Please enter a message",
+    "maxChars500": "Please enter 500 characters or fewer",
+    "userNameSpaces": "The text cannot start or end with spaces",
+    "userNameZeroWidth": "Zero-width spaces are not allowed",
+    "fingerChartUrl": "The URL must be in the form \"http://unsi.nonip.net/user/{id}\".",
+    "titleRequired": "Please enter a title",
+    "titleMax": "The title must be {max} characters or fewer",
+    "artistRequired": "Please enter an artist name",
+    "artistMax": "The artist name must be {max} characters or fewer",
+    "sourceMax": "The source must be {max} characters or fewer",
+    "commentMax": "The comment must be {max} characters or fewer",
+    "tagsMin": "At least 2 tags are required",
+    "previewTimeNumber": "The preview time must be a number",
+    "lrcEmpty": "The LRC file is empty",
+    "lrcInvalid": "No valid LRC timestamp ([mm:ss.xx] format) was found",
+    "mapXss": "Map data cannot contain HTML tags (script/iframe/object/embed)",
+    "mapHttp": "Map data cannot contain text starting with http",
+    "mapNoWords": "No typing words are set",
+    "mapEnd": "The last lyric must be 'end'",
+    "mapStartZero": "The first time must be 0",
+    "mapTimesNumbers": "All times must be numbers",
+    "mapAfterEnd": "There are invalid lines after end",
+    "mapUniqueTimes": "Two or more lines have the same time.",
+    "mapCss": "The total length of custom CSS must be 100000 characters or fewer"
+  },
+  "maintenance": {
+    "title": "Under maintenance",
+    "description": "The server is currently undergoing maintenance."
+  }
+}

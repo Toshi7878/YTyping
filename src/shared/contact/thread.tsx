@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/date";
 
@@ -10,12 +11,12 @@ interface ContactExchangeProps {
 
 /** お問い合わせの内容と、運営からの返信 */
 export const ContactExchange = ({ body, createdAt, replyBody, repliedAt }: ContactExchangeProps) => {
+  const t = useTranslations("contact");
+
   return (
     <div className="flex flex-col gap-2">
-      <ContactBubble label="お問い合わせ" date={createdAt} body={body} />
-      {replyBody && repliedAt ? (
-        <ContactBubble label="運営からの返信" date={repliedAt} body={replyBody} isReply />
-      ) : null}
+      <ContactBubble label={t("inquiry")} date={createdAt} body={body} />
+      {replyBody && repliedAt ? <ContactBubble label={t("reply")} date={repliedAt} body={replyBody} isReply /> : null}
     </div>
   );
 };

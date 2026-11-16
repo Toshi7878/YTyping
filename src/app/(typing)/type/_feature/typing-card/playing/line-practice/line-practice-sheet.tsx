@@ -1,6 +1,7 @@
 "use client";
 import { skipToken, useQuery, useQueryClient } from "@tanstack/react-query";
 import { atom } from "jotai";
+import { useTranslations } from "next-intl";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { type BuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { getSession, useSession } from "@/auth/client";
@@ -33,6 +34,7 @@ const HOVER_EXTRA_WIDTH = 200;
 const LAYOUT_CALCULATE_DELAY_MS = 100;
 
 const LoadResultButton = ({ userId }: { userId: number }) => {
+  const t = useTranslations("typing.ready");
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const isRankingResultLoaded = useIsRankingResultLoaded();
@@ -58,7 +60,7 @@ const LoadResultButton = ({ userId }: { userId: number }) => {
       setInitialLineResults(resultData);
       setRankingResultLoaded(true);
     } catch {
-      toast.error("リザルトデータの読み込みに失敗しました");
+      toast.error(t("loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +68,7 @@ const LoadResultButton = ({ userId }: { userId: number }) => {
 
   return (
     <Button variant="outline" size="xs" className="text-xs" loading={isLoading} onClick={handleClick}>
-      登録記録を読込
+      {t("loadRecord")}
     </Button>
   );
 };

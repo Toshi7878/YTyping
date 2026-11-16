@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/ui/button";
 import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/ui/dialog";
@@ -15,6 +16,7 @@ import { YTPlayer } from "../../youtube-player";
 import { wordConvertAction } from "../editor/button/word-convert";
 
 export const MapImportButton = () => {
+  const t = useTranslations("editorSettings.import");
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
 
@@ -23,18 +25,18 @@ export const MapImportButton = () => {
       const buffer = await file.arrayBuffer();
       setText(decodeText(buffer));
     } catch {
-      toast.error("ファイル読み込みエラー");
+      toast.error(t("readError"));
     }
   };
 
   const handleImport = async () => {
     if (!text.trim()) {
-      toast.error("テキストが空です");
+      toast.error(t("empty"));
       return;
     }
 
     setOpen(false);
-    overlay.loading("lrcインポート中...");
+    overlay.loading(t("importing"));
 
     try {
       let parsed: unknown;
@@ -49,7 +51,7 @@ export const MapImportButton = () => {
         if (rawResult.success) {
           importMapFromRawMap(rawResult.data);
           setText("");
-          toast.success("インポート完了");
+          toast.success(t("done"));
           return;
         }
       }
@@ -58,11 +60,11 @@ export const MapImportButton = () => {
       if (lrcResult.success) {
         await importMapFromLrcText(text);
         setText("");
-        toast.success("lrcインポート完了");
+        toast.success(t("lrcDone"));
       }
     } catch (e) {
-      toast.error("lrcエラー", {
-        description: e instanceof Error ? e.message : "ファイルの処理中にエラーが発生しました。",
+      toast.error(t("lrcError"), {
+        description: e instanceof Error ? e.message : t("processError"),
       });
     } finally {
       overlay.hide();
@@ -79,12 +81,12 @@ export const MapImportButton = () => {
   return (
     <>
       <Button size="sm" onClick={() => setOpen(true)}>
-        lrcインポート
+        {t("button")}
       </Button>
 
       <DialogWithContent id="lrc-import-dialog" open={open} onOpenChange={handleClose} className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>lrcインポート</DialogTitle>
+          <DialogTitle>{t("button")}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
@@ -95,19 +97,19 @@ export const MapImportButton = () => {
             className="self-start"
             onFileSelect={handleFileSelect}
           >
-            lrcファイルから読み込む
+            {t("fromFile")}
           </FileImportButton>
 
           <textarea
             className="h-64 w-full resize-y rounded-md border bg-background p-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            placeholder={"[00:00.00]歌詞\n[00:05.00]歌詞..."}
+            placeholder={t("placeholder")}
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
         </div>
 
         <DialogFooter>
-          <Button onClick={handleImport}>確定</Button>
+          <Button onClick={handleImport}>{t("confirm")}</Button>
         </DialogFooter>
       </DialogWithContent>
     </>

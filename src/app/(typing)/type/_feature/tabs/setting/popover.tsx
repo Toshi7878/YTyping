@@ -2,10 +2,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { orpc } from "@/orpc/provider";
 import type { LINE_COMPLETED_DISPLAY_TYPES, NEXT_DISPLAY_TYPES } from "@/server/drizzle/schema";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/schema";
+import { useReadyInputMode } from "@/store/ready-input-mode";
 import { Button } from "@/ui/button";
 import { confirmDialog } from "@/ui/confirm-dialog";
 import { SettingIconButton } from "@/ui/icon-button";
@@ -19,6 +21,7 @@ import { cn } from "@/utils/cn";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { store } from "../../atoms/store";
 import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
+import { FlickHighlightCheckbox } from "./options/flick-highlight-checkbox";
 import { HotKeySelectFields } from "./options/hot-key-select-fields";
 import { SoundEffectFields } from "./options/sound-effect-fields";
 import { TimeOffsetCounter } from "./options/time-offset-conter";
@@ -43,9 +46,11 @@ const resetTypingOptions = () => {
 };
 
 export const SettingPopover = () => {
+  const t = useTranslations("typing.settings");
   const updateTypingOptions = useMutation(orpc.user.typingOption.upsert.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
+  const isFlickMode = useReadyInputMode() === "flick";
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -61,7 +66,7 @@ export const SettingPopover = () => {
 
   const tabData = [
     {
-      label: "メイン設定",
+      label: t("tabMain"),
       content: (
         <div className="space-y-4">
           <TimeOffsetCounter />
@@ -72,9 +77,15 @@ export const SettingPopover = () => {
       ),
     },
     {
-      label: "表示設定",
+      label: t("tabDisplay"),
       content: (
         <>
+          {isFlickMode && (
+            <>
+              <FlickHighlightCheckbox />
+              <Separator className="my-4 bg-foreground/20" />
+            </>
+          )}
           <NextDisplayRadioGroup />
           <Separator className="my-4 bg-foreground/20" />
           <LineCompletedRadioGroup />
@@ -87,25 +98,25 @@ export const SettingPopover = () => {
         </>
       ),
     },
-    { label: "キーボード設定", content: <HotKeySelectFields /> },
+    { label: t("tabKeyboard"), content: <HotKeySelectFields /> },
   ] as const;
 
   const handleReset = async () => {
     const isConfirmed = await confirmDialog.warning({
-      title: "設定をリセット",
-      description: "すべての設定をデフォルトにリセットしますか？",
-      confirmLabel: "リセットする",
+      title: t("resetTitle"),
+      description: t("resetDescription"),
+      confirmLabel: t("resetConfirm"),
     });
 
     if (isConfirmed) {
       resetTypingOptions();
-      toast.success("設定をリセットしました");
+      toast.success(t("resetDone"));
     }
   };
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange} modal>
-      <TooltipWrapper label="設定" asChild>
+      <TooltipWrapper label={t("tooltip")} asChild>
         <PopoverTrigger render={<SettingIconButton />} />
       </TooltipWrapper>
       <PopoverContent
@@ -141,16 +152,17 @@ export const SettingPopover = () => {
 };
 
 const LineCompletedRadioGroup = () => {
+  const t = useTranslations("typing.settings");
   const { lineCompletedDisplay } = useTypingOptionsState();
 
   const items = [
-    { label: "ワードハイライト", value: "HIGH_LIGHT" },
-    { label: "次のワードを表示", value: "NEXT_WORD" },
+    { label: t("highlight"), value: "HIGH_LIGHT" },
+    { label: t("nextWord"), value: "NEXT_WORD" },
   ];
 
   return (
     <LabeledRadioGroup
-      label="打ち切り時のワード表示"
+      label={t("lineCompleted")}
       labelClassName="mb-2 block text-lg font-semibold"
       value={lineCompletedDisplay}
       onValueChange={(value) => {
@@ -163,11 +175,12 @@ const LineCompletedRadioGroup = () => {
 };
 
 const NextDisplayRadioGroup = () => {
+  const t = useTranslations("typing.settings");
   const { nextDisplay } = useTypingOptionsState();
 
   const items = [
-    { label: "歌詞", value: "LYRICS" },
-    { label: "ワード", value: "WORD" },
+    { label: t("lyrics"), value: "LYRICS" },
+    { label: t("word"), value: "WORD" },
   ];
 
   return (
@@ -176,7 +189,7 @@ const NextDisplayRadioGroup = () => {
       onValueChange={(value) => {
         setTypingOptions({ nextDisplay: value as (typeof NEXT_DISPLAY_TYPES)[number] });
       }}
-      label="次の歌詞表示"
+      label={t("nextDisplay")}
       className="flex flex-row gap-5"
       labelClassName="text-lg font-semibold"
       items={items}
@@ -185,6 +198,7 @@ const NextDisplayRadioGroup = () => {
 };
 
 const ResetButton = ({ onClick }: { onClick: () => void }) => {
+  const t = useTranslations("typing.settings");
   return (
     <Button
       size="sm"
@@ -192,7 +206,7 @@ const ResetButton = ({ onClick }: { onClick: () => void }) => {
       onClick={onClick}
       className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
     >
-      設定をリセット
+      {t("resetTitle")}
     </Button>
   );
 };

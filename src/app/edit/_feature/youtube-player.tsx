@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { getVolume } from "@/store/volume";
@@ -48,6 +49,7 @@ export const YTPlayer = {
 };
 
 export const YouTubePlayer = ({ className }: { className: string }) => {
+  const t = useTranslations("editor");
   const videoId = useVideoId();
 
   useHotkeys(
@@ -65,7 +67,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
 
   return (
     <div className="relative h-fit">
-      <LoadingOverlayProvider isLoading={!videoId} description="動画読込中..." asChild>
+      <LoadingOverlayProvider isLoading={!videoId} description={t("loadingVideo")} asChild>
         <YouTube
           className={cn(className, !videoId && "invisible")}
           id="edit_youtube"
@@ -123,7 +125,7 @@ const handlePlay = ({ target: player }: { target: YT.Player }) => {
     isPreventEditorTabAutoFocus = false;
     return;
   }
-  setTabName("エディター");
+  setTabName("editor");
 };
 
 const handlePause = () => {

@@ -1,22 +1,24 @@
 import { useProgress } from "@bprogress/next";
+import { useTranslations } from "next-intl";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 import { signIn, signOut } from "@/auth/client";
 import { DropdownMenuItem } from "@/ui/dropdown-menu";
 import { cn } from "@/utils/cn";
 
 export const SignInDropdownItems = () => {
+  const t = useTranslations("header.auth");
   const { start } = useProgress();
   // const isDevelopment = env.NODE_ENV === "development";
 
   const items = [
     {
-      text: "Discordでログイン",
+      text: t("signInWithDiscord"),
       leftIcon: <BsDiscord className="size-6 text-primary-foreground group-focus:text-white" />,
       provider: "discord",
       className: "hover:bg-discord focus:bg-discord",
     },
     {
-      text: "Googleでログイン",
+      text: t("signInWithGoogle"),
       leftIcon: <BsGoogle className="size-6 text-primary-foreground group-focus:text-white" />,
       provider: "google",
       className: "hover:bg-google focus:bg-google",
@@ -60,6 +62,7 @@ export const SignInDropdownItems = () => {
 };
 
 export const LogOutDropdownItem = () => {
+  const t = useTranslations("header.auth");
   const { start, stop } = useProgress();
   return (
     <DropdownMenuItem
@@ -69,7 +72,7 @@ export const LogOutDropdownItem = () => {
         stop();
       }}
     >
-      ログアウト
+      {t("signOut")}
     </DropdownMenuItem>
   );
 };

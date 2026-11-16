@@ -128,11 +128,11 @@ export function useAddBookmarkListItemMutation() {
       },
       onSuccess: (_data, input, ctx) => {
         if (!ctx) return;
-        queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
+        void queryClient.invalidateQueries({
           queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { includeMapId: input.mapId } as never }),
         });
-        queryClient.invalidateQueries({ queryKey: orpc.map.bookmark.lists.getForSession.key({ type: "query" }) });
+        void queryClient.invalidateQueries({ queryKey: orpc.map.bookmark.lists.getForSession.key({ type: "query" }) });
       },
     }),
   );
@@ -150,8 +150,8 @@ export function useRemoveBookmarkListItemMutation() {
       },
       onSuccess: (_data, input, ctx) => {
         if (!ctx) return;
-        queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
+        void queryClient.invalidateQueries({
           queryKey: orpc.map.bookmark.lists.getByUserId.queryKey({ input: { includeMapId: input.mapId } as never }),
         });
       },

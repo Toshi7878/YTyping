@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { getBuiltMap, useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_feature/atoms/youtube-player";
 import { iosActiveSound } from "@/app/(typing)/type/_feature/lib/sound-effect";
@@ -13,6 +14,7 @@ import { getRankingMyResult } from "../../tabs/ranking/get-ranking-result";
 import { getScene, setScene } from "../typing-card";
 
 export const ReadyPracticeButton = () => {
+  const t = useTranslations("typing.ready");
   const map = useBuiltMapState();
   const queryClient = useQueryClient();
 
@@ -20,7 +22,7 @@ export const ReadyPracticeButton = () => {
     if (map) {
       iosActiveSound();
       primeYTPlayerForMobilePlayback();
-      overlay.loading("リザルトデータを読込中...");
+      overlay.loading(t("loadingResult"));
       setScene("practice");
       const mapId = getMapId();
       const session = getSession();
@@ -47,7 +49,7 @@ export const ReadyPracticeButton = () => {
 
   return (
     <Button variant="outline" className="h-auto px-16 py-6 text-5xl md:text-3xl" onClick={handleClick}>
-      練習モードで開始
+      {t("practiceStart")}
     </Button>
   );
 };

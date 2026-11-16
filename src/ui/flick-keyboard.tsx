@@ -41,6 +41,8 @@ interface FlickKeyboardProps {
   mode?: FlickMode;
   isLineStart?: boolean;
   isModPending?: boolean;
+  // 次に入力すべき文字。該当するキーのセルの色を変える
+  nextChar?: string;
   candidateBar?: React.ReactNode;
 }
 
@@ -349,6 +351,15 @@ const ENGLISH_CHARS = new Set<string>(
   [...collectChars(ENGLISH_KEYS)].flatMap((ch) => [ch.toLowerCase(), ch.toUpperCase()]),
 );
 
+// 次に入力すべき文字を入力するキーのID。濁音・小書き文字などはmod変換のベース文字のキーを返す
+function getNextKeyId(keys: FlickKey[], char: string | undefined): string | undefined {
+  if (!char) return undefined;
+  const baseChar = Object.keys(MOD_CYCLE).find((base) => MOD_CYCLE[base]?.includes(char)) ?? char;
+  const target = baseChar.toLowerCase();
+  return keys.find((k) => [k.c, k.l, k.u, k.r, k.d, ...(k.toggle ?? [])].some((ch) => ch?.toLowerCase() === target))
+    ?.id;
+}
+
 // 次に入力すべき文字を含む配列(かな/数字記号/英語)を判定する。いずれにも該当しない場合は英語配列を既定とする
 function getFlickModeForChar(char: string | undefined): FlickMode {
   if (!char) return "english";
@@ -402,6 +413,9 @@ const contentCellSurfaceVariants = cva("", {
   ],
 });
 
+// 次に入力すべき文字を含むセル、およびmod変換待ち・濁点/半濁点入力時のmodキー
+const HIGHLIGHT_CELL_CLASS = "bg-primary text-primary-foreground";
+
 const fnCellSurfaceVariants = cva("", {
   variants: {
     theme: { light: "", dark: "" },
@@ -431,6 +445,7 @@ interface ContentCellProps {
   isPressed: boolean;
   dimmed: boolean;
   highlighted: boolean;
+  isNext: boolean;
   onPointerDown: (e: React.PointerEvent) => void;
 }
 
@@ -444,6 +459,7 @@ function ContentCell({
   isPressed,
   dimmed,
   highlighted,
+  isNext,
   onPointerDown,
 }: ContentCellProps) {
   const [col, row] = pos;
@@ -461,8 +477,8 @@ function ContentCell({
           cellShellVariants({ theme }),
           "flex-col gap-px tracking-[0.5px] [font-variant-ligatures:none]",
           getCellTextClass(k, activeMode),
-          highlighted
-            ? "bg-[#2E92FA] text-white"
+          highlighted || (isNext && !isPressed)
+            ? HIGHLIGHT_CELL_CLASS
             : contentCellSurfaceVariants({
                 theme,
                 pressed: isPressed,
@@ -761,6 +777,7 @@ function FlickKeyboard({
   mode,
   isLineStart = false,
   isModPending = false,
+  nextChar,
   candidateBar,
 }: FlickKeyboardProps) {
   const isDark = theme === "dark";
@@ -777,6 +794,7 @@ function FlickKeyboard({
 
   const activeMode = mode ?? "kana";
   const activeKeys = activeMode === "english" ? ENGLISH_KEYS : activeMode === "number" ? NUMBER_KEYS : keys;
+  const nextKeyId = getNextKeyId(activeKeys, nextChar);
   const activePosMap = activeMode === "english" ? ENGLISH_POS : activeMode === "number" ? NUMBER_POS : KANA_POS;
 
   const onMove = useCallback(
@@ -965,6 +983,7 @@ function FlickKeyboard({
                 isPressed={pressedKeyIdSet.has(k.id) || presses.some((p) => p.key.id === k.id)}
                 dimmed={presses.length > 0 && !pressedKeyIdSet.has(k.id)}
                 highlighted={k.id === "mod" && isModPending}
+                isNext={!isModPending && k.id === nextKeyId}
                 onPointerDown={(e) => onDown(e, k)}
               />
             ))}

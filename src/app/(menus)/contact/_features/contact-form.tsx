@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import { Button } from "@/ui/button";
 import { useAppForm } from "@/ui/form-field-item";
@@ -8,12 +9,13 @@ import { toast } from "@/ui/toast";
 import { contactCreateSchema } from "@/validator/contact";
 
 export const ContactForm = () => {
+  const t = useTranslations("contactPage");
   const queryClient = useQueryClient();
 
   const create = useMutation(
     orpc.contact.create.mutationOptions({
       onSuccess: async () => {
-        toast.success("お問い合わせを送信しました");
+        toast.success(t("sent"));
         form.reset();
         await queryClient.invalidateQueries({ queryKey: orpc.contact.listMine.key() });
       },
@@ -32,16 +34,16 @@ export const ContactForm = () => {
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
       className="flex flex-col gap-3"
     >
       <form.AppField name="body">
-        {(field) => <field.TextareaFormField label="内容" rows={6} maxLength={2000} required />}
+        {(field) => <field.TextareaFormField label={t("body")} rows={6} maxLength={2000} required />}
       </form.AppField>
       <div className="flex justify-end">
         <Button type="submit" disabled={create.isPending}>
-          送信する
+          {t("submit")}
         </Button>
       </div>
     </form>

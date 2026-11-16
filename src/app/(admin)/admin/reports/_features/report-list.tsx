@@ -88,6 +88,7 @@ export const ReportList = () => {
                         warningCount={report.reportedUser?.warningCount ?? 0}
                         showReviewActions={report.status === "PENDING"}
                         showUnbanAction={report.status === "RESOLVED" && isReportedUserBanned}
+                        showRevokeWarningAction={report.status === "WARNED"}
                       />
                     </TableCell>
                     <TableCell>

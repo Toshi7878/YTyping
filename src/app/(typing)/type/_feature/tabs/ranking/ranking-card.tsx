@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { useSession } from "@/auth/client";
@@ -9,6 +10,7 @@ import type { RouterOutputs } from "@/server/api/root";
 import { useToggleClapMutation } from "@/shared/result/clap";
 import { ClearRateText } from "@/shared/result/clear-rate-text";
 import { InputModeText } from "@/shared/result/input-mode-text";
+import { PlayVideoIcon } from "@/shared/result/play-video-link";
 import { ResultToolTipText } from "@/shared/result/result-tooltip-text";
 import { CardWithContent } from "@/ui/card";
 import { Popover, PopoverAnchor } from "@/ui/popover";
@@ -26,6 +28,7 @@ type RankingResult = RouterOutputs["result"]["ranking"]["get"][number];
 const columnHelper = createColumnHelper<DataTableFeatures, RankingResult>();
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
+  const t = useTranslations("typing.ranking");
   const sceneGroup = useSceneGroupState();
   const { id: mapId } = useParams();
   const { data, isPending } = useQuery(
@@ -41,6 +44,15 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     setTypingStatus((prev) => ({ ...prev, rank: scores.length + 1 }));
   }, [data, sceneGroup]);
 
+  const { data: session } = useSession();
+  const { data: invalidData } = useQuery(
+    orpc.result.ranking.getInvalid.queryOptions({
+      input: { mapId: mapId ? Number(mapId) : 0 },
+      enabled: !!session,
+      gcTime: Infinity,
+    }),
+  );
+
   return (
     <CardWithContent
       id="tab-ranking-card"
@@ -50,11 +62,26 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       }}
     >
       <RankingTable data={data ?? []} loading={isPending} />
+      {invalidData && invalidData.length > 0 && (
+        <section className="pb-4">
+          <p className="py-2 text-muted-foreground text-sm">{t("underReview")}</p>
+          <RankingTable data={invalidData} loading={false} invalid />
+        </section>
+      )}
     </CardWithContent>
   );
 };
 
-const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boolean }) => {
+const RankingTable = ({
+  data,
+  loading,
+  invalid = false,
+}: {
+  data: RankingResult[];
+  loading: boolean;
+  invalid?: boolean;
+}) => {
+  const t = useTranslations("typing.ranking");
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
   const { data: session } = useSession();
   const { id: mapId } = useParams();
@@ -63,7 +90,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
   const columns = columnHelper.columns([
     columnHelper.display({
       id: "rank",
-      header: "順位",
+      header: t("rank"),
       size: 10,
 
       cell: ({ row }) => {
@@ -73,7 +100,9 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
 
         return (
           <>
-            <span className={cn("pointer-events-none ml-1", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
+            <span className={cn("pointer-events-none ml-1", !invalid && rank === 1 && "text-perfect outline-text")}>
+              {invalid ? "-" : `#${rank}`}
+            </span>
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
               <PopoverAnchor />
               <RankingPopoverContent
@@ -81,6 +110,8 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
                 userId={result.player.id}
                 resultUpdatedAt={result.updatedAt}
                 hasClapped={result.clap.hasClapped ?? false}
+                playVideo={result.playVideo}
+                invalid={invalid}
               />
             </Popover>
           </>
@@ -94,7 +125,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
     }),
     columnHelper.display({
       id: "clearRate",
-      header: "クリア率",
+      header: t("clearRate"),
       size: 40,
       cell: ({ row }) => {
         const { otherStatus } = row.original;
@@ -106,11 +137,16 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
     }),
     columnHelper.display({
       id: "name",
-      header: "名前",
+      header: t("name"),
       size: 90,
       cell: ({ row }) => {
-        const { name } = row.original.player;
-        return <span className="pointer-events-none truncate">{name}</span>;
+        const { player, playVideo } = row.original;
+        return (
+          <div className="flex items-center gap-1.5">
+            <span className="pointer-events-none truncate">{player.name}</span>
+            <PlayVideoIcon playVideo={playVideo} className="pointer-events-none" />
+          </div>
+        );
       },
     }),
     columnHelper.accessor((row) => row.typeSpeed.kpm, {
@@ -121,7 +157,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
     }),
     columnHelper.display({
       id: "mode",
-      header: "モード",
+      header: t("mode"),
       size: 55,
       cell: ({ row }) => {
         const { typeCounts } = row.original;
@@ -130,7 +166,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
     }),
     columnHelper.display({
       id: "time",
-      header: "時間",
+      header: t("time"),
       size: 40,
       cell: ({ row }) => <RelativeTime date={row.original.updatedAt} className="pointer-events-none" />,
       meta: {
@@ -147,7 +183,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
         const hasClapped = !!(clap.hasClapped && session);
 
         return (
-          <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
+          <div className="ml-1" title={clap.hasClapped ? t("clapCancel") : t("clap")}>
             <span className={cn(hasClapped && "text-yellow-500 outline-text")}>{clap.count}</span>
           </div>
         );
@@ -160,7 +196,7 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
           );
         },
         onClick: (event, row) => {
-          if (!session?.user?.id || toggleClap.isPending || !mapId) return;
+          if (invalid || !session?.user?.id || toggleClap.isPending || !mapId) return;
           event.preventDefault();
           event.stopPropagation();
           toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
@@ -177,16 +213,17 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
       onRowClick={(_, __, index) => {
         setOpenPopoverIndex((prev) => (prev === index ? null : index));
       }}
-      className={cn("ranking-table overflow-visible rounded-none border-0")}
+      className={cn(!invalid && "ranking-table", "overflow-visible rounded-none border-0")}
       rowClassName={(index) =>
         cn(
           "border-accent-foreground cursor-pointer text-4xl font-bold md:text-base h-20 md:h-auto",
-          session?.user.id === data?.[index]?.player.id && "my-result text-secondary",
+          invalid && "text-muted-foreground",
+          !invalid && session?.user.id === data?.[index]?.player.id && "my-result text-secondary",
           openPopoverIndex === index && "bg-accent/50",
         )
       }
       headerRowClassName="text-3xl font-bold md:text-base h-20 md:h-auto"
-      tbodyId="ranking-tbody"
+      tbodyId={invalid ? undefined : "ranking-tbody"}
       rowWrapper={({ row, index, children }) => {
         const { otherStatus, typeCounts, typeSpeed } = row;
         const { kanaType, flickType } = typeCounts;
@@ -210,7 +247,6 @@ const RankingTable = ({ data, loading }: { data: RankingResult[]; loading: boole
             align="end"
             // 行が表示領域からはみ出すと align が start に反転して左端に出るため、反転せず右端に寄せる
             collisionAvoidance={{ side: "flip", align: "shift" }}
-            sideOffset={-12}
             delayDuration={0}
             disableOutsidePressDismiss
             open={openPopoverIndex === null ? undefined : openPopoverIndex === index}

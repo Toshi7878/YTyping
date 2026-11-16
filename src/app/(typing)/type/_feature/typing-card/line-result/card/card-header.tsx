@@ -1,5 +1,6 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
+import { useTranslations } from "next-intl";
 import { useBuiltMapState } from "@/app/(typing)/type/_feature/atoms/built-map";
 import { CardHeader } from "@/ui/card";
 import { TooltipWrapper } from "@/ui/tooltip";
@@ -20,9 +21,10 @@ export const ResultCardHeader = ({
   lineKpm,
   lineSpeed,
 }: ResultCardHeaderProps) => {
+  const t = useTranslations("typing.lineResult");
   const map = useBuiltMapState();
 
-  const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
+  const inputModeText = lineInputMode === "roma" ? t("modeRoma") : t("modeKana");
 
   return (
     <CardHeader className="flex flex-row items-center">
@@ -30,14 +32,14 @@ export const ResultCardHeader = ({
         {lineIndex}/{map?.typingLineIndexes.length}
       </span>
       <span className="mx-2">|</span>
-      <TooltipWrapper label={`要求打鍵速度${inputModeText}`} asChild>
+      <TooltipWrapper label={t("kpmTooltip", { mode: inputModeText })} asChild>
         <span className={cn("line-kpm font-bold hover:bg-border/20")}>
-          {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && `(${lineSpeed.toFixed(2)}倍速)`}
+          {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && t("speed", { speed: lineSpeed.toFixed(2) })}
         </span>
       </TooltipWrapper>
       <span className="mx-2">|</span>
-      <TooltipWrapper label={`要求打鍵数${inputModeText}`} asChild>
-        <span className={cn("line-notes hover:bg-border/20")}>{lineNotes}打</span>
+      <TooltipWrapper label={t("notesTooltip", { mode: inputModeText })} asChild>
+        <span className={cn("line-notes hover:bg-border/20")}>{t("notes", { count: lineNotes })}</span>
       </TooltipWrapper>
     </CardHeader>
   );

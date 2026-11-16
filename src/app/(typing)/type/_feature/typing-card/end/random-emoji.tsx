@@ -29,6 +29,7 @@ const HAPPY_EMOJI = [
   "(｡>∀<｡)",
   "(>ω<)",
   "(＞⩊＜)",
+  "(〃＞ω＜〃)ﾉ",
 ];
 
 export const RandomEmoji = () => {

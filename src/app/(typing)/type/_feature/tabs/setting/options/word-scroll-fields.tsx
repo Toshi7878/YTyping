@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { CounterInput } from "@/ui/counter";
 import { LabeledRadioGroup } from "@/ui/radio-group/labeled-radio-group";
 import { H4 } from "@/ui/typography";
@@ -9,11 +10,12 @@ const MIN_SCROLL = 5;
 const SCROLL_STEP = 5;
 
 export const WordScrollFields = () => {
+  const t = useTranslations("typing.settings");
   const { mainWordScrollStart, subWordScrollStart } = useTypingOptionsState();
 
   return (
     <section className="flex flex-col gap-4">
-      <H4>ワードスクロール設定</H4>
+      <H4>{t("wordScrollTitle")}</H4>
       <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setTypingOptions({ mainWordScrollStart: value })}
@@ -21,9 +23,9 @@ export const WordScrollFields = () => {
           max={MAX_SCROLL}
           min={MIN_SCROLL}
           value={mainWordScrollStart}
-          label="メイン開始位置"
-          decrementTooltip="メインワードスクロール開始位置を左に移動します"
-          incrementTooltip="メインワードスクロール開始位置を右に移動します"
+          label={t("mainStart")}
+          decrementTooltip={t("mainStartLeft")}
+          incrementTooltip={t("mainStartRight")}
         />
         <CounterInput
           onChange={(value) => setTypingOptions({ subWordScrollStart: value })}
@@ -31,9 +33,9 @@ export const WordScrollFields = () => {
           max={MAX_SCROLL}
           min={MIN_SCROLL}
           value={subWordScrollStart}
-          label="サブ開始位置"
-          decrementTooltip="サブワードスクロール開始位置を左に移動します"
-          incrementTooltip="サブワードスクロール開始位置を右に移動します"
+          label={t("subStart")}
+          decrementTooltip={t("subStartLeft")}
+          incrementTooltip={t("subStartRight")}
         />
       </div>
       <WordScrollAnimationRadioOptions />
@@ -42,16 +44,17 @@ export const WordScrollFields = () => {
 };
 
 const WordScrollAnimationRadioOptions = () => {
+  const t = useTranslations("typing.settings");
   const { isSmoothScroll } = useTypingOptionsState();
 
   const items: { label: string; value: "smooth" | "instant" }[] = [
-    { label: "アニメーションあり", value: "smooth" },
-    { label: "アニメーションなし", value: "instant" },
+    { label: t("scrollAnimOn"), value: "smooth" },
+    { label: t("scrollAnimOff"), value: "instant" },
   ];
 
   return (
     <LabeledRadioGroup
-      label="スクロールアニメーション"
+      label={t("scrollAnimation")}
       value={isSmoothScroll ? "smooth" : "instant"}
       onValueChange={(value: "smooth" | "instant") => {
         setTypingOptions({ isSmoothScroll: value === "smooth" });

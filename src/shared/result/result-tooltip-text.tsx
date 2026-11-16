@@ -1,3 +1,4 @@
+import { useLocale, useTranslations } from "next-intl";
 import type { RouterOutputs } from "@/server/api/root";
 import { Separator } from "@/ui/separator";
 
@@ -18,6 +19,8 @@ export const ResultToolTipText = ({
   isKanaFlickTyped,
   updatedAt,
 }: ResultToolTipTextProps) => {
+  const t = useTranslations("result.tooltip");
+  const locale = useLocale();
   const { miss, lost, maxCombo, playSpeed, isCaseSensitive } = otherStatus;
   const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
@@ -26,24 +29,24 @@ export const ResultToolTipText = ({
       <TypeCountResult typeCounts={typeCounts} />
       <Separator className="my-3" />
 
-      <LabelValue label="ミス数" value={`${miss} (${missRate}%)`} />
-      <LabelValue label="ロスト数" value={lost} />
-      <LabelValue label="最大コンボ" value={maxCombo} />
+      <LabelValue label={t("miss")} value={`${miss} (${missRate}%)`} />
+      <LabelValue label={t("lost")} value={lost} />
+      <LabelValue label={t("maxCombo")} value={maxCombo} />
       <LabelValue label="rkpm" value={rkpm} />
 
       {isKanaFlickTyped && kpm !== kanaToRomaKpm && (
         <>
-          <LabelValue label="ﾛﾏ換算kpm" value={kanaToRomaKpm} />
-          {kanaToRomaRkpm > 0 && <LabelValue label="ﾛﾏ換算rkpm" value={kanaToRomaRkpm} />}
+          <LabelValue label={t("kanaToRomaKpm")} value={kanaToRomaKpm} />
+          {kanaToRomaRkpm > 0 && <LabelValue label={t("kanaToRomaRkpm")} value={kanaToRomaRkpm} />}
         </>
       )}
 
-      {playSpeed > 1 && <LabelValue label="倍速" value={playSpeed.toFixed(2)} />}
-      {isCaseSensitive && <LabelValue label="英語大文字" value="有効" />}
+      {playSpeed > 1 && <LabelValue label={t("speed")} value={playSpeed.toFixed(2)} />}
+      {isCaseSensitive && <LabelValue label={t("caseSensitive")} value={t("enabled")} />}
       <LabelValue label="pp" value={otherStatus.pp.toFixed(2)} />
       <LabelValue
-        label="日時"
-        value={new Date(updatedAt).toLocaleString("ja-JP", {
+        label={t("date")}
+        value={new Date(updatedAt).toLocaleString(locale === "en" ? "en-US" : "ja-JP", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
@@ -60,13 +63,14 @@ interface TypeCountResultProps {
 }
 
 const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
+  const t = useTranslations("result.tooltip");
   const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts;
   const types = [
-    { label: "ローマ字", value: romaType },
-    { label: "かな入力", value: kanaType },
-    { label: "フリック", value: flickType },
+    { label: t("romaTypes"), value: romaType },
+    { label: t("kanaTypes"), value: kanaType },
+    { label: t("flickTypes"), value: flickType },
     {
-      label: "英数字記号",
+      label: t("otherTypes"),
       value: englishType + numType + symbolType + spaceType,
     },
   ];
@@ -75,7 +79,7 @@ const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
   const typesUsedCount = types.filter((type) => type.value > 0).length;
 
   const hasMultipleTypes = typesUsedCount > 1;
-  const totalLabel = hasMultipleTypes ? "合計打数" : "打数";
+  const totalLabel = hasMultipleTypes ? t("totalTypes") : t("types");
   return (
     <div className="space-y-2">
       {hasMultipleTypes &&

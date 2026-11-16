@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CardWithContent } from "@/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
 import { AddLineButton } from "./button/add";
@@ -8,6 +9,7 @@ import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./line-inp
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
 
 export const EditorCard = () => {
+  const t = useTranslations("editorTab");
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-1" }}>
       <section>
@@ -25,7 +27,7 @@ export const EditorCard = () => {
         <div id="editor-button-container" className="grid grid-cols-2 gap-2 sm:flex">
           <AddLineButton />
           <UpdateLineButton />
-          <WordConvertButton className="w-20 font-bold xl:w-28" label="読み変換" variant="outline-info" />
+          <WordConvertButton className="w-20 font-bold xl:w-28" label={t("convert")} variant="outline-info" />
           <DeleteLineButton />
         </div>
         <AddTimeAdjust />

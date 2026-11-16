@@ -40,7 +40,9 @@ export const TimeRange = () => {
       id="time-range"
       value={[timeRangeValue]}
       onValueChange={(value) => handleRangeChange(value[0] ?? 0)}
-      onKeyDown={handleArrowSeek}
+      // Base UIのThumbは矢印キーでstep(0.1秒)ずつ値を変え、イベントの伝播も止めるため、バブリング時のonKeyDownでは3秒移動を処理できない。
+      // キャプチャ段階で処理してpreventDefaultすることで、Thumb側の0.1秒移動(defaultPreventedなら何もしない)を抑止する
+      onKeyDownCapture={handleArrowSeek}
       max={duration}
       className="w-full"
     />
@@ -48,6 +50,9 @@ export const TimeRange = () => {
 };
 
 const handleArrowSeek = (event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
+  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+  event.preventDefault();
+
   const ARROW_SEEK_SECONDS = 3;
   const mediaSpeed = YTPlayer.getSpeed();
   const time = YTPlayer.getCurrentTime();
@@ -58,5 +63,4 @@ const handleArrowSeek = (event: KeyboardEvent | React.KeyboardEvent<HTMLDivEleme
   } else if (event.key === "ArrowRight") {
     YTPlayer.seek(time + seekAmount);
   }
-  event.preventDefault();
 };

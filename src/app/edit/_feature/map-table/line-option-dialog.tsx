@@ -1,6 +1,7 @@
 "use client";
 
 import { useSelector } from "@tanstack/react-form";
+import { useTranslations } from "next-intl";
 import { type Dispatch, useEffect, useState } from "react";
 import z from "zod";
 import { setRawMapAction, useRawMap } from "@/app/edit/_feature/map-table/map-reducer";
@@ -36,6 +37,7 @@ interface LineOptionDialogProps {
 }
 
 export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
+  const t = useTranslations("editorLine");
   const map = useRawMap();
 
   const currentSpeed = calculateCurrentSpeed(map, index);
@@ -103,9 +105,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       return;
     }
 
-    const isConfirmed = window.confirm(
-      "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
-    );
+    const isConfirmed = window.confirm(t("confirmClose"));
 
     if (isConfirmed) {
       setOptionDialogIndex(null);
@@ -122,25 +122,25 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       disablePointerDismissal
     >
       <DialogHeader>
-        <DialogTitle>ラインオプション</DialogTitle>
+        <DialogTitle>{t("title")}</DialogTitle>
       </DialogHeader>
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
         className="space-y-4"
       >
         <Badge variant="secondary" className="text-base">
-          選択ライン: {index}
+          {t("selected", { index })}
         </Badge>
 
         <div className="space-y-4">
           {index === 0 && (
             <form.AppField name="isCaseSensitive">
-              {(field) => <field.SwitchFormField label="この譜面のアルファベット大文字の入力を有効化" />}
+              {(field) => <field.SwitchFormField label={t("caseSensitive")} />}
             </form.AppField>
           )}
 
@@ -149,8 +149,8 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
             {(field) => (
               <Field className="flex items-center">
                 <CounterInput
-                  label="速度変更"
-                  unit={Number(field.state.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
+                  label={t("speedChange")}
+                  unit={Number(field.state.value ?? 0) < 0 ? t("speedDown") : t("speedUp")}
                   value={field.state.value ?? 0}
                   onChange={(value) => {
                     field.handleChange(value);
@@ -162,7 +162,8 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
                   valueDigits={2}
                 />
                 <div className="text-muted-foreground text-sm">
-                  速度: <Badge variant="outline">{speed}x</Badge>
+                  {t("speed")}
+                  <Badge variant="outline">{speed}x</Badge>
                 </div>
               </Field>
             )}
@@ -170,20 +171,18 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
 
           {index === 0 && (
             <form.AppField name="eternalCSS">
-              {(field) => (
-                <field.TextareaFormField label="永続的に適用するCSSを入力" className="min-h-[200px] resize-y" />
-              )}
+              {(field) => <field.TextareaFormField label={t("eternalCss")} className="min-h-[200px] resize-y" />}
             </form.AppField>
           )}
 
           <form.AppField name="isChangeCSS">
-            {(field) => <field.SwitchFormField label="ライン切り替えを有効化" />}
+            {(field) => <field.SwitchFormField label={t("enableChange")} />}
           </form.AppField>
 
           <form.AppField name="changeCSS">
             {(field) => (
               <field.TextareaFormField
-                label="選択ラインから適用するCSSを入力"
+                label={t("changeCss")}
                 className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "cursor-pointer opacity-50")}
                 readOnly={!isChangeCSSValue}
                 onClick={() => {
@@ -201,7 +200,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
                 lineOptions={form.state.values}
               /> */}
 
-          <Button type="submit">ラインオプションを保存</Button>
+          <Button type="submit">{t("save")}</Button>
         </div>
       </form>
 

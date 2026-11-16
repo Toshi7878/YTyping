@@ -1,3 +1,4 @@
+import { translate } from "@/i18n/translate";
 import { getReadyInputMode } from "@/store/ready-input-mode";
 import { resetReplayRankingResult } from "../../atoms/replay";
 import { setPlayingInputMode } from "../../atoms/typing-word";
@@ -10,12 +11,12 @@ import { getScene, setScene } from "../typing-card";
 export const commitPlayModeChange = () => {
   const scene = getScene();
   if (scene === "play") {
-    const confirmMessage = "練習モードに移動しますか？";
+    const confirmMessage = translate("typing.scene.confirmPractice");
     if (window.confirm(confirmMessage)) {
       setScene("practice");
     }
   } else {
-    const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
+    const confirmMessage = translate("typing.scene.confirmPlay");
     if (window.confirm(confirmMessage)) {
       resetReplayRankingResult();
 

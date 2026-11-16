@@ -2,6 +2,7 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { orpc } from "@/orpc/provider";
 import { MinimumMapCard } from "@/shared/map/list/card/minimum";
@@ -15,13 +16,14 @@ import { TooltipWrapper } from "@/ui/tooltip";
 import { type ActiveUserStatus, useActiveUsers, useSyncActiveUsers } from "./active-users";
 
 export const ActiveUsersSheet = () => {
+  const t = useTranslations("layout.activeUsers");
   useSyncActiveUsers();
   const [open, setOpen] = useState(false);
   const activeUsers = useActiveUsers();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="アクティブユーザー" className="relative bottom-3" asChild>
+      <TooltipWrapper label={t("label")} className="relative bottom-3" asChild>
         <SheetTrigger
           render={
             <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
@@ -34,9 +36,9 @@ export const ActiveUsersSheet = () => {
       <SheetContent className="block">
         <SheetHeader className="w-full border-border/30 border-b py-0">
           <SheetTitle className="flex items-baseline gap-3 py-3">
-            <span>アクティブユーザー</span>
+            <span>{t("label")}</span>
             <Badge variant="secondary" className="text-xs">
-              {activeUsers.length}人
+              {t("count", { count: activeUsers.length })}
             </Badge>
           </SheetTitle>
         </SheetHeader>
@@ -66,12 +68,13 @@ export const ActiveUsersSheet = () => {
 };
 
 const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
+  const t = useTranslations("layout.activeUsers");
   const { data: map } = useQuery(
     orpc.map.list.getByMapId.queryOptions({ input: activeUser.mapId ? { mapId: activeUser.mapId } : skipToken }),
   );
 
   if (!map) {
-    const stateMessage = buildStateMessage(activeUser.state);
+    const stateMessage = buildStateMessage(activeUser.state, t);
     return (
       <CardWithContent variant="map">
         <MapThumbnailImage size="xs" alt={stateMessage} />
@@ -82,14 +85,17 @@ const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
   return <MinimumMapCard map={map} />;
 };
 
-const buildStateMessage = (state: ActiveUserStatus["state"]) => {
+const buildStateMessage = (
+  state: ActiveUserStatus["state"],
+  t: ReturnType<typeof useTranslations<"layout.activeUsers">>,
+) => {
   switch (state) {
     case "askMe":
       return "Ask Me";
     case "edit":
-      return "譜面編集中";
+      return t("edit");
     case "idle":
-      return "待機中";
+      return t("idle");
     default:
       return "";
   }

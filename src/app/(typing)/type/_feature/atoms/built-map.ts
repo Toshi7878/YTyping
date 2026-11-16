@@ -18,6 +18,8 @@ export const builtMapAtom = atomWithReset<{
   duration: number;
   hasAlphabet: boolean;
   isCaseSensitive: boolean;
+  /** プレイしている譜面データの更新日時（ランキング登録時の照合用） */
+  updatedAt: Date;
 } | null>(null);
 export type BuiltMap = ExtractAtomValue<typeof builtMapAtom>;
 export const useBuiltMapState = () => useAtomValue(builtMapAtom);

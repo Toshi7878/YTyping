@@ -1,0 +1,992 @@
+{
+  "header": {
+    "menu": {
+      "changelog": "更新履歴",
+      "publicBookmarks": "公開ブックマーク一覧",
+      "bugReport": "バグ報告 (GitHub)",
+      "tools": "ツール",
+      "credit": "クレジット",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー",
+      "apiDocs": "API Docs",
+      "contact": "お問い合わせ",
+      "timeline": "タイムライン",
+      "ranking": "ランキング",
+      "userPage": "ユーザーページ",
+      "userSettings": "ユーザー設定",
+      "adminReports": "通報管理",
+      "adminResultReports": "記録通報管理",
+      "adminImportantNotices": "重要なお知らせ管理",
+      "adminInvalidResults": "BANした記録一覧",
+      "adminContacts": "お問い合わせ管理"
+    },
+    "auth": {
+      "signInWithDiscord": "Discordでログイン",
+      "signInWithGoogle": "Googleでログイン",
+      "signOut": "ログアウト"
+    },
+    "theme": {
+      "label": "テーマ切り替え",
+      "dark": "ダークテーマ",
+      "light": "ライトテーマ"
+    },
+    "language": {
+      "label": "言語"
+    }
+  },
+  "common": {
+    "acknowledge": "確認しました",
+    "search": "検索",
+    "searching": "検索中",
+    "create": "作成",
+    "open": "開く",
+    "clear": "クリア",
+    "all": "全て",
+    "max": "最大",
+    "acknowledgeFailed": "確認の記録に失敗しました: {message}",
+    "cancel": "キャンセル",
+    "selectPlaceholder": "選択してください",
+    "previous": "前へ",
+    "next": "次へ",
+    "tag": "タグ",
+    "confirmLeave": "ページを離れても良いですか？",
+    "loginToClap": "拍手はログイン後に可能です",
+    "styledMap": "装飾譜面",
+    "hasPlayVideo": "プレイ動画あり",
+    "watchPlayVideo": "{platform}でプレイ動画を見る",
+    "noticeDetails": "詳細はこちら",
+    "unlisted": "限定公開",
+    "public": "公開",
+    "private": "非公開",
+    "creator": "制作者:",
+    "loading": "読み込み中…",
+    "more": "もっと見る"
+  },
+  "home": {
+    "notices": {
+      "expiresAt": "表示期限: {date}"
+    },
+    "contactReplies": {
+      "title": "お問い合わせへの返信",
+      "body": "お問い合わせ内容: {body}",
+      "history": "お問い合わせ履歴を見る"
+    },
+    "controls": {
+      "mapCount": "譜面数:"
+    },
+    "sort": {
+      "publishedAt": "公開日",
+      "difficulty": "難易度",
+      "rankingCount": "ランキング数",
+      "likeCount": "いいね数",
+      "duration": "曲の長さ",
+      "random": "ランダム",
+      "like": "いいね",
+      "rankingRegister": "記録登録日",
+      "bookmark": "ブックマーク"
+    },
+    "filters": {
+      "user": "ユーザー",
+      "liked": "いいね済み",
+      "created": "作成した譜面",
+      "unlisted": "限定公開",
+      "ranking": "ランキング",
+      "first": "1位",
+      "notFirst": "2位以下",
+      "registered": "登録済み",
+      "unregistered": "未登録",
+      "perfect": "パーフェクト",
+      "none": "指定なし",
+      "bookmark": "ブックマーク",
+      "japanese": "日本語",
+      "english": "English",
+      "language": "language",
+      "languageRatio": "日本語:{japanese}% | English:{english}%"
+    },
+    "keyword": {
+      "placeholder": "キーワードを入力",
+      "maps": "譜面"
+    }
+  },
+  "timeline": {
+    "sort": {
+      "updatedAt": "更新日",
+      "typeCount": "打鍵数",
+      "maxCombo": "最大ｺﾝﾎﾞ",
+      "clap": "拍手",
+      "pp": "pp"
+    },
+    "search": {
+      "mapKeyword": "譜面キーワードで絞り込み",
+      "username": "ユーザーネームで絞り込み"
+    },
+    "filter": {
+      "detail": "詳細フィルター",
+      "clearRate": "% (クリア率)",
+      "playSpeed": "倍速",
+      "onlyWithVideo": "プレイ動画ありの記録のみ",
+      "modeAll": "全て",
+      "modeRoma": "ローマ字",
+      "modeKana": "かな",
+      "modeRomaKana": "ローマ字&かな",
+      "modeEnglish": "英語"
+    },
+    "count": "登録数:"
+  },
+  "pp": {
+    "modes": {
+      "total": "総合",
+      "roma": "ローマ字",
+      "kana": "かな入力",
+      "flick": "フリック",
+      "english": "英語"
+    },
+    "modeDescription": {
+      "roma": "ローマ字入力のみで、英語入力の比率が{rate}%以下のリザルトが集計対象です",
+      "kana": "かな入力のみで、英語入力の比率が{rate}%以下のリザルトが集計対象です",
+      "english": "英語入力のみのリザルトが集計対象です"
+    }
+  },
+  "rankings": {
+    "performance": {
+      "metaTitle": "PP ランキング | YTyping",
+      "metaDescription": "全譜面の合計 Performance Points によるランキング",
+      "title": "YTyping 実力ランキング",
+      "calcLink": "PP算出方法",
+      "rank": "順位",
+      "player": "プレイヤー",
+      "totalPp": "合計 PP",
+      "info": "PPはプレイ実力を表すポイントです。 難易度が高い譜面で高い正確率とクリア率を出すほど、より多くのPPを獲得できます。合計PPは、獲得PPの高い譜面上位200件をもとに加重方式で計算されます。"
+    }
+  },
+  "layout": {
+    "notification": {
+      "label": "通知",
+      "empty": "まだ通知はありません",
+      "overtake": "さんがスコア {diff} 差で {rank}位 の記録を抜かしました",
+      "like": "さんが作成した譜面にいいねしました",
+      "clap": "さんが記録に拍手しました",
+      "bookmark": "さんが譜面を<list>{title}</list>リストにブックマークしました",
+      "reportResult": "通報結果",
+      "reportedUser": "対象ユーザー",
+      "adminComment": "管理者コメント",
+      "open": "開く",
+      "warningTitle": "警告通知",
+      "warningBadge": "警告",
+      "warningComment": "警告コメント"
+    },
+    "activeUsers": {
+      "label": "アクティブユーザー",
+      "count": "{count}人",
+      "edit": "譜面編集中",
+      "idle": "待機中"
+    },
+    "newMap": {
+      "label": "譜面新規作成",
+      "urlLabel": "譜面を作成したいYouTube動画のURLを入力",
+      "urlPlaceholder": "YouTube URLを入力",
+      "confirmOverwrite": "新規作成バックアップデータが存在します。\\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
+      "backupTitle": "タイトル: {title}",
+      "backupExists": "前回のバックアップデータが存在します。"
+    },
+    "auth": {
+      "signIn": "ログイン",
+      "signOut": "ログアウト"
+    }
+  },
+  "banned": {
+    "title": "アカウントが停止されています",
+    "description": "このアカウントは利用規約違反により停止されました。",
+    "reason": "停止理由",
+    "signOut": "サインアウト"
+  },
+  "contact": {
+    "inquiry": "お問い合わせ",
+    "reply": "運営からの返信"
+  },
+  "map": {
+    "card": {
+      "max": "最大",
+      "keystrokes": "打鍵数",
+      "keystrokeCount": "{count}打",
+      "english": "英語",
+      "roma": "ローマ字",
+      "kana": "かな",
+      "hiragana": "ひらがな",
+      "letters": "英字",
+      "symbols": "記号"
+    },
+    "myRank": "自分の順位: <b>{rank}位</b> ({date})",
+    "createdVideo": {
+      "found": "この動画の譜面が{count}件見つかりました",
+      "notFound": "この動画の譜面は見つかりませんでした"
+    }
+  },
+  "bookmark": {
+    "saveTitle": "ブックマークに保存 {count} / {max}件",
+    "noLists": "リストがありません",
+    "public": "公開",
+    "private": "非公開",
+    "mapCount": "{count}譜面",
+    "created": "リストを作成しました",
+    "createFailed": "作成に失敗しました: {message}",
+    "newList": "新しいリストを作成",
+    "listName": "リスト名",
+    "visibility": "公開範囲"
+  },
+  "result": {
+    "inputMode": {
+      "romaShort": "ロマ",
+      "roma": "ローマ字",
+      "kana": "かな",
+      "flick": "フリック",
+      "english": "英語",
+      "other": "その他"
+    },
+    "tooltip": {
+      "miss": "ミス数",
+      "lost": "ロスト数",
+      "maxCombo": "最大コンボ",
+      "kanaToRomaKpm": "ﾛﾏ換算kpm",
+      "kanaToRomaRkpm": "ﾛﾏ換算rkpm",
+      "speed": "倍速",
+      "caseSensitive": "英語大文字",
+      "enabled": "有効",
+      "date": "日時",
+      "romaTypes": "ローマ字",
+      "kanaTypes": "かな入力",
+      "flickTypes": "フリック",
+      "otherTypes": "英数字記号",
+      "totalTypes": "合計打数",
+      "types": "打数"
+    },
+    "speed": "倍速",
+    "creator": "制作者:",
+    "underReview": "確認中"
+  },
+  "report": {
+    "status": {
+      "PENDING": "未処理",
+      "DISMISSED": "対処不要",
+      "WARNED": "警告済み",
+      "WARNING_REVOKED": "警告解除済み",
+      "BANNED": "BAN済み",
+      "UNBANNED": "BAN解除済み"
+    },
+    "reasons": {
+      "CHEATING": "チート",
+      "HARASSMENT": "嫌がらせ",
+      "SPAM": "スパム",
+      "INAPPROPRIATE": "不適切なコンテンツ",
+      "OTHER": "その他"
+    }
+  },
+  "user": {
+    "title": "プレイヤー情報",
+    "tabs": {
+      "stats": "タイピング統計情報",
+      "maps": "制作譜面",
+      "results": "ランキング履歴",
+      "liked": "いいねした譜面",
+      "bookmarks": "ブックマークリスト"
+    },
+    "summary": {
+      "updateNote": "統計情報はやり直し時・ページ離脱時・リザルト時に更新されます",
+      "noData": "データがありません",
+      "romaTypes": "ローマ字 打鍵数",
+      "kanaTypes": "かな入力 打鍵数",
+      "englishTypes": "英語 打鍵数",
+      "spaceTypes": "スペース 打鍵数",
+      "numTypes": "数字 打鍵数",
+      "symbolTypes": "記号 打鍵数",
+      "flickTypes": "フリック 打鍵数",
+      "imeTypes": "変換有り 打鍵数",
+      "totalTypes": "合計 打鍵数",
+      "startedAt": "計測開始日",
+      "typingTime": "タイピング時間",
+      "playCount": "プレイ回数",
+      "maxCombo": "最大コンボ",
+      "duration": "{hours}時間 {minutes}分 {seconds}秒",
+      "keystrokeInfo": "打鍵情報",
+      "hidden": "タイピング統計情報は非公開にしています",
+      "hiddenNoticeTitle": "統計情報は非公開に設定されています",
+      "onlyYouCanView": "現在プロフィールは自分のみが閲覧できます",
+      "viewAsOthers": "他の人が見ているページを見る",
+      "showStats": "統計情報を表示",
+      "changeSettings": "設定を変更"
+    },
+    "topPp": {
+      "titleWithCount": "ベストパフォーマンス TOP{count}",
+      "desc": "降順",
+      "asc": "昇順"
+    },
+    "activity": {
+      "months": ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+      "weekdays": ["日", "月", "火", "水", "木", "金", "土"],
+      "totalCount": "{{count}} 打鍵",
+      "roma": "ローマ字",
+      "kana": "かな",
+      "other": "英数字記号",
+      "ime": "変換有りタイプ数",
+      "total": "合計打鍵数: {count}",
+      "date": "日付: {date}",
+      "none": "活動なし",
+      "level": "{label} level: {level}"
+    },
+    "warning": {
+      "tooltip": "警告履歴を表示 (この表示は他のユーザーには表示されません)",
+      "title": "警告履歴"
+    },
+    "noticeHistory": {
+      "tooltip": "重要なお知らせ履歴を表示 (この表示は他のユーザーには表示されません)",
+      "title": "重要なお知らせ履歴",
+      "empty": "重要なお知らせはありません",
+      "acknowledgedAt": " / 確認: {date}",
+      "acknowledged": "確認済み",
+      "expired": "期限切れ",
+      "unacknowledged": "未確認"
+    },
+    "report": {
+      "success": "報告を送信しました",
+      "failed": "報告に失敗しました: {message}",
+      "tooltip": "このユーザーを報告",
+      "titleNamed": "{name}を報告しますか？",
+      "titleUnnamed": "このユーザーを報告しますか？",
+      "category": "報告カテゴリ",
+      "detail": "報告理由",
+      "placeholder": "詳細な理由を入力してください。",
+      "submit": "レポートの送信",
+      "submitting": "送信中..."
+    },
+    "resultSummary": {
+      "registered": "登録済み譜面数",
+      "firstCount": "1位譜面数",
+      "firstRate": "1位譜面率"
+    },
+    "bookmarkLists": {
+      "empty": "ブックマークリストがありません",
+      "count": "{count}件",
+      "deleted": "リストを削除しました",
+      "deleteFailed": "削除に失敗しました: {message}",
+      "deleteTitle": "リストを削除",
+      "deleteDescription": "リストを削除してもよろしいですか？この操作は元に戻せません。",
+      "deleteConfirm": "削除する",
+      "edit": "編集",
+      "delete": "削除",
+      "edited": "リストを編集しました",
+      "editFailed": "編集に失敗しました: {message}",
+      "editTitle": "リストを編集"
+    },
+    "profile": {
+      "fingerChart": "運指表",
+      "viewFingerChart": "運指表を見る",
+      "fingerChartUnset": "運指表は未設定です",
+      "keyboard": "使用キーボード",
+      "keyboardUnset": "使用キーボードは未設定です",
+      "rank": "実力ランク:",
+      "reviewRecords": "確認が必要な記録",
+      "editTooltip": "プロフィール編集ページに移動"
+    },
+    "resultList": {
+      "reviewRecords": "確認が必要な記録 ({count})",
+      "reviewNote": "このリザルトは本人のみ閲覧できます。確認中の記録はランキングとPPの集計から除外されています。"
+    }
+  },
+  "userSettings": {
+    "profileTitle": "プロフィール設定",
+    "optionsTitle": "ユーザー設定",
+    "presence": "オンライン状態",
+    "presenceOnline": "プレイ中の曲を共有",
+    "presenceAskMe": "プレイ中の曲を隠す",
+    "presenceHide": "オンライン状態を非表示",
+    "hideStats": "プロフィールページのタイピング統計情報を非公開にする",
+    "fingerChartLabel": "みんなの運指表URL",
+    "fingerChartPlaceholder": "http://unsi.nonip.net/user/[id] のURLを貼り付け",
+    "fingerChartUpdated": "URLを更新しました",
+    "fingerChartCreate": "運指表作成はこちら",
+    "keyboardLabel": "使用キーボード",
+    "updated": "更新しました",
+    "nameLabel": "名前",
+    "namePlaceholder": "名前を入力",
+    "namePlaceholderRegister": "名前を入力してね (後から変更できます)",
+    "nameUpdated": "名前を更新しました",
+    "nameAvailable": "この名前は使用可能です",
+    "updating": "更新中...",
+    "submitName": "名前を決定"
+  },
+  "typing": {
+    "lineResult": {
+      "missLost": "ミス: {miss}, ロスト: {lost}",
+      "totalPoint": "合計ポイント: {point}",
+      "point": "ポイント: {point}",
+      "modeRoma": "(ローマ字)",
+      "modeKana": "(かな)",
+      "kpmTooltip": "要求打鍵速度{mode}",
+      "notesTooltip": "要求打鍵数{mode}",
+      "speed": "({speed}倍速)",
+      "notes": "{count}打",
+      "detailTitle": "詳細リザルト"
+    },
+    "ready": {
+      "modeRoma": "ローマ字入力",
+      "modeKana": "かな入力",
+      "modeFlick": "フリック入力",
+      "loadingResult": "リザルトデータを読込中...",
+      "practiceStart": "練習モードで開始",
+      "start": "Enterキー / 動画をクリックして開始",
+      "speedHint": "1.00倍速未満の場合は練習モードになります。",
+      "speed": "倍速",
+      "loadRecord": "登録記録を読込",
+      "loadFailed": "リザルトデータの読み込みに失敗しました"
+    },
+    "scene": {
+      "confirmPractice": "練習モードに移動しますか？",
+      "confirmPlay": "本番モードに移動しますか？了承すると初めから再生されます。"
+    },
+    "hotkey": {
+      "timeOffset": "時間調整: {value}"
+    },
+    "end": {
+      "registered": "ランキング登録が完了しました",
+      "registerFailed": "ランキング登録に失敗しました",
+      "notUpdated": "スコア未更新",
+      "notUpdatedDescription": "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
+      "registerLabel": "ランキングに登録",
+      "registerDone": "ランキング登録完了",
+      "register": "ランキング登録",
+      "detail": "詳細リザルトを見る",
+      "retryTitle": "リトライ確認",
+      "retryDescription": "リトライすると今回の記録は失われますが、リトライしますか？",
+      "retry": "リトライ",
+      "againPractice": "もう一度練習",
+      "againReplay": "もう一度リプレイ",
+      "againPlay": "もう一度プレイ",
+      "toPractice": "練習モードへ",
+      "toPlay": "本番モードへ",
+      "perfect": "パーフェクト！！",
+      "needSpeed": "1.00倍速以上でランキング登録できます。",
+      "practiceEnd": "練習モード終了",
+      "replayEnd": "リプレイ再生終了",
+      "scoreLogin": "スコアは {score} です。ログインをするとランキングに登録することができます。",
+      "firstRecord": "初めての記録です！スコアは {score} です。",
+      "newBest": "おめでとうございます！最高スコアが {best} から {score} に更新されました！ ",
+      "bestInfo": "最高スコアは {best} です。記録更新まであと {diff} です。"
+    },
+    "footer": {
+      "disableStyle": "譜面の装飾を無効化",
+      "ime": "変換有りタイピング",
+      "speed": "{speed}倍速",
+      "retry": "やり直し",
+      "move": "移動",
+      "list": "リスト",
+      "maxKpm": "最大kpm: {kpm}"
+    },
+    "card": {
+      "remain": "残り",
+      "seconds": "秒"
+    },
+    "tabs": {
+      "status": "ステータス",
+      "ranking": "ランキング"
+    },
+    "action": {
+      "bookmark": "ブックマーク",
+      "like": "いいね",
+      "edit": "編集"
+    },
+    "settings": {
+      "timeEarlier": "タイミングが早くなります",
+      "timeLater": "タイミングが遅くなります",
+      "timeOffset": "全体タイミング調整",
+      "caseSensitive": "アルファベット大文字の入力判定を有効化",
+      "beforeStartOnly": "開始前のみ設定を変更できます",
+      "flickHighlight": "フリック入力時に次の文字のキーを強調表示",
+      "typeSound": "タイプ音",
+      "missSound": "ミス音",
+      "completedSound": "打ち切り音",
+      "sound": "サウンド",
+      "wordScrollTitle": "ワードスクロール設定",
+      "mainStart": "メイン開始位置",
+      "mainStartLeft": "メインワードスクロール開始位置を左に移動します",
+      "mainStartRight": "メインワードスクロール開始位置を右に移動します",
+      "subStart": "サブ開始位置",
+      "subStartLeft": "サブワードスクロール開始位置を左に移動します",
+      "subStartRight": "サブワードスクロール開始位置を右に移動します",
+      "scrollAnimOn": "アニメーションあり",
+      "scrollAnimOff": "アニメーションなし",
+      "scrollAnimation": "スクロールアニメーション",
+      "hotkeyTitle": "ショートカットキー設定",
+      "timeAdjust": "タイミング調整",
+      "disabled": "無効化",
+      "toggleKey": "かな⇔ローマ字切り替え",
+      "windowTitle": "画面幅調整",
+      "windowWidth": "画面幅",
+      "windowWider": "画面の幅を広くします。(1400pxまで)",
+      "windowNarrower": "画面の幅を狭くします。(1000pxまで)",
+      "reset": "リセット",
+      "wordTitle": "ワード表示調整",
+      "mainSize": "メインサイズ",
+      "kanaBigger": "かな表示フォントサイズを大きくします。",
+      "kanaSmaller": "かな表示フォントサイズを小さくします。",
+      "subSize": "サブサイズ",
+      "romaBigger": "ローマ字表示フォントサイズを大きくします。",
+      "romaSmaller": "ローマ字表示フォントサイズを小さくします。",
+      "mainPosition": "メイン位置",
+      "kanaUp": "かな表示を上に移動します。",
+      "kanaDown": "かな表示を下に移動します。",
+      "subPosition": "サブ位置",
+      "romaUp": "ローマ字表示を上に移動します。",
+      "romaDown": "ローマ字表示を下に移動します。",
+      "kanaSpacing": "かな間隔",
+      "kanaSpacingUp": "かな表示の文字間隔を大きくします。",
+      "kanaSpacingDown": "かな表示の文字間隔を小さくします。",
+      "romaSpacing": "ローマ字間隔",
+      "romaSpacingUp": "ローマ字表示の文字間隔を大きくします。",
+      "romaSpacingDown": "ローマ字表示の文字間隔を小さくします。",
+      "wordDisplay": "ワード表示方式",
+      "KANA_ROMA_UPPERCASE": "↑かな↓ローマ字大文字",
+      "KANA_ROMA_LOWERCASE": "↑かな↓ローマ字小文字",
+      "ROMA_KANA_UPPERCASE": "↑ローマ字↓かな大文字",
+      "ROMA_KANA_LOWERCASE": "↑ローマ字↓かな小文字",
+      "KANA_ONLY": "かなのみ",
+      "ROMA_UPPERCASE_ONLY": "ローマ字大文字のみ",
+      "ROMA_LOWERCASE_ONLY": "ローマ字小文字のみ",
+      "tabMain": "メイン設定",
+      "tabDisplay": "表示設定",
+      "tabKeyboard": "キーボード設定",
+      "resetTitle": "設定をリセット",
+      "resetDescription": "すべての設定をデフォルトにリセットしますか？",
+      "resetConfirm": "リセットする",
+      "resetDone": "設定をリセットしました",
+      "tooltip": "設定",
+      "highlight": "ワードハイライト",
+      "nextWord": "次のワードを表示",
+      "lineCompleted": "打ち切り時のワード表示",
+      "lyrics": "歌詞",
+      "word": "ワード",
+      "nextDisplay": "次の歌詞表示"
+    },
+    "ranking": {
+      "underReview": "確認中の記録 (本人のみ表示されます。ランキングの集計には含まれません)",
+      "rank": "順位",
+      "clearRate": "クリア率",
+      "name": "名前",
+      "mode": "モード",
+      "time": "時間",
+      "clapCancel": "拍手を取り消す",
+      "clap": "拍手する"
+    },
+    "rankingMenu": {
+      "banned": "この記録をBANしました",
+      "banFailed": "BANに失敗しました: {message}",
+      "videoSet": "プレイ動画を登録しました",
+      "videoSetFailed": "プレイ動画の登録に失敗しました: {message}",
+      "videoRemoved": "プレイ動画の登録を解除しました",
+      "videoRemoveFailed": "プレイ動画の登録解除に失敗しました: {message}",
+      "videoChangeTitle": "プレイ動画を変更",
+      "videoSetTitle": "プレイ動画を登録",
+      "videoPrompt": "この記録のプレイ動画のURLを入力してください。(YouTube、TikTokの動画ページのURLに対応しています)",
+      "videoPlaceholder": "https://www.youtube.com/watch?v=... / https://www.tiktok.com/@ユーザー名/video/...",
+      "register": "登録する",
+      "unsupportedUrl": "対応していない動画のURLです",
+      "removeTitle": "プレイ動画の登録を解除しますか？",
+      "removeDescription": "この記録に登録したプレイ動画を解除します。",
+      "remove": "解除する",
+      "reportSent": "報告を送信しました",
+      "reportFailed": "報告に失敗しました: {message}",
+      "reportTitle": "この記録を報告しますか？",
+      "reportDescription": "不正な記録の可能性がある場合、理由を入力してください。管理者が確認します。",
+      "reportPlaceholder": "報告理由を入力してください。",
+      "report": "報告する",
+      "banTitle": "この記録をBANしますか？",
+      "banDescription": "この記録を無効な記録としてマークします。ランキングと他のユーザーの記録一覧に表示されなくなり、PPにも反映されません。ユーザー自身のBANではありません。",
+      "ban": "BANする",
+      "loadingResult": "リザルトデータを読込中...",
+      "loadFailed": "リザルトデータの読み込みに失敗しました",
+      "mapUpdated": "リプレイ登録時より後に譜面が更新されています",
+      "mapUpdatedDescription": "正常に再生できない可能性があります",
+      "userPage": "ユーザーページへ ",
+      "replay": "リプレイ再生",
+      "clapped": "拍手済み",
+      "clapAction": "記録に拍手",
+      "watchVideo": "{platform}でプレイ動画を見る",
+      "removeVideo": "プレイ動画の登録を解除",
+      "reportAction": "記録を報告",
+      "banAction": "この記録をBAN"
+    },
+    "youtube": {
+      "loadingMap": "譜面読み込み中..."
+    }
+  },
+  "ime": {
+    "menu": {
+      "speed": "倍速",
+      "start": "開始",
+      "end": "終了",
+      "result": "採点結果",
+      "settings": "設定",
+      "back": "タイピングページに戻る"
+    },
+    "rules": {
+      "englishSpaces": "英語スペースあり",
+      "englishCaps": "英語大文字あり",
+      "symbols": "記号入力あり"
+    },
+    "ranking": "{rank}位 {name}: {score}点",
+    "guest": "ゲスト",
+    "placeholder": {
+      "ready": "動画クリック / Enterでスタート",
+      "skip": "ワードを入力（Enterで送信）\nskipを入力してスキップ",
+      "end": "ワードを入力（Enterで送信）\nendを入力して終了",
+      "finished": "お疲れさまでした \nresultを入力すると結果を確認できます",
+      "default": "ワードを入力（Enterで送信）"
+    },
+    "loading": {
+      "hiragana": "ひらがな判定生成中...",
+      "map": "譜面読み込み中...",
+      "failed": "ワード生成に失敗しました。",
+      "retry": "再試行"
+    },
+    "settings": {
+      "main": "メイン設定",
+      "includeRegex": "判定文字追加を有効化",
+      "englishSpaces": "英語スペースを有効化",
+      "caseSensitive": "英語大文字判定を有効化",
+      "fontSize": "歌詞文字サイズ",
+      "fontBigger": "歌詞の文字サイズを大きくします。",
+      "fontSmaller": "歌詞の文字サイズを小さくします。",
+      "nextLyrics": "次の歌詞を表示"
+    },
+    "result": {
+      "title": "採点結果",
+      "point": "点",
+      "score": "スコア",
+      "typeCount": "タイプ数",
+      "judge": "判定",
+      "input": "入力",
+      "lyrics": "歌詞"
+    }
+  },
+  "legal": {
+    "translationNotice": ""
+  },
+  "terms": {
+    "metaTitle": "利用規約 - YTyping",
+    "metaDescription": "YTypingの利用規約",
+    "title": "利用規約",
+    "introTitle": "はじめに",
+    "intro": "本規約は、YTyping（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用の方は、本規約に同意したものとみなします。",
+    "prohibitedTitle": "禁止事項",
+    "prohibitedIntro": "本サービスにおいて、以下の行為を禁止します。",
+    "prohibited": [
+      "他のユーザーへの誹謗中傷、嫌がらせ、差別的な発言",
+      "スパム行為や不正なアカウント操作",
+      "本サービスの運営を妨害する行為",
+      "法令または公序良俗に違反する行為",
+      "その他、運営が不適切と判断する行為"
+    ],
+    "suspensionTitle": "アカウントの停止",
+    "suspension": "禁止事項に違反した場合、警告を行ったうえでアカウントを停止（BAN）する場合があります。悪質な場合は警告なしに停止することがあります。",
+    "recordsTitle": "タイピング記録の確認",
+    "records": "運営は、本サービスに登録されたタイピングの記録が正規の入力によるものか判断できない場合、登録したユーザーに対し、確認を求めることがあります。",
+    "disclaimerTitle": "免責事項",
+    "disclaimer": "本サービスの利用によって生じた損害について、運営は一切の責任を負いません。本サービスは予告なく変更・停止する場合があります。",
+    "contactTitle": "お問い合わせ",
+    "contact": "本規約に関するお問い合わせは、GitHubのIssueまたはDiscussionsよりご連絡ください。"
+  },
+  "privacy": {
+    "metaTitle": "プライバシーポリシー - YTyping",
+    "metaDescription": "YTypingのプライバシーポリシー",
+    "title": "プライバシーポリシー",
+    "collectTitle": "収集する情報",
+    "collectIntro": "本サービスでは、以下の情報を収集します。",
+    "collect": [
+      "認証に必要なメールアドレス（復元不可能な形式でハッシュ化して保存）",
+      "サービスの利用履歴（タイピングゲームのログ）",
+      "サービス内のユーザー設定情報"
+    ],
+    "authTitle": "外部認証サービスの利用",
+    "authIntro": "本サービスでは、以下の認証プロバイダーを利用しています。",
+    "auth": "認証時に必要なユーザー情報へのアクセス権限を取得しますが、本サービスが保存する個人情報は最小限に限定されており、認証で利用するためにメールアドレスを復元不可能な形式でハッシュ化した値のみを保持します。そのほかの情報（ユーザー名、プロフィール画像等）は保持いたしません。",
+    "purposeTitle": "利用目的",
+    "purposeIntro": "収集した情報は、以下の目的で利用します。",
+    "purpose": ["本人確認およびアカウント管理", "サービスの提供および品質向上", "利用状況の分析"],
+    "thirdPartyTitle": "第三者提供",
+    "thirdParty": "法令に基づく場合を除き、ユーザーの同意なく第三者に個人情報を提供することはありません。",
+    "contactTitle": "お問い合わせ",
+    "contact": "本ポリシーに関するお問い合わせは、GitHubのIssueまたはDiscussionsよりご連絡ください。"
+  },
+  "contactPage": {
+    "title": "お問い合わせ",
+    "loginRequired": "お問い合わせにはログインが必要です。右上のメニューからログインしてください。",
+    "note": "開発者が確認のうえ返信します。返信はオンライン状態に関わらず問い合わせ箱に保管されます。すべてのお問い合わせに返信しておりますので、返信がない場合は見落としている可能性があります。お手数ですが再度お問い合わせください。",
+    "history": "お問い合わせ履歴",
+    "sent": "お問い合わせを送信しました",
+    "body": "内容",
+    "submit": "送信する",
+    "empty": "お問い合わせの履歴はありません"
+  },
+  "bookmarks": {
+    "title": "公開ブックマーク一覧",
+    "back": "ブックマーク一覧に戻る",
+    "count": "{count}件"
+  },
+  "changelogPage": {
+    "title": "更新履歴",
+    "updated": "最終更新: {date}"
+  },
+  "manualPp": {
+    "title": "譜面難易度とPP計算方法",
+    "ratingTitle": "難易度 (Rating)",
+    "ratingDescription": "各曲のタイピング難易度を数値化したものです。KPMや文字の多様性をもとに算出されます。",
+    "caveat": "※計算方法は見直し変更される可能性があります。",
+    "source": "ソースコード:",
+    "ppDescription": "プレイ結果から算出されるポイントです。精度・クリア率・速度・難易度が総合的に評価されます。",
+    "ppCaveat": "※PP初回算出時2026-4-22以前の譜面が後から更新されたリザルトはratingが不明なため0ppになっています。",
+    "code": "コード",
+    "rating": {
+      "kpm": {
+        "title": "KPMの算出",
+        "body": "各行のローマ字KPM（Keys Per Minute）を計算します。1700 KPMを超える行は異常値として除外されます。",
+        "formula": "KPM = (行のノーツ数 ÷ 行の時間) × 60"
+      },
+      "diversity": {
+        "title": "文字多様性スコア (Diversity)",
+        "body": "行毎のワードの文字分布をシャノンエントロピーで評価し、0〜1の多様性スコアを算出します。「あああ…」のように同じ文字が続く行ほどスコアが低くなります。",
+        "formula": "diversity = H(文字分布) / log₂(文字数)\n※ 全文字が同じ → 0、全文字が異なる → 1 に近い"
+      },
+      "penalty": {
+        "title": "多様性ペナルティの適用",
+        "body": "多様性スコアが閾値(0.6)未満の行は KPM を指数的に減衰させます。同じ文字の連打が多い行の難易度を補正します。",
+        "formula": "diversity ≥ 0.6  →  ペナルティなし (× 1.0)\ndiversity < 0.6  →  adjustedKPM = KPM × (diversity / 0.6)²"
+      },
+      "score": {
+        "title": "難易度スコアの計算 (difficultyScore)",
+        "body": "ノーツ数で重み付けした加重平均KPMと、調整済みKPMが高い上位2行の平均（ピークKPM）を 7:3 の比率で合成して難易度スコアを算出します。",
+        "formula": "avgKPM  = Σ(adjustedKPM × notes割合)\npeakKPM = 上位2行の adjustedKPM の平均\ndifficultyScore = avgKPM × 0.7 + peakKPM × 0.3"
+      },
+      "notes": {
+        "title": "ノーツ数補正",
+        "body": "総ノーツ数 270 を基準に対数スケールで補正します。ノーツが少ない曲は低め、多い曲は高め（上限 ×1.1 倍）に調整されます。",
+        "formula": "notesScaling = clamp(1.0 + log(totalNotes / 270) × 0.17,  min=0,  max=1.1)"
+      },
+      "final": {
+        "title": "難易度",
+        "body": "難易度スコアを 100 で割り、ノーツ補正を乗算して最終的な難易度を算出します。",
+        "formula": "rating = (difficultyScore / 100) × notesScaling"
+      }
+    },
+    "pp": {
+      "base": {
+        "title": "Base PP",
+        "body": "難易度から基礎となる PP を算出します。 rating…難易度",
+        "formula": "basePP = rating × 100"
+      },
+      "clearRate": {
+        "title": "クリア率 (Clear Rate) 補正",
+        "body1": "100%の割合からミスと打ち損じの打数に応じて減算します。かな入力でもローマ字換算で計算します。",
+        "legend1": "totalNotes…総ローマ字ノーツ数、missCount…ミス数、lostNotes…打ち損じノーツ数、keyRate…100/totalNotes、missRate…keyRateの1/2",
+        "formula1": "keyRate  = 100 / totalNotes\nmissRate = keyRate / 2\n\nclearRate = 100 − missCount × missRate − lostNotes × keyRate",
+        "body2": "クリア率のべき乗で補正します。難易度が高いほど指数が小さくなり、低クリア率でも PP が出やすくなります。",
+        "legend2": "clearRate…クリア率、exp…補正係数",
+        "formula2": "exp = 1.2 + 1.0 / (1 + rating / 8)\n  rating=0  → exp≈2.2\n  rating=5  → exp≈1.7\n  rating=10 → exp≈1.53\n\n補正係数 = clearRate ^ exp"
+      },
+      "accuracy": {
+        "title": "正確率 (Accuracy) 補正",
+        "body": "タイプ成功数 ÷（タイプ数 + ミス数）で正確率を算出し、2乗で補正します。 正確率が落ちるほど PP が大きく減少します。",
+        "legend": "accuracy…正確率、type…タイプ数、miss…ミス数",
+        "formula": "accuracy = type / (type + miss)\n補正係数 = accuracy²"
+      },
+      "speed": {
+        "title": "速度補正",
+        "body": "再生速度 1.0 以上で補正が上昇し、最大 1.5 倍まで加算されます。(再生速度1.0 未満はランキング登録不可)",
+        "formula": "speedMultiplier = min(1 + (speed - 1) × 0.5,  max=1.5)"
+      },
+      "raw": {
+        "title": "譜面リザルトのPP値",
+        "body": "各スコアの PP 値を算出します。",
+        "formula": "rawPP = basePP × accuracy² × clearRate^exp × speedMultiplier"
+      },
+      "total": {
+        "title": "実力ランキングの合計PP",
+        "body": "全スコアの PP から上位 200 件を選び、ランク順に 0.95 ずつ減衰をかけて合算します。1位のスコアが最大に寄与し、順位が下がるほど貢献度が小さくなります。",
+        "formula": "totalPP = Σ pp[i] × 0.95^i   (i = 0〜199、上位200件)"
+      }
+    }
+  },
+  "editor": {
+    "tabs": {
+      "info": "情報&保存",
+      "editor": "エディター",
+      "settings": "ショートカットキー&設定"
+    },
+    "loadingVideo": "動画読込中...",
+    "noPermission": "編集保存権限がないため譜面の更新はできません",
+    "optionSet": "設定有",
+    "optionUnset": "未設定",
+    "timeHint": "↓↑: 0.05ずつ調整, Enter:再生",
+    "rubyHint": "Enterキーを押すとRubyタグを挿入できます。",
+    "convert": "変換",
+    "speed": "倍速",
+    "replace": {
+      "searchPrompt": "置き換えしたい読みを入力してください。",
+      "replacePrompt": "置き換えする文字を入力してください。",
+      "containsError": "sorry...置き換えする文字に検索する文字が含まれないようにしてください。",
+      "confirm": "残り{count}件\n{word}\n置き換えますか？"
+    }
+  },
+  "editorSettings": {
+    "import": {
+      "readError": "ファイル読み込みエラー",
+      "empty": "テキストが空です",
+      "importing": "lrcインポート中...",
+      "done": "インポート完了",
+      "lrcDone": "lrcインポート完了",
+      "lrcError": "lrcエラー",
+      "processError": "ファイルの処理中にエラーが発生しました。",
+      "button": "lrcインポート",
+      "fromFile": "lrcファイルから読み込む",
+      "placeholder": "[00:00.00]歌詞\n[00:05.00]歌詞...",
+      "confirm": "確定"
+    },
+    "shortcuts": {
+      "title": "ショートカットキー 一覧",
+      "skip": "3秒スキップ",
+      "moveLine": "選択行の移動",
+      "add": "追加",
+      "addEmpty": "空行を追加",
+      "update": "変更",
+      "delete": "削除",
+      "play": "再生・停止",
+      "deselect": "選択行の解除",
+      "focus": "歌詞追加テキストエリアフォーカス切り替え",
+      "replaceAll": "全体よみ置換",
+      "undo": "元に戻す",
+      "redo": "繰り返し",
+      "ruby": "歌詞テキストボックスの選択した文字にRubyタグを挿入",
+      "directEdit": "直接編集モード",
+      "directEditKey": "Ctrl+登録済み歌詞クリック"
+    },
+    "convert": {
+      "title": "読み変換",
+      "noSymbol": "記号なし(一部除く)",
+      "noSymbolDescription": "一部の記号を除いてワードに記号を含まずよみ変換します。",
+      "someSymbol": "記号あり(一部)",
+      "someSymbolDescription": "一部の記号をよみ変換されるようにします。",
+      "allSymbol": "記号あり(すべて)",
+      "allSymbolDescription": "キーボードで入力できる全ての記号をよみ変換されるようにします。",
+      "symbols": "変換される記号: {symbols}"
+    },
+    "timeAdjust": {
+      "done": "タイムを調整しました",
+      "doneDescription": "全体のタイムが {value} 秒調整されました。Ctrl + Zで前のタイムに戻ることができます。",
+      "tooltip": "数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します",
+      "label": "全体タイム調整",
+      "run": "実行"
+    }
+  },
+  "editorTab": {
+    "add": "追加",
+    "update": "変更",
+    "delete": "削除",
+    "convert": "読み変換",
+    "convertNoPermission": "読み変換機能は編集保存権限が有効な場合に使用できます",
+    "convertFailed": "読み変換に失敗しました",
+    "lyrics": "歌詞",
+    "word": "ワード",
+    "rubyHint": "Enterキーを押すとRubyタグを挿入できます。",
+    "manyPlaceholder": "ここから歌詞をまとめて追加できます。\nSキー: 歌詞を追加\nCtrl+Zキー: 歌詞追加のやり直し",
+    "removeSymbolsTitle": "記号を削除",
+    "removeSymbolsDescription": "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",
+    "removeSymbolsConfirm": "削除する",
+    "removeSymbolsDone": "歌詞追加テキストエリアの記号を削除しました",
+    "removeSymbolsDoneDescription": "読み変換で変換されない記号を削除しました",
+    "removeSymbolsTooltip1": "読み変換で変換されない記号を削除します。",
+    "removeSymbolsTooltip2": "※設定タブ内の読み変換設定によって削除される記号は変化します。",
+    "timeAdjust": {
+      "recommended": "推奨設定：補正値 -0.2～-0.25秒",
+      "featureLabel": "機能：",
+      "feature": "YouTube再生中に行を追加・変更する際、設定値分だけタイムを自動補正して記録します",
+      "effectLabel": "効果：",
+      "effect": "歌詞1行の歌いだしの瞬間に追加ボタンを押すと、タイミング良く記録することができます。",
+      "bluetooth": "Bluetoothキーボードや無線イヤホン使用時は、遅延に合わせて補正値を調整してください",
+      "label": "追加タイム補正"
+    }
+  },
+  "editorInfo": {
+    "previewTimeNumber": "プレビュータイムは数値である必要があります",
+    "title": "曲名",
+    "artist": "アーティスト名",
+    "source": "ソース",
+    "comment": "コメント",
+    "titleGenerating": "曲名を生成中...",
+    "artistGenerating": "アーティスト名を生成中...",
+    "sourceGenerating": "ソースを生成中...",
+    "tagsMin": "タグを2つ以上追加してください",
+    "tagsAdd": "タグを追加 {count} / {max}",
+    "save": "保存",
+    "videoPasteHint": "動画URLを貼付するとIDが自動入力されます",
+    "videoId": "動画ID",
+    "switchVideo": "動画切り替え",
+    "public": "公開",
+    "publicDescription": "譜面一覧に表示されます",
+    "unlisted": "限定公開",
+    "unlistedDescription": "譜面URLを知っているユーザーのみアクセスできます",
+    "visibility": "公開範囲",
+    "previewTip1": "譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)",
+    "previewTip2": "※ 小さい数値を指定すると最初のタイピングワードが存在するタイムが設定されます。",
+    "previewTip3": "↑↓キー: 0.05ずつ調整, Enter:再生",
+    "previewTime": "プレビュータイム",
+    "toTyping": "タイピングページに移動",
+    "uploaded": "アップロード完了",
+    "updated": "アップデート完了",
+    "saveFailed": "保存に失敗しました",
+    "noEditPermission": "この譜面を編集する権限がありません。",
+    "tagLimit": "タグは最大10個まで追加できます"
+  },
+  "editorLine": {
+    "confirmClose": "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
+    "title": "ラインオプション",
+    "selected": "選択ライン: {index}",
+    "caseSensitive": "この譜面のアルファベット大文字の入力を有効化",
+    "speedChange": "速度変更",
+    "speedDown": "速度ダウン",
+    "speedUp": "速度アップ",
+    "speed": "速度: ",
+    "eternalCss": "永続的に適用するCSSを入力",
+    "enableChange": "ライン切り替えを有効化",
+    "changeCss": "選択ラインから適用するCSSを入力",
+    "save": "ラインオプションを保存",
+    "similar": "類似タイトルの譜面が{count}件見つかりました"
+  },
+  "validation": {
+    "contactBody": "本文を入力してください",
+    "maxChars500": "500文字以内で入力してください",
+    "userNameSpaces": "文字列の両端にスペースを含めることはできません",
+    "userNameZeroWidth": "ゼロ幅スペースを含めることはできません",
+    "fingerChartUrl": "URLは「http://unsi.nonip.net/user/{id}」形式のURLである必要があります。",
+    "titleRequired": "曲名を入力してください",
+    "titleMax": "曲名は{max}文字以下にしてください",
+    "artistRequired": "アーティスト名を入力してください",
+    "artistMax": "アーティスト名は{max}文字以下にしてください",
+    "sourceMax": "ソースは{max}文字以下にしてください",
+    "commentMax": "コメントは{max}文字以下にしてください",
+    "tagsMin": "タグは2つ以上必要です",
+    "previewTimeNumber": "プレビュータイムは数値である必要があります",
+    "lrcEmpty": "LRCファイルが空です",
+    "lrcInvalid": "有効なLRCタイムスタンプ（[mm:ss.xx]形式）が見つかりません",
+    "mapXss": "譜面データにHTMLタグ（script/iframe/object/embed）を含めることはできません",
+    "mapHttp": "譜面データにはhttpから始まる文字を含めることはできません",
+    "mapNoWords": "タイピングワードが設定されていません",
+    "mapEnd": "最後の歌詞は'end'である必要があります",
+    "mapStartZero": "最初の時間は0である必要があります",
+    "mapTimesNumbers": "timeはすべて数値である必要があります",
+    "mapAfterEnd": "endの後に無効な行があります",
+    "mapUniqueTimes": "同じタイムのラインが2つ以上存在しています。",
+    "mapCss": "カスタムCSSの合計文字数は100000文字以下になるようにしてください"
+  },
+  "maintenance": {
+    "title": "メンテナンス中",
+    "description": "現在サーバーのメンテナンスを実施しています。"
+  }
+}

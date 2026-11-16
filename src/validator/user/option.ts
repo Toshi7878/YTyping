@@ -21,6 +21,7 @@ export const CreateUserTypingOptionSchema = createInsertSchema(userTypingOptions
   inputModeToggleKey: true,
   wordDisplay: true,
   isCaseSensitive: true,
+  isFlickNextKeyHighlight: true,
 });
 
 export const CreateUserImeTypingOptionSchema = createInsertSchema(userImeTypingOptions).pick({

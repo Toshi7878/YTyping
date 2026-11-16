@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useSession } from "@/auth/client";
 import { useToggleClapMutation } from "@/shared/result/clap";
 import { HandsClappingButton } from "@/ui/icon-button";
@@ -13,6 +14,7 @@ interface ResultClapButtonProps {
 }
 
 export const ResultClapButton = ({ resultId, clapCount, hasClapped, className }: ResultClapButtonProps) => {
+  const t = useTranslations("common");
   const { data: session } = useSession();
 
   const toggleClapMutation = useToggleClapMutation();
@@ -23,7 +25,7 @@ export const ResultClapButton = ({ resultId, clapCount, hasClapped, className }:
   };
 
   return (
-    <TooltipWrapper disabled={!!session} label="拍手はログイン後に可能です">
+    <TooltipWrapper disabled={!!session} label={t("loginToClap")}>
       <HandsClappingButton
         label={`× ${clapCount}`}
         disabled={!session || toggleClapMutation.isPending}

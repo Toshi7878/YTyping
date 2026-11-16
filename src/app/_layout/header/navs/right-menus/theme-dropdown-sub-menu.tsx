@@ -1,6 +1,7 @@
 // src/components/ThemeSheet.tsx
 "use client";
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { THEME_LIST } from "@/theme/const";
 import { applyFavicon } from "@/theme/use-favicon-theme";
@@ -16,6 +17,7 @@ import {
 } from "@/ui/dropdown-menu";
 
 export const ThemeDropdownSubmenu = () => {
+  const t = useTranslations("header.theme");
   const { setTheme, resolvedTheme } = useTheme();
 
   const handleThemeChange = (themeClass: string) => {
@@ -25,11 +27,11 @@ export const ThemeDropdownSubmenu = () => {
 
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>テーマ切り替え</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>{t("label")}</DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent className="w-40">
           <DropdownMenuGroup>
-            <DropdownMenuLabel>ダークテーマ</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("dark")}</DropdownMenuLabel>
             {THEME_LIST.dark.map((theme) => (
               <DropdownMenuItem
                 key={theme.class}
@@ -46,7 +48,7 @@ export const ThemeDropdownSubmenu = () => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuLabel>ライトテーマ</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("light")}</DropdownMenuLabel>
             {THEME_LIST.light.map((theme) => (
               <DropdownMenuItem
                 key={theme.class}

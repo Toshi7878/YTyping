@@ -1,9 +1,11 @@
 import { useProgress } from "@bprogress/next";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/auth/client";
 import { Button } from "@/ui/button";
 
 export const RegisterLogoutButton = () => {
+  const t = useTranslations("layout.auth");
   const { start, stop } = useProgress();
   const router = useRouter();
 
@@ -18,7 +20,7 @@ export const RegisterLogoutButton = () => {
         router.refresh();
       }}
     >
-      ログアウト
+      {t("signOut")}
     </Button>
   );
 };

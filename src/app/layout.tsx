@@ -4,8 +4,11 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { getSession } from "@/auth/server";
+import { IntlBridge } from "@/i18n/imperative";
 import ORPCProvider from "@/orpc/provider";
 import { caller } from "@/orpc/server";
 import { THEME_LIST } from "@/theme/const";
@@ -35,46 +38,53 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const userAgent = (await headers()).get("user-agent") ?? "";
-  const [session, userOptions] = await Promise.all([getSession(), caller.user.option.getForSession()]);
+  const [session, userOptions, locale] = await Promise.all([
+    getSession(),
+    caller.user.option.getForSession(),
+    getLocale(),
+  ]);
   return (
-    <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
+    <html lang={locale} className={notoSansJP.className} suppressHydrationWarning>
       <head>
         <meta charSet="UTF-8" />
         <meta name="robots" content="noindex, nofollow" />
       </head>
       <body>
-        <NuqsAdapter>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="default"
-            enableColorScheme
-            disableTransitionOnChange
-            themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
-          >
-            <ORPCProvider>
-              <TooltipProvider delay={600}>
-                <AppAtomsHydrator userOptions={userOptions} userAgent={userAgent}>
-                  <SessionProvider session={session}>
-                    <LinkProgressProvider>
-                      <Header className="fixed z-50 h-10 w-screen" session={session} />
-                      <main className="min-h-screen pt-12 pb-6 md:pt-14" id="main_content">
-                        {children}
-                        <Analytics />
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </LinkProgressProvider>
-                  </SessionProvider>
-                </AppAtomsHydrator>
-              </TooltipProvider>
-            </ORPCProvider>
-          </ThemeProvider>
-        </NuqsAdapter>
-        <Toaster />
-        <ConfirmDialogHost />
-        <PromptDialogHost />
-        <OverlayHost />
-        <ClearSelectionOnNavigate />
-        <UserScriptInit />
+        <NextIntlClientProvider>
+          <NuqsAdapter>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="default"
+              enableColorScheme
+              disableTransitionOnChange
+              themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
+            >
+              <ORPCProvider>
+                <TooltipProvider delay={600}>
+                  <AppAtomsHydrator userOptions={userOptions} userAgent={userAgent}>
+                    <SessionProvider session={session}>
+                      <LinkProgressProvider>
+                        <Header className="fixed z-50 h-10 w-screen" session={session} />
+                        <main className="min-h-screen pt-12 pb-6 md:pt-14" id="main_content">
+                          {children}
+                          <Analytics />
+                        </main>
+                        <PreviewYouTubePlayer />
+                      </LinkProgressProvider>
+                    </SessionProvider>
+                  </AppAtomsHydrator>
+                </TooltipProvider>
+              </ORPCProvider>
+            </ThemeProvider>
+          </NuqsAdapter>
+          <Toaster />
+          <ConfirmDialogHost />
+          <PromptDialogHost />
+          <OverlayHost />
+          <ClearSelectionOnNavigate />
+          <UserScriptInit />
+          <IntlBridge />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -2,11 +2,11 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { TriangleAlertIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type z from "zod/v4";
 import { orpc } from "@/orpc/provider";
 import { REPORT_REASON_TYPES } from "@/server/drizzle/schema";
-import { REPORT_REASON_LABELS } from "@/shared/user/report";
 import { Button } from "@/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/ui/dialog";
 import { useAppForm } from "@/ui/form-field-item";
@@ -21,6 +21,9 @@ interface ReportDialogProps {
 }
 
 export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) => {
+  const t = useTranslations("user.report");
+  const tReason = useTranslations("report.reasons");
+  const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
 
   const form = useAppForm({
@@ -41,12 +44,12 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
   const submitReport = useMutation(
     orpc.user.report.submit.mutationOptions({
       onSuccess: () => {
-        toast.success("報告を送信しました");
+        toast.success(t("success"));
         setOpen(false);
         form.reset();
       },
       onError: (error) => {
-        toast.error(`報告に失敗しました: ${error.message}`);
+        toast.error(t("failed", { message: error.message }));
       },
     }),
   );
@@ -58,29 +61,31 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange} disablePointerDismissal>
-      <TooltipWrapper label="このユーザーを報告" asChild>
-        <DialogTrigger render={<ReportIconButton aria-label="報告" />} />
+      <TooltipWrapper label={t("tooltip")} asChild>
+        <DialogTrigger render={<ReportIconButton aria-label="Report" />} />
       </TooltipWrapper>
       <DialogContent className="max-w-sm">
         <div className="flex flex-col items-center gap-1 pb-2 text-center">
           <TriangleAlertIcon className="mb-1 size-10 text-destructive" />
-          <DialogTitle className="text-xl">{userName ? `${userName}` : "このユーザー"}を報告しますか？</DialogTitle>
+          <DialogTitle className="text-xl">
+            {userName ? t("titleNamed", { name: userName }) : t("titleUnnamed")}
+          </DialogTitle>
         </div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            form.handleSubmit();
+            void form.handleSubmit();
           }}
           className="flex flex-col gap-4"
         >
           <form.AppField name="reason">
             {(field) => (
               <field.SelectFormField
-                label="報告カテゴリ"
+                label={t("category")}
                 options={REPORT_REASON_TYPES.map((v) => ({
                   value: v,
-                  label: REPORT_REASON_LABELS[v],
+                  label: tReason(v),
                 }))}
               />
             )}
@@ -88,8 +93,8 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
           <form.AppField name="reasonDetail">
             {(field) => (
               <field.TextareaFormField
-                label="報告理由"
-                placeholder="詳細な理由を入力してください。"
+                label={t("detail")}
+                placeholder={t("placeholder")}
                 maxLength={500}
                 required
                 className="min-h-30"
@@ -103,7 +108,7 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
               className="w-full rounded-full"
               disabled={submitReport.isPending}
             >
-              {submitReport.isPending ? "送信中..." : "レポートの送信"}
+              {submitReport.isPending ? t("submitting") : t("submit")}
             </Button>
             <Button
               type="button"
@@ -111,7 +116,7 @@ export const ReportDialog = ({ reportedUserId, userName }: ReportDialogProps) =>
               className="w-full rounded-full"
               onClick={() => handleOpenChange(false)}
             >
-              キャンセル
+              {tCommon("cancel")}
             </Button>
           </div>
         </form>

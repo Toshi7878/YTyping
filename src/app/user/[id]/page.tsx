@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { caller, HydrateClient, orpc, prefetchAsync } from "@/orpc/server";
 import { H1 } from "@/ui/typography";
 import { loadUserPageSearchParams } from "./_features/search-params";
@@ -6,6 +7,7 @@ import { UserTabs } from "./_features/tabs";
 import { UserProfileCard } from "./_features/user-profile-card";
 
 export default async function Page({ params, searchParams }: PageProps<"/user/[id]">) {
+  const t = await getTranslations("user");
   const { id } = await params;
   const { tab, bookmarkListId } = await loadUserPageSearchParams(searchParams);
 
@@ -78,7 +80,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   return (
     <HydrateClient>
       <div className="mx-auto max-w-5xl space-y-4 pb-10">
-        <H1>プレイヤー情報</H1>
+        <H1>{t("title")}</H1>
         <UserProfileCard userProfile={userProfile} />
         <UserTabs id={id} />
       </div>

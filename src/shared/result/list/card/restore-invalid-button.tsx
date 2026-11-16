@@ -24,6 +24,7 @@ export const RestoreInvalidResultButton = ({ resultId, className }: RestoreInval
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: orpc.result.list.key() }),
           queryClient.invalidateQueries({ queryKey: orpc.result.ranking.get.key() }),
+          queryClient.invalidateQueries({ queryKey: orpc.result.ranking.getInvalid.key() }),
           queryClient.invalidateQueries({ queryKey: orpc.map.list.key() }),
         ]);
       },

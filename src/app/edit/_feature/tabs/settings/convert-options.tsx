@@ -1,6 +1,7 @@
 "use client";
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { useTranslations } from "next-intl";
 import { store } from "@/app/edit/_feature/provider";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_feature/utils/const";
 import { Label } from "@/ui/label";
@@ -23,36 +24,37 @@ export const getWordConvertOption = () => store.get(wordConvertOptionAtom);
 const CONVERT_OPTIONS = [
   {
     value: "non_symbol",
-    label: "記号なし(一部除く)",
+    labelKey: "noSymbol",
     activeVariant: "success",
     inactiveVariant: "outline-success",
-    description: "一部の記号を除いてワードに記号を含まずよみ変換します。",
+    descriptionKey: "noSymbolDescription",
     symbolList: MANDATORY_SYMBOL_LIST,
   },
   {
     value: "add_symbol",
-    label: "記号あり(一部)",
+    labelKey: "someSymbol",
     activeVariant: "warning",
     inactiveVariant: "outline-warning",
-    description: "一部の記号をよみ変換されるようにします。",
+    descriptionKey: "someSymbolDescription",
     symbolList: [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST],
   },
   {
     value: "add_symbol_all",
-    label: "記号あり(すべて)",
+    labelKey: "allSymbol",
     activeVariant: "destructive",
     inactiveVariant: "outline-destructive",
-    description: "キーボードで入力できる全ての記号をよみ変換されるようにします。",
+    descriptionKey: "allSymbolDescription",
     symbolList: [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST],
   },
 ] as const;
 
 export const ConvertOptionButtons = () => {
+  const t = useTranslations("editorSettings.convert");
   const wordConvertOption = useWordConvertOption();
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
-      <Label className="whitespace-nowrap text-sm">読み変換</Label>
+      <Label className="whitespace-nowrap text-sm">{t("title")}</Label>
       <RadioGroup
         value={wordConvertOption}
         onValueChange={(value) => setWordConvertOption(value as WordConvertOption)}
@@ -67,13 +69,15 @@ export const ConvertOptionButtons = () => {
 };
 
 const ConvertOptionButton = ({ option, isActive }: { option: (typeof CONVERT_OPTIONS)[number]; isActive: boolean }) => {
+  const t = useTranslations("editorSettings.convert");
+
   return (
     <TooltipWrapper
       key={option.value}
       label={
         <div>
-          <div>{option.description}</div>
-          <div>変換される記号: {option.symbolList.join(" ")}</div>
+          <div>{t(option.descriptionKey)}</div>
+          <div>{t("symbols", { symbols: option.symbolList.join(" ") })}</div>
         </div>
       }
       side="bottom"
@@ -84,7 +88,7 @@ const ConvertOptionButton = ({ option, isActive }: { option: (typeof CONVERT_OPT
         className="h-10 w-full text-xs sm:h-[50px] sm:w-[120px] sm:text-sm md:w-[150px]"
         variant={isActive ? option.activeVariant : option.inactiveVariant}
       >
-        {option.label}
+        {t(option.labelKey)}
       </RadioButton>
     </TooltipWrapper>
   );

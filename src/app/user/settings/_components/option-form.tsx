@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { orpc } from "@/orpc/provider";
 import type { RouterOutputs } from "@/server/api/root";
 import { DEFAULT_USER_OPTIONS, type PRESENCE_STATE_TYPES } from "@/server/drizzle/schema";
@@ -12,6 +13,7 @@ interface UserOptionsFormProps {
 }
 
 export const UserOptionsForm = ({ userOptions }: UserOptionsFormProps) => {
+  const t = useTranslations("userSettings");
   const form = useAppForm({
     defaultValues: {
       presenceState: userOptions?.presenceState ?? DEFAULT_USER_OPTIONS.presenceState,
@@ -30,12 +32,12 @@ export const UserOptionsForm = ({ userOptions }: UserOptionsFormProps) => {
       <form.AppField name="presenceState">
         {(field) => (
           <field.SelectFormField
-            label="オンライン状態"
+            label={t("presence")}
             options={
               [
-                { label: "プレイ中の曲を共有", value: "ONLINE" as const },
-                { label: "プレイ中の曲を隠す", value: "ASK_ME" as const },
-                { label: "オンライン状態を非表示", value: "HIDE_ONLINE" as const },
+                { label: t("presenceOnline"), value: "ONLINE" as const },
+                { label: t("presenceAskMe"), value: "ASK_ME" as const },
+                { label: t("presenceHide"), value: "HIDE_ONLINE" as const },
               ] satisfies { label: string; value: (typeof PRESENCE_STATE_TYPES)[number] }[]
             }
             onValueChange={(value: (typeof PRESENCE_STATE_TYPES)[number]) => {
@@ -48,7 +50,7 @@ export const UserOptionsForm = ({ userOptions }: UserOptionsFormProps) => {
       <form.AppField name="hideUserStats">
         {(field) => (
           <field.CheckboxFormField
-            label="プロフィールページのタイピング統計情報を非公開にする"
+            label={t("hideStats")}
             onCheckedChange={(value: boolean) => {
               setUserOptions((prev) => ({ ...prev, hideUserStats: value }));
               upsertUserOption.mutate({ hideUserStats: value });

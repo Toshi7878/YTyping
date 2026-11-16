@@ -1,6 +1,7 @@
 "use client";
 import type { Route } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { RouterOutputs } from "@/server/api/root";
 import type { MapListItem } from "@/server/api/routers/map";
 import { MapListActionButtons } from "@/shared/map/action-buttons";
@@ -87,6 +88,7 @@ const MapBadges = ({ map, href }: MapBadgesProps) => {
 type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
+  const t = useTranslations("map.card");
   const inputMode = useReadyInputMode();
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
@@ -97,13 +99,13 @@ const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
       </Badge>
       <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
       <div className="flex items-center gap-2 text-xs">
-        <span className="text-muted-foreground">最大</span>
+        <span className="text-muted-foreground">{t("max")}</span>
         <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
       </div>
       <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
       <div className="flex items-center gap-2 text-xs">
-        <span className="text-muted-foreground">打鍵数</span>
-        <span className="font-semibold tabular-nums">{totalNotes}打</span>
+        <span className="text-muted-foreground">{t("keystrokes")}</span>
+        <span className="font-semibold tabular-nums">{t("keystrokeCount", { count: totalNotes })}</span>
       </div>
     </div>
   );

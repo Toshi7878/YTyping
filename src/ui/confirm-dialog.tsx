@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { type ComponentProps, useSyncExternalStore } from "react";
 import {
   AlertDialog,
@@ -48,6 +49,7 @@ export const confirmDialog = {
 // --- Component ---
 
 export const ConfirmDialogHost = () => {
+  const t = useTranslations("common");
   const state = useSyncExternalStore(
     (onStoreChange) => {
       store.onStoreChange = onStoreChange;
@@ -75,7 +77,7 @@ export const ConfirmDialogHost = () => {
           {options.description && <AlertDialogDescription>{options.description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => close(false)}>キャンセル</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => close(false)}>{t("cancel")}</AlertDialogCancel>
           <AlertDialogAction variant={variant} onClick={() => close(true)}>
             {options.confirmLabel}
           </AlertDialogAction>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Pagination,
   PaginationContent,
@@ -31,10 +32,11 @@ export const PageNavigation = ({
   page,
   pageCount,
   onPageChange,
-  previousText = "前へ",
-  nextText = "次へ",
+  previousText,
+  nextText,
   size = "default",
 }: PageNavigationProps) => {
+  const t = useTranslations("common");
   if (pageCount <= 1) return null;
 
   const pageNumbers = buildPageNumbers(page, pageCount);
@@ -45,7 +47,7 @@ export const PageNavigation = ({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            text={previousText}
+            text={previousText ?? t("previous")}
             size={size}
             onClick={() => onPageChange(Math.max(1, page - 1))}
             aria-disabled={page === 1}
@@ -75,7 +77,7 @@ export const PageNavigation = ({
 
         <PaginationItem>
           <PaginationNext
-            text={nextText}
+            text={nextText ?? t("next")}
             size={size}
             onClick={() => onPageChange(Math.min(pageCount, page + 1))}
             aria-disabled={page === pageCount}

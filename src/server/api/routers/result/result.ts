@@ -10,6 +10,7 @@ import { resultListRouter } from "./list";
 import { resultPpRouter } from "./pp";
 import { resultRankingRouter } from "./ranking";
 import { resultReportRouter } from "./report";
+import { resultVideoRouter } from "./video";
 
 export const resultRouter = {
   getJsonById: publicProcedure
@@ -42,4 +43,5 @@ export const resultRouter = {
   clap: resultClapRouter,
   invalidation: resultInvalidationRouter,
   report: resultReportRouter,
+  video: resultVideoRouter,
 };

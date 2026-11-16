@@ -5,27 +5,15 @@ import { useBrowserTypeState } from "@/store/user-agent";
 import { Separator } from "@/ui/separator";
 import { H3, LinkText, OList, P } from "@/ui/typography";
 
-const browserLinks: Record<"Chrome" | "Firefox" | "Edge", { url: Route; text: string }> = {
-  Chrome: {
-    url: "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne?hl=ja",
-    text: "Stylus - Chrome ウェブストア",
-  },
-  Firefox: {
-    url: "https://addons.mozilla.org/ja/firefox/addon/styl-us/",
-    text: "Stylus Downloads",
-  },
-  Edge: {
-    url: "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne?hl=ja",
-    text: "Stylus - Chrome ウェブストア",
-  },
-};
+const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne" as Route;
+const FIREFOX_URL = "https://addons.mozilla.org/firefox/addon/styl-us/" as Route;
+const TAMPERMONKEY_URL =
+  "https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" as Route;
 
 const useBrowserLink = () => {
   const browserType = useBrowserTypeState();
-  if (browserType === "Chrome") return browserLinks.Chrome;
-  if (browserType === "Firefox") return browserLinks.Firefox;
-  if (browserType === "Edge") return browserLinks.Edge;
-  return browserLinks.Chrome;
+  if (browserType === "Firefox") return { url: FIREFOX_URL, text: "Stylus Downloads" };
+  return { url: CHROME_STORE_URL, text: "Stylus - Chrome ウェブストア" };
 };
 
 export function InstallationSteps() {
@@ -35,8 +23,7 @@ export function InstallationSteps() {
       title: "Stylusブラウザ拡張機能をインストールする",
       content: (
         <P>
-          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>
-          から拡張機能をインストールします。
+          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>から拡張機能をインストールします。
         </P>
       ),
     },
@@ -44,7 +31,7 @@ export function InstallationSteps() {
       title: "UserStyles.worldからスタイルをインストールする",
       content: (
         <P>
-          <LinkText href="https://userstyles.world/style/24064">
+          <LinkText href={"https://userstyles.world/style/24064" as Route}>
             YTyping YouTube Background Player - userstyles.world
           </LinkText>
           からスタイルをインストールします。
@@ -63,12 +50,10 @@ export function InstallationSteps() {
       title: "動画の境界にぼかしを追加する(任意)",
       content: (
         <P>
-          <LinkText href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=ja">
-            Tampermonkey - Chrome ウェブストア
-          </LinkText>
+          <LinkText href={TAMPERMONKEY_URL}>Tampermonkey - Chrome ウェブストア</LinkText>
           からTampermonkeyをインストールします。
           <br />
-          <LinkText href="https://greasyfork.org/en/scripts/564909-ytyping-youtube-inner-edge-shadow">
+          <LinkText href={"https://greasyfork.org/en/scripts/564909-ytyping-youtube-inner-edge-shadow" as Route}>
             GreasyFork - YTyping YouTube Inner Edge Shadow
           </LinkText>
           からスクリプトをインストールします。 このスクリプトを使用すると、動画の境界にぼかしを追加することができます。

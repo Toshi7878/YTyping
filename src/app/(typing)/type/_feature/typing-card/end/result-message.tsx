@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { type Session, useSession } from "@/auth/client";
 import { useMinMediaSpeedState } from "../../youtube/youtube-player";
 import { type SceneType, useSceneState } from "../typing-card";
@@ -10,6 +11,7 @@ export const ResultMessage = ({
   bestScore: number | null;
   status: { score: number; miss: number; lost: number };
 }) => {
+  const t = useTranslations("typing.end");
   const { data: session } = useSession();
   const scene = useSceneState();
   const minMediaSpeed = useMinMediaSpeedState();
@@ -17,11 +19,11 @@ export const ResultMessage = ({
 
   return (
     <div className="mx-2 text-left text-5xl md:text-3xl" id="end_text">
-      {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
+      {isPerfect && scene === "play_end" && <span>{t("perfect")}</span>}
       <span>
         <Message bestScore={bestScore} score={status.score} scene={scene} session={session} />
       </span>
-      {minMediaSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
+      {minMediaSpeed < 1 && <div>{t("needSpeed")}</div>}
     </div>
   );
 };
@@ -37,16 +39,18 @@ const Message = ({
   scene: SceneType;
   session: Session | null;
 }) => {
-  if (scene === "practice_end") return "練習モード終了";
-  if (scene === "replay_end") return "リプレイ再生終了";
-  if (!session) return `スコアは ${score} です。ログインをするとランキングに登録することができます。`;
-  if (bestScore === null) return `初めての記録です！スコアは ${score} です。`;
+  const t = useTranslations("typing.end");
+  if (scene === "practice_end") return t("practiceEnd");
+  if (scene === "replay_end") return t("replayEnd");
+  if (!session) return t("scoreLogin", { score });
+  if (bestScore === null) return t("firstRecord", { score });
   if (score >= bestScore)
     return (
       <>
-        おめでとうございます！最高スコアが {bestScore} から {score} に更新されました！ <wbr />
+        {t("newBest", { best: bestScore, score })}
+        <wbr />
         <RandomEmoji />
       </>
     );
-  return `最高スコアは ${bestScore} です。記録更新まであと ${bestScore - score} です。`;
+  return t("bestInfo", { best: bestScore, diff: bestScore - score });
 };
